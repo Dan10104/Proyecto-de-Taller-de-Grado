@@ -1,6 +1,6 @@
 # Arquitectura web de ESPACIO-U
 
-Fuentes: cap. II, apartados Laravel/API, Vue/Inertia, IoT, QR, Blockchain y despliegue; cap. VI, figuras 60–105; cap. VII, figuras 106–114; IS, IC y RD. Las figuras 106 y 107 corresponden a las páginas impresas 246–247 (PDF 247–248). Estado: contrato de arquitectura congelado en Fase 0.5; Fase 1 implementa únicamente la fundación web. Las capacidades funcionales del diagrama siguen planificadas.
+Fuentes: cap. II, apartados Laravel/API, Vue/Inertia, IoT, QR, Blockchain y despliegue; cap. VI, figuras 60–105; cap. VII, figuras 106–114; IS, IC y RD. Las figuras 106 y 107 corresponden a las páginas impresas 246–247 (PDF 247–248). Estado: arquitectura contractual congelada en Fase 0.5; implementadas fundación, seguridad web y espacios/disponibilidad base hasta Fase 3. El diagrama representa también integraciones futuras que siguen pendientes.
 
 ## Componentes y límites
 
@@ -101,3 +101,9 @@ Contratos completos, límites de expiración/concurrencia/logout y fuentes técn
 ## Implementación posterior de Fase 2
 
 Los apartados de Fases 1/1.5 conservan su descripción histórica. El núcleo ahora usa SessionGuard/Usuario, middleware de sesión de acceso, Gates de capacidades y servicios transaccionales. Inertia sirve Login, Inicio, Usuarios y Roles/Permisos con AppLayout compartido. El driver file y SHA-256 en sesiones_acceso cumplen funciones distintas. Dos esquemas MySQL y cuentas exclusivas separan desarrollo/testing. No hay API duplicada, módulos futuros ni bitácora general. [Diseño implementado y pruebas](SECURITY_IMPLEMENTATION.md).
+
+## Capas implementadas de espacios — Fase 3
+
+SpaceController/SpaceCatalogController entregan DTOs Inertia; Requests validan entradas, Gates y EspacioAcademicoPolicy reutilizan AuthorizationService. SpaceManagementService concentra transacciones, PK compartida, sincronización M:N, estado y bloqueos, con reautorización tras el bloqueo común. SpaceAvailabilityService concentra filtros y exclusión de bloqueos mediante NOT EXISTS; eager loading y paginación de 15 evitan N+1. No hay repositorio ficticio ni consulta a reservas.
+
+La ampliación Fase 4 se incorporará en candidates para reservas activas y en su operación transaccional correspondiente. Política de liberación solo tiene tabla/modelo/relación; CU23 no existe. Alcance RBAC por módulo/acción autorizado en §35, ámbito fino diferido. [Contrato y evidencia](SPACES_IMPLEMENTATION.md).

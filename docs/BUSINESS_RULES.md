@@ -102,3 +102,9 @@ Son contratos de prueba para Fase 2, no tests ejecutados ni cambios del modelo. 
 | Aislamiento | Una suite con escritura aborta si la conexión efectiva no es MySQL de testing autorizado; jamás migra/limpia espacio_u. |
 
 Límites del control de intentos se tomarán de configuración y se probarán en sus fronteras, sin un número hardcodeado en varias capas. CU01–CU04 y estos controles siguen sin implementar.
+
+## Reglas verificadas de CU05/CU06 — Fase 3
+
+RBAC por módulo/acción según petición §35, que precisa para esta fase la puerta histórica de ámbito fino. La elegibilidad y el permiso deben venir del mismo rol vigente; gestionar espacio no implica cambiar su estado ni bloquearlo. Alta/edición y M:N son transaccionales; responsable del bloqueo procede de la sesión. Código UNIQUE global a recursos, capacidad positiva y periodo válido se verifican también en MySQL.
+
+Disponibilidad base: estado DISPONIBLE, todos los filtros (características AND) y ausencia de bloqueo activo con inicio < fin_consulta y fin > inicio_consulta. Intervalos [inicio, fin), Bolivia. Solapamientos entre bloqueos permitidos; desactivar conserva historia y no afecta otros bloqueos. Vencer no cambia activo automáticamente. Estado BLOQUEADO es independiente. Reservas Fase 4, IoT Fase 7 y CU30 siguen pendientes. [Pruebas y límites](SPACES_IMPLEMENTATION.md).

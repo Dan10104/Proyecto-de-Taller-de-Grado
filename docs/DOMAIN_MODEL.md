@@ -1,6 +1,6 @@
 # Modelo del dominio
 
-Fuentes: figura 19 (p. 109 / PDF 110), figuras 108–109 (p. 248–249 / PDF 249–250), mapeo, volúmenes y SQL del cap. VII. El diagrama conceptual simplifica relaciones; las diferencias con el diseño de clases y datos están registradas en D-06. Estado: contrato congelado en Fase 0.5, sin clases implementadas.
+Fuentes: figura 19 (p. 109 / PDF 110), figuras 108–109 (p. 248–249 / PDF 249–250), mapeo, volúmenes y SQL del cap. VII. El diagrama conceptual simplifica relaciones; las diferencias con el diseño de clases y datos están registradas en D-06. Estado: contrato congelado en Fase 0.5; materialización incremental hasta Fase 3 descrita al final. Las entidades de fases posteriores siguen siendo documentales.
 
 ## Conceptos y responsabilidades
 
@@ -113,3 +113,9 @@ La tabla describe comportamientos observados, no completa una máquina de estado
 Usuario puede conservar varias asignaciones históricas y varios roles vigentes. Roles y permisos se evalúan como conjuntos, con un rol elegible para el CU que aporte el permiso; retirar un rol cierra sus asignaciones activas sin borrar historia. Los cuatro roles oficiales no incluyen a los actores técnicos externos. D-04 permite implementar capacidades/módulos en Fase 2; el vínculo fino Encargado–recurso se resolverá en su fase funcional sin inferir una entidad nueva ni autorización global.
 
 SesionAcceso corresponde al control de una sesión web autenticada: hash SHA-256 del ID final, titular, creada_en, expira_en y revocada_en. No es una credencial reutilizable ni RegistroActividad. Varias sesiones por usuario son independientes; revocación/expiración y cuenta INACTIVO impiden acceso. La renovación por inactividad usa la misma duración configurada de Laravel y nunca reactiva una fila revocada/expirada. Las seis tablas de seguridad son el único núcleo funcional autorizado para la próxima fase; los demás conceptos permanecen documentales.
+
+## Materialización de espacios — Fase 3
+
+Piso, TipoEspacio y CaracteristicaEspacio conservan su estructura oficial. RecursoInstitucional representa el padre persistente y EspacioAcademico su subclase por PK/FK compartida recurso_id. EstadoEspacio materializa DISPONIBLE/BLOQUEADO/EN_MANTENIMIENTO. BloqueoEspacio conserva periodo, responsable Usuario y activo; no sustituye al estado general. Política es exclusivamente dependencia estructural, sin conducta de CU23. Características se asocian por belongsToMany/PK compuesta, sin nueva entidad física.
+
+Los modelos, relaciones y límites vigentes están en [SPACES_IMPLEMENTATION.md](SPACES_IMPLEMENTATION.md). No se materializó Reserva, IoT ni los restantes componentes futuros.

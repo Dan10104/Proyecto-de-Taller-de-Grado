@@ -1,6 +1,6 @@
 # Plan de implementación web
 
-Estado: **Fase 2 implementada y validada; Fases 3–14 no iniciadas**. Fases 0 y 0.5 conservaron su alcance documental; la nueva instrucción de Fase 1 autorizó la fundación técnica descrita en [DEVELOPMENT_SETUP.md](DEVELOPMENT_SETUP.md). No existe Flutter, Android ni cliente nativo en el plan de ejecución.
+Estado: **Fase 3 implementada y validada; Fases 4–14 no iniciadas**. Fases 0 y 0.5 conservaron su alcance documental; la nueva instrucción de Fase 1 autorizó la fundación técnica descrita en [DEVELOPMENT_SETUP.md](DEVELOPMENT_SETUP.md). No existe Flutter, Android ni cliente nativo en el plan de ejecución.
 
 ## Inventario histórico anterior a Fase 1 — 2026-10-23
 
@@ -68,6 +68,8 @@ Ese inventario corresponde a Fases 0/0.5, cuando no se instalaron dependencias n
 | Commit esperado | `feat: add web authentication users roles and permissions` |
 
 ### Fase 3 — Pisos, espacios, características, bloqueos y disponibilidad
+
+**Completada en su alcance autorizado el 2026-10-23: 127 tests / 1395 aserciones y revisión manual.** CU05 núcleo funcional (bitácora diferida). CU06: **IMPLEMENTACIÓN PARCIAL — FASE 3**; reservas activas pendientes de Fase 4 e IoT de Fase 7. Siete tablas operativas y politicas_liberacion solo para FK, sin lógica de Fase 8. La petición §35 autoriza RBAC por módulo/acción y mantiene el ámbito fino diferido. La tabla siguiente conserva criterios futuros de carga dependientes de reservas; no se declaran ejecutados. [Implementación y evidencia](SPACES_IMPLEMENTATION.md).
 
 | Campo | Plan |
 | --- | --- |

@@ -2,7 +2,7 @@
 
 Sistema de información para la gestión y control de reservas de espacios académicos y préstamos de equipamiento tecnológico en la FICCT, con monitoreo de ocupación mediante IoT y trazabilidad de operaciones mediante Blockchain.
 
-**Estado: núcleo de Fase 2 implementado y validado.** Laravel + Vue 3 + Inertia + Vite, con autenticación web, usuarios, cuatro roles institucionales, permisos y sesiones de acceso sobre MySQL. Se implementan exclusivamente las seis tablas de seguridad; CU30, auditoría general, Fase 3 y módulos posteriores siguen pendientes. Flutter/Android, API móvil y despliegue no se han iniciado.
+**Estado: Fase 3 implementada y validada.** Laravel + Vue 3 + Inertia + Vite con seguridad web, gestión de pisos/espacios/tipos/características, bloqueos y disponibilidad base sobre MySQL. CU05 tiene su núcleo funcional; CU06 está en **IMPLEMENTACIÓN PARCIAL — FASE 3**: comprueba estado y bloqueos, con reservas pendientes de Fase 4 e IoT de Fase 7. Políticas solo como dependencia estructural del FK. CU30, auditoría general, Flutter/Android, API móvil y despliegue continúan pendientes.
 
 ## Fuente de verdad
 
@@ -25,7 +25,7 @@ Abrir http://127.0.0.1:8000. Se muestra el login institucional. El administrador
 
 Para preparar un entorno sin dependencias instaladas, consultar primero [DEVELOPMENT_SETUP.md](docs/DEVELOPMENT_SETUP.md). Allí se explican `composer install`, `npm ci`, `.env`, herramientas locales y creación segura de MySQL. En desarrollo se usan migraciones incrementales; la limpieza destructiva se permite exclusivamente en testing protegido.
 
-## Comprobar el núcleo de seguridad
+## Comprobar seguridad, espacios y disponibilidad
 
 Con MySQL iniciado y los assets compilados:
 
@@ -35,7 +35,7 @@ composer audit
 npm audit
 ```
 
-La suite usa exclusivamente `espacio_u_testing` en MySQL real, con cuenta separada y guarda previa a migraciones/limpieza. Pasaron 65 pruebas / 493 aserciones, sin omitidas; build y auditorías Composer/npm correctos. Incluye dos procesos simultáneos para asignaciones, último administrador y renovación/logout. No certifica CU30, módulos posteriores, carga ni despliegue.
+La suite usa exclusivamente `espacio_u_testing` en MySQL real, con cuenta separada y guarda previa a migraciones/limpieza. Pasaron 127 pruebas / 1395 aserciones, sin omitidas; build y auditorías Composer/npm correctos. Incluye dos procesos simultáneos para asignaciones, último administrador y renovación/logout. No certifica CU30, módulos posteriores, carga ni despliegue.
 
 ## Documentación
 
@@ -48,6 +48,7 @@ La suite usa exclusivamente `espacio_u_testing` en MySQL real, con cuenta separa
 | [Reglas de negocio](docs/BUSINESS_RULES.md) | Invariantes y comprobaciones futuras |
 | [Casos de uso](docs/USE_CASE_MATRIX.md) | Fichas completas CU01–CU30 y pruebas necesarias |
 | [Trazabilidad](docs/REQUIREMENTS_TRACEABILITY.md) | Los 217 requisitos, incluidos 26 RF, con criterios y fases |
+| [Espacios y disponibilidad](docs/SPACES_IMPLEMENTATION.md) | Esquema, RBAC, disponibilidad parcial y evidencia de Fase 3 |
 | [Implementación de seguridad](docs/SECURITY_IMPLEMENTATION.md) | Catálogo, matriz, sesiones, invariantes y evidencia de Fase 2 |
 | [Seguridad](docs/SECURITY_POLICY.md) | Secretos, datos, controles y revisión antes de cada push |
 | [Plan](docs/IMPLEMENTATION_PLAN.md) | Inventario real del entorno y Fases 1–14 |
@@ -61,15 +62,15 @@ ESPACIO-U/
 ├── app/                 # Modelos, servicios, solicitudes validadas, Gates y middleware
 ├── bootstrap/           # Arranque Laravel
 ├── config/              # Configuración sin secretos
-├── database/            # Seis migraciones, seeders de catálogo y factories sintéticas
+├── database/            # Catorce migraciones, catálogo RBAC y factories sintéticas
 ├── docs/                # Contratos y procedimiento de desarrollo
 ├── public/              # Punto de entrada; build generado e ignorado
 ├── resources/
 │   ├── css/app.css
 │   ├── js/app.js
-│   ├── js/Pages/{Auth,Users,Roles}/
+│   ├── js/Pages/{Auth,Users,Roles,Spaces}/
 │   └── views/app.blade.php
-├── routes/              # Login, inicio, usuarios, roles, permisos y /up
+├── routes/              # Seguridad, espacios, catálogos, disponibilidad y /up
 ├── scripts/             # Entorno de terminal y ciclo de MySQL local
 ├── storage/             # Datos generados privados
 ├── tests/Feature/
@@ -79,7 +80,7 @@ ESPACIO-U/
 └── vite.config.js
 ```
 
-`.tools/`, `.local/`, `.env`, `vendor/`, `node_modules/`, logs y compilados permanecen locales e ignorados. `.env.example` contiene secretos vacíos. MySQL de desarrollo usa `espacio_u` en `127.0.0.1:3308`; las seis tablas de seguridad están materializadas; las otras 25 tablas documentales permanecen pendientes. `espacio_u_testing` tiene credenciales exclusivas en `.env.testing` local.
+`.tools/`, `.local/`, `.env`, `vendor/`, `node_modules/`, logs y compilados permanecen locales e ignorados. `.env.example` contiene secretos vacíos. MySQL de desarrollo usa `espacio_u` en `127.0.0.1:3308`; 14 tablas académicas están materializadas (seis de seguridad, siete de espacios y una política estructural); las otras 17 siguen pendientes. `espacio_u_testing` tiene credenciales exclusivas en `.env.testing` local.
 
 ## Continuidad
 
@@ -87,4 +88,4 @@ Fases 0 y 0.5 conservan su cierre documental y sus 17 expedientes. D-15 queda at
 
 D-04 y D-07 están implementadas para el núcleo web: RBAC sin bypass, historia de asignaciones y control de sesiones por hash. [Detalles y límites](docs/SECURITY_IMPLEMENTATION.md). El ámbito fino por recurso, móvil/API, almacenamiento distribuido y CU30 permanecen diferidos.
 
-La revisión automática y manual de Fase 2 está completada; su evidencia y límites están en [SECURITY_IMPLEMENTATION.md](docs/SECURITY_IMPLEMENTATION.md). La siguiente fase requiere una nueva instrucción. Antes de construir pisos, espacios y disponibilidad, revisar las FK y dependencias de reservas/políticas y acreditar el ámbito autorizado por recurso. No se inició Fase 3.
+La revisión automática y manual de Fase 3 está completada; su evidencia y límites están en [SPACES_IMPLEMENTATION.md](docs/SPACES_IMPLEMENTATION.md). La petición de Fase 3 autoriza RBAC por módulo/acción y mantiene el ámbito fino diferido. Fase 4 requiere nueva instrucción; antes de iniciarla, cerrar los parámetros pendientes D-05 e integrar reservas activas en el servicio de disponibilidad. No se inició Fase 4.

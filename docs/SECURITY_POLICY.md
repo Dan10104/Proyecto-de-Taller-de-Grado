@@ -82,3 +82,9 @@ Las pruebas con escritura usarán MySQL separado y usuario exclusivo con permiso
 ## Controles materializados en Fase 2
 
 Autenticación Session web/Argon2id, CSRF, RateLimiter, hash de sesión final, vigencia/revocación, consultas RBAC en servidor sin bypass, validación de solicitudes y bloqueo del último administrador implementados. Testing tiene base/cuenta/APP_KEY propias y guarda estricta antes de comandos destructivos, incluidos --force. Secretos de desarrollo y bootstrap solo en .env; testing solo en .env.testing, ambos ignorados y privados. No se sustituyen CU30 ni políticas futuras por estos controles. [Evidencia y límites](SECURITY_IMPLEMENTATION.md).
+
+## Extensión controlada de Fase 3
+
+La petición §35 autoriza para CU05 RBAC por módulo/acción; el alcance fino por recurso sigue diferido, precisando la puerta histórica de Fase 1.5. AuthorizationService exige elegibilidad y permiso de un mismo rol vigente. Se incorporan cuatro permisos de espacios con matriz 4/4/1/1; los once administrativos anteriores siguen exclusivos de Administrador. El catálogo total es 15 y no hay bypass. El seeder incremental no restituye revocaciones al repetirse.
+
+Gates/Policy y reautorización dentro de transacciones protegen escrituras. No se aceptan responsable de bloqueo, PK compartida ni política desde cliente. Lectores no reciben motivos/responsables administrativos de bloqueos. Se mantienen CSRF, sesión, último administrador y guarda MySQL testing; credenciales de revisión solo temporales en .env privado. [Evidencia y límites](SPACES_IMPLEMENTATION.md).

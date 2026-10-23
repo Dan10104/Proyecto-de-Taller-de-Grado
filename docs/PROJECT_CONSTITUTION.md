@@ -1,6 +1,6 @@
 # Constitución del proyecto ESPACIO-U
 
-Estado: Fases 0/0.5 documentales y Fase 1 técnica completadas, 2026-10-23. Existe la fundación web ejecutable; no hay migraciones de dominio, autenticación ni integraciones funcionales. Fase 1.5 documental cerrada; Fase 2 no iniciada.
+Estado vigente: Fases 0, 0.5, 1, 1.5, 2 y alcance autorizado de Fase 3 completados, 2026-10-23. Seguridad web y CU05 funcionales; CU06 parcial por estado/bloqueos. Políticas solo estructurales. Fase 4 y las integraciones posteriores no iniciadas; las secciones históricas conservan las decisiones de su momento.
 
 ## Identidad y autoridad
 
@@ -95,3 +95,7 @@ D-04 y D-07: **RESUELTAS PARA FASE 2** en [DECISIONS.md](DECISIONS.md#readiness-
 La web utilizará Laravel Session, correo/password_hash, Hash/Argon2id y CSRF; sesiones_acceso controlará el hash SHA-256 del ID final de sesión, su vigencia y revocación. La duración deriva de la configuración Laravel y cada acceso protegido exige coherencia entre sesión técnica y registro. El alcance fino por recurso se cierra antes de su flujo funcional; móvil/API sigue diferido.
 
 La petición Fase 1.5 §15 limita la siguiente Fase 2 a usuarios, roles, permisos, roles_permisos, asignaciones_roles y sesiones_acceso; tablas técnicas solo cuando sean necesarias y documentadas. No autoriza registros_actividad ni otros módulos: RF25/CU30 conservan vigencia como requisitos pendientes, sin confundir el registro de sesiones con bitácora general. Ninguna prueba con escritura podrá usar la base normal de desarrollo: se exige MySQL de testing separado. Comenzar Fase 2 requiere nueva instrucción.
+
+## Alcance posterior autorizado — Fase 3
+
+La petición Fase 3 autoriza siete tablas operativas de espacios y politicas_liberacion solo como FK estructural. CU05 núcleo funcional; CU06 IMPLEMENTACIÓN PARCIAL — FASE 3, con reservas Fase 4 e IoT Fase 7 pendientes. §35 concreta RBAC por módulo/acción, manteniendo ámbito fino diferido sin nuevas tablas. No se autorizan reservas, política funcional, CU30 ni otros módulos. Workspace y remoto originales se mantienen. [Implementación y validación](SPACES_IMPLEMENTATION.md).

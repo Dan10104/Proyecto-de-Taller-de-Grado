@@ -195,3 +195,23 @@ En una base recién migrada y sin usuarios, ejecutar `php artisan security:boots
 Guard `web`/proveedor `Usuario`, correo y password_hash; Laravel Hash Argon2id con parámetros del framework. Sesión técnica file y registro obligatorio en sesiones_acceso; nunca usar esa tabla como driver database. `config('session.lifetime')` deriva de SESSION_LIFETIME y es la única duración. Límite: cinco fallos por correo/IP y treinta intentos por IP en sesenta segundos, parametrizado en config/security.php. Cookies HttpOnly y SameSite=Lax; Secure obligatorio fuera de local/testing. Producción exige HTTPS y configuración propia.
 
 CU30/registros_actividad, API/móvil y persistencia distribuida permanecen pendientes. No instalar paquetes que sustituyan el esquema académico. [Implementación y límites](SECURITY_IMPLEMENTATION.md).
+
+## Actualización incremental a Fase 3
+
+Con la rama actualizada y el entorno activado en la raíz oficial:
+
+```powershell
+. .\scripts\dev-environment.ps1
+.\scripts\mysql-dev.ps1 -Action Start
+php artisan migrate
+php artisan db:seed
+npm run build
+php artisan test
+.\vendor\bin\pint --test
+composer audit
+npm audit
+```
+
+migrate agrega ocho tablas respetando FK; nunca usar fresh/reset/wipe en desarrollo. db:seed extiende el catálogo a 15 permisos sin sembrar inventario ni políticas. Las revocaciones existentes se conservan al repetirlo. Crear pisos/tipos/características y espacios desde la administración autorizada; cualquier demo debe identificarse como sintética. No asignar pisos reales sin respaldo institucional.
+
+Resultado integrado: 127 pruebas / 1395 aserciones (62 nuevas), sin fallos ni omitidas, sobre espacio_u_testing protegido; build y auditorías aprobados. Tres cuentas sintéticas adicionales de revisión se deshabilitaron y se revocaron sus sesiones; sus credenciales temporales se retiraron del .env privado. La demostración de espacio/catálogos y bloqueo desactivado conserva historia local. Los dos servicios MySQL existentes no se alteraron. La vista local y los procesos del proyecto se dejan activos para revisión; no iniciar otra copia del servidor si el puerto 8000 ya está atendido. [Evidencia y límites](SPACES_IMPLEMENTATION.md).
