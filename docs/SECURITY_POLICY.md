@@ -1,6 +1,6 @@
 # Política de seguridad
 
-**Estado vigente de reservas: Fase 4 implementada.** Los cierres de Fases 2/3/3.5 conservan su contexto histórico. [Implementación y evidencia actual](RESERVATIONS_IMPLEMENTATION.md).
+**Estado vigente: Fase 5 implementada y validada (CU12–CU19), con incidencias integradas en CU06/CU07/CU09.** Los cierres anteriores conservan su contexto histórico. [Implementación, pruebas y límites actuales](EQUIPMENT_LOANS_IMPLEMENTATION.md). Fase 6 no iniciada.
 
 Repositorio público. Esta política aplica a documentación, código, pruebas, historial Git, imágenes, logs, issues y artefactos. Fuentes: instrucciones de Fases 0, 0.5, 1 y 1.5; RNF-10–17, IS-14, IC-02/04/05/08/11, RD-19/20/23/43/44 y DB-21–24.
 
@@ -94,3 +94,7 @@ Gates/Policy y reautorización dentro de transacciones protegen escrituras. No s
 ## Aplicación a reservas — Fase 4
 
 Seis permisos específicos, elegibilidad de rol y scope propio/administrativo aplicados en servidor. Código, solicitante, estado, actores y fechas de resolución/cancelación no son editables desde request. Reautorización después de coordinación RBAC; cancelación exige hora confiable después de esperar locks. DTO sin correos, hashes o sesiones. [Matriz y verificación](RESERVATIONS_IMPLEMENTATION.md#permisos-y-alcance). El ámbito fino de D-04 continúa diferido; no hay bypass administrativo.
+
+## Aplicación a Fase 5
+
+Doce permisos exactos del contrato Fase 4.5, sin bypass de Administrador ni alcance fino inventado. Propiedad aplicada antes de filtros/opciones; actores, código y fechas de decisión exclusivamente del servidor; CSRF y reautorización tras espera; DTO sin correo/hash/sesión. CON_INCIDENCIA exige gestión de incidencias además de devolución; habilitación explícita exige cambiar_estado del subtipo. [Matriz y controles verificados](EQUIPMENT_LOANS_IMPLEMENTATION.md#permisos-y-alcance). Las cuentas de QA se deshabilitaron y sus sesiones se revocaron; credenciales temporales retiradas de .env. No hay secretos en .env.example ni archivos privados publicados.

@@ -1,6 +1,6 @@
 # Modelo de datos documentado
 
-**Estado vigente de reservas: Fase 4 implementada.** Los cierres de Fases 2/3/3.5 conservan su contexto histórico. [Implementación y evidencia actual](RESERVATIONS_IMPLEMENTATION.md).
+**Estado vigente: Fase 5 implementada y validada (CU12–CU19), con incidencias integradas en CU06/CU07/CU09.** Los cierres anteriores conservan su contexto histórico. [Implementación, pruebas y límites actuales](EQUIPMENT_LOANS_IMPLEMENTATION.md). Fase 6 no iniciada.
 
 Estado: contrato documental congelado en Fase 0.5; **no es una migración ni un SQL para ejecutar**. Fuentes: figura 108 (clases), figura 109 (BD lógica), tablas 68–98 (mapeo), 99–129 (volúmenes/diccionario) y script del cap. VII, pp. 269–299 (PDF 270–300).
 
@@ -945,3 +945,7 @@ La migración `2026_10_23_000015_create_reservas_table.php` materializa el SQL d
 | Sin causa/estado anterior persistido del recurso | No inventar previous_state ni tablas auxiliares. Restauración explícita con permiso y comprobación de todas las restricciones; BAJA nunca automática. |
 
 El contrato completo de campos/guardas y la jerarquía de locks están en [DECISIONS](DECISIONS.md#contrato-de-equipamiento-y-préstamos--fase-45). Toda entrega/devolución y cambio operativo asociado es atómico. SQL conserva sus acciones CASCADE/RESTRICT; no se deduce de CASCADE un permiso de eliminar historia. QR, evidencias, notificaciones y registros_actividad no se materializan anticipadamente para suplir las integraciones diferidas.
+
+## Materialización física de Fase 5
+
+Aplicadas seis migraciones 000016–000021, únicamente tipos_equipamiento, equipamientos_tecnologicos, prestamos, entregas_prestamo, devoluciones_prestamo e incidencias_mantenimiento. Añaden 54 columnas y completan 21 tablas académicas / 135 columnas / 35 FK; migrations es técnica. Las quince migraciones anteriores no cambian. PK/FK compartida, índices oficiales, acciones referenciales, tipos, nulabilidad, defaults, enums, UNIQUE y CHECK contrastados contra el SQL final en EquipmentLoanSchemaTest, sobre MySQL real. No hay timestamps añadidos ni estructuras auxiliares. El diccionario final de 31 tablas / 211 columnas / 63 FK permanece intacto. [Esquema y evidencia](EQUIPMENT_LOANS_IMPLEMENTATION.md#persistencia-y-dominio).

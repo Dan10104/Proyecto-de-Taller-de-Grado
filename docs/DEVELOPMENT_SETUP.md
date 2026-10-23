@@ -1,6 +1,6 @@
 # Entorno de desarrollo — Fases 1 y 2
 
-**Estado vigente de reservas: Fase 4 implementada.** Los cierres de Fases 2/3/3.5 conservan su contexto histórico. [Implementación y evidencia actual](RESERVATIONS_IMPLEMENTATION.md).
+**Estado vigente: Fase 5 implementada y validada (CU12–CU19), con incidencias integradas en CU06/CU07/CU09.** Los cierres anteriores conservan su contexto histórico. [Implementación, pruebas y límites actuales](EQUIPMENT_LOANS_IMPLEMENTATION.md). Fase 6 no iniciada.
 
 Fecha de verificación: 2026-10-23. Único workspace: `C:\Users\BlackMaster69\Desktop\ESPACIO-U`, raíz de Visual Studio Code. La aplicación es una sola instalación convencional Laravel con Vue/Inertia; no existen proyectos backend/frontend separados.
 
@@ -225,3 +225,19 @@ Desde el workspace oficial con `dev-environment.ps1` activado y la instancia ais
 Validar con `php artisan test`, `php vendor/bin/pint --test`, `composer audit` y `npm audit`. La suite usa exclusivamente espacio_u_testing, en serie; las pruebas de concurrencia abren procesos independientes dentro de ese esquema con guardas. No usar `--parallel`. [Resultado final y procedimiento de concurrencia](RESERVATIONS_IMPLEMENTATION.md).
 
 Las tres cuentas temporales de revisión quedaron INACTIVAS y sus sesiones revocadas; las credenciales temporales se retiraron de .env. El historial sintético se conserva (cuatro reservas canceladas, una rechazada). No hay credenciales en la documentación, plantilla ni repositorio. La aplicación y los procesos locales permanecen activos, sin duplicar el servidor que atiende 127.0.0.1:8000.
+
+## Aplicar y verificar Fase 5
+
+Desde la raíz oficial, con el entorno activado y MySQL aislado iniciado:
+
+```powershell
+php artisan migrate --force
+php artisan db:seed --class=SecuritySeeder --force
+npm run build
+php artisan test
+php vendor/bin/pint --test
+composer audit
+npm audit
+```
+
+Desarrollo recibió solo seis migraciones incrementales, sin limpiar espacio_u. La suite usa exclusivamente espacio_u_testing en 3308 con credenciales privadas en .env.testing y TestingDatabaseGuard. No usar --parallel ni migrate:fresh sobre desarrollo; las pruebas de concurrencia ya coordinan sus propios procesos. No se cambian MySQL80/MySQL97. Resultado final: 262 pruebas / 3318 aserciones, 178,23 s, cero fallos/errores/omitidas; Pint/build/auditorías correctos. [Procedimiento, QA sintética y límites](EQUIPMENT_LOANS_IMPLEMENTATION.md). Las cuentas temporales de QA están inactivas y sus credenciales retiradas; se conservan los hitos sintéticos y servicios locales.

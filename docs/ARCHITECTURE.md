@@ -1,6 +1,6 @@
 # Arquitectura web de ESPACIO-U
 
-**Estado vigente de reservas: Fase 4 implementada.** Los cierres de Fases 2/3/3.5 conservan su contexto histórico. [Implementación y evidencia actual](RESERVATIONS_IMPLEMENTATION.md).
+**Estado vigente: Fase 5 implementada y validada (CU12–CU19), con incidencias integradas en CU06/CU07/CU09.** Los cierres anteriores conservan su contexto histórico. [Implementación, pruebas y límites actuales](EQUIPMENT_LOANS_IMPLEMENTATION.md). Fase 6 no iniciada.
 
 Fuentes: cap. II, apartados Laravel/API, Vue/Inertia, IoT, QR, Blockchain y despliegue; cap. VI, figuras 60–105; cap. VII, figuras 106–114; IS, IC y RD. Las figuras 106 y 107 corresponden a las páginas impresas 246–247 (PDF 247–248). Estado: arquitectura contractual congelada en Fase 0.5; implementadas fundación, seguridad web, espacios y reservas hasta Fase 4. El diagrama representa también integraciones futuras que siguen pendientes.
 
@@ -132,3 +132,9 @@ Orden único previsto: coordinación RBAC (fila Administrador) → subtipos por 
 El recurso coordinador protege también la ausencia de filas bloqueantes. Usar lecturas actuales explícitas después de esperar, no snapshot previo ni asumir que un FOR UPDATE externo afecta subconsultas. Todas las mutaciones pertinentes, incluida apertura/cierre CU19 sobre espacios, deben compartir el orden; tres reintentos acotados de deadlock, rollback total y ningún servicio externo dentro del lock. La coordinación RBAC global se conserva como limitación conocida, sin prometer paralelismo por recurso todavía.
 
 No agregar infraestructura de eventos vacíos, tablas de bloqueo o historial alternativo. QR/CU20 se incorpora en Fase 6; el núcleo de entrega/devolución funciona sin QR. CU24/Fase 9 se conecta después del commit principal, RF21/Fase 10 y CU30 permanecen diferidos. recepcion_confirmada_en queda NULL sin endpoint adicional. La aceptación futura incluye procesos MySQL concurrentes para aprobación, entrega, devolución/revisión y recuperación frente a otra incidencia (T-P01–18). Ninguno se implementa o ejecuta en Fase 4.5.
+
+## Implementación de equipamiento y préstamos — Fase 5
+
+EquipmentController, LoanController e IncidentController reciben FormRequests; Policies/Gates autorizan y los servicios ejecutan las invariantes. EquipmentService crea padre/subtipo atómicamente. EquipmentAvailabilityService concentra catálogo y revalidación; LoanService maneja decisiones/hitos; LoanQueryService aplica alcance antes de filtros y presenta DTO limitados; IncidentMaintenanceService comparte recurso entre espacios y equipos. ResourceOperationService coordina transacciones, lecturas actuales y recuperación segura.
+
+Orden común: RBAC → subtipo → préstamo objetivo → demás préstamos pertinentes → entregas → devoluciones → incidencias, por id dentro de cada grupo. Espacios conservan bloqueos/reservas antes de incidencias. La coordinación RBAC global conserva la limitación de serialización de escrituras; las pruebas incluyen espera directa del recurso para acreditar lecturas actuales. No hay llamadas externas dentro de locks. [Arquitectura aplicada, concurrencia y límites](EQUIPMENT_LOANS_IMPLEMENTATION.md#coordinación-transaccional).

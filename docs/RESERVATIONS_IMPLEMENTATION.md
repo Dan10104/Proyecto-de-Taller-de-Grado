@@ -1,6 +1,6 @@
 # Reservas de espacios académicos — Fase 4
 
-Fecha: 2026-10-23. Implementación del núcleo autorizado de CU07–CU10 y ampliación de CU06. D-05 permanece **RESUELTA PARA FASE 4**; no se reinterpreta. Fase 5 no iniciada.
+Fecha: 2026-10-23. Implementación del núcleo autorizado de CU07–CU10 y ampliación de CU06. D-05 permanece **RESUELTA PARA FASE 4**; no se reinterpreta. Este informe conserva la evidencia histórica de Fase 4; [Fase 5 ya implementada](EQUIPMENT_LOANS_IMPLEMENTATION.md).
 
 CU06: **FUNCIONALMENTE COMPLETO PARA DISPONIBILIDAD OPERATIVA; ENRIQUECIMIENTO IoT DIFERIDO A FASE 7.**
 
@@ -115,3 +115,7 @@ Se corrigió el desborde móvil de texto accesible posicionado en la tabla, esta
 - D-04: asignación fina por recurso continúa diferida. Sin cambios de contrato móvil/API, chatbot, dashboard o reportes.
 
 Siguiente fase recomendada, únicamente tras nueva instrucción: **Fase 5 — Equipamiento, préstamos, entrega, devolución e incidencias (CU12–CU19, RF9–15)**. Antes de escribir, revisar D-02/D-05/D-11 y cerrar el ámbito aplicable de D-04. Conservar enums oficiales, exclusividad y entrega/devolución atómicas; definir los puntos condicionales de QR para Fase 6 sin implementarlos anticipadamente. No liberar equipamiento por mero vencimiento del periodo. Fase 5 no comenzó en esta entrega.
+
+## Integración posterior de Fase 5
+
+El contenido anterior es el cierre histórico de Fase 4. Fase 5 ya implementó CU12–CU19; SpaceAvailabilityService agrega incidencias abiertas a CU06 y a las revalidaciones de CU07/CU09. No se modifica el ciclo de reservas, el carácter opcional de su rechazo, sus migraciones ni sus periodos. Se preservan las reservas y bloqueos al cerrar incidencias. La suite vigente suma 262 pruebas / 3318 aserciones, incluida la regresión de Fase 4. [Evidencia y siguiente fase pendiente](EQUIPMENT_LOANS_IMPLEMENTATION.md).

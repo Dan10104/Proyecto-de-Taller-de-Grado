@@ -837,3 +837,7 @@ Pruebas futuras obligatorias, con IDs T-P01–T-P18, están en [BUSINESS_RULES.m
 | Bloqueantes documentales restantes para el alcance autorizado de Fase 5 | **0** |
 
 Fase 5 puede comenzar cuando el usuario la instruya. Este cierre no la inicia ni declara funcionales CU12–CU19. D-04 fino, D-09, D-12 y demás integraciones conservan sus límites futuros expresos.
+
+## Aplicación de decisiones en Fase 5
+
+D-02 y D-11 se implementaron conforme al cierre de Fase 4.5; D-04 por módulo/acción/propiedad y D-05 por intervalos, exclusividad y lecturas actuales se aplicaron sin reabrirse. [Evidencia de implementación, T-P01–18 y concurrencia](EQUIPMENT_LOANS_IMPLEMENTATION.md). Se conservan el SQL final y las resoluciones documentales. D-09 continúa pendiente para Fase 6, que no se inició; ámbito fino, D-12 y demás detalles posteriores mantienen su límite original.

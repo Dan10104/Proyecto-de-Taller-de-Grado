@@ -2,7 +2,7 @@
 
 Sistema de información para la gestión y control de reservas de espacios académicos y préstamos de equipamiento tecnológico en la FICCT, con monitoreo de ocupación mediante IoT y trazabilidad de operaciones mediante Blockchain.
 
-**Estado: Fase 4 implementada y validada; Fase 4.5 documental cerrada.** Seguridad web, espacios y ciclo de reservas CU07–CU10 sobre Laravel, Vue 3, Inertia y MySQL. CU06: **FUNCIONALMENTE COMPLETO PARA DISPONIBILIDAD OPERATIVA; ENRIQUECIMIENTO IoT DIFERIDO A FASE 7**. [Implementación, pruebas y límites](docs/RESERVATIONS_IMPLEMENTATION.md). [Fase 5 preparada documentalmente, con 0 bloqueantes](docs/DECISIONS.md#readiness-for-phase-5), todavía no iniciada. QR, IoT, liberación, Blockchain, notificaciones y CU30 continúan diferidos.
+**Estado: Fase 5 implementada y validada.** Seguridad web, espacios, reservas y núcleo CU12–CU19 de equipamiento, préstamos, entrega, devolución/revisión e incidencias sobre Laravel, Vue 3, Inertia y MySQL. CU06 integra estado, bloqueos, reservas e incidencias. [Implementación, pruebas, trazabilidad y límites](docs/EQUIPMENT_LOANS_IMPLEMENTATION.md). QR, IoT, liberación, Blockchain, notificaciones y CU30 continúan diferidos; Fase 6 no iniciada.
 
 ## Fuente de verdad
 
@@ -35,7 +35,7 @@ composer audit
 npm audit
 ```
 
-La suite usa exclusivamente `espacio_u_testing` en MySQL real, con cuenta separada y guarda previa a migraciones/limpieza. La última evidencia funcional de Fase 4 registra 197 pruebas / 2321 aserciones, sin fallos ni omitidas; build y auditorías Composer/npm correctos. Fase 4.5 solo verifica documentación y no repite esa suite. Incluye dos procesos simultáneos para asignaciones, último administrador y renovación/logout. No certifica CU30, módulos posteriores, carga ni despliegue.
+La suite usa exclusivamente `espacio_u_testing` en MySQL real, con cuenta separada y guarda previa a migraciones/limpieza. La evidencia final de Fase 5 registra 262 pruebas / 3318 aserciones, 178,23 s, sin fallos, errores ni omitidas; Pint, build y auditorías Composer/npm correctos. Incluye 14 escenarios concurrentes nuevos de préstamos/incidencias y la regresión previa. No certifica CU30, módulos posteriores, carga ni despliegue.
 
 ## Documentación
 
@@ -48,6 +48,8 @@ La suite usa exclusivamente `espacio_u_testing` en MySQL real, con cuenta separa
 | [Reglas de negocio](docs/BUSINESS_RULES.md) | Invariantes y comprobaciones futuras |
 | [Casos de uso](docs/USE_CASE_MATRIX.md) | Fichas completas CU01–CU30 y pruebas necesarias |
 | [Trazabilidad](docs/REQUIREMENTS_TRACEABILITY.md) | Los 217 requisitos, incluidos 26 RF, con criterios y fases |
+| [Equipamiento y préstamos](docs/EQUIPMENT_LOANS_IMPLEMENTATION.md) | Esquema, permisos, transiciones, concurrencia y evidencia de Fase 5 |
+| [Reservas](docs/RESERVATIONS_IMPLEMENTATION.md) | Ciclo y evidencia de Fase 4 |
 | [Espacios y disponibilidad](docs/SPACES_IMPLEMENTATION.md) | Esquema, RBAC, disponibilidad parcial y evidencia de Fase 3 |
 | [Implementación de seguridad](docs/SECURITY_IMPLEMENTATION.md) | Catálogo, matriz, sesiones, invariantes y evidencia de Fase 2 |
 | [Seguridad](docs/SECURITY_POLICY.md) | Secretos, datos, controles y revisión antes de cada push |
@@ -62,15 +64,15 @@ ESPACIO-U/
 ├── app/                 # Modelos, servicios, solicitudes validadas, Gates y middleware
 ├── bootstrap/           # Arranque Laravel
 ├── config/              # Configuración sin secretos
-├── database/            # Quince migraciones, catálogo RBAC y factories sintéticas
+├── database/            # Veintiuna migraciones, catálogo RBAC y factories sintéticas
 ├── docs/                # Contratos y procedimiento de desarrollo
 ├── public/              # Punto de entrada; build generado e ignorado
 ├── resources/
 │   ├── css/app.css
 │   ├── js/app.js
-│   ├── js/Pages/{Auth,Users,Roles,Spaces,Reservations}/
+│   ├── js/Pages/{Auth,Users,Roles,Spaces,Reservations,Equipment,Loans,Incidents}/
 │   └── views/app.blade.php
-├── routes/              # Seguridad, espacios, reservas, disponibilidad y /up
+├── routes/              # Seguridad, espacios, reservas, equipamiento, préstamos, incidencias y /up
 ├── scripts/             # Entorno de terminal y ciclo de MySQL local
 ├── storage/             # Datos generados privados
 ├── tests/Feature/
@@ -80,7 +82,7 @@ ESPACIO-U/
 └── vite.config.js
 ```
 
-`.tools/`, `.local/`, `.env`, `vendor/`, `node_modules/`, logs y compilados permanecen locales e ignorados. `.env.example` contiene secretos vacíos. MySQL de desarrollo usa `espacio_u` en `127.0.0.1:3308`; 15 tablas académicas están materializadas (seis de seguridad, siete de espacios, una política estructural y reservas); las otras 16 siguen pendientes. `espacio_u_testing` tiene credenciales exclusivas en `.env.testing` local.
+`.tools/`, `.local/`, `.env`, `vendor/`, `node_modules/`, logs y compilados permanecen locales e ignorados. `.env.example` contiene secretos vacíos. MySQL de desarrollo usa `espacio_u` en `127.0.0.1:3308`; 21 tablas académicas están materializadas (15 de fases previas y seis de equipamiento/préstamos/incidencias); las otras diez siguen pendientes. `espacio_u_testing` tiene credenciales exclusivas en `.env.testing` local.
 
 ## Continuidad
 
@@ -88,4 +90,4 @@ Fases 0 y 0.5 conservan su cierre documental y sus 17 expedientes. D-15 queda at
 
 D-04 y D-07 están implementadas para el núcleo web: RBAC sin bypass, historia de asignaciones y control de sesiones por hash. [Detalles y límites](docs/SECURITY_IMPLEMENTATION.md). El ámbito fino por recurso, móvil/API, almacenamiento distribuido y CU30 permanecen diferidos.
 
-La Fase 4 aplica el contrato cerrado en Fase 3.5: solicitudes, consultas, resolución, cancelación y disponibilidad con APROBADA. D-05 permanece resuelta. [Evidencia de Fase 4](docs/RESERVATIONS_IMPLEMENTATION.md). Fase 4.5 atendió la revisión previa de Fase 5: D-02/D-11 cerradas, D-04/D-05 aplicadas sin reapertura. Quedan definidos receptor, entrega, devolución/revisión, incidencias, recuperación, permisos previstos y concurrencia. [Contrato y fuentes](docs/DECISIONS.md#contrato-de-equipamiento-y-préstamos--fase-45). Fase 5 (CU12–CU19) puede comenzar únicamente con una nueva instrucción; no se inició ese alcance ni se modificó código, esquema, permisos o disponibilidad funcional en Fase 4.5.
+La Fase 4 aplica el contrato cerrado en Fase 3.5: solicitudes, consultas, resolución, cancelación y disponibilidad con APROBADA. D-05 permanece resuelta. [Evidencia de Fase 4](docs/RESERVATIONS_IMPLEMENTATION.md). Fase 4.5 atendió la revisión previa de Fase 5: D-02/D-11 cerradas, D-04/D-05 aplicadas sin reapertura. Quedan definidos receptor, entrega, devolución/revisión, incidencias, recuperación, permisos previstos y concurrencia. [Contrato y fuentes](docs/DECISIONS.md#contrato-de-equipamiento-y-préstamos--fase-45). Fase 5 implementó el núcleo CU12–CU19 bajo la nueva instrucción, sin alterar esas decisiones. La siguiente fase recomendada es Fase 6 — Códigos QR y validaciones, empezando por cerrar D-09; requiere nueva instrucción y no se ha iniciado.
