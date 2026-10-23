@@ -1,6 +1,6 @@
 # Plan de implementación web
 
-Estado: **Fase 3 implementada y validada; Fase 3.5 cerrada documentalmente; Fases 4–14 no iniciadas**. Fases 0 y 0.5 conservaron su alcance documental; la nueva instrucción de Fase 1 autorizó la fundación técnica descrita en [DEVELOPMENT_SETUP.md](DEVELOPMENT_SETUP.md). No existe Flutter, Android ni cliente nativo en el plan de ejecución.
+Estado: **Fase 4 implementada y validada; Fases 5–14 no iniciadas**. Fases 0 y 0.5 conservaron su alcance documental; la nueva instrucción de Fase 1 autorizó la fundación técnica descrita en [DEVELOPMENT_SETUP.md](DEVELOPMENT_SETUP.md). No existe Flutter, Android ni cliente nativo en el plan de ejecución.
 
 ## Inventario histórico anterior a Fase 1 — 2026-10-23
 
@@ -84,6 +84,8 @@ Ese inventario corresponde a Fases 0/0.5, cuando no se instalaron dependencias n
 | Commit esperado | `feat: add academic spaces and availability` |
 
 ### Fase 4 — Reservas
+
+**Completada en el núcleo autorizado.** CU07–CU10 y disponibilidad operativa de CU06, con pruebas MySQL multiproceso y revisión manual. [Evidencia y límites](RESERVATIONS_IMPLEMENTATION.md).
 
 | Campo | Plan |
 | --- | --- |
@@ -262,7 +264,7 @@ D-13/D-14 no requieren desarrollar las funciones históricas/ilustrativas. Los e
 
 Evidencia de Fase 2: [SECURITY_IMPLEMENTATION.md](SECURITY_IMPLEMENTATION.md). Las pruebas no acreditan la bitácora pendiente ni amplían el alcance de Fase 3.
 
-## Cierre documental de Fase 3.5 y puerta de Fase 4
+## Cierre documental histórico de Fase 3.5 y puerta de Fase 4
 
 D-05 está **RESUELTA PARA FASE 4**: exclusividad solo de APROBADA, pendientes coexistentes, cuatro transiciones, cancelación estrictamente antes del inicio con motivo opcional, consulta/permisos y código estable definidos. El [Readiness for Phase 4](DECISIONS.md#readiness-for-phase-4) registra cero bloqueadores documentales para el núcleo.
 
@@ -271,3 +273,7 @@ Fase 4 podrá comenzar con una nueva instrucción. Deberá implementar y verific
 No se adelantan scheduler/cron de FINALIZADA, liberación automática, CU11/QR (6), IoT (7), CU23 (8), Blockchain (9), notificaciones (10) ni registros_actividad/CU30 (pendiente de autorización de alcance). Su ausencia no bloquea el núcleo acordado y sus obligaciones siguen visibles en trazabilidad. La entrega 3.5 modifica únicamente documentación; no crea la tabla reservas, permisos, servicios, pantallas ni tests funcionales de Fase 4.
 
 Validación documental de Fase 3.5: diez archivos Markdown, ningún archivo funcional modificado, veinte enlaces locales añadidos comprobados y diff sin errores de espacios. SQL de reservas equivalente entre Word/PDF; SHA-256 de ambos originales intacto. Escaneo privado de los 175 archivos públicos, diferencias e historial sin hallazgos de secretos; .env/.env.testing y runtime local siguen excluidos. No se ejecutaron nuevas pruebas funcionales ni migraciones: T-R01–17 permanecen como aceptación obligatoria de Fase 4.
+
+## Continuidad vigente después de Fase 4
+
+Siguiente alcance: Fase 5/CU12–CU19, previa nueva instrucción y revisión de D-02/D-04/D-05/D-11. No implementado. La puerta documental anterior fue satisfecha y ejecutada en Fase 4; se conserva como historial. [Cierre de reservas](RESERVATIONS_IMPLEMENTATION.md).

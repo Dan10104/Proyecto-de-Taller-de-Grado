@@ -1,5 +1,7 @@
 # Espacios académicos y disponibilidad base — Fase 3
 
+**Estado vigente de reservas: Fase 4 implementada.** Los cierres de Fases 2/3/3.5 conservan su contexto histórico. [Implementación y evidencia actual](RESERVATIONS_IMPLEMENTATION.md).
+
 Estado: **alcance de Fase 3 implementado y validado el 2026-10-23**. CU05 tiene su núcleo funcional; la integración de bitácora CU30 continúa diferida. CU06: **IMPLEMENTACIÓN PARCIAL — FASE 3**. No se inició Fase 4.
 
 ## Contrato contrastado
@@ -97,3 +99,7 @@ Las tres cuentas sintéticas de revisión quedaron INACTIVAS mediante Administra
 Bitácora CU30/registros_actividad, alcance fino por recurso, reservas/CU07–CU11, QR, IoT, equipamiento, préstamos, notificaciones y política funcional permanecen fuera de esta entrega. Fase 3.5 cerró documentalmente el ciclo oficial y D-05: [contrato de reservas](DECISIONS.md#contrato-de-reservas--cierre-d-05-de-fase-35). Fase 4 requiere nueva instrucción y deberá añadir APROBADAS solapadas al mismo SpaceAvailabilityService; CU07/CU09 reutilizarán su regla mediante revalidación transaccional y lecturas actuales bajo lock del espacio. PENDIENTE no bloquea; varias pendientes pueden coexistir. La evidencia de esta fase no acredita esas integraciones futuras.
 
 El cierre de Fase 3.5 no modifica el servicio ni los escritores de CU05. La disponibilidad actual sigue siendo parcial y no consulta reservas. El futuro protocolo conserva el orden de coordinación RBAC→espacio usado por SpaceManagementService y añade la reserva después del espacio en las transiciones; el detalle y pruebas están en D-05. No se repitió la validación funcional de Fase 3 para este cambio documental.
+
+## Actualización vigente de Fase 4
+
+La evidencia anterior describe el cierre histórico de Fase 3. CU06 ahora está **FUNCIONALMENTE COMPLETO PARA DISPONIBILIDAD OPERATIVA; ENRIQUECIMIENTO IoT DIFERIDO A FASE 7**: `SpaceAvailabilityService` incluye reservas APROBADAS y es compartido por CU06/CU07/CU09. La interfaz permite solicitar desde un resultado autorizado. Se conserva la regresión previa; las aserciones de ausencia de reservas se actualizan al alcance nuevo. [Evidencia de reservas, concurrencia y ensayo con 500 filas](RESERVATIONS_IMPLEMENTATION.md).

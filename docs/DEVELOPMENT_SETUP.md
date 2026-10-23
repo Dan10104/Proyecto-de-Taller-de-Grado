@@ -1,5 +1,7 @@
 # Entorno de desarrollo — Fases 1 y 2
 
+**Estado vigente de reservas: Fase 4 implementada.** Los cierres de Fases 2/3/3.5 conservan su contexto histórico. [Implementación y evidencia actual](RESERVATIONS_IMPLEMENTATION.md).
+
 Fecha de verificación: 2026-10-23. Único workspace: `C:\Users\BlackMaster69\Desktop\ESPACIO-U`, raíz de Visual Studio Code. La aplicación es una sola instalación convencional Laravel con Vue/Inertia; no existen proyectos backend/frontend separados.
 
 ## Versiones comprobadas
@@ -215,3 +217,11 @@ npm audit
 migrate agrega ocho tablas respetando FK; nunca usar fresh/reset/wipe en desarrollo. db:seed extiende el catálogo a 15 permisos sin sembrar inventario ni políticas. Las revocaciones existentes se conservan al repetirlo. Crear pisos/tipos/características y espacios desde la administración autorizada; cualquier demo debe identificarse como sintética. No asignar pisos reales sin respaldo institucional.
 
 Resultado integrado: 127 pruebas / 1395 aserciones (62 nuevas), sin fallos ni omitidas, sobre espacio_u_testing protegido; build y auditorías aprobados. Tres cuentas sintéticas adicionales de revisión se deshabilitaron y se revocaron sus sesiones; sus credenciales temporales se retiraron del .env privado. La demostración de espacio/catálogos y bloqueo desactivado conserva historia local. Los dos servicios MySQL existentes no se alteraron. La vista local y los procesos del proyecto se dejan activos para revisión; no iniciar otra copia del servidor si el puerto 8000 ya está atendido. [Evidencia y límites](SPACES_IMPLEMENTATION.md).
+
+## Actualización incremental a Fase 4
+
+Desde el workspace oficial con `dev-environment.ps1` activado y la instancia aislada disponible, ejecutar `php artisan migrate`, `php artisan db:seed` y `npm run build`. Esta fase añade una sola tabla: reservas; el seeder incorpora seis permisos y conserva revocaciones. No crea inventario ni reservas permanentes. Nunca usar fresh/reset/wipe en desarrollo ni modificar MySQL80/MySQL97.
+
+Validar con `php artisan test`, `php vendor/bin/pint --test`, `composer audit` y `npm audit`. La suite usa exclusivamente espacio_u_testing, en serie; las pruebas de concurrencia abren procesos independientes dentro de ese esquema con guardas. No usar `--parallel`. [Resultado final y procedimiento de concurrencia](RESERVATIONS_IMPLEMENTATION.md).
+
+Las tres cuentas temporales de revisión quedaron INACTIVAS y sus sesiones revocadas; las credenciales temporales se retiraron de .env. El historial sintético se conserva (cuatro reservas canceladas, una rechazada). No hay credenciales en la documentación, plantilla ni repositorio. La aplicación y los procesos locales permanecen activos, sin duplicar el servidor que atiende 127.0.0.1:8000.

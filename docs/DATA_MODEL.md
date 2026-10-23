@@ -1,5 +1,7 @@
 # Modelo de datos documentado
 
+**Estado vigente de reservas: Fase 4 implementada.** Los cierres de Fases 2/3/3.5 conservan su contexto histórico. [Implementación y evidencia actual](RESERVATIONS_IMPLEMENTATION.md).
+
 Estado: contrato documental congelado en Fase 0.5; **no es una migración ni un SQL para ejecutar**. Fuentes: figura 108 (clases), figura 109 (BD lógica), tablas 68–98 (mapeo), 99–129 (volúmenes/diccionario) y script del cap. VII, pp. 269–299 (PDF 270–300).
 
 El script declara el esquema `ficct_reservas_prestamos`, `utf8mb4`, colación `utf8mb4_unicode_ci` e InnoDB. Se identificaron **31 tablas, 211 columnas y 63 claves foráneas**. Las PK simples `id` son BIGINT UNSIGNED autoincrementales; los subtipos comparten `recurso_id` sin autoincremento y cuatro asociaciones tienen PK compuesta. No se añaden `created_at`, `updated_at`, borrado lógico ni tablas de un starter kit sin revisar compatibilidad.
@@ -917,3 +919,7 @@ Solo usuarios, roles, permisos, roles_permisos, asignaciones_roles y sesiones_ac
 Se añaden pisos, recursos_institucionales, tipos_espacio, caracteristicas_espacio, politicas_liberacion, espacios_academicos, espacios_caracteristicas y bloqueos_espacio: 37 columnas, ocho FK y cuatro CHECK. Total actual: 14 tablas académicas, 66 columnas, 15 FK y seis CHECK, más migrations técnica. Las 17 tablas restantes del diccionario no están materializadas.
 
 politicas_liberacion: **Tabla incorporada anticipadamente únicamente como dependencia estructural del FK de espacios académicos.** Estructura exacta sin CRUD, selección, seed ni evaluación funcional; Fase 8. espacio.recurso_id es PK/FK no autoincremental compartida con recurso, pivot tiene PK compuesta; no se añaden timestamps ni ubicaciones alternativas. SpaceSchemaTest verifica metadatos, defaults, unicidad, CHECK, acciones FK y rollback; el detalle está en [SPACES_IMPLEMENTATION.md](SPACES_IMPLEMENTATION.md).
+
+## Materialización física de Fase 4
+
+La migración `2026_10_23_000015_create_reservas_table.php` materializa el SQL de reservas contrastado: 15 columnas, PK, UNIQUE, cuatro FK, CHECK y tres índices oficiales. Se conservan tipos, nulabilidad, defaults y acciones referenciales. Ninguna migración anterior cambia. Total materializado: 15 tablas académicas; `migrations` es control técnico adicional. `ReservationSchemaTest` comprueba metadatos y restricciones reales. [Implementación](RESERVATIONS_IMPLEMENTATION.md#esquema-y-dominio).
