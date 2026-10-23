@@ -1,11 +1,11 @@
 # Reglas de negocio y controles verificables
 
-Estas reglas sintetizan el informe. Los identificadores BR son internos para organizar pruebas; no sustituyen los RF/CU. Los estados exactos están en [DOMAIN_MODEL.md](DOMAIN_MODEL.md). Las decisiones D pendientes están en [DECISIONS.md](DECISIONS.md).
+Estas reglas sintetizan el informe. Los identificadores BR son internos para organizar pruebas; no sustituyen los RF/CU. Los estados exactos están en [DOMAIN_MODEL.md](DOMAIN_MODEL.md). Las decisiones D clasificadas y sus detalles diferidos están en [DECISIONS.md](DECISIONS.md).
 
 | Regla | Tema | Fuente | Restricción | Prueba futura necesaria |
 | --- | --- | --- | --- | --- |
 | BR-01 | Acceso y revocación | RF1; CU01–02; RNF-10–15 | Cuenta activa, credenciales válidas, hash de contraseña y sesión vigente; invalidar sesión/token al salir. | Acceso válido; contraseña errónea; inactivo; expirado; petición posterior al logout denegada. |
-| BR-02 | Autorización por objeto | RF2–3; CU03–04; RNF-11/15 | Permiso en servidor, propiedad de solicitud y ámbito del responsable; ocultar botones no basta. D-03/D-04 pendientes. | Otro usuario no consulta ni modifica solicitudes ajenas; encargado no opera fuera de su ámbito. |
+| BR-02 | Autorización por objeto | RF2–3; CU03–04; RNF-11/15 | Permiso en servidor, propiedad de solicitud y ámbito del responsable; ocultar botones no basta. D-03 resuelta; mecanismo de ámbito D-04 diferido a Fases 2–5, con denegación si no puede acreditarse. | Otro usuario no consulta ni modifica solicitudes ajenas; encargado no opera fuera de su ámbito. |
 | BR-03 | Historia de roles | CU03–04; asignaciones_roles | Registrar asignador/retirador y fechas, conservar historia; desactivar cuenta sin borrar operaciones. | Retiro invalida acciones futuras; historia conserva responsables y fechas. |
 | BR-04 | Disponibilidad del espacio | RF4–6; CU05–07; DB-17 | Combinar estado, horario, reservas y bloqueos/mantenimiento; reconsultar al confirmar; ocupación IoT es evidencia complementaria. | Dos peticiones concurrentes incompatibles no confirman ambas; mantenimiento impide nueva operación. |
 | BR-05 | Resolución y cancelación | RF7; CU09–10 | Resolver solicitud autorizada una sola vez, verificar disponibilidad y registrar decisión/autor/fecha/motivo pertinente. Cancelar solo si estado, plazo y permiso lo permiten. D-05. | Doble resolución; cambio de recurso entre consulta/aprobación; cancelación fuera de plazo o ajena. |
@@ -30,8 +30,53 @@ Estas reglas sintetizan el informe. Los identificadores BR son internos para org
 | BR-24 | Lenguaje y zona horaria | IU-01/04/05/08/10; RD-24–29 | Web responsiva en español, formatos de Bolivia y estados comprensibles; presentar condiciones derivadas sin inventar enums. | Pantallas pequeñas/escritorio; fechas límite locales; errores de formulario comprensibles. |
 
 
-## Límites no especificados que no se deben inventar
+## Intervalos y disponibilidad (D-05: convención de implementación)
 
-El informe no fija todos los plazos de cancelación, estados que bloquean un intervalo, duración de sesión, límites de reintentos, catálogo de permisos, asignación de recursos al encargado, protocolo concreto de sensores, reglas completas QR/IoT ni formato canónico Blockchain. Tampoco prescribe un percentil de rendimiento. La implementación del punto dependiente se detiene hasta resolverlo con el informe y registrar la decisión. Las pruebas descritas son obligaciones futuras, no resultados ejecutados.
+Se adopta `[inicio, fin)`: inicio incluido, fin excluido, siempre `fin > inicio`. Dos intervalos A y B se solapan exactamente cuando `inicio_A < fin_B AND inicio_B < fin_A`. Aplicar la misma convención a reservas, bloqueos activos y los campos `inicio_previsto`/`fin_previsto` de préstamos. No añadir campos ni cambiar los CHECK del SQL.
 
-La interfaz puede mostrar disponibilidad/ocupación o vencimiento calculados. Esos resultados no reemplazan los estados persistidos. Las funciones de cierre/finalización deben respetar los valores existentes y tener disparador y autorización acordados.
+| Intervalo A | Intervalo B | Resultado |
+| --- | --- | --- |
+| 08:00–09:00 | 09:00–10:00 | No se solapan |
+| 08:00–09:00 | 08:30–09:30 | Se solapan |
+| 08:00–10:00 | 08:30–09:00 | Se solapan por contención |
+| 08:00–09:00 | 08:00–09:00 | Se solapan |
+| 09:00–09:00 | Cualquier intervalo | Inválido: duración cero |
+| 10:00–09:00 | Cualquier intervalo | Inválido: fin anterior |
+
+| Elemento | Condición que compromete disponibilidad | Interpretación |
+| --- | --- | --- |
+| Reserva | APROBADA del mismo espacio que solapa | Es la reserva activa comprometida; no añadir ACTIVA como enum. |
+| Solicitud de reserva | PENDIENTE | No concede exclusividad ni garantiza aprobación. Revalidar disponibilidad al registrar y resolver; solicitudes pendientes pueden competir por un intervalo aún no adjudicado. |
+| Reserva terminal | RECHAZADA, CANCELADA, LIBERADA, FINALIZADA | No bloquea el periodo; no suprimir otras restricciones del espacio. |
+| Bloqueo | activo=true y solapamiento | Impide disponibilidad del espacio durante el periodo aplicable. |
+| Estado de espacio | BLOQUEADO o EN_MANTENIMIENTO | Impide operación incompatible aunque el calendario no tenga reservas. DISPONIBLE exige además comprobar reservas/bloqueos. |
+| Préstamo | APROBADO o ENTREGADO con periodo previsto solapado | Compromete ese equipo; no aprobar dos préstamos incompatibles. |
+| Solicitud de préstamo | PENDIENTE | No concede exclusividad. La resolución vuelve a validar disponibilidad y estado operativo. |
+| Préstamo terminal | RECHAZADO o DEVUELTO | No bloquea por su periodo previsto; incidencias/mantenimiento pueden seguir bloqueando el equipo. |
+| Estado/custodia de equipo | PRESTADO, EN_MANTENIMIENTO, BAJA o restricción incompatible | Impide aprobar/entregar según DB-18 y CU. Pasar fin_previsto no devuelve físicamente el equipo ni lo cambia a DISPONIBLE. |
+
+La selección de estados que comprometen el periodo es una convención explícita de D-05, coherente con solicitud→resolución; no se presenta como frase literal del informe. Es obligatoria la revalidación transaccional y el control concurrente al adjudicar, entregar o liberar. El algoritmo de serialización se seleccionará y probará en su fase.
+
+Cancelar una reserva solo desde PENDIENTE o APROBADA, con iniciador de CU10, permiso/propiedad y plazo permitido. El motivo se exige cuando el flujo lo requiera; conservar la nulabilidad física. Los límites exactos de cancelación y el disparador autorizado de FINALIZADA se cerrarán antes de Fase 4; no inferirlos de la hora actual ni implementar cierre automático ahora.
+
+## Tiempo, identificadores y estados (D-01, D-02, D-16)
+
+Identificadores técnicos ASCII, sin tildes, snake_case cuando corresponda; `permisos.codigo` es el nombre resuelto. Textos humanos en español correcto. Los 19 ENUM y las condiciones derivadas están reconciliados en DOMAIN_MODEL; no añadir valores por palabras narrativas.
+
+Convención temporal del alcance institucional único: `America/La_Paz` para captura, presentación y persistencia operativa en los DATETIME existentes. Un instante externo con zona explícita se convierte a esta referencia antes de persistir/comparar; no mezclar horas UTC con horas locales sin conversión. Configurar aplicación/conexión coherentemente en Fase 1 y probar conversiones antes de IoT. No añadir columnas ni fijar aquí el formato canónico Blockchain: su representación exacta y la normalización de fechas se cerrarán antes de Fase 9 (D-12).
+
+## Contratos congelados de integraciones
+
+**QR (D-09).** El código identifica recurso u operación, no autentica. El servidor comprueba usuario autenticado, permisos, código, recurso esperado, operación/contexto, estado y fecha/horario aplicable. Respetar objetivo único del código y exclusividad reserva/préstamo por tipo de validación; enlaces a entrega/devolución según CHECK/UNIQUE. Código inválido no confirma uso/entrega/devolución. Emisión, vigencia exacta y correlación de reintentos se especificarán antes de Fase 6; no inventar un nuevo CRUD ni suponer un token de un solo uso.
+
+**IoT (D-10).** Detecta presencia/ocupación, nunca identidad. Sensor registrado, habilitado y asociado a espacio; preservar espacio histórico y fechas de evento/recepción. Falta de lectura reciente produce NO_DETERMINABLE calculado, sin agregar enum de espacio. El formato, unidades, transporte, autenticación y ventana concreta se cierran antes de Fase 7.
+
+**Liberación (D-08).** Evaluar reserva y política aplicables, tolerancia, validaciones QR, eventos IoT y condiciones configuradas; registrar evaluación y enlaces existentes. Información ausente, insuficiente o contradictoria no libera automáticamente; solo una política e informe que permitan inequívocamente la decisión pueden habilitarla. Evidencia de uso mantiene; ALERTA no libera; AUTOMATICA requiere todas las condiciones aplicables. No interpretar silencio del sensor como ausencia de personas. Combinaciones exactas, disparador y conservación de versión de política se cierran antes de Fase 8.
+
+**Blockchain (D-12).** Secuencia: operación crítica → registro principal confirmado en MySQL → selección de datos mínimos → representación canónica consistente → hash → evidencia local → envío externo → referencia externa. Fallo externo conserva la operación y evidencia PENDIENTE cuando corresponda; no rollback de la transacción principal. Nunca enviar nombres, correos, contraseñas, información personal completa ni datos operativos completos. La canonicalización deberá ser determinista, con orden de campos y formato de fechas estables, UTF-8, sin campos personales no permitidos y versionada por `version_canonica`. Su especificación exacta, algoritmo y proveedor se cierran antes de Fase 9; aquí no se elige silenciosamente JSON, una norma de canonicalización o un algoritmo hash concreto.
+
+## Límites diferidos y pruebas futuras
+
+Duración/mecanismo de sesión y catálogo de permisos/alcance: Fase 2. Plazos de cancelación y finalización: antes de Fase 4. Emisión/correlación QR: antes de Fase 6. Payload, transporte y frescura IoT: antes de Fase 7. Combinación de evidencias, disparador y versión de política: antes de Fase 8. Canonicalización exacta, proveedor y recuperación Blockchain: antes de Fase 9. Protocolos de medición/retención: fases de integración/operación según D-16. Las versiones de herramientas se seleccionan como primer trabajo de Fase 1 (D-15).
+
+Estos detalles no bloquean inicializar la base técnica, pero sí el punto de implementación que depende de ellos. Las pruebas de este documento son obligaciones futuras, no resultados ejecutados. El cierre de Fase 0.5 valida contratos documentales y no certifica comportamiento de software.

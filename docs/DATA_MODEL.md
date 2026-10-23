@@ -1,6 +1,6 @@
 # Modelo de datos documentado
 
-Estado: extracción y correspondencia del diseño oficial; **no es una migración ni un SQL corregido para ejecutar**. Fuentes: figura 108 (clases), figura 109 (BD lógica), tablas 68–98 (mapeo), 99–129 (volúmenes/diccionario) y script del cap. VII, pp. 269–299 (PDF 270–300).
+Estado: contrato documental congelado en Fase 0.5; **no es una migración ni un SQL para ejecutar**. Fuentes: figura 108 (clases), figura 109 (BD lógica), tablas 68–98 (mapeo), 99–129 (volúmenes/diccionario) y script del cap. VII, pp. 269–299 (PDF 270–300).
 
 El script declara el esquema `ficct_reservas_prestamos`, `utf8mb4`, colación `utf8mb4_unicode_ci` e InnoDB. Se identificaron **31 tablas, 211 columnas y 63 claves foráneas**. Las PK simples `id` son BIGINT UNSIGNED autoincrementales; los subtipos comparten `recurso_id` sin autoincremento y cuatro asociaciones tienen PK compuesta. No se añaden `created_at`, `updated_at`, borrado lógico ni tablas de un starter kit sin revisar compatibilidad.
 
@@ -12,9 +12,9 @@ Los CU se vinculan por lectura/escritura directa de los flujos; es trazabilidad 
 | --- | --- | --- | --- | --- |
 | Usuario | `usuarios` | `id` | Correo único; contraseña como hash; desactivar conservando historia. | CU01, CU02, CU03, CU04 |
 | Rol | `roles` | `id` | Nombre único; no confundir rol con permiso ni con el ámbito de recursos. | CU01, CU03, CU04 |
-| Permiso | `permisos` | `id` | Código único pretendido; discrepancia código/codigo bloquea su migración (D-01). | CU01, CU04 |
+| Permiso | `permisos` | `id` | Identificador técnico `codigo`, único; corrección ASCII resuelta en D-01. | CU01, CU04 |
 | Asociación Rol–Permiso | `roles_permisos` | `rol_id, permiso_id` | PK compuesta evita repetir la misma asociación rol–permiso. | CU01, CU04 |
-| AsignacionRol | `asignaciones_roles` | `id` | Conservar usuario, rol, asignador, fechas y retirador opcional; aclarar duplicados activos. | CU01, CU03, CU04 |
+| AsignacionRol | `asignaciones_roles` | `id` | Conservar usuario, rol, asignador, fechas y retirador opcional; evaluar roles/permisos como conjuntos sin agregar UNIQUE a la historia (D-17). | CU01, CU03, CU04 |
 | SesionAcceso | `sesiones_acceso` | `id` | Token hash único; expiración posterior a creación; revocación conserva historia. | CU01, CU02 |
 | Piso | `pisos` | `id` | Número único; cada espacio apunta a un piso. | CU05, CU06 |
 | RecursoInstitucional (abstracto) | `recursos_institucionales` | `id` | Código único compartido por espacios y equipamiento; superclase abstracta del diseño. | CU05, CU12, CU19, CU11, CU20 |
@@ -44,7 +44,7 @@ Los CU se vinculan por lectura/escritura directa de los flujos; es trazabilidad 
 
 ## Claves, cardinalidades y diccionario
 
-Cada FK de abajo indica: **fila hija → padre** y **padre → filas hijas**. NULL permite 0..1 padre; NOT NULL exige 1. En el extremo padre, la FK no obliga a que exista una fila hija. UNIQUE de una FK o una PK compartida limita el extremo hijo a 0..1; en otro caso es 0..*. Las tablas puente expresan M:N mediante dos relaciones 1:N. Todas las FK documentadas utilizan ON UPDATE CASCADE; se detalla ON DELETE por relación. Los CHECK y UNIQUE se transcriben sin corrección, incluido el defecto D-01.
+Cada FK de abajo indica: **fila hija → padre** y **padre → filas hijas**. NULL permite 0..1 padre; NOT NULL exige 1. En el extremo padre, la FK no obliga a que exista una fila hija. UNIQUE de una FK o una PK compartida limita el extremo hijo a 0..1; en otro caso es 0..*. Las tablas puente expresan M:N mediante dos relaciones 1:N. Todas las FK documentadas utilizan ON UPDATE CASCADE; se detalla ON DELETE por relación. Se conservan tipos, PK, FK, NULL, defaults, CHECK, UNIQUE e índices. Única normalización del contrato técnico: `permisos.codigo` (D-01). El SQL fuente declara originalmente `código` y su UNIQUE referencia `codigo`; se documenta el conflicto sin modificar los originales. Todos los identificadores de implementación serán ASCII, sin tildes y snake_case cuando corresponda.
 
 ### usuarios
 
@@ -86,12 +86,12 @@ Restricciones e índices documentados:
 
 ### permisos
 
-Concepto: **Permiso**. Fuentes: tablas 70 y 101; script `permisos`. Regla: Código único pretendido; discrepancia código/codigo bloquea su migración (D-01).
+Concepto: **Permiso**. Fuentes: tablas 70 y 101; script `permisos`. Regla: Identificador técnico `codigo`, único; corrección ASCII resuelta en D-01.
 
 | Columna | Tipo, nulabilidad y valor por defecto documentados |
 | --- | --- |
 | `id` | `BIGINT UNSIGNED NOT NULL AUTO_INCREMENT` |
-| `código` | `VARCHAR(100) NOT NULL` |
+| `codigo` | `VARCHAR(100) NOT NULL` |
 | `nombre` | `VARCHAR(120) NOT NULL` |
 | `descripcion` | `VARCHAR(255) NULL` |
 
@@ -122,7 +122,7 @@ Restricciones e índices documentados:
 
 ### asignaciones_roles
 
-Concepto: **AsignacionRol**. Fuentes: tablas 72 y 103; script `asignaciones_roles`. Regla: Conservar usuario, rol, asignador, fechas y retirador opcional; aclarar duplicados activos.
+Concepto: **AsignacionRol**. Fuentes: tablas 72 y 103; script `asignaciones_roles`. Regla: Conservar usuario, rol, asignador, fechas y retirador opcional; evaluar roles/permisos como conjuntos sin agregar UNIQUE a la historia (D-17).
 
 | Columna | Tipo, nulabilidad y valor por defecto documentados |
 | --- | --- |
@@ -834,13 +834,41 @@ Restricciones e índices documentados:
 - Un sensor mantiene su espacio actual; cada evento guarda su espacio histórico. Reasignar el sensor no debe mover los eventos antiguos a otro espacio.
 - Cada evaluación enlaza la política, reserva, eventos y validaciones utilizados; no concluir que esos enlaces congelan por sí solos una política mutable (D-08).
 - `registros_actividad` admite actor humano o proceso responsable; las operaciones automáticas no requieren un usuario ficticio. DB-22 enuncia usuario responsable de forma general; el SQL y CU automáticos concretan la responsabilidad del proceso.
-- La evidencia referencia un registro de actividad único; la notificación exige actividad y destinatario. La figura conceptual 19 muestra cardinalidades diferentes: D-06 debe resolverse antes de consolidar migraciones de esas relaciones.
+- La evidencia referencia un registro de actividad único; la notificación exige actividad y destinatario. La figura conceptual 19 muestra cardinalidades diferentes: D-06 queda resuelta por el SQL final según la matriz siguiente.
 - ON DELETE CASCADE está documentado en subtipos, algunas asociaciones y entrega/devolución. DB-21 exige preservar historia: la aplicación debe impedir borrados de operaciones históricas. No confiar solo en las FK ni cambiar las cascadas sin documentar la decisión.
-- Los índices de intervalos aceleran consultas pero no prohíben solapamientos. La regla DB-17 exige validación transaccional y pruebas concurrentes. El conjunto de estados conflictivos y la frontera entre intervalos son D-05.
-- DB-16 permite describir fin no anterior al inicio; los CHECK de reservas, préstamos y bloqueos son más estrictos (`fin > inicio`). Conservar la restricción concreta y registrar D-05; no admitir intervalos de duración cero por una lectura aislada del texto.
+- Los índices de intervalos aceleran consultas pero no prohíben solapamientos. La regla DB-17 exige validación transaccional y pruebas concurrentes. D-05 fija [inicio, fin), APROBADA para reservas y APROBADO/ENTREGADO para periodos de préstamos; el estado operativo y la custodia también restringen disponibilidad.
+- DB-16 permite describir fin no anterior al inicio; los CHECK de reservas, préstamos y bloqueos son más estrictos (`fin > inicio`). Conservar la restricción concreta según D-05; no admitir intervalos de duración cero por una lectura aislada del texto.
 
 ## Volúmenes y aceptación futura
 
 La sección titulada “Volúmenes” describe atributos, tipos y restricciones, no una estimación completa de bytes/retención. La carga mínima se toma de R-CC-03: 2.000 usuarios, 100 espacios, 2.000 equipos, 20.000 reservas y 20.000 préstamos. R-ESC-03 exige poder duplicarla sin cambiar relaciones. El volumen de eventos depende de sensores y frecuencia; no inventar una tasa de retención. Todos los datos de prueba serán sintéticos.
 
-Validar posteriormente cada PK/FK, UNIQUE, CHECK, enum, nullable y default contra MySQL real; probar borrados históricos rechazados, fechas inválidas, asociaciones inexistentes, una sola entrega/devolución, objetivo único de QR, espacio histórico y recuperabilidad. No usar SQLite como sustituto de esa validación. D-01 debe resolverse antes de ejecutar cualquier migración de permisos. El mapeo entre `sesiones_acceso` y el mecanismo de sesión elegido requiere D-07.
+Validar posteriormente cada PK/FK, UNIQUE, CHECK, enum, nullable y default contra MySQL real; probar borrados históricos rechazados, fechas inválidas, asociaciones inexistentes, una sola entrega/devolución, objetivo único de QR, espacio histórico y recuperabilidad. No usar SQLite como sustituto de esa validación. D-01 está resuelta: cualquier futura migración usará `permisos.codigo`. El mapeo entre `sesiones_acceso` y el mecanismo de sesión elegido requiere D-07.
+
+## Reconciliación de cardinalidades (D-06 resuelta)
+
+Fuentes: figura 19 (dominio, p. 109), figura 108 (clases, p. 248), figura 109 (BD, p. 249), mapeo/volúmenes y SQL del cap. VII. Las dos primeras filas documentan divergencias conceptuales confirmadas. Las demás explicitan opcionalidad y restricciones que no deben deducirse de una asociación conceptual aislada. En la columna de diseño se expresa la cardinalidad implementable del diseño final contrastada con SQL; no se atribuyen al dibujo CHECK que solo aparecen en SQL. El diccionario precedente mantiene las 63 FK y sus acciones completas.
+
+| Relación | Cardinalidad conceptual | Cardinalidad del diseño | FK correspondiente | Nullable | Decisión de implementación |
+| --- | --- | --- | --- | --- | --- |
+| RegistroActividad → EvidenciaTrazabilidad | Figura 19: 1 actividad → 0..* evidencias | Clases/final: 1 actividad → 0..1 evidencia; cada evidencia → 1 actividad | evidencias_trazabilidad.registro_actividad_id | NO; UNIQUE | Una evidencia local por actividad. Reintentar su envío no crea nuevas evidencias de esa actividad. |
+| RegistroActividad → Notificacion | Figura 19: una notificación puede referirse a 0..1 actividad | Final: notificación → 1 actividad; actividad → 0..* notificaciones | notificaciones.registro_actividad_id | NO | La relación es obligatoria al persistir; no crear avisos desligados de actividad. |
+| Usuario → Notificacion | Destinatario de avisos; asociación de dominio | Notificación → 1 destinatario; usuario → 0..* avisos | notificaciones.destinatario_id | NO | No significa que cada usuario deba tener un aviso; autorización por destinatario. |
+| Espacio → SensorIoT | Sensores asociados a espacio; DB-06 menciona uno o varios | Sensor → 1 espacio actual; espacio → 0..* sensores | sensores_iot.espacio_actual_id | NO | DB-06 se aplica a espacios del piloto monitorizados; no obliga a todo espacio a tener sensor. |
+| EventoOcupacion → sensor/espacio histórico | Evento producido por sensor en espacio | Cada evento → 1 sensor y 1 espacio histórico; ambos padres → 0..* eventos | eventos_ocupacion.sensor_id; espacio_historico_id | NO en ambas | Conservar asociación histórica aunque el sensor cambie de espacio. |
+| Reserva → espacio/usuarios | Solicitud sobre un espacio, solicitante y responsables del proceso | Reserva → 1 espacio y 1 solicitante; 0..1 resolvedor y 0..1 cancelador | reservas.espacio_id; solicitante_id; resuelta_por_id; cancelada_por_id | NO en espacio/solicitante; SÍ en responsables posteriores | Ausencia de decisión/cancelación no exige usuarios ficticios ni una tabla de asignación. |
+| Prestamo → equipo/usuarios | Solicitud sobre equipo, solicitante y resolución | Préstamo → 1 equipo y 1 solicitante; 0..1 resolvedor | prestamos.equipamiento_id; solicitante_id; resuelto_por_id | NO en equipo/solicitante; SÍ en resolvedor | Mantener asociación directa; no inventar una asignación general de recursos. |
+| Equipamiento → espacio base | Ubicación base opcional | Equipo → 0..1 espacio; espacio → 0..* equipos | equipamientos_tecnologicos.espacio_base_id | SÍ | Ubicación base no equivale a custodia, reserva ni ámbito del encargado. |
+| Espacio/Evaluacion → PoliticaLiberacion | Política asociada a espacio y aplicada a evaluación | Espacio → 0..1 política; evaluación → 1 política; política → 0..* espacios/evaluaciones | espacios_academicos.politica_liberacion_id; evaluaciones_liberacion.politica_id | SÍ en espacio; NO en evaluación | No añadir FK reserva→política; evaluación conserva el vínculo existente. Versionado histórico se concreta en D-08. |
+| Prestamo → entrega/devolución | Hitos de entrega y retorno | Préstamo → 0..1 entrega y 0..1 devolución; cada hito → 1 préstamo | entregas_prestamo.prestamo_id; devoluciones_prestamo.prestamo_id | NO; UNIQUE en cada tabla | Preservar unicidad y CASCADE documentado; la aplicación impide borrar historia. |
+| ValidacionQR → código/recurso esperado | Validación de código dentro de contexto de recurso | Validación → 0..1 código reconocido y 1 recurso esperado | validaciones_qr.codigo_qr_id; recurso_esperado_id | SÍ en código; NO en recurso | Token desconocido permite código NULL, pero no una validación sin recurso/contexto. |
+| ValidacionQR → reserva/préstamo | Contexto según uso de espacio u operación de equipo | USO_ESPACIO exige 1 reserva y 0 préstamos; ENTREGA/DEVOLUCION exige 1 préstamo y 0 reservas | validaciones_qr.reserva_id; prestamo_id | Ambas SÍ individualmente; CHECK restringe combinación | Aplicar exclusividad por tipo; nullable individual no permite ambos vacíos ni ambos presentes. |
+| ValidacionQR → entrega/devolución | Vínculo a confirmación del proceso | Cada validación → 0..1 entrega o 0..1 devolución; cada hito → 0..1 validación enlazada | validaciones_qr.entrega_id; devolucion_id | SÍ; UNIQUE en ambas | USO_ESPACIO no enlaza hitos; ENTREGA no enlaza devolución y viceversa. El vínculo de su tipo es opcional; correlación de intentos se cierra en D-09. |
+| CodigoQR → objetivo | Identificación de recurso u operación | Exactamente 1 entre recurso, reserva o préstamo | codigos_qr.recurso_id; reserva_id; prestamo_id | SÍ individualmente; CHECK exige exactamente uno | No confundir objetivo del código con contexto de validación. No añadir objetivo directo entrega/devolución. |
+| Usuario ↔ Rol | M:N con historia de asignación | Asignación → 1 usuario, 1 rol y 1 asignador; 0..1 retirador | asignaciones_roles.usuario_id; rol_id; asignado_por_id; retirado_por_id | Solo retirado_por_id SÍ | Conservar entidad histórica; sin nueva UNIQUE usuario/rol. Duplicados no multiplican privilegios (D-17). |
+| Rol ↔ Permiso; Espacio ↔ Caracteristica | M:N | Dos relaciones 1:N por cada tabla puente; PK compuesta | roles_permisos.rol_id/permiso_id; espacios_caracteristicas.espacio_id/caracteristica_id | NO | Conservar ambas tablas intermedias, sin sustituirlas por campos JSON. |
+| Evaluacion ↔ Evento; Evaluacion ↔ Validacion | Evidencias utilizadas en evaluación | M:N mediante dos tablas puente con PK compuesta | evaluaciones_eventos_ocupacion.evaluacion_id/evento_id; evaluaciones_validaciones_qr.evaluacion_id/validacion_id | NO | Conservar todas las evidencias vinculadas; la existencia de pivotes no implica que siempre haya una fila de cada tipo. |
+| RegistroActividad → responsable | Responsabilidad humana o de proceso | Actor humano 0..1; CHECK exige actor o proceso, admite ambos | registros_actividad.actor_id; proceso_responsable no es FK | SÍ en ambos; CHECK al menos uno | No exigir usuario ficticio a automatismos ni convertir el CHECK en XOR. |
+| RecursoInstitucional → subtipos | Superclase abstracta de EspacioAcademico y EquipamientoTecnologico | Subtipo → 1 recurso; recurso → 0..1 fila por cada tabla subtipo | espacios_academicos.recurso_id; equipamientos_tecnologicos.recurso_id | NO; PK compartida | SQL no asegura totalidad/disyunción entre tablas. Servidor crea coherentemente recurso y subtipo en transacción; no añadir discriminador ni nuevas FK. |
+
+La clase expresa el dominio; las FK, nulabilidad y restricciones expresan la persistencia. Esta reconciliación no añade relaciones, columnas, índices ni entidades. No se cambia el contrato por preferencias del ORM. D-17 cubre las guardas del servidor que complementan, sin sustituir, las restricciones del SQL.

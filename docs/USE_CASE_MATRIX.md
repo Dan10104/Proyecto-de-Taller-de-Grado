@@ -2,7 +2,7 @@
 
 Cobertura: 30/30 casos de uso del cap. V, tablas 38–67; prioridad según tabla 37. Cada ficha reúne iniciador, actores, precondición, flujo, alternativas, excepciones, resultado, RF, entidades/tablas, paquete/fase y pruebas. La asignación RF→CU→tabla→fase es trazabilidad analítica basada en los flujos y diagramas; no crea nuevas funciones.
 
-**Alcance web:** las menciones a aplicación móvil en el texto fuente describen el sistema global. En estas fases se implementará la variante web y el soporte de servidor aplicable, sin Flutter/Android. “Activo”, “finalizado”, “vencido” o “cancelado” en la prosa del préstamo no se traducen automáticamente a un enum; consultar D-02. Todas las pruebas indicadas están pendientes de implementación.
+**Alcance web:** las menciones a aplicación móvil en el texto fuente describen el sistema global. En estas fases se implementará la variante web y el soporte de servidor aplicable, sin Flutter/Android. “Activo”, “finalizado”, “vencido” o “cancelado” en la prosa del préstamo no se traducen automáticamente a un enum; aplicar la reconciliación D-02 resuelta en DOMAIN_MODEL. Todas las pruebas indicadas están pendientes de implementación.
 
 ## Índice
 
@@ -651,4 +651,70 @@ Fuente: tabla 67; p. 217 (PDF 218); figura 58; análisis figura 104.
 
 Todos los CU humanos requieren las verificaciones de identidad/permiso que indiquen sus precondiciones; Usuario/Rol/Permiso/SesionAcceso no se repiten como escritura directa en cada ficha. CU27/CU28 consultan las fuentes operativas pertinentes; no necesitan tablas de indicadores inventadas. Notificaciones y evidencia se vinculan por RegistroActividad, no mediante FK nuevas en cada reserva/préstamo. Las pruebas negativas deben comprobar tanto el resultado devuelto como que no se produjo una mutación no autorizada.
 
-D-03 conserva las diferencias entre actores RF y CU; D-04 impide inventar la asignación de recursos al encargado. CU23 no tiene actor humano directo; CU24 se inicia por una operación confirmada. CU26 describe consulta/lectura, mientras RF21 también prescribe generación automática posterior al evento. Son responsabilidades complementarias.
+D-03 resuelve las diferencias entre actores RF y CU mediante la tabla siguiente; D-04 difiere el mecanismo de alcance del encargado sin autorizar una nueva entidad de asignación. CU23 no tiene actor humano directo; CU24 se inicia por una operación confirmada. CU26 describe consulta/lectura, mientras RF21 también prescribe generación automática posterior al evento. Son responsabilidades complementarias.
+
+## Reconciliación de actores RF/CU (D-03 resuelta)
+
+Fuentes contrastadas: tabla 36 (RF) y tablas 38–67 (detalle CU). La lista Usuarios del RF expresa también participación, recepción de información o involucramiento. Para ejecutar una acción se exige el iniciador y flujo del CU, permisos efectivos, RBAC, propiedad/ámbito y guardas del proceso, verificados en servidor. Esta tabla resuelve diferencias sin inventar nuevos permisos ni un catálogo de códigos: ese catálogo y el mecanismo de alcance se concretan en Fase 2 (D-04). Ante duda se deniega lo no demostrado. Un usuario con varios roles puede operar por un rol admitido y su permiso; poseer además otro rol no lo excluye.
+
+| CU / RF contrastados | Usuarios del RF (texto fuente) | Iniciador del CU (texto fuente) | Interpretación de ejecución |
+| --- | --- | --- | --- |
+| CU01 / RF1 | RF1: Administrador, Encargado de laboratorio, Docente y Estudiante. | Usuario registrado. | Cuenta registrada activa y credenciales válidas; solo se habilitan sus permisos efectivos. |
+| CU02 / RF1 | RF1: Administrador, Encargado de laboratorio, Docente y Estudiante. | Usuario autenticado. | Usuario autenticado sobre su propia sesión. Cierre confirmado invalida sesión/token; caída de red no prueba revocación remota (D-07). |
+| CU03 / RF2 | RF2: Administrador. | Administrador. | Administrador con permiso de gestión de usuarios; no trasladar esa facultad al usuario gestionado. |
+| CU04 / RF3 | RF3: Administrador. | Administrador. | Administrador con permiso de roles/permisos; no autoasignación por participar como usuario. |
+| CU05 / RF4 | RF4: Administrador y Encargado de laboratorio. | Administrador o Encargado de Laboratorio autorizado. | Administrador o Encargado de Laboratorio autorizado; este último dentro de su ámbito verificable (D-04). |
+| CU06 / RF5 | RF5: Administrador, Encargado de laboratorio, Docente y Estudiante. | Usuario autenticado. | Los cuatro roles humanos pueden consultar con permiso y alcance; consultar no concede crear o resolver. |
+| CU07 / RF6 | RF6: Docente, Estudiante, Administrador y Encargado de laboratorio, según permisos. | Docente o Estudiante autorizado. | Docente o Estudiante con permiso y cuenta activa. Administrador/Encargado mencionados en RF6 no reciben por ese solo rol facultad de solicitar en CU07. |
+| CU08 / RF6, RF7 | RF6: Docente, Estudiante, Administrador y Encargado de laboratorio, según permisos.; RF7: Administrador, Encargado de laboratorio, Docente y Estudiante, según la operación permitida. | Usuario autenticado. | Consulta propia del solicitante o supervisión autorizada del Administrador/Encargado; filtrar por propiedad/ámbito. |
+| CU09 / RF7 | RF7: Administrador, Encargado de laboratorio, Docente y Estudiante, según la operación permitida. | Administrador o Encargado de Laboratorio autorizado. | Administrador o Encargado autorizado resuelve; Docente/Estudiante de RF7 participan como solicitantes, no aprobadores. |
+| CU10 / RF7 | RF7: Administrador, Encargado de laboratorio, Docente y Estudiante, según la operación permitida. | Usuario autorizado para cancelar la reserva. | Titular de la reserva o responsable con permiso administrativo según CU10 (sus actores incluyen los cuatro roles); comprobar permiso, propiedad/ámbito, estado y plazo. No limitar ese permiso por una etiqueta de rol ni conceder cancelación ajena por la lista de RF7. |
+| CU11 / RF8 | RF8: Docente, Estudiante, Administrador y Encargado de laboratorio. | Usuario autorizado que realiza el escaneo. | Los cuatro roles solo con autorización para el recurso/reserva/contexto y horario; escanear no autentica ni concede permisos. |
+| CU12 / RF9 | RF9: Administrador y Encargado de laboratorio. | Administrador o Encargado de Laboratorio autorizado. | Administrador o Encargado autorizado gestiona inventario dentro de su ámbito; no ampliar desde las consultas. |
+| CU13 / RF10 | RF10: Administrador, Encargado de laboratorio, Docente y Estudiante. | Usuario autenticado. | Los cuatro roles consultan con permiso y alcance. La disponibilidad mostrada no autoriza resolución ni entrega. |
+| CU14 / RF11 | RF11: Docente, Estudiante, Administrador y Encargado de laboratorio, según permisos. | Docente o Estudiante autorizado. | Docente o Estudiante inicia con permiso. Administrador/Encargado mencionados por RF11 no obtienen por ese solo rol iniciación de CU14. |
+| CU15 / RF11, RF12, RF13, RF14 | RF11: Docente, Estudiante, Administrador y Encargado de laboratorio, según permisos.; RF12: Administrador, Encargado de laboratorio, Docente y Estudiante como solicitantes.; RF13: Encargado de laboratorio, Administrador y usuario receptor del préstamo.; RF14: Encargado de laboratorio, Administrador y usuario que devuelve el equipamiento. | Usuario autenticado. | Solicitante consulta lo propio; Administrador/Encargado supervisa lo autorizado. RF12–14 no otorgan aprobación/entrega/devolución a quien solo consulta. |
+| CU16 / RF12 | RF12: Administrador, Encargado de laboratorio, Docente y Estudiante como solicitantes. | Administrador o Encargado de Laboratorio autorizado. | Administrador o Encargado autorizado resuelve. Docente/Estudiante de RF12 es solicitante/participante, no resolvedor. |
+| CU17 / RF13 | RF13: Encargado de laboratorio, Administrador y usuario receptor del préstamo. | Administrador o Encargado de Laboratorio autorizado. | Administrador o Encargado autorizado registra entrega; receptor participa en identificación/recepción, sin obtener el permiso de ejecutar CU17. |
+| CU18 / RF14 | RF14: Encargado de laboratorio, Administrador y usuario que devuelve el equipamiento. | Administrador o Encargado de Laboratorio autorizado. | Administrador o Encargado autorizado registra devolución; quien devuelve participa, sin obtener permiso de confirmación administrativa. |
+| CU19 / RF15 | RF15: Administrador y Encargado de laboratorio. | Administrador o Encargado de Laboratorio autorizado; también puede activarse como extensión de CU18 cuando se detecta una anomalía durante la devolución. | Administrador o Encargado autorizado; también invocación condicional desde CU18. No conceder a todos los receptores capacidad de cerrar incidencias. |
+| CU20 / RF13, RF14 | RF13: Encargado de laboratorio, Administrador y usuario receptor del préstamo.; RF14: Encargado de laboratorio, Administrador y usuario que devuelve el equipamiento. | Administrador o Encargado de Laboratorio durante CU17 Registrar entrega o CU18 Registrar devolución. | Administrador o Encargado autorizado en CU17/CU18; el poseedor del QR no sustituye al responsable. Mantener guarda de operación. |
+| CU21 / RF16 | RF16: Administrador y Encargado de laboratorio autorizado. | Administrador o Encargado de Laboratorio autorizado. | Administrador o Encargado autorizado registra/configura sensores; un dispositivo no administra su propio alta/habilitación. |
+| CU22 / RF17 | RF17: Sistema, Administrador y Encargado de laboratorio. | Dispositivo IoT registrado y habilitado. | Dispositivo IoT inicia el envío autenticado; Administrador/Encargado observa según permisos. La lista humana de RF17 no habilita suplantar eventos. |
+| CU23 / RF18 | RF18: Sistema, Administrador, Encargado de laboratorio y usuario titular de la reserva. | CU22 Monitorear ocupación de espacios académicos, cuando se cumplen las condiciones temporales y operativas definidas por la política. | Proceso del sistema como extensión condicional de CU22; sin actor humano directo. El titular involucrado por RF18 no ejecuta liberación manual inferida. |
+| CU24 / RF19 | RF19: Sistema y Administrador. | Caso de uso base CU09, CU10, CU17 o CU18 al finalizar correctamente una operación configurada como crítica. | Proceso posterior a operación crítica confirmada de los CU base documentados (CU09, CU10, CU17, CU18); Blockchain colabora. Administrador en RF19 no crea evidencias arbitrarias. |
+| CU25 / RF20 | RF20: Administrador y usuario autorizado para auditoría o supervisión. | Administrador. | Administrador autorizado solicita verificación; Blockchain responde. Otros usuarios relacionados por RF20 no obtienen consulta de auditoría global. |
+| CU26 / RF21 | RF21: Administrador, Encargado de laboratorio, Docente y Estudiante. | Administrador, Encargado de Laboratorio, Docente o Estudiante autenticado. | Los cuatro roles consultan/marcan sus propios avisos. RF21 agrega generación automática posterior a eventos; no autoriza enviar mensajes arbitrarios. |
+| CU27 / RF22 | RF22: Administrador, Encargado de laboratorio, Docente y Estudiante, según permisos. | Usuario autenticado. | Los cuatro roles acceden únicamente a indicadores permitidos por sus roles y ámbito; no ven todos los datos por compartir el CU. |
+| CU28 / RF23 | RF23: Administrador y Encargado de laboratorio; otros usuarios únicamente para reportes expresamente habilitados. | Administrador o Encargado de Laboratorio autorizado. | Administrador o Encargado autorizado genera/exporta; Docente/Estudiante de RF23 no recibe ese permiso por la lista de participantes. |
+| CU29 / RF24 | RF24: Administrador, Encargado de laboratorio, Docente y Estudiante. | Usuario autenticado. | Usuario autenticado consulta orientación; proveedor responde bajo contexto permitido. Ninguno ejecuta acciones protegidas a través del chatbot. |
+| CU30 / RF25 | RF25: Sistema y Administrador; otros usuarios autorizados podrán consultar únicamente los registros permitidos. | Administrador. | Administrador autorizado consulta bitácora. RF25 describe generación transversal por el sistema y usuarios involucrados, no acceso global de todos a la bitácora. |
+
+## CU17: contrato de entrega congelado (D-11)
+
+Prevalecen la tabla 54 (p. 198 / PDF 199), su precondición/flujo textual y los estados físicos sobre la conexión contradictoria de la figura 23. No seguir la flecha que permitiría confirmar con identificación inválida. La secuencia conceptual aplicable es:
+
+1. Existe préstamo APROBADO pendiente de entrega.
+2. El responsable autorizado accede al préstamo dentro de su ámbito.
+3. El sistema muestra equipamiento y receptor esperado.
+4. El responsable verifica físicamente el equipo y la identidad del receptor.
+5. Si la política exige QR, se ejecuta CU20 en contexto ENTREGA.
+6. Un QR inválido bloquea la confirmación; tampoco se confirma si falla identidad, recurso o permiso.
+7. El responsable confirma el equipamiento, revalidando estado y disponibilidad en servidor.
+8. Se registra la entrega con fecha/hora, receptor y responsable; unicidad por préstamo.
+9. El equipamiento cambia a PRESTADO.
+10. El préstamo cambia a ENTREGADO, equivalente persistido de “entregado o activo”. Los pasos 8–10 son una sola operación atómica.
+11. Tras confirmar la operación principal, puede generarse evidencia si la operación es crítica según CU24; fallo externo no revierte la entrega.
+12. Se muestra confirmación coherente con el resultado persistido.
+
+Pruebas futuras: préstamo no aprobado, equipo/receptor incorrecto, QR obligatorio inválido, doble entrega y concurrencia deben dejar sin confirmación parcial. La rama que requiere QR no se declara aceptada hasta integrar Fase 6.
+
+## Postcondiciones narrativas de préstamos (D-02)
+
+| CU | Redacción documental conservada en la ficha | Contrato de implementación |
+| --- | --- | --- |
+| CU17 | Entregado/activo | Prestamo ENTREGADO y equipamiento PRESTADO tras entrega confirmada. |
+| CU18 | Finalizado/cancelado en la prosa de cierre | Prestamo DEVUELTO solo tras devolución confirmada. No crear CANCELADO, FINALIZADO ni ACTIVO; no inventar un proceso de cancelación de préstamo. |
+| CU18, condición incierta | Condición no determinable y revisión | Devolución NO_DETERMINABLE y PENDIENTE_REVISION; sin cierre definitivo del préstamo ni disponibilidad automática. |
+
+Las fichas conservan la fuente y sus excepciones para trazabilidad; esta interpretación determina valores persistidos y guardas. No se ejecutaron CU ni pruebas funcionales en esta fase.
