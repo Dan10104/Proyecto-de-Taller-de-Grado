@@ -1,12 +1,12 @@
 # Constitución del proyecto ESPACIO-U
 
-Estado: Fases 0/0.5 documentales y Fase 1 técnica completadas, 2026-10-23. Existe la fundación web ejecutable; no hay migraciones de dominio, autenticación ni integraciones funcionales. Fase 2 no iniciada.
+Estado: Fases 0/0.5 documentales y Fase 1 técnica completadas, 2026-10-23. Existe la fundación web ejecutable; no hay migraciones de dominio, autenticación ni integraciones funcionales. Fase 1.5 documental cerrada; Fase 2 no iniciada.
 
 ## Identidad y autoridad
 
 **Sistema de información para la gestión y control de reservas de espacios académicos y préstamos de equipamiento tecnológico en la FICCT, con monitoreo de ocupación mediante IoT y trazabilidad de operaciones mediante Blockchain.** El alcance institucional es exclusivamente la FICCT.
 
-Las peticiones de Fases 0, 0.5 y 1 gobiernan el trabajo autorizado, incluida la instrucción posterior de MySQL de desarrollo aislado. El informe final Word y su PDF son la fuente oficial de requisitos, comportamiento y diseño. La documentación de `docs/` sintetiza esas fuentes; no las reemplaza ni corrige silenciosamente. Las referencias y huellas de ambos archivos constan en [DECISIONS.md](DECISIONS.md). No se publican copias de los originales ni datos personales de sus ejemplos.
+Las peticiones de Fases 0, 0.5, 1 y 1.5 gobiernan el trabajo autorizado, incluida la instrucción de MySQL de desarrollo aislado. Fase 1.5 cierra exclusivamente contratos de autorización y sesión web. El informe final Word y su PDF son la fuente oficial de requisitos, comportamiento y diseño. La documentación de `docs/` sintetiza esas fuentes; no las reemplaza ni corrige silenciosamente. Las referencias y huellas de ambos archivos constan en [DECISIONS.md](DECISIONS.md). No se publican copias de los originales ni datos personales de sus ejemplos.
 
 > Ante cualquier contradicción entre implementación y documentación oficial, se debe detener la implementación del punto contradictorio y consultar el informe antes de modificar el modelo.
 
@@ -87,3 +87,11 @@ Identificadores técnicos ASCII sin tildes, snake_case donde corresponda; clases
 El iniciador/flujo del CU, permisos, RBAC, propiedad y ámbito determinan autorización; la lista Usuarios del RF no concede acciones. Reserva apunta a espacio, préstamo a equipamiento y equipo a espacio base opcional. El alcance del encargado se resolverá con permisos/ámbito acreditado; no crear otro sistema de asignaciones. Las cardinalidades físicas y tablas intermedias se conservan (D-06/D-17).
 
 La representación previa al hash será determinista, con orden de campos y formato de fecha estables, UTF-8, datos mínimos no personales y `version_canonica`. Su especificación exacta se difiere explícitamente hasta antes de Fase 9; no bloquea la fundación técnica. Los contratos QR/IoT/liberación y el flujo correcto de CU17 se aplican según BUSINESS_RULES y USE_CASE_MATRIX.
+
+## Contratos de Fase 1.5 y límite de la próxima implementación
+
+D-04 y D-07: **RESUELTAS PARA FASE 2** en [DECISIONS.md](DECISIONS.md#readiness-for-phase-2), sin software funcional creado. Los únicos roles humanos son Administrador, Encargado de Laboratorio, Docente y Estudiante. Autorizar por identidad/cuenta activa, rol vigente, permiso explícito, iniciador/flujo del CU, restricciones y ámbito cuando exista; denegar por defecto. Administrador recibe capacidades amplias mediante RBAC, sin excepción universal. Las asignaciones históricas y ambas relaciones M:N son obligatorias; no sustituirlas con un campo de rol en usuarios o tablas de un paquete.
+
+La web utilizará Laravel Session, correo/password_hash, Hash/Argon2id y CSRF; sesiones_acceso controlará el hash SHA-256 del ID final de sesión, su vigencia y revocación. La duración deriva de la configuración Laravel y cada acceso protegido exige coherencia entre sesión técnica y registro. El alcance fino por recurso se cierra antes de su flujo funcional; móvil/API sigue diferido.
+
+La petición Fase 1.5 §15 limita la siguiente Fase 2 a usuarios, roles, permisos, roles_permisos, asignaciones_roles y sesiones_acceso; tablas técnicas solo cuando sean necesarias y documentadas. No autoriza registros_actividad ni otros módulos: RF25/CU30 conservan vigencia como requisitos pendientes, sin confundir el registro de sesiones con bitácora general. Ninguna prueba con escritura podrá usar la base normal de desarrollo: se exige MySQL de testing separado. Comenzar Fase 2 requiere nueva instrucción.

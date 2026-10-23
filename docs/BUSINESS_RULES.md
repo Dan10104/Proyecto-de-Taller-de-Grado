@@ -5,7 +5,7 @@ Estas reglas sintetizan el informe. Los identificadores BR son internos para org
 | Regla | Tema | Fuente | Restricción | Prueba futura necesaria |
 | --- | --- | --- | --- | --- |
 | BR-01 | Acceso y revocación | RF1; CU01–02; RNF-10–15 | Cuenta activa, credenciales válidas, hash de contraseña y sesión vigente; invalidar sesión/token al salir. | Acceso válido; contraseña errónea; inactivo; expirado; petición posterior al logout denegada. |
-| BR-02 | Autorización por objeto | RF2–3; CU03–04; RNF-11/15 | Permiso en servidor, propiedad de solicitud y ámbito del responsable; ocultar botones no basta. D-03 resuelta; mecanismo de ámbito D-04 diferido a Fases 2–5, con denegación si no puede acreditarse. | Otro usuario no consulta ni modifica solicitudes ajenas; encargado no opera fuera de su ámbito. |
+| BR-02 | Autorización por objeto | RF2–3; CU03–04; RNF-11/15 | Permiso en servidor, propiedad de solicitud y ámbito del responsable; ocultar botones no basta. D-03 y RBAC de D-04 resueltos para Fase 2; ámbito fino diferido hasta el flujo por recurso, con denegación si no puede acreditarse. | Otro usuario no consulta ni modifica solicitudes ajenas; encargado no opera fuera de su ámbito. |
 | BR-03 | Historia de roles | CU03–04; asignaciones_roles | Registrar asignador/retirador y fechas, conservar historia; desactivar cuenta sin borrar operaciones. | Retiro invalida acciones futuras; historia conserva responsables y fechas. |
 | BR-04 | Disponibilidad del espacio | RF4–6; CU05–07; DB-17 | Combinar estado, horario, reservas y bloqueos/mantenimiento; reconsultar al confirmar; ocupación IoT es evidencia complementaria. | Dos peticiones concurrentes incompatibles no confirman ambas; mantenimiento impide nueva operación. |
 | BR-05 | Resolución y cancelación | RF7; CU09–10 | Resolver solicitud autorizada una sola vez, verificar disponibilidad y registrar decisión/autor/fecha/motivo pertinente. Cancelar solo si estado, plazo y permiso lo permiten. D-05. | Doble resolución; cambio de recurso entre consulta/aprobación; cancelación fuera de plazo o ajena. |
@@ -77,6 +77,28 @@ Convención temporal del alcance institucional único: `America/La_Paz` para cap
 
 ## Límites diferidos y pruebas futuras
 
-Duración/mecanismo de sesión y catálogo de permisos/alcance: Fase 2. Plazos de cancelación y finalización: antes de Fase 4. Emisión/correlación QR: antes de Fase 6. Payload, transporte y frescura IoT: antes de Fase 7. Combinación de evidencias, disparador y versión de política: antes de Fase 8. Canonicalización exacta, proveedor y recuperación Blockchain: antes de Fase 9. Protocolos de medición/retención: fases de integración/operación según D-16. Las versiones de herramientas se seleccionan como primer trabajo de Fase 1 (D-15).
+D-04/D-07 cerradas en Fase 1.5: Laravel Session web y expiración desde configuración; RBAC y convención de permisos oficiales. El catálogo concreto se deriva en Fase 2; el alcance fino se acredita antes del flujo funcional por recurso. Autenticación móvil/API diferida. Plazos de cancelación y finalización: antes de Fase 4. Emisión/correlación QR: antes de Fase 6. Payload, transporte y frescura IoT: antes de Fase 7. Combinación de evidencias, disparador y versión de política: antes de Fase 8. Canonicalización exacta, proveedor y recuperación Blockchain: antes de Fase 9. Protocolos de medición/retención: fases de integración/operación según D-16. Las versiones de herramientas ya se seleccionaron y verificaron en Fase 1 (D-15).
 
 Estos detalles no bloquean inicializar la base técnica, pero sí el punto de implementación que depende de ellos. Las pruebas de este documento son obligaciones futuras, no resultados ejecutados. El cierre de Fase 0.5 valida contratos documentales y no certifica comportamiento de software.
+
+## Criterios de aceptación de seguridad — Fase 1.5
+
+Son contratos de prueba para Fase 2, no tests ejecutados ni cambios del modelo. Aplican D-04/D-07 y mantienen las reglas BR-01–03. El alcance de seis tablas no satisface aún la bitácora general BR-21/CU30.
+
+| Área | Comprobación requerida antes de aceptar su implementación |
+| --- | --- |
+| Identidad | Correo/contraseña válidos y cuenta ACTIVO permiten login completo. Cuenta inexistente, INACTIVO o contraseña errónea no revela cuál falló ni crea una sesión autenticada parcial. |
+| Contraseñas | Hash/Argon2id en password_hash; nunca texto plano, SHA-256 simple ni valores sensibles en props/logs. |
+| Fijación y registro | ID final diferente al previo; hash de ese ID en sesiones_acceso, no del intermedio. Fallo del registro/almacenamiento impide confirmar login. |
+| Vigencia | Aceptar antes del límite; rechazar exactamente en expira_en o después, antes de intentar renovar. Actividad válida renueva según session.lifetime; fallo o sesión caducada no revive acceso. |
+| Revocación | Registro revocado, ausente, ajeno o cuenta deshabilitada bloquea la petición aunque exista cookie técnica. Reactivar cuenta no revive sesiones revocadas. |
+| Logout y concurrencia | Marcar revocación, invalidar sesión y renovar CSRF. ID anterior no autentica; petición simultánea no borra revocación ni reconstruye autenticación cerrada. Sesión expirada/repetición no reactivan registros. |
+| Fallos de red | Distinguir limpieza de UI y cierre remoto confirmado; no afirmar que Vue borró una cookie HttpOnly. Completar cierre al recuperar comunicación antes de reanudar el flujo. |
+| CSRF y cookies | Rechazar escrituras/login/logout sin protección válida; cookie de autenticación HttpOnly/SameSite y Secure según entorno; no credenciales alternativas en almacenamiento JS. |
+| RBAC y actores | Administrador sin el permiso requerido recibe denegación. Estudiante/Docente no aprueban por figurar como participantes; tampoco se combinan rol elegible y permiso de un rol incompatible. |
+| Historia | fecha_retiro NULL define actividad; retiro lógico conserva todas las filas y responsables. Duplicados no multiplican privilegios; reasignación no reescribe historia. |
+| Cambios de permisos | Retiro de rol/permiso surte efecto en la siguiente solicitud, sin depender de volver a iniciar sesión ni de las opciones visibles en Vue. |
+| Ámbito y propiedad | Consultas propias no exponen terceros. No implementar acceso de Encargado a recursos hasta acreditar ámbito en su fase; no crear tabla de asignación por suposición. |
+| Aislamiento | Una suite con escritura aborta si la conexión efectiva no es MySQL de testing autorizado; jamás migra/limpia espacio_u. |
+
+Límites del control de intentos se tomarán de configuración y se probarán en sus fronteras, sin un número hardcodeado en varias capas. CU01–CU04 y estos controles siguen sin implementar.

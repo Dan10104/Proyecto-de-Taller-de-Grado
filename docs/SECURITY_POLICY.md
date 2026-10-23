@@ -1,6 +1,6 @@
 # Política de seguridad
 
-Repositorio público. Esta política aplica a documentación, código, pruebas, historial Git, imágenes, logs, issues y artefactos. Fuentes: instrucciones de Fases 0, 0.5 y 1; RNF-10–17, IS-14, IC-02/04/05/08/11, RD-19/20/23/43/44 y DB-21–24.
+Repositorio público. Esta política aplica a documentación, código, pruebas, historial Git, imágenes, logs, issues y artefactos. Fuentes: instrucciones de Fases 0, 0.5, 1 y 1.5; RNF-10–17, IS-14, IC-02/04/05/08/11, RD-19/20/23/43/44 y DB-21–24.
 
 ## Secretos y datos
 
@@ -34,7 +34,7 @@ En fases futuras, las comprobaciones automatizadas podrán incorporarse en la ub
 
 | Superficie | Control y comprobación |
 | --- | --- |
-| Identidad | Hash de contraseñas; cuenta activa; vigencia y revocación de sesión; fallos sin información sensible; mecanismo concreto pendiente D-07 |
+| Identidad | Hash de contraseñas; cuenta activa; vigencia y revocación de sesión; fallos sin información sensible; Laravel Session web y control por hash definidos en D-07/Fase 1.5; móvil/API diferido |
 | Autorización | Política por acción/objeto, propietario y ámbito; probar acceso directo a rutas/API y descargas, no solo visibilidad de botones |
 | Web | Sesión segura y protección CSRF donde corresponda; validación del lado servidor; salida escapada; probar entradas no confiables |
 | Persistencia | Consultas parametrizadas/ORM, FK/UNIQUE/CHECK y transacciones; no permitir borrado de historia necesaria |
@@ -53,7 +53,7 @@ R-DISP-04 exige al menos un respaldo diario y conservar como mínimo los siete m
 
 ## Autorización y privacidad congeladas en Fase 0.5
 
-Aplicar D-03: iniciador y flujo del CU, permiso efectivo, RBAC y guardas por objeto. Participantes de RF no reciben facultades implícitas; una acción protegida sin ámbito acreditado se deniega. El mecanismo concreto del ámbito (D-04) y de sesión (D-07) se cierra antes de habilitarlo en Fase 2. No convertir rol Encargado en acceso general a todos los recursos ni inventar tablas de asignación.
+Aplicar D-03: iniciador y flujo del CU, permiso efectivo, RBAC y guardas por objeto. Participantes de RF no reciben facultades implícitas; una acción protegida sin ámbito acreditado se deniega. Fase 1.5 cierra RBAC por capacidad y sesión web para Fase 2; solo el ámbito fino por recurso y la autenticación móvil/API siguen diferidos. No convertir rol Encargado en acceso general a todos los recursos ni inventar tablas de asignación.
 
 QR no autentica: verificar sesión, permisos, código, recurso, operación, estado y tiempo aplicable en servidor. Sensor registrado/habilitado/asociado tampoco identifica personas. Datos insuficientes no autorizan liberación automática. Todos los valores persistidos y exclusividades SQL conservan el contrato de DOMAIN_MODEL/DATA_MODEL.
 
@@ -68,3 +68,13 @@ APP_KEY se genera con Artisan y las credenciales de MySQL con un generador cript
 MySQL del proyecto está limitado a loopback 3308, con datos privados en `.local/`, sin servicio del sistema ni modificación de las instancias existentes. La cuenta de aplicación solo tiene permisos sobre `espacio_u.*`; la credencial administrativa distinta se usa únicamente para administrar la instancia aislada. Los scripts verifican su directorio antes de apagarla. Logs generales, lentos y binarios están desactivados en esta instancia de desarrollo; no se configura aún la política de auditoría/recuperación de producción.
 
 `.tools/`, `.local/`, dependencias, sesiones, logs, compilados y material temporal están excluidos de Git. Las excepciones de `.gitignore` permiten exclusivamente marcadores vacíos del skeleton. APP_DEBUG está desactivado, Inertia no comparte configuración privada y DevTools/SSR no están activados. La revisión de secretos contrasta los valores locales con el índice sin imprimirlos y comprueba formatos de claves/tokens. Las auditorías de dependencias no reemplazan los futuros controles funcionales ni una revisión de producción.
+
+## Contrato de seguridad de Fase 1.5
+
+Ningún rol, incluido Administrador, evita los permisos explícitos y las guardas centrales. Asignaciones activas por fecha_retiro NULL y relaciones M:N oficiales; evaluar cambios en cada solicitud sin privilegios retenidos desde el login. Denegar si falta permiso, actor elegible, propiedad o ámbito aplicable. No exponer recursos bajo responsabilidad sin resolver su alcance fino en la fase correspondiente.
+
+Laravel Session será el mecanismo web, con Hash/Argon2id para password_hash, cuenta ACTIVO, respuesta genérica ante credenciales inválidas, limitación configurable de intentos, ID regenerado y CSRF. sesiones_acceso guarda únicamente SHA-256 del ID final, titular y fechas; el hash no autentica por sí mismo. Exigir simultáneamente sesión técnica y registro vigente no revocado. Renovar por inactividad desde session.lifetime después de validar; no revivir expirados ni permitir que una petición concurrente deshaga logout. No guardar secretos o hashes sensibles en logs/props ni credenciales de acceso en localStorage.
+
+Cookie de autenticación HttpOnly/SameSite=Lax y Secure bajo HTTPS; excepción Secure=false solo para HTTP local. Conservar el flujo CSRF estándar, incluida la cookie XSRF-TOKEN de propósito distinto. Logout requiere revocación, invalidación y CSRF nuevo; un fallo de red no demuestra revocación y la UI no puede borrar HttpOnly. El comportamiento compensatorio está definido en D-07.
+
+Las pruebas con escritura usarán MySQL separado y usuario exclusivo con permisos solo en espacio_u_testing; secretos en .env.testing local ignorado, nunca en phpunit.xml, plantillas, docs, Git ni consola. Comprobar base efectiva y entorno antes de migrar/limpiar; abortar ante desvío o configuración cacheada de otro entorno. No se creó esa base ni se generaron credenciales en Fase 1.5. El núcleo autorizado tampoco incluye todavía bitácora general; sesiones_acceso no sustituye registros_actividad.

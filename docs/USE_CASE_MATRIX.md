@@ -2,7 +2,7 @@
 
 Cobertura: 30/30 casos de uso del cap. V, tablas 38–67; prioridad según tabla 37. Cada ficha reúne iniciador, actores, precondición, flujo, alternativas, excepciones, resultado, RF, entidades/tablas, paquete/fase y pruebas. La asignación RF→CU→tabla→fase es trazabilidad analítica basada en los flujos y diagramas; no crea nuevas funciones.
 
-**Alcance web:** las menciones a aplicación móvil en el texto fuente describen el sistema global. En estas fases se implementará la variante web y el soporte de servidor aplicable, sin Flutter/Android. “Activo”, “finalizado”, “vencido” o “cancelado” en la prosa del préstamo no se traducen automáticamente a un enum; aplicar la reconciliación D-02 resuelta en DOMAIN_MODEL. Todas las pruebas indicadas están pendientes de implementación.
+**Alcance web:** las menciones a aplicación móvil en el texto fuente describen el sistema global. En estas fases se implementará la variante web y el soporte de servidor aplicable, sin Flutter/Android. “Activo”, “finalizado”, “vencido” o “cancelado” en la prosa del préstamo no se traducen automáticamente a un enum; aplicar la reconciliación D-02 resuelta en DOMAIN_MODEL. Todas las pruebas indicadas están pendientes de implementación. Fase 1.5 cierra D-04/D-07 documentalmente y delimita el próximo núcleo de seguridad; véase el contrato al final.
 
 ## Índice
 
@@ -37,7 +37,7 @@ Cobertura: 30/30 casos de uso del cap. V, tablas 38–67; prioridad según tabla
 | CU27 | Visualizar dashboard e indicadores | Media | RF22 | 11 |
 | CU28 | Generar y exportar reportes | Media | RF23 | 11 |
 | CU29 | Consultar chatbot de asistencia | Media | RF24 | 12 |
-| CU30 | Consultar bitácora de actividad | Media | RF25 | 2 |
+| CU30 | Consultar bitácora de actividad | Media | RF25 | Pendiente de autorización de bitácora; alcance ajustado en Fase 1.5 |
 
 ## Relaciones de los diagramas
 
@@ -643,7 +643,7 @@ Fuente: tabla 67; p. 217 (PDF 218); figura 58; análisis figura 104.
 | RF relacionado | RF25 |
 | Entidades / clases principales | Usuario, RegistroActividad |
 | Tablas directamente relacionadas | `usuarios`, `registros_actividad` |
-| Módulo futuro y fase | Seguridad y Administración; Fase 2; integración final de consulta en Fase 13 |
+| Módulo futuro y fase | Seguridad y Administración; implementación de bitácora pendiente de autorización según Fase 1.5 §15; verificación integral en Fase 13 |
 | Pruebas necesarias | T-CU30: Filtros y paginación; usuario no autorizado; evento humano/automático; secreto ausente; conservación de historia. |
 
 
@@ -655,7 +655,7 @@ D-03 resuelve las diferencias entre actores RF y CU mediante la tabla siguiente;
 
 ## Reconciliación de actores RF/CU (D-03 resuelta)
 
-Fuentes contrastadas: tabla 36 (RF) y tablas 38–67 (detalle CU). La lista Usuarios del RF expresa también participación, recepción de información o involucramiento. Para ejecutar una acción se exige el iniciador y flujo del CU, permisos efectivos, RBAC, propiedad/ámbito y guardas del proceso, verificados en servidor. Esta tabla resuelve diferencias sin inventar nuevos permisos ni un catálogo de códigos: ese catálogo y el mecanismo de alcance se concretan en Fase 2 (D-04). Ante duda se deniega lo no demostrado. Un usuario con varios roles puede operar por un rol admitido y su permiso; poseer además otro rol no lo excluye.
+Fuentes contrastadas: tabla 36 (RF) y tablas 38–67 (detalle CU). La lista Usuarios del RF expresa también participación, recepción de información o involucramiento. Para ejecutar una acción se exige el iniciador y flujo del CU, permisos efectivos, RBAC, propiedad/ámbito y guardas del proceso, verificados en servidor. Esta tabla resuelve diferencias sin inventar nuevos permisos ni un catálogo de códigos: el catálogo se deriva en Fase 2 según D-04; el alcance fino por recurso se acredita antes de habilitar su flujo en la fase funcional correspondiente. Ante duda se deniega lo no demostrado. Un usuario con varios roles puede operar por un rol admitido y su permiso; poseer además otro rol no lo excluye.
 
 | CU / RF contrastados | Usuarios del RF (texto fuente) | Iniciador del CU (texto fuente) | Interpretación de ejecución |
 | --- | --- | --- | --- |
@@ -718,3 +718,15 @@ Pruebas futuras: préstamo no aprobado, equipo/receptor incorrecto, QR obligator
 | CU18, condición incierta | Condición no determinable y revisión | Devolución NO_DETERMINABLE y PENDIENTE_REVISION; sin cierre definitivo del préstamo ni disponibilidad automática. |
 
 Las fichas conservan la fuente y sus excepciones para trazabilidad; esta interpretación determina valores persistidos y guardas. No se ejecutaron CU ni pruebas funcionales en esta fase.
+
+## Aplicación de D-04/D-07 tras Fase 1.5
+
+Las fichas conservan actores, flujo, excepciones y tablas del informe. La columna de fase es planificación de implementación, no una modificación del CU. D-04/D-07 están resueltas para el núcleo web de seis tablas; no se ha programado ninguno de estos casos.
+
+- CU01: Laravel Session por correo/contraseña y cuenta ACTIVO, hash de contraseña Argon2id, regeneración final, CSRF y registro obligatorio con hash de ID en sesiones_acceso. Error genérico; fallo del registro no deja acceso autenticado. El catálogo de permisos se deriva de RF/CU antes de implementarse.
+- CU02: revocar registro de la sesión actual, cerrar guard, invalidar sesión técnica y regenerar CSRF. Expiración derivada de session.lifetime; ninguna sesión expirada/revocada se renueva. El fallo de red de la ficha se interpreta con D-07: limpieza de estado accesible de la UI no equivale a borrar cookie HttpOnly o confirmar revocación remota.
+- CU03/CU04: Administrador necesita permiso explícito y guardas; no bypass por rol. Conservar usuarios, roles, permisos y las dos relaciones M:N; fecha_retiro NULL define asignación activa. Retiro/reasignación preserva historia, y los cambios afectan solicitudes posteriores sin confiar en una copia de permisos en Vue.
+- CU05–CU29: se conserva íntegra la matriz de iniciadores. Fase 2 solo prepara capacidades, no implementa recursos/operaciones futuras. El alcance fino del Encargado se resuelve antes de exponer el recurso correspondiente; una lista de actores nunca autoriza por sí sola.
+- CU30 y el registro general de actividad exigido por otros CU permanecen pendientes: la nueva limitación de tablas no incluye registros_actividad. No usar logs técnicos, asignaciones_roles o sesiones_acceso para afirmar que se implementó la bitácora; la parte de auditoría general de las postcondiciones no se declarará satisfecha hasta autorizar e integrar ese componente.
+
+Pruebas negativas y de fallos previstas en [BUSINESS_RULES.md](BUSINESS_RULES.md); aislamiento MySQL en [DEVELOPMENT_SETUP.md](DEVELOPMENT_SETUP.md#aislamiento-de-pruebas-para-fase-2).
