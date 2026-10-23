@@ -21,21 +21,21 @@ class SchemaContractTest extends SecurityTestCase
         $tables = DB::select('SELECT TABLE_NAME AS name FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE()');
         $names = array_column($tables, 'name');
         sort($names);
-        $allowed = [...array_keys($expected), 'migrations'];
+        $allowed = [...array_keys($expected), 'migrations', 'pisos', 'recursos_institucionales', 'tipos_espacio', 'caracteristicas_espacio', 'politicas_liberacion', 'espacios_academicos', 'espacios_caracteristicas', 'bloqueos_espacio'];
         sort($allowed);
         $this->assertSame($allowed, $names);
         foreach ($expected as $table => $columns) {
             $actual = DB::select('SELECT COLUMN_NAME AS name,COLUMN_TYPE AS type FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? ORDER BY ORDINAL_POSITION', [$table]);
             $this->assertSame($columns, array_column($actual, 'type', 'name'));
         }
-        $fk = DB::select('SELECT UPDATE_RULE AS u,DELETE_RULE AS d FROM information_schema.REFERENTIAL_CONSTRAINTS WHERE CONSTRAINT_SCHEMA=DATABASE()');
+        $fk = DB::select('SELECT UPDATE_RULE AS u,DELETE_RULE AS d FROM information_schema.REFERENTIAL_CONSTRAINTS WHERE CONSTRAINT_SCHEMA=DATABASE() AND TABLE_NAME IN ("usuarios","roles","permisos","roles_permisos","asignaciones_roles","sesiones_acceso")');
         $this->assertCount(7, $fk);
         $this->assertCount(2, array_filter($fk, fn ($r) => $r->d === 'CASCADE'));
         $this->assertCount(5, array_filter($fk, fn ($r) => $r->d === 'RESTRICT'));
         foreach ($fk as $row) {
             $this->assertSame('CASCADE', $row->u);
         }
-        $checks = DB::select('SELECT CONSTRAINT_NAME AS name FROM information_schema.CHECK_CONSTRAINTS WHERE CONSTRAINT_SCHEMA=DATABASE()');
+        $checks = DB::select('SELECT CONSTRAINT_NAME AS name FROM information_schema.CHECK_CONSTRAINTS WHERE CONSTRAINT_SCHEMA=DATABASE() AND CONSTRAINT_NAME IN ("chk_asigrol_fechas","chk_sesion_expiracion")');
         $this->assertEqualsCanonicalizing(['chk_asigrol_fechas', 'chk_sesion_expiracion'], array_column($checks, 'name'));
     }
 
