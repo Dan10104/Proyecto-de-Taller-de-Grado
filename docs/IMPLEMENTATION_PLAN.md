@@ -1,8 +1,8 @@
 # Plan de implementación web
 
-Estado: Fases 1–14 **no iniciadas**. Este plan respeta la secuencia solicitada; Fases 0 y 0.5 documentales completadas, sin ejecución de software. No existe Flutter, Android ni cliente nativo en el plan de ejecución.
+Estado: **Fase 1 completada; Fases 2–14 no iniciadas**. Fases 0 y 0.5 conservaron su alcance documental; la nueva instrucción de Fase 1 autorizó la fundación técnica descrita en [DEVELOPMENT_SETUP.md](DEVELOPMENT_SETUP.md). No existe Flutter, Android ni cliente nativo en el plan de ejecución.
 
-## Entorno observado el 2026-10-23
+## Inventario histórico anterior a Fase 1 — 2026-10-23
 
 | Componente | Resultado comprobado | Siguiente paso |
 | --- | --- | --- |
@@ -17,7 +17,7 @@ Estado: Fases 1–14 **no iniciadas**. Este plan respeta la secuencia solicitada
 | Docker | Cliente 29.5.3; motor desktop-linux no disponible durante revisión | Arrancar/verificar el motor antes de ensayos de contenedores; no afirmar que Docker ya funciona |
 | Integraciones / nube | No configuradas ni probadas | Definir proveedores/contratos y configuración privada en sus fases |
 
-No se instalaron dependencias de la aplicación, no se generó APP_KEY, no se ejecutó SQL y no se provisionó infraestructura. El entorno local está identificado y el workspace está preparado; compatibilidad final y conectividad de la aplicación son trabajo de Fase 1.
+Ese inventario corresponde a Fases 0/0.5, cuando no se instalaron dependencias ni se creó configuración privada. Fase 1 añadió PHP/Composer/Node/MySQL locales bajo el workspace, sin modificar las instalaciones globales. El inventario vigente y la conectividad validada están en DEVELOPMENT_SETUP.md.
 
 ## Reglas comunes de ejecución
 
@@ -31,6 +31,8 @@ No se instalaron dependencias de la aplicación, no se generó APP_KEY, no se ej
 ## Fases
 
 ### Fase 1 — Fundación técnica
+
+**Completada el 2026-10-23.** Una raíz Laravel, página Vue/Inertia real, Vite/Tailwind, MySQL 9.7.4 aislado y base vacía, español y zona operativa. Pasaron 3 pruebas / 17 aserciones, build, navegador y auditorías sin vulnerabilidades reportadas. Sin modelos/migraciones de dominio, autenticación, API funcional ni integraciones. Versiones y procedimiento: DEVELOPMENT_SETUP.md. La tabla conserva el alcance planificado y satisfecho a nivel de fundación.
 
 | Campo | Plan |
 | --- | --- |
@@ -227,15 +229,15 @@ No se instalaron dependencias de la aplicación, no se generó APP_KEY, no se ej
 | Commit esperado | `build: prepare Docker and Google Cloud deployment` |
 
 
-## Propuesta exacta para la próxima instrucción: Fase 1
+## Próxima instrucción propuesta: Fase 2
 
-Comenzar con verificación Git/VS Code y lectura de D-07, D-15 y D-16. Consultar documentación oficial vigente para escoger versiones compatibles de PHP/Laravel, Vue 3, Inertia y Vite; elegir una de las instalaciones MySQL reales y comprobar conexión con credenciales privadas. Inicializar el framework en esta misma raíz conservando los documentos y `.gitignore`, sin starter de autenticación ni migraciones de negocio anticipadas. Configurar compilación, español, zona operativa America/La_Paz según D-16 y separación de entornos; crear el `.env` local ignorado solo al necesitarlo, y generar allí la APP_KEY. Validar arranque/build/conexión, documentar versiones y comandos reproducibles, revisar secretos, hacer commit/push. Autenticación, CRUD y modelos definitivos de dominio comienzan en las fases correspondientes.
+Verificar Git/VS Code y volver a leer los contratos. Cerrar D-04 (ámbito/catálogo de permisos) y D-07 (autenticación, sesiones y revocación) antes de programar CU01–CU04 y bitácora base. Planificar las migraciones por dependencias y el aislamiento de pruebas con escritura, conservando el modelo oficial. No adoptar automáticamente usuarios, sesiones o permisos de un starter kit. Mantener las decisiones de QR/IoT/Blockchain diferidas.
 
 Nada de esa propuesta se ejecuta hasta recibir la siguiente instrucción del usuario.
 
 ## Preparación de Fase 1 y puertas posteriores
 
-[Readiness for Phase 1](DECISIONS.md#readiness-for-phase-1): **0 contradicciones bloqueantes**. Los identificadores, enums, fuentes, actores y cardinalidades son implementables documentalmente. No falta una decisión de dominio para inicializar el framework. D-15 (selección compatible de versiones y MySQL) es el primer trabajo técnico de Fase 1, no una instalación realizada en Fase 0.5. La autenticación concreta se decide antes de Fase 2, y no se adelantan CU.
+[Readiness for Phase 1](DECISIONS.md#readiness-for-phase-1): **0 contradicciones bloqueantes**. Los identificadores, enums, fuentes, actores y cardinalidades son implementables documentalmente. No falta una decisión de dominio para inicializar el framework. D-15 tiene selección compatible de versiones y MySQL completada en Fase 1; solo Docker sigue pendiente antes de los ensayos de Fase 14. La autenticación concreta se decide antes de Fase 2, y no se adelantan CU.
 
 | Decisión / detalle restante | Límite antes de trabajo dependiente |
 | --- | --- |
@@ -249,4 +251,4 @@ Nada de esa propuesta se ejecuta hasta recibir la siguiente instrucción del usu
 | D-16, protocolo de medición y retención operativa | Retención antes de ingestión en 7 y operación en 14; medición antes de aceptación en 13; zona operativa ya fijada |
 | D-17, mecanismos transaccionales y guardas de servidor | Al implementar el componente de Fases 2–10; sin modificar constraints |
 
-D-13/D-14 no requieren desarrollar las funciones históricas/ilustrativas. Los estados RESUELTA/CONVENCIÓN describen contratos; todas las pruebas funcionales del plan siguen pendientes. Fase 1 no comienza con este cierre.
+D-13/D-14 no requieren desarrollar las funciones históricas/ilustrativas. Los estados RESUELTA/CONVENCIÓN describen contratos. Las pruebas de fundación de Fase 1 están completadas; las pruebas funcionales de negocio y rendimiento de Fases 2–14 siguen pendientes.

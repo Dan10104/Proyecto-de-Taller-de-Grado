@@ -1,6 +1,6 @@
 # Registro de decisiones y auditoría documental
 
-Fecha: 2026-10-23. Fase 0.5: contratos de implementación congelados según la instrucción del usuario. Se conservan los 17 expedientes D-01–D-17 y su conflicto original; Git conserva la redacción inicial de Fase 0. No se cambian el Word/PDF, el alcance funcional ni el stack. Fase 1 no iniciada.
+Fecha: 2026-10-23. Fase 0.5: contratos de implementación congelados según la instrucción del usuario. Se conservan los 17 expedientes D-01–D-17 y su conflicto original; Git conserva la redacción inicial de Fase 0. No se cambian el Word/PDF, el alcance funcional ni el stack. Fase 1 técnica completada por instrucción posterior; D-15 y la configuración de D-16 tienen evidencia en [DEVELOPMENT_SETUP.md](DEVELOPMENT_SETUP.md). Fase 2 no iniciada.
 
 ## Fuentes verificadas
 
@@ -38,7 +38,6 @@ El modelo resultante conserva 31 tablas, 211 columnas y 63 FK. La sección “Vo
 - Modelo de clases y estados se preservan; la inclusión de RecursoInstitucional, AsignacionRol y SesionAcceso procede del diseño, no de una ampliación de alcance.
 - No se publican documentos originales, capturas personales ni secretos. `.env.example` es únicamente una plantilla segura.
 
-
 ## Jerarquía documental congelada
 
 La instrucción de Fase 0.5 autoriza estas decisiones de implementación; los documentos oficiales siguen siendo la fuente de contenido. La jerarquía se aplica según el tipo de pregunta, no mediante una prioridad universal que invalide otro contrato.
@@ -52,7 +51,7 @@ La instrucción de Fase 0.5 autoriza estas decisiones de implementación; los do
 
 SQL es contrato principal de tablas, columnas, tipos, PK/FK, nulabilidad, enums, índices y constraints. D-01 es una corrección lexical autorizada y explícita; no habilita otras alteraciones silenciosas. El detalle de CU17 prevalece sobre la flecha defectuosa. El cronograma no define implementación.
 
-## Clasificación de las 17 decisiones originales
+## Clasificación de las 17 decisiones originales (cierre de Fase 0.5)
 
 Cada expediente tiene **un único estado**. La clasificación cuenta expedientes de Fase 0, no cada parámetro interno. Una convención puede dejar parámetros posteriores expresamente enumerados; eso no los declara resueltos ni bloquea la fundación.
 
@@ -367,9 +366,11 @@ Cada expediente tiene **un único estado**. La clasificación cuenta expedientes
 | Justificación | Seleccionar versiones es parte del trabajo autorizado de fundación cuando se solicite; no es una ambigüedad funcional ni exige cambiar el modelo. |
 | Estado | DIFERIDA A UNA FASE POSTERIOR |
 | Fase afectada | 1 antes de instalar/lockfiles; Docker antes de ensayos de 14. |
-| Detalle diferido / límite de la resolución | Versión concreta de paquetes/PHP e instancia MySQL; comprobar motor Docker cuando corresponda. No bloquea autorización para iniciar Fase 1. |
+| Detalle diferido / límite de la resolución | Versiones/instancia web atendidas en Fase 1, según actualización inferior. Solo queda la operatividad de Docker antes de ensayos de Fase 14; por ese detalle el expediente conserva su estado DIFERIDA. |
 | Bloquea iniciar Fase 1 | No |
 | Fecha de adopción | 2026-10-23; instrucción Fase 0.5 |
+
+**Actualización D-15 en Fase 1 (2026-10-23):** selección web completada antes de cada instalación con fuentes oficiales: PHP 8.5.12, Laravel 13.38.0, Composer 2.10.3, Node 24.22.1 LTS/npm 11.19.1, Vue 3.5.44, Inertia Laravel 3.5.2 y Vue/Vite 3.9.1, Vite 8.3.5, MySQL 9.7.4 LTS. Herramientas locales ignoradas y lockfiles públicos. Las dos instancias existentes requerían credenciales; el usuario autorizó expresamente una tercera instancia aislada en el workspace, base `espacio_u`, loopback 3308 y credenciales generadas solo en `.env`. Sin modificar servicios existentes ni activar Docker. Tailwind 4.3.3 se usa para el CSS mínimo previsto por el informe. [Procedimiento y pruebas](DEVELOPMENT_SETUP.md). El resto de decisiones diferidas no se resuelve anticipadamente.
 
 ### D-16 — Parámetros de tiempo/medición no fijados
 
@@ -409,7 +410,6 @@ Cada expediente tiene **un único estado**. La clasificación cuenta expedientes
 | Bloquea iniciar Fase 1 | No |
 | Fecha de adopción | 2026-10-23; instrucción Fase 0.5 |
 
-
 ## Detalles posteriores y momento de cierre
 
 Estos puntos no se implementaron ni se presentan como especificaciones completas. Deben cerrarse antes del comportamiento afectado, conservando los contratos anteriores y sin introducir funcionalidades nuevas.
@@ -423,7 +423,7 @@ Estos puntos no se implementaron ni se presentan como especificaciones completas
 | D-09 | Ciclo de emisión/vigencia, obligatoriedad QR por operación y correlación de intentos | Fase 6; ninguna relajación de CHECK/UNIQUE |
 | D-10 | Transporte y contrato del piloto, autenticación, unidades, repetidos y frescura | Fase 7 antes de ingestión funcional |
 | D-12 | Canonicalización exacta, campos permitidos, algoritmo, proveedor y recuperación | Antes de Fase 9 funcional; determinismo/orden/fechas/UTF-8/version_canonica ya obligatorios |
-| D-15 | Versiones compatibles e instancia real MySQL; operatividad Docker cuando se use | Dentro de Fase 1 antes de instalar; Docker antes de ensayos de 14 |
+| D-15 | Versiones/instancia local atendidas en Fase 1; solo operatividad Docker pendiente | Docker antes de ensayos de 14 |
 | D-16 | Protocolo de medición, umbral específico de login si se define y retención operativa | Fases 7/13/14 según punto; formato canónico de fechas en 9 |
 | D-17 | Mecanismo concreto de transacciones/bloqueos y pruebas de invariantes | Fase que implemente el flujo, sin alterar el contrato físico |
 
@@ -440,10 +440,14 @@ La selección de versiones es una actividad de Fase 1, no una contradicción que
 - **Modelo de datos implementable:** 31 tablas/211 columnas; única normalización lexical D-01; sin FK, entidades o constraints nuevos ni ejecución SQL en esta fase.
 - **Seguridad Git definida:** .gitignore y plantilla segura; revisión de índice/diferencias/secretos antes de commit/push; ningún dato real de desarrollo.
 - **Cuestiones diferidas identificadas:** tabla anterior con fase límite; no se convierten en decisiones implícitas durante implementación.
-- **Resultado:** proyecto documentalmente listo para **iniciar Fase 1 cuando el usuario lo indique**. Estar listo no equivale a haberla iniciado ni a autorizarla por esta instrucción.
+- **Resultado histórico de Fase 0.5:** proyecto documentalmente listo para iniciar Fase 1. La nueva instrucción posterior autorizó y completó su fundación técnica; este registro preserva la distinción entre preparación e implementación.
 
 ## Verificación de esta revisión
 
 Se reconsultaron ambos originales; las huellas SHA-256 siguen siendo las de Fuentes verificadas. Se revisaron los 17 expedientes, los 30 CU y 26 RF para interpretar actores; los 19 campos ENUM y sus términos narrativos; clases/dominio/ERD y restricciones SQL para cardinalidades. Las resoluciones conservan el conflicto original y su tratamiento histórico.
 
 El cierre de Fase 0.5 es exclusivamente documental. No se instaló Laravel, no se creó software ni se configuró MySQL. Se comprobó que permanecen íntegros los 217 identificadores/cláusulas de requisitos, las 30 fichas CU y el diccionario de 31 tablas, 211 columnas y 63 FK. Tipos, defaults, nulabilidad, PK/FK, índices y constraints coinciden con Fase 0 salvo la grafía autorizada codigo. Los 19 ENUM coinciden con la extracción del SQL; se verificaron enlaces/tablas Markdown, conteos de decisiones, historial preservado y ejemplos de intervalos. La validación funcional de la aplicación y las mediciones de rendimiento siguen pendientes de sus fases.
+
+## Cierre técnico posterior de Fase 1
+
+Se implementó y verificó exclusivamente la fundación web; el cierre de Fase 0.5 anterior sigue siendo histórico. La configuración de D-16 ya usa español, `America/La_Paz` y sesión MySQL `-04:00`. No se diseñaron algoritmos de conversiones externas ni parámetros QR/IoT/Blockchain. D-04 y D-07 se revisarán antes de implementar Fase 2, todavía no iniciada. El Word/PDF, las 31 tablas/211 columnas/63 FK documentales, los 19 ENUM y los 30 CU no se alteraron.
