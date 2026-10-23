@@ -65,12 +65,12 @@ function withdraw(user) {
       <p class="muted">Cada permiso habilita una acción y conserva las restricciones del rol.</p>
       <form v-if="can('permisos.ver')" @submit.prevent="form.put(`/roles/${rol.id}/permisos`,{preserveScroll:true})">
         <FormErrors :errors="form.errors"/>
-        <div v-if="rol.nombre!=='Administrador'" class="alert">Los permisos de administración disponibles en esta etapa corresponden al rol Administrador.</div>
+        <p class="hint">Se muestran las acciones admitidas para este rol institucional.</p>
         <div class="permission-groups">
           <fieldset v-for="(permissions,group) in groups" :key="group">
-            <legend>{{ group==='usuarios'?'Usuarios':group==='roles'?'Roles y asignaciones':'Catálogo de permisos' }}</legend>
+            <legend>{{ group==='usuarios'?'Usuarios':group==='roles'?'Roles y asignaciones':group==='espacios'?'Espacios académicos':'Catálogo de permisos' }}</legend>
             <label v-for="permission in permissions" :key="permission.id" class="permission-option">
-              <input v-model="form.permisos" type="checkbox" :value="permission.id" :disabled="!can('roles.gestionar_permisos')||rol.nombre!=='Administrador'">
+              <input v-model="form.permisos" type="checkbox" :value="permission.id" :disabled="!can('roles.gestionar_permisos')">
               <span>
                 <strong>{{ permission.nombre }}</strong>
                 <small>{{ permission.codigo }}</small>
@@ -78,13 +78,13 @@ function withdraw(user) {
             </label>
           </fieldset>
         </div>
-        <div v-if="can('roles.gestionar_permisos')&&rol.nombre==='Administrador'" class="form-actions">
+        <div v-if="can('roles.gestionar_permisos')" class="form-actions">
           <button class="btn btn-primary" :disabled="form.processing">Guardar permisos</button>
         </div>
       </form>
       <div v-else class="assigned-list">
         <p v-for="permission in rol.permisos" :key="permission.id">{{ permission.nombre }}</p>
-        <p v-if="!rol.permisos.length">Sin permisos de administración.</p>
+        <p v-if="!rol.permisos.length">Sin permisos asignados.</p>
       </div>
     </section>
     <section class="panel">

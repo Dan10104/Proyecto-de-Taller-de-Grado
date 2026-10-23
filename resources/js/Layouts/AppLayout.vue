@@ -52,6 +52,14 @@ onUnmounted(() => document.removeEventListener('keydown', keydown));
           <Icon name="home"/>
           Inicio
         </Link>
+        <Link v-if="can('espacios.ver')" href="/disponibilidad" :class="{active:page.url.startsWith('/disponibilidad')}" @click="drawer=false">
+          <Icon name="search"/>
+          Disponibilidad
+        </Link>
+        <Link v-if="can('espacios.ver')" href="/espacios" :class="{active:page.url.startsWith('/espacios')}" @click="drawer=false">
+          <Icon name="building"/>
+          Espacios académicos
+        </Link>
         <Link v-if="can('usuarios.ver')" href="/usuarios" :class="{active:page.url.startsWith('/usuarios')}" @click="drawer=false">
           <Icon name="users"/>
           Usuarios
