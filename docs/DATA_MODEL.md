@@ -923,3 +923,25 @@ politicas_liberacion: **Tabla incorporada anticipadamente únicamente como depen
 ## Materialización física de Fase 4
 
 La migración `2026_10_23_000015_create_reservas_table.php` materializa el SQL de reservas contrastado: 15 columnas, PK, UNIQUE, cuatro FK, CHECK y tres índices oficiales. Se conservan tipos, nulabilidad, defaults y acciones referenciales. Ninguna migración anterior cambia. Total materializado: 15 tablas académicas; `migrations` es control técnico adicional. `ReservationSchemaTest` comprueba metadatos y restricciones reales. [Implementación](RESERVATIONS_IMPLEMENTATION.md#esquema-y-dominio).
+
+## Contrato físico para Fase 5 — cierre documental de Fase 4.5
+
+**No se materializa ninguna tabla en esta fase.** Continúan las 15 tablas académicas de Fase 4 más migrations técnica. Se recontrastaron con Word/PDF los seis CREATE TABLE futuros: tipos_equipamiento, equipamientos_tecnologicos, prestamos, entregas_prestamo, devoluciones_prestamo e incidencias_mantenimiento. Coinciden al normalizar espacios/encabezados. No cambia el diccionario de 31 tablas, 211 columnas y 63 FK.
+
+| Elemento físico intacto | Guarda funcional de Fase 5, sin alterar esquema |
+| --- | --- |
+| equipamientos_tecnologicos.recurso_id PK+FK | Padre recursos_institucionales primero y mismo ID en subtipo, en transacción; sin id independiente ni timestamps agregados. Exactamente los nueve campos del diccionario. |
+| espacio_base_id NULL y numero_serie NULL UNIQUE | Base opcional 0..1, localización por espacio/piso; serie ausente/vacía normalizada a NULL, única cuando exista. Sin FK directa a piso ni relación de custodia/asignación inferida. |
+| prestamos.codigo VARCHAR(60), uq_prestamos_codigo | PRE-UUIDv4 de 40 caracteres, servidor/inmutable/no secreto; colisión reintentada como máximo tres veces solo para ese UNIQUE. |
+| prestamos.estado y datos de resolución | Solo cuatro transiciones del contrato. Aprobación completa resuelto_por_id/resuelto_en y motivo NULL; rechazo exige motivo no vacío <=500, aunque SQL conserve nullable. |
+| inicio_previsto/fin_previsto y CHECK estricto | [inicio, fin), fin>inicio. Índice de periodo no excluye solapamientos por sí solo; lock del equipo, lecturas actuales y transición condicional. Vencido no se persiste. |
+| entregas_prestamo: UNIQUE(prestamo_id), dos FK de actores | Máximo una entrega; receptor_id se deriva de solicitante_id; entregado_por_id de sesión; fecha_hora servidor; condicion_entrega obligatoria <=255, observacion opcional <=500. |
+| recepcion_confirmada_en DATETIME NULL | NULL durante Fase 5; no convertir fecha_hora en una confirmación digital del receptor que no ocurrió. La entrega registrada basta para continuar CU18. |
+| devoluciones_prestamo: UNIQUE(prestamo_id) | Máximo una devolución; pendiente se confirma actualizando la misma fila. No nuevas columnas de historial, enum ni segundo hito. |
+| recibido_por_id/registrada_en y confirmado_por_id/confirmada_en | Recepción siempre atribuida; pendientes dejan confirmación NULL. Confirmación inmediata/posterior usa sesión/reloj y no precede a registrada_en; conserva recepción original. |
+| condicion/estado de devolución | NO_DETERMINABLE solo PENDIENTE_REVISION; confirmación solo ADECUADA/CON_INCIDENCIA. descripcion_condicion requerida funcionalmente para anomalía/revisión, <=500; nullable físico intacto. |
+| incidencias_mantenimiento.recurso_id y devolucion_id NULL | Un único modelo para espacios/equipos; vínculo directo de devolución opcional, solo mismo equipo y sin reasignar vínculo histórico; no puente. |
+| fin_previsto NULL, CHECK >=inicio; cerrada_en NULL, CHECK >=inicio | Para periodo previsto informado la aplicación exige >inicio; conservar el CHECK original >=. Cierre explícito >=inicio, actor y solucion no vacía; nulabilidad previa intacta. Vencer fin_previsto no cierra ABIERTA. |
+| Sin causa/estado anterior persistido del recurso | No inventar previous_state ni tablas auxiliares. Restauración explícita con permiso y comprobación de todas las restricciones; BAJA nunca automática. |
+
+El contrato completo de campos/guardas y la jerarquía de locks están en [DECISIONS](DECISIONS.md#contrato-de-equipamiento-y-préstamos--fase-45). Toda entrega/devolución y cambio operativo asociado es atómico. SQL conserva sus acciones CASCADE/RESTRICT; no se deduce de CASCADE un permiso de eliminar historia. QR, evidencias, notificaciones y registros_actividad no se materializan anticipadamente para suplir las integraciones diferidas.

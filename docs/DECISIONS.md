@@ -1,6 +1,6 @@
 # Registro de decisiones y auditoría documental
 
-Fecha: 2026-10-23. Fase 0.5: contratos de implementación congelados según la instrucción del usuario. Se conservan los 17 expedientes D-01–D-17 y su conflicto original; Git conserva la redacción inicial de Fase 0. No se cambian el Word/PDF, el alcance funcional ni el stack. Fase 1 técnica completada por instrucción posterior; D-15 y la configuración de D-16 tienen evidencia en [DEVELOPMENT_SETUP.md](DEVELOPMENT_SETUP.md). Fase 1.5 cerró D-04/D-07; el núcleo web de Fase 2 y los espacios de Fase 3 están implementados. Fase 3.5 cerró D-05 para reservas; Fase 4 aplica ese contrato con implementación y pruebas. Fase 5 no iniciada.
+Fecha: 2026-10-23. Fase 0.5: contratos de implementación congelados según la instrucción del usuario. Se conservan los 17 expedientes D-01–D-17 y su conflicto original; Git conserva la redacción inicial de Fase 0. No se cambian el Word/PDF, el alcance funcional ni el stack. Fase 1 técnica completada por instrucción posterior; D-15 y la configuración de D-16 tienen evidencia en [DEVELOPMENT_SETUP.md](DEVELOPMENT_SETUP.md). Fase 1.5 cerró D-04/D-07; el núcleo web de Fase 2 y los espacios de Fase 3 están implementados. Fase 3.5 cerró D-05 para reservas; Fase 4 aplica ese contrato con implementación y pruebas. Fase 4.5 cierra documentalmente CU12–CU19: D-02/D-11 resueltas para Fase 5 y D-04/D-05 aplicadas sin reabrirlas. Fase 5 no iniciada.
 
 ## Fuentes verificadas
 
@@ -53,7 +53,7 @@ SQL es contrato principal de tablas, columnas, tipos, PK/FK, nulabilidad, enums,
 
 ## Clasificación de las 17 decisiones originales (cierre de Fase 0.5)
 
-Esta clasificación conserva la fotografía histórica de Fase 0.5, con **un único estado por expediente en ese cierre**. Los estados vigentes de D-04/D-07 y el cierre de D-05 se actualizan en sus fichas y en Readiness for Phase 2/4; no se reescribe el recuento histórico. La clasificación cuenta expedientes de Fase 0, no cada parámetro interno. Una convención puede dejar parámetros posteriores expresamente enumerados; eso no los declara resueltos ni bloquea la fundación.
+Esta clasificación conserva la fotografía histórica de Fase 0.5, con **un único estado por expediente en ese cierre**. Los estados vigentes se actualizan en sus fichas y en Readiness for Phase 2/4/5; no se reescribe el recuento histórico. La clasificación cuenta expedientes de Fase 0, no cada parámetro interno. Una convención puede dejar parámetros posteriores expresamente enumerados; eso no los declara resueltos ni bloquea la fundación.
 
 | Estado | Cantidad |
 | --- | --- |
@@ -117,9 +117,9 @@ Esta clasificación conserva la fotografía histórica de Fase 0.5, con **un ún
 | Impacto | Riesgo de persistir estados inexistentes o confundir estado con condición, resultado, tipo o vigencia. |
 | Decisión vigente de Fase 0.5 | Congelar los 19 enums exactos y la tabla de equivalencias de DOMAIN_MODEL.md. Préstamo “entregado/activo” se persiste ENTREGADO; retorno confirmado “devuelto/finalizado” se persiste DEVUELTO. “Cancelado” no tiene equivalente de préstamo y no autoriza una función de cancelación. “Vencido” y ocupación son derivados; no crear enums. |
 | Justificación | El contrato físico define los valores almacenados. La narrativa se interpreta según objeto y contexto, sin traducir una palabra a un estado distinto por comodidad. |
-| Estado | RESUELTA |
+| Estado | RESUELTA PARA FASE 5 — reconfirmada y concretada en Fase 4.5 sin modificar los 19 enums. |
 | Fase afectada | 2–12 según entidad. |
-| Detalle diferido / límite de la resolución | Las políticas temporales de transiciones no especificadas son parámetros posteriores de D-05, no nuevos estados. |
+| Detalle diferido / límite de la resolución | Para CU12–CU19, transiciones, vencimiento calculado y devolución/revisión quedan cerrados en el contrato de Fase 4.5. No se añade cancelación de préstamos ni finalización por reloj. |
 | Bloquea iniciar Fase 1 | No |
 | Fecha de adopción | 2026-10-23; instrucción Fase 0.5 |
 
@@ -199,7 +199,7 @@ Un usuario puede tener varios roles activos. Evaluar identificadores y permisos 
 | Justificación | Convención técnica explícita de intervalos y de solicitudes frente a compromisos, compatible con resolución posterior del CU. No cambia enums, tipos ni añade funciones. Pruebas concurrentes deben excluir la propia solicitud al comprobar conflictos. |
 | Estado | RESUELTA PARA FASE 4 — cierre de Fase 3.5, aplicado y verificado en Fase 4 sin reinterpretación. |
 | Fase afectada | 3–5; servicios de disponibilidad y transición. |
-| Detalle diferido / límite de la resolución | Cancelación, motivos, estados y concurrencia de reservas cerrados en el contrato de Fase 3.5 al final de este documento. FINALIZADA no tiene disparador automático en Fase 4; se difiere a una fase posterior expresamente autorizada. Los detalles de préstamos/CU16 conservan su momento de Fase 5. |
+| Detalle diferido / límite de la resolución | Cancelación, motivos, estados y concurrencia de reservas cerrados en el contrato de Fase 3.5 al final de este documento. FINALIZADA no tiene disparador automático en Fase 4; se difiere a una fase posterior expresamente autorizada. Fase 4.5 documenta su aplicación a préstamos/CU16 antes de Fase 5, sin reabrir D-05. |
 | Bloquea iniciar Fase 1 | No |
 | Fecha de adopción | 2026-10-23; instrucción Fase 0.5 |
 
@@ -341,9 +341,9 @@ Sustento técnico: [autenticación Laravel 13](https://laravel.com/docs/13.x/aut
 | Impacto | Copiar la flecha podría confirmar entrega tras una identificación inválida. |
 | Decisión vigente de Fase 0.5 | Prevalece CU17: préstamo APROBADO pendiente de entrega; responsable verifica equipo/receptor; QR requerido inválido bloquea confirmación; registrar entrega, fecha/hora, receptor/responsable; equipo PRESTADO y préstamo ENTREGADO; evidencia solo si crítica, después de confirmar operación; mostrar confirmación. Flujo de 12 pasos en USE_CASE_MATRIX.md. |
 | Justificación | La jerarquía funcional prioriza detalle textual del CU sobre figura ilustrativa defectuosa. No es necesario corregir el Word/PDF ni pedir otra aprobación para ignorar esa flecha. |
-| Estado | RESUELTA |
+| Estado | RESUELTA PARA FASE 5 — cierre operativo documental de Fase 4.5. |
 | Fase afectada | 5 y rama QR de 6. |
-| Detalle diferido / límite de la resolución | Ninguno sobre la secuencia; no hay funcionalidad implementada. |
+| Detalle diferido / límite de la resolución | Receptor igual al solicitante; recepcion_confirmada_en permanece NULL; entrega atómica y devolución/revisión definidas en el contrato de Fase 4.5. QR en Fase 6 y Blockchain en Fase 9; no hay funcionalidad de préstamos implementada. |
 | Bloquea iniciar Fase 1 | No |
 | Fecha de adopción | 2026-10-23; instrucción Fase 0.5 |
 
@@ -469,8 +469,8 @@ Estos puntos no se implementaron ni se presentan como especificaciones completas
 
 | Expediente | Detalle pendiente | Momento límite |
 | --- | --- | --- |
-| D-04 | Alcance fino por recurso DIFERIDO EN PARTE; RBAC implementado, sin nueva tabla inferida | Fase 3 concreta CU05/CU06 y Fase 3.5 el núcleo CU07–CU10 por módulo/acción y propiedad. Resolver asignaciones finas solo cuando se autorice ese alcance |
-| D-05 | Reservas: resueltas para Fase 4 en Fase 3.5. FINALIZADA automática y detalles de préstamos permanecen diferidos | Finalización solo en una fase posterior autorizada; préstamos en Fase 5. No bloquean CU07–CU10 |
+| D-04 | Alcance fino por recurso DIFERIDO EN PARTE; RBAC implementado, sin nueva tabla inferida | Fases 3/3.5 concretan CU05–CU10 y Fase 4.5 aplica el mismo alcance por módulo/acción y propiedad a CU12–CU19. Resolver asignaciones finas solo cuando se autorice ese alcance |
+| D-05 | Reservas resueltas para Fase 4; aplicación a préstamos cerrada en Fase 4.5. Solo FINALIZADA automática de reservas sigue diferida | Finalización solo en una fase posterior autorizada. Sin bloqueo documental para CU12–CU19 |
 | D-07 | Autenticación móvil/API y almacenamiento distribuido; web ya resuelta | Cuando se autorice el cliente/API; despliegue antes de Fase 14 |
 | D-08 | Ejecución temporal de monitoreo/liberación, umbrales y combinación de evidencia, conservación de versiones aplicadas | Fase 8, con contrato de datos preparado en 7 |
 | D-09 | Ciclo de emisión/vigencia, obligatoriedad QR por operación y correlación de intentos | Fase 6; ninguna relajación de CHECK/UNIQUE |
@@ -671,3 +671,169 @@ Puede comenzar Fase 4 mediante **una nueva instrucción del usuario**. Este cier
 D-05 permanece **RESUELTA PARA FASE 4**. El contrato precedente se materializó sin nueva ambigüedad: SQL exacto, APROBADA exclusiva, pendientes coexistentes, cuatro transiciones, permisos por rol/propiedad, reloj posterior al lock y lecturas actuales. Se ejecutaron los cinco escenarios obligatorios y nueve pruebas multiproceso, incluida espera del espacio independiente de la coordinación RBAC. [Código, resultados y límites](RESERVATIONS_IMPLEMENTATION.md).
 
 El Readiness anterior es histórico: la nueva instrucción de Fase 4 autorizó su ejecución. No cambia D-04 fino ni los diferidos QR/IoT/liberación/FINALIZADA/Blockchain/notificaciones/CU30. Fase 5 continúa sin iniciar.
+
+## Contrato de equipamiento y préstamos — Fase 4.5
+
+**Fecha: 2026-10-23. Cierre exclusivamente documental para CU12–CU19/RF9–RF15. Fase 5 no iniciada.** Esta sección es el contrato vigente para ese alcance. Conserva la resolución de D-04 y D-05, el defecto visual documentado de D-11 y el historial de fases anteriores. No cambia código, esquema ejecutado, permisos en BD ni disponibilidad funcional.
+
+### Evidencia y decisiones de interpretación
+
+Se reconsultaron ambos originales: RF9–RF15, tablas 18–24 (impresas 122–131 / PDF 123–132); CU12–CU19, tablas 49–56 (impresas 191–202 / PDF 192–203); análisis figuras 86–93 (PDF 235–239); clases figura 108 (PDF 249), diseño lógico figura 109 (PDF 250), diccionarios y SQL final de las seis tablas del alcance (PDF 279–287); secuencia CU14, figura 112 (PDF 303). Se revisaron visualmente clases, ERD, análisis, secuencia y figura 23 de entrega. La secuencia confirma la revalidación antes de registrar PENDIENTE. No hay una secuencia final adicional que autorice delegación o confirmación digital posterior del receptor.
+
+Los CREATE TABLE de tipos_equipamiento, equipamientos_tecnologicos, prestamos, entregas_prestamo, devoluciones_prestamo e incidencias_mantenimiento coinciden entre Word/PDF al normalizar espacios y encabezados. Sus columnas, enums, restricciones y acciones FK permanecen intactos en DATA_MODEL. Las huellas SHA-256 de los originales son las registradas al inicio de este documento.
+
+| Cuestión | Evidencia contrastada | Decisión para Fase 5 |
+| --- | --- | --- |
+| Motivo de rechazo | RF12, tabla 21, paso 5 (PDF 127) exige registrar el motivo; CU16, tabla 53, paso 5.B (PDF 197) dice «cuando corresponda»; SQL permite NULL | La instrucción Fase 4.5 §19 exige resolver esta diferencia considerando RF12: todo rechazo explícito de préstamo requiere motivo no vacío, máximo 500 caracteres. NULL sigue siendo válido antes de resolver y al aprobar. Es una precisión específica de préstamos; no cambia el motivo opcional de reservas de D-05. |
+| Receptor diferente | RF13/CU17 exigen receptor identificado/autorizado; FK distintas permiten representar personas diferentes, pero no establecen delegación ni cómo acreditarla | Receptor igual al solicitante; servidor deriva receptor_id del préstamo y verifica identidad física. No crear delegación, selector libre ni permiso de tercero. |
+| Confirmación de recepción | Diccionario tabla 117 describe fecha de confirmación; clase EntregaPrestamo contiene confirmarRecepcion(Usuario, DateTime); RF13/CU17 y análisis 91 registran confirmación de entrega por el responsable | La existencia de campo/método no define actor, ruta ni acto digital posterior del receptor. recepcion_confirmada_en queda NULL en Fase 5; no copiar fecha_hora como si hubiera ocurrido una confirmación separada. NULL no invalida la entrega registrada ni bloquea devolución. Cualquier flujo digital adicional requiere definición y autorización futura. |
+| Condición indeterminable | Excepción de CU18 (PDF 201), análisis 92 y enums de devolución | PENDIENTE_REVISION, préstamo ENTREGADO y equipo EN_MANTENIMIENTO preventivo (salvo BAJA ya vigente). La excepción prevalece sobre el paso general de finalizar. |
+| Incidencia incompatible | CU19 afecta condición/disponibilidad; SQL no tiene bandera de compatibilidad ni estado operativo anterior | Convención conservadora: todos los registros ABIERTA de CU19 son restricciones operativas incompatibles. No inferir compatibilidad de texto libre ni inventar columnas. Restauración explícita y validada, nunca automática por cierre aislado. |
+
+### Equipamiento, ubicación y edición
+
+EquipamientoTecnologico especializa RecursoInstitucional mediante PK+FK `equipamientos_tecnologicos.recurso_id`. Crear padre y subtipo con el mismo ID en una transacción; no existe `equipamientos_tecnologicos.id`, discriminador ni segundo identificador autogenerado. Los nueve campos son recurso_id, tipo_equipamiento_id, espacio_base_id, descripcion, marca, modelo, numero_serie, estado y referencia_ubicacion. Código/nombre institucionales pertenecen al padre; el código es único entre todos los recursos.
+
+`espacio_base_id` admite NULL y significa 0..1 ubicación base, no contención permanente, custodia ni ámbito del Encargado. Ubicación: equipo → espacio base → piso, cuando existe ese espacio. No añadir piso directo, módulo, edificio ni facultad. `numero_serie` es opcional y UNIQUE cuando existe; ausencia/vacío normalizado se guarda NULL, admitiendo varios equipos sin serie. Tipo obligatorio; datos y longitudes respetan DATA_MODEL. Características descriptivas usan campos existentes, sin inventar catálogo/pivot de características de equipo.
+
+Estados exactos del equipo: DISPONIBLE, PRESTADO, EN_MANTENIMIENTO, BAJA. CU12 no es un atajo para falsificar custodia: PRESTADO deriva de entrega real; un alta no puede comenzar PRESTADO sin préstamo. Estado inicial DISPONIBLE por defecto; EN_MANTENIMIENTO/BAJA requieren cambiar_estado. Cambios administrativos no pueden eliminar un préstamo ENTREGADO, una revisión pendiente o una incidencia ABIERTA. Una modificación de código, tipo, base o descripción no reasigna ni elimina préstamos. No hay borrado físico de historia.
+
+### D-02 y D-05 aplicadas al ciclo del préstamo
+
+Estados persistidos únicos: PENDIENTE, APROBADO, RECHAZADO, ENTREGADO, DEVUELTO. No añadir ACTIVO, FINALIZADO, VENCIDO, CANCELADO ni EN_USO. «Activo» describe ENTREGADO; «finalizado» describe DEVUELTO tras retorno confirmado. Vencido es exactamente `estado = ENTREGADO AND ahora_servidor > fin_previsto`; en la igualdad no está vencido. No cambia el enum ni libera el equipo. Con devolución pendiente puede seguir calculándose vencido: CU15 mostrará además PENDIENTE_REVISION, sin ocultarla ni afirmar ausencia de recepción física.
+
+| Origen | Destino | CU y guardas | Escritura atómica |
+| --- | --- | --- | --- |
+| PENDIENTE | APROBADO | CU16, resolver, disponibilidad vigente completa | resuelto_por_id de sesión; resuelto_en servidor; motivo_rechazo NULL |
+| PENDIENTE | RECHAZADO | CU16, resolver, motivo obligatorio | resuelto_por_id y resuelto_en; motivo_rechazo no vacío, hasta 500 |
+| APROBADO | ENTREGADO | CU17, registrar_entrega, receptor identificado, equipo compatible | Una entrega, préstamo ENTREGADO y equipo PRESTADO |
+| ENTREGADO | DEVUELTO | CU18, registrar_devolucion, condición final determinable | Devolución CONFIRMADA y estado operativo según restricciones |
+
+No hay selector genérico, reapertura, cancelación, salto de pasos ni transición por reloj. Solicitudes PENDIENTE pueden coexistir para el mismo equipo/periodo; no conceden exclusividad. Se adquiere compromiso temporal al aprobar. Un conflicto al aprobar deja la solicitud PENDIENTE y sin nuevos datos de resolución; solo un rechazo explícito la convierte en RECHAZADO. Rechazar no requiere disponibilidad, porque debe poder rechazarse una solicitud incompatible.
+
+CU14 valida motivo obligatorio hasta 500 caracteres, equipo, permiso y periodo; toma solicitante_id/solicitado_en del servidor y revalida disponibilidad dentro de la transacción antes de insertar PENDIENTE con resolución NULL. Equipo, solicitante y periodo no se editan genéricamente después para eludir la decisión.
+
+No existía formato de prestamos.codigo en el cierre anterior: se adopta `PRE-` + UUID v4 canónico en minúsculas (40 caracteres ASCII), generado por servidor, único e inmutable. Se mantiene VARCHAR(60)/uq_prestamos_codigo; reintento acotado de generación ante colisión de ese índice, máximo tres intentos, sin ocultar otros errores. Código no secreto, no credencial ni QR.
+
+Se reutilizan `[inicio, fin)`, `fin > inicio`, solapamiento `inicio_A < fin_B AND inicio_B < fin_A`, America/La_Paz y reloj de servidor. Intervalos adyacentes no colisionan. No se inventan anticipación, duración máxima, prórroga, expiración de aprobación ni ventana horaria adicional de entrega ausentes de RF/CU. El periodo previsto no acredita devolución real; la custodia mantiene sus restricciones aunque el periodo termine.
+
+### Disponibilidad única de equipamiento
+
+Fase 5 creará **EquipmentAvailabilityService**, usado por CU13, CU14 y la aprobación CU16; CU17 reutilizará sus comprobaciones pertinentes excluyendo el propio préstamo aprobado. Un equipo es candidato solo si se cumplen conjuntamente:
+
+1. Estado operativo DISPONIBLE; PRESTADO, EN_MANTENIMIENTO y BAJA excluyen, incluso para consultas de periodos futuros.
+2. Periodo válido y filtros satisfechos: tipo, espacio base/piso mediante la relación existente, código/nombre y descripción/marca/modelo cuando se habilite búsqueda textual. Un filtro de estado no convierte recursos inhabilitados en candidatos. El catálogo CU12 puede mostrar otros estados, diferenciándolo de disponibilidad para solicitar.
+3. Ningún préstamo APROBADO o ENTREGADO del mismo equipo cuyo intervalo previsto se solape; excluir por ID el préstamo evaluado al aprobar/entregar. PENDIENTE, RECHAZADO y DEVUELTO no bloquean temporalmente.
+4. Ninguna incidencia o mantenimiento ABIERTA incompatible. También se comprueba que no exista préstamo ENTREGADO o devolución PENDIENTE_REVISION que contradiga un DISPONIBLE inconsistente; denegar, sin reparar silenciosamente historia.
+
+La consulta es informativa: para un compromiso se exige el periodo completo; una consulta de catálogo sin periodo no promete disponibilidad temporal. La decisión transaccional usa los mismos predicados con lecturas actuales después de adquirir el lock. No duplicar reglas en Vue/controladores. No reservar por estado mostrado antes de confirmar ni liberar por fin_previsto vencido.
+
+### D-11 aplicada a entrega y recepción
+
+CU17 requiere Administrador o Encargado con prestamos.registrar_entrega. El responsable verifica físicamente equipo y receptor igual al solicitante antes de confirmar. Dentro de la transacción y del orden común de locks: releer préstamo APROBADO y equipo; verificar ausencia de entrega existente, equipo DISPONIBLE, disponibilidad/conflictos e incidencias vigentes y correspondencia de la identidad verificada. El servidor deriva entregado_por_id de sesión y receptor_id del préstamo, y registra fecha_hora del servidor.
+
+`condicion_entrega` es descripción breve obligatoria, texto no vacío hasta 255 caracteres; no enum. `observacion` opcional hasta 500. `recepcion_confirmada_en = NULL` conforme a la interpretación anterior. Crear entregas_prestamo, cambiar condicionalmente APROBADO→ENTREGADO y equipo→PRESTADO como una unidad. UNIQUE(prestamo_id) asegura como máximo una entrega; comprobación de estado y escritura condicional evitan reejecutarla. Reintento de una entrega confirmada no crea otra ni modifica su fecha/responsables. Fallo revierte todo.
+
+La verificación física y confirmación del responsable forman CU17; no se inventa firma digital del receptor. QR no se exige, genera ni valida en Fase 5. CU20 se integra condicionalmente en Fase 6. CU24 queda para Fase 9, después del commit de la operación crítica. La corrección de la flecha de figura 23 sigue vigente: identificación inválida nunca autoriza entrega.
+
+### Devolución y continuación de revisión
+
+Solo un préstamo ENTREGADO con su entrega identificable entra a CU18. Administrador/Encargado con prestamos.registrar_devolucion verifica el equipo recibido; recibido_por_id/registrada_en provienen de sesión/reloj. La recepción no se deniega por mantenimiento o BAJA: debe poder registrarse el retorno sin levantar esas restricciones. UNIQUE(prestamo_id) en devoluciones_prestamo impide una segunda devolución.
+
+| Condición recibida | Estado de devolución | Préstamo | Equipamiento y obligaciones |
+| --- | --- | --- | --- |
+| ADECUADA | CONFIRMADA | DEVUELTO | DISPONIBLE solo si no persisten BAJA, incidencias, otra revisión o custodia incompatible; de lo contrario conservar la restricción. Confirmador y fecha obligatorios. |
+| CON_INCIDENCIA | CONFIRMADA | DEVUELTO | Crear o vincular incidencia ABIERTA del mismo equipo mediante devolucion_id; EN_MANTENIMIENTO, preservando BAJA si ya existe. Retorno físico confirmado no significa recurso apto. |
+| NO_DETERMINABLE | PENDIENTE_REVISION | Sigue ENTREGADO | EN_MANTENIMIENTO preventivo, salvo BAJA vigente. confirmado_por_id/confirmada_en NULL. No liberar ni finalizar. |
+
+Toda fila de la tabla representa una transacción indivisible junto con sus incidencias/estados derivados. Descripción de condición obligatoria para CON_INCIDENCIA y NO_DETERMINABLE como regla funcional explicable; SQL nullable se conserva. Para ADECUADA puede ser NULL; observacion es opcional. Ambos campos admiten hasta 500 caracteres. En confirmación inmediata, confirmado_por_id es el responsable de sesión y confirmada_en la hora de confirmación, no anterior a registrada_en; puede ser el mismo responsable/instante de recepción.
+
+Para CON_INCIDENCIA se exige incidencias.gestionar además de registrar_devolucion. Se crea el reporte con descripción de anomalía o se vincula uno ABIERTA existente del mismo recurso, aún sin otra devolución vinculada; no se toma una incidencia de otro equipo ni se sobrescribe un vínculo histórico. Fallo del vínculo/reporte revierte la devolución completa. NO_DETERMINABLE no inventa por sí sola un diagnóstico: el estado preventivo y la fila pendiente bastan para bloquear; si se documenta una anomalía adicional se aplica CU19 con su permiso.
+
+La continuación de CU18/CU19 permite que un Administrador/Encargado vigente con prestamos.registrar_devolucion revise y confirme **la misma fila** PENDIENTE_REVISION. No necesita ser el responsable que recibió inicialmente el equipo; debe verificar la condición final y conservar recibido_por_id/registrada_en. Condición final solo ADECUADA o CON_INCIDENCIA; la segunda necesita incidencias.gestionar. Completar confirmado_por_id/confirmada_en, pasar devolución a CONFIRMADA y préstamo ENTREGADO→DEVUELTO, recalculando equipo con las mismas guardas. No cerrar incidentes implícitamente. Una devolución CONFIRMADA es terminal para estas acciones; no crear otra para corregirla. No hay CU nuevo, registro de auditoría alternativo ni historia ficticia de revisiones (CU30 diferido).
+
+### Incidencias, mantenimiento y recuperación
+
+Una sola tabla `incidencias_mantenimiento` se refiere a recursos_institucionales, aplicable a espacios y equipamiento. Tipos exactos INCIDENCIA/MANTENIMIENTO; estados ABIERTA/CERRADA. Reportado_por_id/cerrado_por_id derivan del actor autenticado. Descripción no vacía obligatoria, recurso existente y fechas válidas; devolucion_id opcional solo cuando coincide el equipo de la devolución. No tabla puente, tablas por subtipo ni enlace a devolución de un espacio.
+
+**Alcance temporal conservador:** todo registro ABIERTA de CU19 restringe desde su registro hasta cierre explícito. inicio/fin_previsto describen el periodo de atención; fin_previsto es una previsión, no un alta automática al vencer. Incluso un mantenimiento planificado a futuro no promete disponibilidad mientras figure ABIERTA. Esta convención evita inventar un planificador, una marca de incompatibilidad o una restauración por reloj; debe explicarse en la futura interfaz. Para un fin previsto informado, la aplicación exige fin_previsto > inicio; SQL conserva literalmente su CHECK más permisivo `>=`. NULL significa sin fin previsto. Cierre exige cerrada_en >= inicio; no se falsea una fecha futura para cerrar antes de inicio. Estas guardas no alteran el SQL ni los intervalos de D-05.
+
+Apertura CU19 identifica préstamos/reservas activos o futuros afectados y presenta el impacto permitido al actor, sin cancelarlos ni rechazarlos automáticamente. Equipo pasa EN_MANTENIMIENTO salvo BAJA ya vigente o decisión administrativa explícita de BAJA. Espacio pasa EN_MANTENIMIENTO o BLOQUEADO según condición confirmada por el responsable, sin valor NO_DISPONIBLE. La ausencia de reservas no habilita un recurso con restricción. En Fase 5 se ampliará **SpaceAvailabilityService** para excluir incidencias ABIERTA en CU06/CU07/CU09, conservando estados, reservas y bloqueos actuales; todos los escritores de estado de CU05 deberán respetar esta guarda. No se modifica ese servicio en Fase 4.5.
+
+Cerrar solo ABIERTA: registrar CERRADA, cerrado_por_id, cerrada_en y solucion no vacía que describa solución o justificación del cierre; conservar la fila. La obligatoriedad funcional no cambia la nulabilidad previa al cierre. Verificar bajo lock otras incidencias/mantenimientos ABIERTA, devoluciones pendientes, préstamos ENTREGADO, bloqueos y estado administrativo. Se puede cerrar un problema resuelto sin habilitar todavía el recurso por otro impedimento.
+
+**Prioridad de recuperación de equipos:** BAJA se conserva; si no, otra ABIERTA o PENDIENTE_REVISION mantiene EN_MANTENIMIENTO; si no, un préstamo ENTREGADO mantiene PRESTADO; si no, puede restituirse DISPONIBLE tras confirmación autorizada de aptitud. Un préstamo APROBADO futuro no obliga al enum PRESTADO, pero sigue excluyendo su periodo en el servicio. Cerrar una incidencia no confirma una devolución pendiente. La revisión pendiente prevalece sobre PRESTADO porque se recibió físicamente el equipo sin certificar todavía su condición.
+
+**Estado administrativo no reconstruible:** SQL no guarda el estado previo ni la causa de cada cambio. Por ello el cierre no ejecuta una restauración automática. Sin una confirmación explícita de aptitud/estado por actor con permiso de cambiar_estado se conserva el estado restrictivo. Con ella se aplica la prioridad anterior. No añadir previous_state, tabla de causas ni inferir que todo EN_MANTENIMIENTO pertenecía únicamente a la incidencia que se cierra. Esta misma guarda aplica a retorno ADECUADA: si el estado previo era PRESTADO, la confirmación permite DISPONIBLE cuando cesó la custodia y no hay otras restricciones. Si era EN_MANTENIMIENTO, la confirmación del retorno por sí sola no acredita que cesaron todas las causas: para habilitar se exige además equipamientos.cambiar_estado y confirmación explícita de aptitud tras revisar las restricciones; en su ausencia se conserva EN_MANTENIMIENTO. BAJA siempre se conserva. Así la revisión pendiente puede confirmarse sin forzar una habilitación ni inventar la causa anterior.
+
+Para espacios: otra ABIERTA mantiene su restricción. Sin ellas, se conserva BLOQUEADO/EN_MANTENIMIENTO hasta confirmación expresa del responsable con espacios.cambiar_estado de que cesó también cualquier causa administrativa. No restituir DISPONIBLE mientras haya bloqueo activo aplicable al instante de restauración. Los bloqueos activos futuros y reservas APROBADA siguen excluyendo sus periodos en SpaceAvailabilityService aunque el estado operativo pueda ser DISPONIBLE ahora; nunca se eliminan para restaurar. Un cierre puede completarse dejando el espacio restringido. La nueva incidencia concurrente se coordina con esa misma comprobación.
+
+BAJA representa retiro operativo y excluye solicitud, aprobación y entrega. Solo Administrador/Encargado con equipamientos.cambiar_estado puede decidir entrada o salida de BAJA. No se aplica automáticamente por una incidencia ni se levanta por cierre/retorno. Entrar BAJA no borra compromisos; debe mostrar su impacto y permitir recibir equipos ya entregados. Salir requiere decisión explícita y revalidación: con incidencias/revisión conserva EN_MANTENIMIENTO; con custodia ENTREGADO corresponde PRESTADO; solo libre de esas causas puede quedar DISPONIBLE. Ningún cambio administrativo suplanta entregar/devolver.
+
+### D-04 aplicada y catálogo previsto
+
+Se mantiene RBAC por módulo/acción y propiedad autorizado en fases anteriores y aplicado por la petición Fase 4.5 §§47–49. Ámbito fino por recurso continúa diferido; no se inventa relación encargado–equipo/espacio, ni se interpreta espacio_base_id como autorización. No se reabre D-04 ni se exige esa asignación inexistente para bloquear el núcleo autorizado. Administrador/Encargado acceden al módulo administrativo solo con permiso explícito; Docente/Estudiante consultan solicitudes propias por solicitante_id. Receptor y demás participantes no adquieren facultad de resolver, entregar o confirmar devoluciones.
+
+Catálogo **previsto, exclusivamente documental**, aún no creado en PermissionCatalog ni seeders ni BD. A = Administrador; E = Encargado de Laboratorio; D = Docente; S = Estudiante. Cada permiso debe proceder de un mismo rol vigente elegible; cuenta/sesión válidas, sin bypass de A, roles nuevos ni comodines.
+
+| Código previsto | Roles elegibles | RF / CU | Límite |
+| --- | --- | --- | --- |
+| equipamientos.ver | A, E, D, S | RF9/10; CU12/13 | Catálogo/detalle permitido; no datos privados de otros préstamos |
+| equipamientos.gestionar | A, E | RF9; CU12 | Alta/edición de padre, equipo y tipos; no borrar historia ni alterar custodia |
+| equipamientos.cambiar_estado | A, E | RF9/15; CU12/19 | Estado administrativo, incluido BAJA; guardas de custodia/incidencias/revisión |
+| prestamos.ver_propios | D, S | RF11–14; CU15 | solicitante_id = sesión, sin acceso por ID ajeno |
+| prestamos.ver_administrativos | A, E | RF11–14; CU15/16–18 | Consulta administrativa por módulo/acción; ámbito fino diferido |
+| prestamos.solicitar | D, S | RF11; CU14 | Solicitante desde sesión; revalidación y PENDIENTE |
+| prestamos.resolver | A, E | RF12; CU16 | Solo PENDIENTE; motivo obligatorio al rechazar |
+| prestamos.registrar_entrega | A, E | RF13; CU17 | APROBADO, entrega única y receptor = solicitante |
+| prestamos.registrar_devolucion | A, E | RF14; CU18 | ENTREGADO; recibir y confirmar revisión existente |
+| incidencias.ver | A, E | RF15; CU19 | Información administrativa del recurso; no consulta libre por solicitantes |
+| incidencias.gestionar | A, E | RF15; CU19/CU18 | Apertura/datos de atención y enlace compatible con devolución |
+| incidencias.cerrar | A, E | RF15; CU19 | Cierre una sola vez; no equivale a permiso de habilitar o dar de baja |
+
+CU19 exige además el permiso de cambio de estado del subtipo cuando modifica/restaura su estado (equipamientos.cambiar_estado o espacios.cambiar_estado ya existente). CU18 con anomalía requiere incidencias.gestionar; los cambios derivados obligatorios de entrega/devolución y EN_MANTENIMIENTO preventivo están cubiertos por su permiso de operación y no permiten estados arbitrarios. Retirar un permiso debe denegar la siguiente solicitud, también después de esperar un lock. Ser A/E sin rol D/S habilitado no concede solicitar. Los listados no conceden sus acciones; las Policies vuelven a comprobar cada objeto.
+
+### Transacciones y orden único de locks
+
+El protocolo toma como base el código existente: AdministrationService/SpaceManagementService/ReservationService coordinan cambios sobre la fila de Rol Administrador; SpaceManagementService::save bloquea subtipo antes que padre. Esa fila coordina RBAC, no concede privilegios. Fase 4.5 no cambia esos servicios.
+
+Jerarquía única para Fase 5, omitiendo únicamente niveles no afectados; conservar la solicitud objetivo antes de sus conflictos, como exige el contrato vigente de reservas:
+
+1. Transacción InnoDB → fila de Rol Administrador usada por la coordinación RBAC → reautorización con identidad/permisos vigentes. No adquirir después otro lock de usuario en orden inverso al protocolo de seguridad; cualquier escritor de permisos debe conservar la coordinación común.
+2. Filas de subtipo de los recursos afectados (equipo o espacio), por recurso_id ascendente global; luego filas padre recursos_institucionales por id ascendente si se necesitan. Nunca bloquear incidencia/préstamo antes del recurso ni padre antes del subtipo existente. Al crear equipo nuevo no existe fila que bloquear: después de RBAC insertar padre y subtipo atómicamente; UNIQUE coordina identificadores.
+3. Solicitud objetivo, si existe: reserva o préstamo por PK, revalidando su relación con el recurso. Después, dependencias/conflictos en orden bloqueos_espacio → otras reservas → otros prestamos, por ID ascendente en cada conjunto. La fila objetivo ya bloqueada se excluye de conflictos. Es el mismo orden lógico para todos los servicios; si no hay solicitud objetivo se omite ese nivel. El recurso coordinador adquirido antes impide que otro escritor bloquee un objetivo distinto del mismo recurso y cause una inversión entre solicitudes.
+4. entregas_prestamo → devoluciones_prestamo, por PK ascendente; después incidencias_mantenimiento por PK ascendente. Si una incidencia enlaza devolución, localizar IDs previamente y comprobar otra vez las relaciones bajo locks. No adquirir primero la incidencia y luego remontar al préstamo/recurso.
+5. Tras adquirir todos los locks necesarios, revalidar guardas/estado, escribir transición condicional cuyo origen todavía coincida y exigir exactamente una fila afectada; commit o rollback total. Una fila insertada en esta transacción no necesita un lock previo imposible; se mantiene bloqueado su recurso coordinador antes de consultar ausencia o crear hijos.
+
+Las lecturas previas solo localizan IDs; no autorizan ni congelan el resultado. Bajo REPEATABLE READ no usar una lectura de snapshot anterior al tiempo de espera para decidir. Leer explícitamente conflictos actuales con FOR UPDATE después de bloquear el recurso; un FOR UPDATE exterior no convierte automáticamente subconsultas NOT EXISTS en lecturas actuales. No lanzar esos locks desde una comprobación tardía que invierta los niveles ya adquiridos. El servicio central debe separar adquisición de filas y evaluación compartida de predicados. Se conserva expresamente el orden de ReservationService: RBAC → espacio → reserva objetivo → bloqueos/conflictos consultados por SpaceAvailabilityService. Fase 5 añadirá las incidencias al final de esa adquisición y aplicará el mismo protocolo a préstamos. No se invierte ni reabre el contrato de D-05; la integración requiere regresión T-P15 y de Fase 4.
+
+Todos los escritores que afectan disponibilidad respetarán este protocolo: CU12, CU14, CU16–CU19 y modificaciones de estado/bloqueos de espacios CU05, además de CU07/CU09/CU10 al integrar CU19. La fila del recurso evita la carrera incluso cuando no existen préstamos/incidencias que bloquear. No tabla de locks ni exclusión por navegador. Mantener reintentos de transacción acotados (tres, como el código actual) para deadlock; no confundir conflicto de negocio con error reintentable. La coordinación RBAC global serializa recursos distintos: limitación conocida, sin prometer escalabilidad medida ni cambiarla en esta fase.
+
+Operaciones atómicas obligatorias: padre+equipo; edición/estado administrativo; solicitud; aprobación; rechazo; entrega+hito+estados; devolución+hito+estados; devolución con incidencia/vínculo; confirmación de revisión existente; apertura/cierre de incidencia y sus cambios derivados. Ninguna llamada remota, interacción humana ni espera de QR/Blockchain dentro de la transacción. Formularios/inspección física preceden a la confirmación; el servidor vuelve a validar al recibirla.
+
+### Integraciones diferidas y límites de aceptación
+
+CU20: extensión QR en Fase 6; entrega/devolución de Fase 5 funcionan sin QR, tablas/códigos/validaciones ni obligación simulada. D-09 sigue pendiente solo para esa integración. CU24: evidencia de operaciones críticas después del commit principal, Fase 9; no generar hashes/evidencias ni prometer auditoría Blockchain ahora. RF21/CU26: Fase 10, sin notificaciones temporales; solo confirmación/error de la petición en la interfaz. CU30: fase posterior autorizada, sin registros_actividad ni tabla alternativa en Fase 5. Campos de responsabilidad/fechas y conservación de filas no equivalen a bitácora completa.
+
+Pruebas futuras obligatorias, con IDs T-P01–T-P18, están en [BUSINESS_RULES.md](BUSINESS_RULES.md#aceptación-futura-de-equipamiento-y-préstamos--fase-5). Deben ejecutarse en MySQL real aislado al implementar Fase 5; no se presentan como ejecutadas en este cierre. La regresión de reservas deberá comprobar además la integración CU19 sin reabrir D-05.
+
+## Readiness for Phase 5
+
+| Puerta documental | Estado al cerrar Fase 4.5 |
+| --- | --- |
+| D-02 | RESUELTA PARA FASE 5: enums exactos, cuatro transiciones, vencido calculado y retorno/revisión definidos |
+| D-04 | Aplicación confirmada: módulo/acción y propiedad; mismo rol elegible con permiso; ámbito fino diferido sin entidades inventadas |
+| D-05 | Principios reutilizados sin reapertura: [inicio, fin), pendientes sin exclusividad, APROBADO/ENTREGADO bloqueantes y revalidación actual bajo lock |
+| D-11 | RESUELTA PARA FASE 5: texto CU17 prevalece; receptor igual al solicitante; entrega única/atómica; recepcion_confirmada_en NULL |
+| Catálogo y modelo | PK compartida, nueve campos de equipo, ubicación opcional, serie opcional única, PRE-UUIDv4 y SQL sin cambios |
+| Disponibilidad | EquipmentAvailabilityService único previsto; condiciones operativas/temporales/incidencias; CU19 extenderá SpaceAvailabilityService |
+| Devolución | ADECUADA/CON_INCIDENCIA confirmadas; NO_DETERMINABLE pendiente; confirmación posterior sobre la misma fila con actor/fecha |
+| Incidencias y restauración | Recurso común, ABIERTA/CERRADA, prioridad de restricciones, BAJA protegida y habilitación explícita validada |
+| Concurrencia | Aprobaciones incompatibles: una gana y otra queda PENDIENTE; entrega/devolución únicas; restauración serializada con apertura |
+| Locking y atomicidad | RBAC → subtipos → padres necesarios → solicitud objetivo → bloqueos/otras reservas/otros prestamos → entregas → devoluciones → incidencias; relacionados por PK |
+| Permisos | Doce códigos previstos, matriz y guardas definidos; ninguno creado en código/BD |
+| Integraciones diferidas | QR 6; Blockchain 9; notificaciones 10; CU30 posterior. No bloquean el núcleo delimitado de Fase 5 |
+| Implementación/pruebas de Fase 5 | Pendientes, requieren nueva instrucción; no son bloqueantes documentales ni evidencia funcional existente |
+| Bloqueantes documentales restantes para el alcance autorizado de Fase 5 | **0** |
+
+Fase 5 puede comenzar cuando el usuario la instruya. Este cierre no la inicia ni declara funcionales CU12–CU19. D-04 fino, D-09, D-12 y demás integraciones conservan sus límites futuros expresos.

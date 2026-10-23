@@ -66,7 +66,7 @@ Contrato D-02 resuelto: los 19 campos ENUM del SQL final se conservan completos 
 | `espacios_academicos.estado` | `DISPONIBLE`, `BLOQUEADO`, `EN_MANTENIMIENTO` | Estado operativo. Libre, ocupado y reservado son disponibilidad/ocupación calculadas; DISPONIBLE no garantiza que el intervalo esté libre. |
 | `equipamientos_tecnologicos.estado` | `DISPONIBLE`, `PRESTADO`, `EN_MANTENIMIENTO`, `BAJA` | Entregado/en préstamo = PRESTADO. Dañado, perdido, bloqueado o no disponible no crean valores ni se convierten automáticamente en BAJA; CU19 y las restricciones concretas determinan el tratamiento. |
 | `reservas.estado` | `PENDIENTE`, `APROBADA`, `RECHAZADA`, `CANCELADA`, `LIBERADA`, `FINALIZADA` | Solicitada = PENDIENTE; autorizada = APROBADA. Activa/en uso describe una APROBADA en su periodo/contexto; no añade ACTIVA. Cancelación, liberación y finalización conservan valores distintos. |
-| `prestamos.estado` | `PENDIENTE`, `APROBADO`, `RECHAZADO`, `ENTREGADO`, `DEVUELTO` | Pendiente de entrega = APROBADO; entregado/activo/pendiente de devolución = ENTREGADO; finalizado por devolución confirmada = DEVUELTO. Cancelado no tiene equivalente automático ni CU de cancelación. Vencido es ENTREGADO sin devolución al superar fin_previsto, condición derivada. |
+| `prestamos.estado` | `PENDIENTE`, `APROBADO`, `RECHAZADO`, `ENTREGADO`, `DEVUELTO` | Pendiente de entrega = APROBADO; entregado/activo/pendiente de devolución = ENTREGADO; finalizado por devolución confirmada = DEVUELTO. Cancelado no tiene equivalente automático ni CU de cancelación. Vencido = ENTREGADO y ahora_servidor > fin_previsto, condición derivada; una devolución PENDIENTE_REVISION aún no finaliza el préstamo. |
 | `devoluciones_prestamo.condicion` | `ADECUADA`, `CON_INCIDENCIA`, `NO_DETERMINABLE` | Retorno en buenas condiciones = ADECUADA; anomalía = CON_INCIDENCIA; condición desconocida = NO_DETERMINABLE. No confundir condición con estado de devolución. |
 | `devoluciones_prestamo.estado` | `PENDIENTE_REVISION`, `CONFIRMADA` | En revisión = PENDIENTE_REVISION; confirmación definitiva = CONFIRMADA. NO_DETERMINABLE conserva revisión, sin cerrar préstamo ni liberar equipo automáticamente. |
 | `incidencias_mantenimiento.tipo` | `INCIDENCIA`, `MANTENIMIENTO` | Distingue reporte de incidencia y mantenimiento; tipo no equivale a estado abierto/cerrado. |
@@ -108,7 +108,7 @@ Contrato D-02 resuelto: los 19 campos ENUM del SQL final se conservan completos 
 | Sensor | HABILITADO / DESHABILITADO | Falta de comunicación no crea un tercer valor; se muestra salud/frescura como información derivada |
 | Evidencia | PENDIENTE / REGISTRADA | El resultado de verificación tiene su enum independiente; no mezclar ambos |
 
-La tabla describe comportamientos observados, no completa una máquina de estados que el informe no define. Las guardas fijadas en Fase 0.5 se aplican desde su fase; solo los detalles enumerados como diferidos en DECISIONS deben cerrarse antes de implementar su punto dependiente. Véanse [BUSINESS_RULES.md](BUSINESS_RULES.md) y [DECISIONS.md](DECISIONS.md).
+La tabla sintetiza comportamientos del informe; los contratos posteriores de reservas y préstamos de este documento concretan sus transiciones autorizadas. Las guardas fijadas en Fase 0.5 se aplican desde su fase; solo los detalles enumerados como diferidos en DECISIONS deben cerrarse antes de implementar su punto dependiente. Véanse [BUSINESS_RULES.md](BUSINESS_RULES.md) y [DECISIONS.md](DECISIONS.md).
 
 ## Interpretación de seguridad cerrada en Fase 1.5
 
@@ -142,3 +142,25 @@ La [definición completa](DECISIONS.md#contrato-de-reservas--cierre-d-05-de-fase
 ## Materialización de reservas — Fase 4
 
 `Reserva`, `EstadoReserva`, sus cuatro relaciones y `EspacioAcademico.reservas` materializan el contrato anterior. El código inmutable se genera en el modelo; solicitud y transiciones específicas se ejecutan mediante `ReservationService`. Las cuatro transiciones congeladas están implementadas y verificadas; LIBERADA/FINALIZADA no tienen acción actual. [Evidencia](RESERVATIONS_IMPLEMENTATION.md).
+
+## Ciclo de equipamiento y préstamos — contrato de Fase 4.5
+
+**D-02/D-11 resueltas para Fase 5; implementación pendiente.** [Contrato completo](DECISIONS.md#contrato-de-equipamiento-y-préstamos--fase-45). Se mantienen los 19 ENUM oficiales y las entidades del diseño, sin clases/tablas implementadas en esta revisión.
+
+EquipamientoTecnologico conserva la identidad del RecursoInstitucional mediante recurso_id PK+FK, tipo obligatorio y espacio_base 0..1. El equipo puede tener ubicación base sin estar permanentemente contenido allí: equipo→espacio→piso; no hay módulo/edificio/facultad. Serie opcional y única cuando existe. Crear padre y especialización es una sola operación atómica.
+
+Las únicas transiciones de Prestamo en Fase 5 serán PENDIENTE→APROBADO, PENDIENTE→RECHAZADO, APROBADO→ENTREGADO y ENTREGADO→DEVUELTO. Solicitud pendiente no asigna exclusividad. APROBADO/ENTREGADO bloquean intervalos previstos solapados; equipo PRESTADO, EN_MANTENIMIENTO o BAJA impide nueva disponibilidad física. Vencido se calcula con `estado = ENTREGADO AND ahora > fin_previsto`, sin persistir VENCIDO ni terminar el préstamo. «Activo» se interpreta ENTREGADO y «finalizado» DEVUELTO; no se admite cancelación de préstamo por una palabra narrativa.
+
+| Hito de dominio | Resultado congelado |
+| --- | --- |
+| Solicitud y resolución | Código servidor PRE-UUIDv4 único/inmutable; motivo de solicitud requerido; aprobar deja motivo_rechazo NULL; rechazar exige motivo según RF12. Conflicto de aprobación conserva PENDIENTE. |
+| Entrega | Máximo una por préstamo APROBADO; receptor=solicitante, responsable de sesión, condición textual obligatoria. Préstamo ENTREGADO/equipo PRESTADO atómicos. recepcion_confirmada_en permanece NULL: campo/método de clase no autoriza un flujo digital posterior no descrito. |
+| Retorno ADECUADA | Devolución CONFIRMADA, préstamo DEVUELTO, equipo DISPONIBLE solo sin otras restricciones. |
+| Retorno CON_INCIDENCIA | Devolución CONFIRMADA, préstamo DEVUELTO y reporte/vínculo a IncidenciaMantenimiento; equipo EN_MANTENIMIENTO, preservando BAJA. |
+| Retorno NO_DETERMINABLE | Devolución PENDIENTE_REVISION, préstamo ENTREGADO y mantenimiento preventivo, preservando BAJA; sin confirmador/fecha final. |
+| Continuación de revisión | Administrador/Encargado autorizado actualiza la misma devolución a condición ADECUADA/CON_INCIDENCIA y CONFIRMADA con actor/fecha; no segundo retorno ni CU nuevo. |
+| Incidencia/mantenimiento | Recurso común; tipos INCIDENCIA/MANTENIMIENTO y ABIERTA/CERRADA. Todas las ABIERTA son incompatibles en Fase 5; fin previsto no las cierra. |
+| Recuperación del equipo | BAJA prevalece; luego otra ABIERTA o revisión pendiente→EN_MANTENIMIENTO; luego préstamo ENTREGADO→PRESTADO; libre de esas causas puede DISPONIBLE tras confirmar aptitud. No habilitación automática al cerrar. |
+| Recuperación del espacio | Considerar otras ABIERTA, bloqueos activos por periodo y estado administrativo. Cierre no reconstruye causa previa: habilitación explícita con permiso y validación; mantener restricción si falta esa confirmación. |
+
+D-04 aplica permiso por módulo/acción y propiedad del solicitante; no relación fina responsable–recurso inventada. D-05 conserva [inicio, fin), fin>inicio y lecturas actuales tras lock; la prioridad de revisión sobre PRESTADO distingue custodia pendiente de cierre y condición física recibida. BAJA es decisión administrativa explícita, no efecto automático del daño. Los permisos específicos y el protocolo único se encuentran en DECISIONS. QR/Blockchain/notificaciones/bitácora mantienen sus fases posteriores.

@@ -295,6 +295,7 @@ Fuente: tabla 49; p. 191 (PDF 192); figura 40; análisis figura 86.
 | Entidades / clases principales | RecursoInstitucional (abstracto), TipoEquipamiento, EquipamientoTecnologico, RegistroActividad |
 | Tablas directamente relacionadas | `recursos_institucionales`, `tipos_equipamiento`, `equipamientos_tecnologicos`, `registros_actividad` |
 | Módulo futuro y fase | Gestión de Equipamiento y Préstamos; Fase 5 |
+| Estado y precisión de implementación | Contrato Fase 4.5: PK compartida, nueve campos, serie/base opcionales, guardas de estado y BAJA; T-P01/02/16. Implementación pendiente. |
 | Pruebas necesarias | T-CU12: Código/serie duplicados; tipo/base inexistentes; estado permitido; cambio incompatible con préstamo activo. |
 
 ## CU13 — Consultar disponibilidad de equipamiento tecnológico
@@ -315,6 +316,7 @@ Fuente: tabla 50; p. 192 (PDF 193); figura 41; análisis figura 87.
 | Entidades / clases principales | TipoEquipamiento, EquipamientoTecnologico, Prestamo, IncidenciaMantenimiento |
 | Tablas directamente relacionadas | `tipos_equipamiento`, `equipamientos_tecnologicos`, `prestamos`, `incidencias_mantenimiento` |
 | Módulo futuro y fase | Gestión de Equipamiento y Préstamos; Fase 5 |
+| Estado y precisión de implementación | Contrato Fase 4.5: EquipmentAvailabilityService único, APROBADO/ENTREGADO solapados más estado físico e incidencias ABIERTA; T-P03/17. Implementación pendiente. |
 | Pruebas necesarias | T-CU13: Equipo prestado, mantenimiento o baja excluido; solapamientos; 1.000 registros <=3 s; paginación <=100. |
 
 ## CU14 — Registrar solicitud de préstamo
@@ -335,6 +337,7 @@ Fuente: tabla 51; p. 194 (PDF 195); figura 42; análisis figura 88.
 | Entidades / clases principales | EquipamientoTecnologico, Prestamo, RegistroActividad |
 | Tablas directamente relacionadas | `equipamientos_tecnologicos`, `prestamos`, `registros_actividad` |
 | Módulo futuro y fase | Gestión de Equipamiento y Préstamos; Fase 5 |
+| Estado y precisión de implementación | Contrato Fase 4.5: D/S con permiso, solicitante de sesión, PENDIENTE sin exclusividad, PRE-UUIDv4, revalidación transaccional; T-P02/04. Implementación pendiente. |
 | Pruebas necesarias | T-CU14: Dos solicitudes incompatibles concurrentes; datos inválidos; equipo deja de estar disponible; atomicidad. |
 
 ## CU15 — Consultar estado de préstamos
@@ -355,6 +358,7 @@ Fuente: tabla 52; p. 195 (PDF 196); figura 43; análisis figura 89.
 | Entidades / clases principales | Prestamo |
 | Tablas directamente relacionadas | `prestamos` |
 | Módulo futuro y fase | Gestión de Equipamiento y Préstamos; Fase 5 |
+| Estado y precisión de implementación | Contrato Fase 4.5: propios D/S, administrativos A/E con permiso; vencido calculado ENTREGADO y ahora>fin_previsto; T-P02/17. Implementación pendiente. |
 | Pruebas necesarias | T-CU15: Consulta propia frente a ajena; estados y fechas; vacío; 1.000 registros <=3 s; máximo 100 por página. |
 
 ## CU16 — Resolver solicitud de préstamo
@@ -367,15 +371,16 @@ Fuente: tabla 53; p. 196 (PDF 197); figura 44; análisis figura 90.
 | Actor iniciador | Administrador o Encargado de Laboratorio autorizado. |
 | Actores | Administrador y Encargado de Laboratorio. |
 | Precondiciones | Debe existir una solicitud de préstamo en estado pendiente. El actor debe contar con permisos para resolverla. |
-| Flujo principal (síntesis) | Revisar solicitud pendiente; validar responsable y disponibilidad mediante CU13; aprobar/rechazar con motivo aplicable; registrar decisión y seguimiento. |
-| Alternativas / extensiones | Disponibilidad modificada: no aprobar; alternativa de rechazo con motivo pertinente. |
+| Flujo principal (síntesis) | Revisar solicitud pendiente; validar responsable y disponibilidad mediante CU13; aprobar o rechazar (motivo obligatorio al rechazar en Fase 5, precisión RF12/Fase 4.5); registrar decisión y seguimiento. |
+| Alternativas / extensiones | Disponibilidad modificada: conservar PENDIENTE, sin auto-rechazo; rechazo posterior explícito exige motivo. |
 | Excepciones documentadas | La solicitud ya fue resuelta. El equipamiento dejó de estar disponible o presenta una incidencia incompatible. Actor sin permisos para resolver la solicitud. Fallo de actualización: la decisión no debe quedar parcialmente registrada. |
 | Postcondición documentada | La solicitud queda aprobada o rechazada y el resultado queda registrado para seguimiento. |
 | RF relacionado | RF12 |
 | Entidades / clases principales | EquipamientoTecnologico, Prestamo, RegistroActividad |
 | Tablas directamente relacionadas | `equipamientos_tecnologicos`, `prestamos`, `registros_actividad` |
 | Módulo futuro y fase | Gestión de Equipamiento y Préstamos; Fase 5 |
-| Pruebas necesarias | T-CU16: Doble decisión; estado no pendiente; recurso no disponible; motivo de rechazo; decisión auditada. |
+| Estado y precisión de implementación | Contrato Fase 4.5: solo PENDIENTE; rechazo con motivo obligatorio según RF12; conflicto mantiene PENDIENTE; T-P05/06. Implementación pendiente. |
+| Pruebas necesarias | T-CU16: Doble decisión; estado no pendiente; recurso no disponible; motivo de rechazo; responsable/fecha persistidos; CU30 diferido. |
 
 ## CU17 — Registrar entrega de equipamiento tecnológico
 
@@ -395,6 +400,7 @@ Fuente: tabla 54; p. 198 (PDF 199); figura 45; análisis figura 91.
 | Entidades / clases principales | EquipamientoTecnologico, Prestamo, EntregaPrestamo, IncidenciaMantenimiento, ValidacionQR, RegistroActividad |
 | Tablas directamente relacionadas | `equipamientos_tecnologicos`, `prestamos`, `entregas_prestamo`, `incidencias_mantenimiento`, `validaciones_qr`, `registros_actividad` |
 | Módulo futuro y fase | Gestión de Equipamiento y Préstamos; Fase 5 |
+| Estado y precisión de implementación | Contrato Fase 4.5: receptor=solicitante; recepcion_confirmada_en NULL; entrega única/atómica, sin QR en Fase 5; T-P07/08. Implementación pendiente. |
 | Pruebas necesarias | T-CU17: Receptor/equipo incorrectos; QR exigido inválido; una única entrega; estados ENTREGADO/PRESTADO atómicos. |
 
 ## CU18 — Registrar devolución de equipamiento tecnológico
@@ -415,6 +421,7 @@ Fuente: tabla 55; p. 199 (PDF 200); figura 46; análisis figura 92.
 | Entidades / clases principales | EquipamientoTecnologico, Prestamo, EntregaPrestamo, DevolucionPrestamo, IncidenciaMantenimiento, ValidacionQR, RegistroActividad |
 | Tablas directamente relacionadas | `equipamientos_tecnologicos`, `prestamos`, `entregas_prestamo`, `devoluciones_prestamo`, `incidencias_mantenimiento`, `validaciones_qr`, `registros_actividad` |
 | Módulo futuro y fase | Gestión de Equipamiento y Préstamos; Fase 5 |
+| Estado y precisión de implementación | Contrato Fase 4.5: devolución única; ADECUADA/CON_INCIDENCIA confirmadas, NO_DETERMINABLE pendiente; continuar misma fila con actor/fecha; T-P09–12. Implementación pendiente. |
 | Pruebas necesarias | T-CU18: Retorno adecuado; daño e incidencia; NO_DETERMINABLE/PENDIENTE_REVISION; préstamo no entregado; devolución única. |
 
 ## CU19 — Gestionar incidencias y mantenimiento
@@ -432,9 +439,10 @@ Fuente: tabla 56; p. 201 (PDF 202); figura 47; análisis figura 93.
 | Excepciones documentadas | Recurso inexistente o no accesible para el actor. Datos obligatorios de la incidencia incompletos. Intento de habilitar un recurso mientras existe una condición activa incompatible. Actor sin permisos para modificar el estado del recurso. |
 | Postcondición documentada | La incidencia o mantenimiento queda registrado y el recurso refleja su condición real para futuras operaciones. |
 | RF relacionado | RF15 |
-| Entidades / clases principales | RecursoInstitucional (abstracto), EquipamientoTecnologico, DevolucionPrestamo, IncidenciaMantenimiento, RegistroActividad |
-| Tablas directamente relacionadas | `recursos_institucionales`, `equipamientos_tecnologicos`, `devoluciones_prestamo`, `incidencias_mantenimiento`, `registros_actividad` |
+| Entidades / clases principales | RecursoInstitucional (abstracto), EspacioAcademico, EquipamientoTecnologico, DevolucionPrestamo, IncidenciaMantenimiento, RegistroActividad |
+| Tablas directamente relacionadas | `recursos_institucionales`, `espacios_academicos`, `equipamientos_tecnologicos`, `devoluciones_prestamo`, `incidencias_mantenimiento`, `registros_actividad` |
 | Módulo futuro y fase | Gestión de Equipamiento y Préstamos; Fase 5 |
+| Estado y precisión de implementación | Contrato Fase 4.5: ambos subtipos, ABIERTA incompatible, cierre sin habilitación automática, integración futura con SpaceAvailabilityService; T-P13–16. Implementación pendiente. |
 | Pruebas necesarias | T-CU19: Apertura/cierre autorizado; fechas inválidas; otra incidencia impide disponibilidad; historia preservada. |
 
 ## CU20 — Validar operación de equipamiento mediante código QR
@@ -704,7 +712,7 @@ Fuentes contrastadas: tabla 36 (RF) y tablas 38–67 (detalle CU). La lista Usua
 
 ## CU17: contrato de entrega congelado (D-11)
 
-Prevalecen la tabla 54 (p. 198 / PDF 199), su precondición/flujo textual y los estados físicos sobre la conexión contradictoria de la figura 23. No seguir la flecha que permitiría confirmar con identificación inválida. La secuencia conceptual aplicable es:
+Prevalecen la tabla 54 (p. 198 / PDF 199), su precondición/flujo textual y los estados físicos sobre la conexión contradictoria de la figura 23. No seguir la flecha que permitiría confirmar con identificación inválida. La secuencia conceptual completa es la siguiente; en Fase 5 sus extensiones QR y Blockchain siguen diferidas según el contrato de Fase 4.5:
 
 1. Existe préstamo APROBADO pendiente de entrega.
 2. El responsable autorizado accede al préstamo dentro de su ámbito.
@@ -719,7 +727,7 @@ Prevalecen la tabla 54 (p. 198 / PDF 199), su precondición/flujo textual y los 
 11. Tras confirmar la operación principal, puede generarse evidencia si la operación es crítica según CU24; fallo externo no revierte la entrega.
 12. Se muestra confirmación coherente con el resultado persistido.
 
-Pruebas futuras: préstamo no aprobado, equipo/receptor incorrecto, QR obligatorio inválido, doble entrega y concurrencia deben dejar sin confirmación parcial. La rama que requiere QR no se declara aceptada hasta integrar Fase 6.
+Pruebas futuras: préstamo no aprobado, equipo/receptor incorrecto, QR obligatorio inválido, doble entrega y concurrencia deben dejar sin confirmación parcial. La rama que requiere QR no se declara aceptada hasta integrar Fase 6; el núcleo de Fase 5 debe funcionar sin QR. No crear validaciones/códigos ni bloquear entrega/devolución por esa integración pendiente.
 
 ## Postcondiciones narrativas de préstamos (D-02)
 
@@ -727,6 +735,7 @@ Pruebas futuras: préstamo no aprobado, equipo/receptor incorrecto, QR obligator
 | --- | --- | --- |
 | CU17 | Entregado/activo | Prestamo ENTREGADO y equipamiento PRESTADO tras entrega confirmada. |
 | CU18 | Finalizado/cancelado en la prosa de cierre | Prestamo DEVUELTO solo tras devolución confirmada. No crear CANCELADO, FINALIZADO ni ACTIVO; no inventar un proceso de cancelación de préstamo. |
+| CU15 | Vencido | Calculado: estado ENTREGADO y ahora_servidor > fin_previsto; no persistir ni liberar equipo. |
 | CU18, condición incierta | Condición no determinable y revisión | Devolución NO_DETERMINABLE y PENDIENTE_REVISION; sin cierre definitivo del préstamo ni disponibilidad automática. |
 
 Las fichas conservan la fuente y sus excepciones para trazabilidad; esta interpretación determina valores persistidos y guardas. No se ejecutaron CU ni pruebas funcionales en esta fase.
@@ -764,3 +773,11 @@ La petición §35 sustituye en estos dos flujos la puerta histórica de ámbito 
 | CU10 | PENDIENTE/APROBADA y ahora<inicio; titular con reservas.cancelar_propias o responsable con reservas.cancelar_administrativas | Motivo opcional; actor/fecha de cancelación; conservar resolución previa; no liberar automáticamente ni forzar estado del espacio |
 
 La [matriz de seis permisos](DECISIONS.md#cu08-y-catálogo-mínimo-de-permisos-previsto), [tabla de transiciones](DOMAIN_MODEL.md#transiciones-de-reserva--contrato-de-fase-35) y [aceptación T-R01–17](BUSINESS_RULES.md#aceptación-futura-de-reservas--fase-4) son contratos, no nuevas filas en permisos ni pruebas ejecutadas. No hay bypass administrativo. La precisión de consulta/gestión por módulo y propiedad sustituye para este núcleo la puerta histórica de acreditar asignaciones finas de recursos; no habilita esas asignaciones por inferencia.
+
+## Contrato vigente de CU12–CU19 — Fase 4.5
+
+Las fichas anteriores conservan los actores y flujos globales del informe. Sus tablas de integraciones y postcondiciones de bitácora/evidencia/notificación no implican implementación anticipada. [Contrato central y evidencia de fuentes](DECISIONS.md#contrato-de-equipamiento-y-préstamos--fase-45), [permisos previstos](DECISIONS.md#d-04-aplicada-y-catálogo-previsto) y [aceptación futura T-P01–18](BUSINESS_RULES.md#aceptación-futura-de-equipamiento-y-préstamos--fase-5).
+
+CU14/CU16 incluyen CU13 con una sola regla de disponibilidad y distinta garantía de lectura al confirmar. CU17 deriva receptor del solicitante sin delegación; conserva recepcion_confirmada_en NULL sin crear un CU posterior. CU18 confirma el retorno físico adecuado o con incidencia; la revisión indeterminable deja préstamo ENTREGADO y equipo EN_MANTENIMIENTO preventivo (BAJA se conserva). Confirmación posterior de la misma fila es continuación CU18/CU19 con permiso de devolución y, ante anomalía, de incidencias. No añade caso de uso, devolución duplicada ni historial alternativo.
+
+CU19 abarca espacios y equipos. Identifica compromisos afectados sin cancelarlos; toda ABIERTA impide nueva operación incompatible, y el cierre valida otras causas antes de una habilitación explícita. SpaceAvailabilityService se ampliará únicamente durante Fase 5. D-04 conserva módulo/acción y propiedad, ámbito fino diferido. QR CU20 pertenece a Fase 6 y Blockchain CU24 a Fase 9 después del commit; RF21/Fase 10 y CU30 continúan pendientes. No se ejecutaron CU12–CU19 ni pruebas funcionales en Fase 4.5.
