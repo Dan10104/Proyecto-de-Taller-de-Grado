@@ -1,12 +1,12 @@
 # Constitución del proyecto ESPACIO-U
 
-Estado: Fase 0.5 documental completada; Fase 1 no iniciada. Fecha de auditoría: 2026-10-23. No hay aplicación, migraciones ni integraciones implementadas.
+Estado: Fases 0/0.5 documentales y Fase 1 técnica completadas, 2026-10-23. Existe la fundación web ejecutable; no hay migraciones de dominio, autenticación ni integraciones funcionales. Fase 2 no iniciada.
 
 ## Identidad y autoridad
 
 **Sistema de información para la gestión y control de reservas de espacios académicos y préstamos de equipamiento tecnológico en la FICCT, con monitoreo de ocupación mediante IoT y trazabilidad de operaciones mediante Blockchain.** El alcance institucional es exclusivamente la FICCT.
 
-Las peticiones de Fase 0 y Fase 0.5 gobiernan el trabajo autorizado. El informe final Word y su PDF son la fuente oficial de requisitos, comportamiento y diseño. La documentación de `docs/` sintetiza esas fuentes; no las reemplaza ni corrige silenciosamente. Las referencias y huellas de ambos archivos constan en [DECISIONS.md](DECISIONS.md). No se publican copias de los originales ni datos personales de sus ejemplos.
+Las peticiones de Fases 0, 0.5 y 1 gobiernan el trabajo autorizado, incluida la instrucción posterior de MySQL de desarrollo aislado. El informe final Word y su PDF son la fuente oficial de requisitos, comportamiento y diseño. La documentación de `docs/` sintetiza esas fuentes; no las reemplaza ni corrige silenciosamente. Las referencias y huellas de ambos archivos constan en [DECISIONS.md](DECISIONS.md). No se publican copias de los originales ni datos personales de sus ejemplos.
 
 > Ante cualquier contradicción entre implementación y documentación oficial, se debe detener la implementación del punto contradictorio y consultar el informe antes de modificar el modelo.
 
@@ -20,7 +20,7 @@ Repositorio oficial: https://github.com/Dan10104/Proyecto-de-Taller-de-Grado.git
 
 La implementación posterior comprenderá la plataforma **web**: acceso y administración; espacios y reservas; equipamiento y préstamos; QR; monitoreo IoT; políticas de liberación; trazabilidad Blockchain; notificaciones internas; indicadores y reportes; asistencia mediante chatbot. Cada capacidad debe trazarse a un RF/CU y a una prueba.
 
-Flutter, Android, APK y pantallas móviles nativas quedan diferidos por instrucción expresa. La web responsiva y la API REST compatible con un cliente futuro sí pertenecen al diseño. Un requisito móvil diferido no se considera satisfecho por la web. Fase 0 autorizó documentación, inventario y archivos base de seguridad; Fase 0.5 únicamente congela y versiona contratos documentales. No iniciar Fase 1 sin una nueva instrucción.
+Flutter, Android, APK y pantallas móviles nativas quedan diferidos por instrucción expresa. La web responsiva y la API REST compatible con un cliente futuro sí pertenecen al diseño. Un requisito móvil diferido no se considera satisfecho por la web. Fase 0 autorizó documentación, inventario y archivos base de seguridad; Fase 0.5 únicamente congela y versiona contratos documentales. La instrucción posterior de Fase 1 autorizó únicamente la fundación técnica. Toda fase funcional requiere su propia autorización.
 
 No agregar PWA, voz, predicción, recuperación de contraseña ni historial persistente del chatbot solo porque aparezcan en un cronograma, un boceto o una figura de análisis; D-13/D-14 los clasifican como NO AFECTA IMPLEMENTACIÓN; no forman parte del alcance por esas menciones aisladas.
 
@@ -35,7 +35,7 @@ No agregar PWA, voz, predicción, recuperación de contraseña ni historial pers
 | Integraciones | HTTP o MQTT para IoT; red/servicio Blockchain externo; proveedor externo de chatbot |
 | Despliegue posterior | Docker, Google Cloud Run, Cloud SQL for MySQL y Google Artifact Registry |
 
-No sustituir por React, Next.js, Angular, NestJS, Django, Firebase, Supabase, PostgreSQL, MongoDB u otro stack ajeno al informe. Node/npm apoyan la compilación del frontend; no sustituyen al backend PHP. El informe menciona Tailwind CSS y Bootstrap como herramientas de presentación; su uso concreto se decidirá sin cambiar el stack ni duplicar sistemas visuales innecesariamente. No se fija una versión de Laravel que el informe no haya especificado.
+No sustituir por React, Next.js, Angular, NestJS, Django, Firebase, Supabase, PostgreSQL, MongoDB u otro stack ajeno al informe. Node/npm apoyan la compilación del frontend; no sustituyen al backend PHP. El informe menciona Tailwind CSS y Bootstrap como herramientas de presentación; en Fase 1 se usa Tailwind para el CSS mínimo, sin duplicar sistemas visuales. Las versiones concretas seleccionadas con fuentes oficiales están en [DEVELOPMENT_SETUP.md](DEVELOPMENT_SETUP.md); son una decisión de entorno, no versiones atribuidas al informe.
 
 Laravel centraliza autenticación, autorización, validación, transacciones y reglas; Vue presenta resultados. Las llamadas externas salen desde el backend. Las capas, paquetes y ubicaciones futuras están en [ARCHITECTURE.md](ARCHITECTURE.md).
 
@@ -47,7 +47,7 @@ Usuario, Rol, Permiso, AsignacionRol, SesionAcceso, Piso, RecursoInstitucional, 
 
 ## Persistencia y estados
 
-Mantener el modelo de 31 tablas, 211 columnas y 63 FK documentadas, con las decisiones de Fase 0.5 aplicadas. El inventario detallado está en [DATA_MODEL.md](DATA_MODEL.md). El contrato implementable normaliza únicamente `permisos.codigo` (D-01); no ejecutar SQL ni crear migraciones en esta fase. Los estados persistidos son exactamente los enums del diseño; “ocupado”, “activo” o “vencido” en la prosa no autorizan nuevos valores.
+Mantener el modelo de 31 tablas, 211 columnas y 63 FK documentadas, con las decisiones de Fase 0.5 aplicadas. El inventario detallado está en [DATA_MODEL.md](DATA_MODEL.md). El contrato implementable normaliza únicamente `permisos.codigo` (D-01); las tablas se implementarán progresivamente en sus fases funcionales. Fase 1 crea solamente la base de desarrollo vacía, sin migraciones del dominio. Los estados persistidos son exactamente los enums del diseño; “ocupado”, “activo” o “vencido” en la prosa no autorizan nuevos valores.
 
 MySQL conserva la información operativa completa e histórica. Usar operaciones atómicas para cambios relacionados, revalidar disponibilidad bajo concurrencia e impedir solapamientos incompatibles. Los índices de fechas no garantizan por sí solos esas reglas. Conservar autores, responsables, fechas y contexto. No eliminar historia necesaria para auditoría, incluso cuando el SQL contenga relaciones en cascada. Las copias de seguridad operativas de la base de datos son obligatorias y diferentes de las copias manuales de código prohibidas.
 
@@ -70,13 +70,13 @@ Aplicar [SECURITY_POLICY.md](SECURITY_POLICY.md) antes de cada commit y push. Nu
 
 ## Organización y flujo Git
 
-Documentación en `docs/`; código posterior en la estructura estándar Laravel/Vue/Inertia; pruebas en `tests/`; configuración en `config/`; rutas en `routes/`; migraciones, factories y seeders en `database/`. Servicios propios en `app/Services/` según su responsabilidad; páginas y componentes en `resources/js/`. No crear carpetas vacías por anticipado ni reorganizar el framework por estética. Scripts permanentes en `scripts/` solo si tienen propósito mantenido.
+Documentación en `docs/`; código en la estructura estándar Laravel/Vue/Inertia; pruebas en `tests/`; configuración en `config/`; rutas en `routes/`; migraciones, factories y seeders en `database/`. Servicios propios en `app/Services/` según su responsabilidad; páginas y componentes en `resources/js/`. No crear carpetas vacías por anticipado ni reorganizar el framework por estética. Scripts permanentes en `scripts/` solo si tienen propósito mantenido.
 
 Al empezar cada fase: abrir la raíz oficial; comprobar `git rev-parse --show-toplevel`, `git remote -v`, rama y `git status`; revisar y sincronizar sin sobrescribir cambios ajenos. Al terminar: validar requisitos/pruebas pertinentes, revisar estructura, borrar material temporal, comprobar duplicados, revisar `.gitignore`, diferencias y staged, escanear secretos, hacer un commit coherente y push al remoto verificado. No usar nombres `old`, `backup`, `final2` ni versiones manuales. No hacer reset destructivo para obtener una carpeta limpia.
 
 ## Cierre documental de Fases 0 y 0.5
 
-Los diez documentos cubren 30 CU, 26 RF y 217 requisitos. Fase 0.5 clasifica los 17 expedientes: 5 RESUELTA, 3 CONVENCIÓN DE IMPLEMENTACIÓN, 2 NO AFECTA IMPLEMENTACIÓN, 7 DIFERIDA A UNA FASE POSTERIOR y 0 REALMENTE BLOQUEANTE. La preparación documental para Fase 1 está cerrada; no certifica software construido ni pruebas funcionales. Los detalles diferidos tienen fase/límite en [DECISIONS.md](DECISIONS.md#readiness-for-phase-1) y [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md). Fase 1 requiere nueva instrucción.
+Los diez documentos cubren 30 CU, 26 RF y 217 requisitos. Fase 0.5 clasifica los 17 expedientes: 5 RESUELTA, 3 CONVENCIÓN DE IMPLEMENTACIÓN, 2 NO AFECTA IMPLEMENTACIÓN, 7 DIFERIDA A UNA FASE POSTERIOR y 0 REALMENTE BLOQUEANTE. La preparación documental para Fase 1 está cerrada; no certifica software construido ni pruebas funcionales. Los detalles diferidos tienen fase/límite en [DECISIONS.md](DECISIONS.md#readiness-for-phase-1) y [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md). La instrucción posterior de Fase 1 fue ejecutada; su evidencia técnica consta en DEVELOPMENT_SETUP.md. Este cierre histórico de Fase 0.5 no se confunde con esa implementación.
 
 ## Contratos de Fase 0.5
 

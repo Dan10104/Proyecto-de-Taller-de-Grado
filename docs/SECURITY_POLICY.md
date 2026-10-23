@@ -1,6 +1,6 @@
 # Política de seguridad
 
-Repositorio público. Esta política aplica a documentación, código, pruebas, historial Git, imágenes, logs, issues y artefactos. Fuentes: instrucciones de Fases 0 y 0.5; RNF-10–17, IS-14, IC-02/04/05/08/11, RD-19/20/23/43/44 y DB-21–24.
+Repositorio público. Esta política aplica a documentación, código, pruebas, historial Git, imágenes, logs, issues y artefactos. Fuentes: instrucciones de Fases 0, 0.5 y 1; RNF-10–17, IS-14, IC-02/04/05/08/11, RD-19/20/23/43/44 y DB-21–24.
 
 ## Secretos y datos
 
@@ -59,4 +59,12 @@ QR no autentica: verificar sesión, permisos, código, recurso, operación, esta
 
 Blockchain solo recibe evidencia mínima tras confirmación principal; excluir nombres, correos, contraseñas, datos personales completos y datos operativos completos. Especificación canónica antes de Fase 9: determinismo, orden/fechas estables, UTF-8, selección permitida y version_canonica. Fallo externo conserva operación y estado local PENDIENTE cuando corresponda; no afirmar que la cadena sea fuente principal.
 
-Esta fase actualiza Markdown y un comentario de `.env.example` para reflejar D-16. Los valores de la plantilla y las exclusiones de `.gitignore` se conservan; no se crea `.env`, APP_KEY, credencial ni infraestructura. El cierre exige revisar el diff real y staged, rutas privadas y contenido de la plantilla; no equivale a una auditoría de seguridad de una aplicación todavía inexistente.
+El cierre histórico de Fase 0.5 solo actualizó documentación y un comentario de la plantilla; no creó secretos ni infraestructura. La Fase 1 posterior añadió la aplicación y su configuración privada conforme a las medidas siguientes.
+
+## Medidas aplicadas en Fase 1
+
+APP_KEY se genera con Artisan y las credenciales de MySQL con un generador criptográfico. Los valores legibles residen solamente en `.env`, ignorado y con ACL local restringida. `.env.example` conserva vacíos APP_KEY, usuario de BD, contraseñas y claves futuras. No se muestran secretos en salida de comandos, chat, SQL guardado ni argumentos de procesos.
+
+MySQL del proyecto está limitado a loopback 3308, con datos privados en `.local/`, sin servicio del sistema ni modificación de las instancias existentes. La cuenta de aplicación solo tiene permisos sobre `espacio_u.*`; la credencial administrativa distinta se usa únicamente para administrar la instancia aislada. Los scripts verifican su directorio antes de apagarla. Logs generales, lentos y binarios están desactivados en esta instancia de desarrollo; no se configura aún la política de auditoría/recuperación de producción.
+
+`.tools/`, `.local/`, dependencias, sesiones, logs, compilados y material temporal están excluidos de Git. Las excepciones de `.gitignore` permiten exclusivamente marcadores vacíos del skeleton. APP_DEBUG está desactivado, Inertia no comparte configuración privada y DevTools/SSR no están activados. La revisión de secretos contrasta los valores locales con el índice sin imprimirlos y comprueba formatos de claves/tokens. Las auditorías de dependencias no reemplazan los futuros controles funcionales ni una revisión de producción.

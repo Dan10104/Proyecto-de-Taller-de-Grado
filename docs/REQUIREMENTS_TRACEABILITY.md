@@ -2,7 +2,7 @@
 
 Inventario completo: **217 requisitos** = 26 RF + 37 RNF + 11 IU + 8 IH + 14 IS + 11 IC + 30 DB + 44 RD + 7 R-TR + 5 R-CC + 6 R-UR + 6 R-DISP + 5 R-ESC + 7 R-PR. Fuente: cap. IV, tablas RF10–35 y apartados de requisitos no funcionales, interfaces, datos, restricciones y rendimiento. La paginación cita página impresa e índice PDF.
 
-La restricción conserva el contenido normativo del identificador; el criterio lo convierte en una comprobación observable. Las fases y CU son vínculos analíticos de implementación. Los módulos se obtienen de la tabla de fases y de [USE_CASE_MATRIX.md](USE_CASE_MATRIX.md), sin asignar a cada requisito transversal una clase de negocio nueva. **Ninguna prueba funcional o de rendimiento se ha ejecutado en Fase 0: aún no existe software.**
+La restricción conserva el contenido normativo del identificador; el criterio lo convierte en una comprobación observable. Las fases y CU son vínculos analíticos de implementación. Los módulos se obtienen de la tabla de fases y de [USE_CASE_MATRIX.md](USE_CASE_MATRIX.md), sin asignar a cada requisito transversal una clase de negocio nueva. **En Fases 0/0.5 no existía software ni se ejecutaron pruebas funcionales.** Fase 1 añade la evidencia técnica del cierre indicada al final; no declara aceptados CU ni requisitos completos de negocio/rendimiento.
 
 | Fases | Módulo / responsabilidad |
 | --- | --- |
@@ -307,7 +307,6 @@ La restricción conserva el contenido normativo del identificador; el criterio l
 | R-PR-06 | Los cálculos necesarios para generar indicadores consolidados o información histórica podrán realizarse de forma agrupada o programada cuando el volumen de datos haga innecesario su procesamiento inmediato. | 11 | CU27–CU28 | Planificado web/servidor | Comparar agregados programados con datos fuente y documentar su actualización; programación es opcional. | p. 168 (PDF 169) |
 | R-PR-07 | Las notificaciones derivadas de cambios de estado en reservas o préstamos deberán generarse después de confirmarse la operación correspondiente, sin impedir que dicha operación quede almacenada cuando falle temporalmente el mecanismo de notificación. | 10 | CU26 y eventos de reservas/préstamos | Planificado web/servidor | Fallar notificación tras confirmar y verificar operación persistida; aviso se genera después de confirmación. | p. 168 (PDF 169) |
 
-
 ## Protocolo de medición y cierre
 
 Medir en versión desplegada, conexión estable y volumen representativo del piloto, como exige el apartado de rendimiento. Registrar versión/commit, entorno, dataset, inicio/fin de cada medición, concurrencia y errores. Los tiempos descritos como máximos no se sustituyen por promedios ni por un percentil inventado. R-TR-07 y R-DISP-05 son objetivos máximos expresamente calificados como tales. El informe no fija una duración de ensayo ni margen estadístico: documentarlos como metodología, sin reducir el umbral.
@@ -341,3 +340,9 @@ Esta tabla agrega criterios documentales/de aceptación futura; no añade RF, no
 | D-17 | DB-17/21; CU03–CU05/CU07–CU19 | Guardas transaccionales, autorización e historia complementan SQL; duplicados históricos no multiplican privilegios; crear subtipo coherente. | 2–10/13 |
 
 Preparación documental: [Readiness for Phase 1](DECISIONS.md#readiness-for-phase-1). Las fases posteriores no deben reinterpretar estos contratos en silencio; cualquier nueva diferencia exige registro trazable y consulta de la fuente pertinente.
+
+## Evidencia técnica de Fase 1 — 2026-10-23
+
+Se conserva el inventario de 217 requisitos y todos sus criterios normativos. Se ha construido la base transversal asociada a Fase 1 del plan: Laravel/PHP, Vue/Inertia/Vite, MySQL real, locale/zona y seguridad de configuración. Evidencia: `tests/Feature/FoundationTest.php` (3 pruebas, 17 aserciones), build de producción, página Vue en navegador y auditorías Composer/npm sin avisos de vulnerabilidad. Versiones, comandos y límites en [DEVELOPMENT_SETUP.md](DEVELOPMENT_SETUP.md).
+
+Esta evidencia acredita únicamente los componentes técnicos usados y su conexión. Los estados de los requisitos completos permanecen planificados hasta cubrir todos sus criterios en sus fases. No hay tablas del dominio, autenticación, API funcional, pruebas CU01–CU30, ensayos de carga, integraciones, móvil ni despliegue. D-15 se ha atendido para versiones/instancia local; Docker sigue pendiente. D-16 tiene configuración base aplicada, sin conversión externa anticipada.

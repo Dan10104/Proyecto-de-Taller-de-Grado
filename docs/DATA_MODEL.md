@@ -4,6 +4,8 @@ Estado: contrato documental congelado en Fase 0.5; **no es una migración ni un 
 
 El script declara el esquema `ficct_reservas_prestamos`, `utf8mb4`, colación `utf8mb4_unicode_ci` e InnoDB. Se identificaron **31 tablas, 211 columnas y 63 claves foráneas**. Las PK simples `id` son BIGINT UNSIGNED autoincrementales; los subtipos comparten `recurso_id` sin autoincremento y cuatro asociaciones tienen PK compuesta. No se añaden `created_at`, `updated_at`, borrado lógico ni tablas de un starter kit sin revisar compatibilidad.
 
+En Fase 1 se creó únicamente el esquema vacío de desarrollo `espacio_u`, nombre autorizado por el usuario. Es un alias local del destino del contrato; no se ejecutó el SQL del informe ni se crearon las 31 tablas, migraciones, seeders o tablas de autenticación del skeleton. Charset, colación y motor conservan la referencia anterior.
+
 ## Correspondencia clase → tabla → clave → reglas → CU
 
 Los CU se vinculan por lectura/escritura directa de los flujos; es trazabilidad analítica, no una asociación adicional en el SQL. Los reportes y dashboard pueden consultar estas tablas según permisos. Autenticación y auditoría son transversales.
