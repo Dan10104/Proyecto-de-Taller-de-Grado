@@ -389,7 +389,7 @@ Restricciones e índices documentados:
 
 ### reservas
 
-Concepto: **Reserva**. Fuentes: tablas 84 y 115; script `reservas`. Regla: Código único; solicitante/espacio obligatorios; fin>inicio; impedir solapamiento en servidor y transacción.
+Concepto: **Reserva**. Fuentes: tablas 84 y 115; script `reservas`. Regla: código único e inmutable; solicitante/espacio obligatorios; fin>inicio. Solo APROBADA bloquea un intervalo solapado del mismo espacio; PENDIENTE admite coexistencia. Transacción y lock del espacio garantizan exclusión al aprobar (D-05, cierre Fase 3.5).
 
 | Columna | Tipo, nulabilidad y valor por defecto documentados |
 | --- | --- |
@@ -424,6 +424,23 @@ Restricciones e índices documentados:
 - `INDEX idx_reserva_espacio_periodo (espacio_id, inicio, fin)`
 - `INDEX idx_reserva_solicitante (solicitante_id)`
 - `INDEX idx_reserva_estado (estado)`
+
+#### Escritura prevista por operación — Fase 3.5
+
+Esta precisión es documental: no existe aún migración/tabla funcional de reservas en la aplicación. Se conservan las quince columnas anteriores, todos sus tipos y nulabilidades; las cuatro FK mantienen ON UPDATE CASCADE y ON DELETE RESTRICT según el SQL oficial. No añadir created_at/updated_at, tabla de locks ni constraint de exclusión temporal.
+
+| Operación futura | Campos que toma/establece el servidor | Conservación |
+| --- | --- | --- |
+| Solicitar | codigo generado; solicitante_id autenticado; solicitada_en; estado=PENDIENTE. espacio_id, inicio, fin y proposito validados | resuelta_por_id, resuelta_en, motivo_rechazo, cancelada_por_id, cancelada_en y motivo_cancelacion inicialmente NULL |
+| Aprobar | estado=APROBADA; resuelta_por_id actor; resuelta_en; motivo_rechazo=NULL | Identidad, solicitante, espacio, periodo y propósito; campos de cancelación nulos |
+| Rechazar | estado=RECHAZADA; resuelta_por_id actor; resuelta_en; motivo_rechazo opcional | Identidad y datos de solicitud; campos de cancelación nulos |
+| Cancelar | estado=CANCELADA; cancelada_por_id actor; cancelada_en; motivo_cancelacion opcional | Datos de solicitud y toda la resolución anterior, incluidos resuelta_por_id/resuelta_en |
+
+Cada fila de la tabla describe una operación atómica, no actualizaciones separadas. Responsables y fechas no vienen de campos editables del cliente. Motivos opcionales admiten hasta 500 caracteres; ausencia/vacío normalizado equivale a NULL. No volverlos NOT NULL. Fecha/hora operativa conserva America/La_Paz y la precisión DATETIME del modelo.
+
+Codigo: `RES-` + UUID v4 estándar en minúsculas, 40 caracteres ASCII, generado en servidor y estable. `VARCHAR(60)` y `uq_reservas_codigo` permanecen intactos. La regeneración acotada ante colisión y las guardas están en [D-05](DECISIONS.md#código-estable-y-estados-de-fases-posteriores). El código no acredita permiso ni sustituye QR.
+
+`idx_reserva_espacio_periodo (espacio_id, inicio, fin)`, `idx_reserva_solicitante` e `idx_reserva_estado` se conservan; ninguno impide por sí solo solapamientos. Tampoco `CHECK (fin > inicio)` compara filas distintas. La garantía depende de transacción, lock de la fila de espacio por recurso_id, lecturas actuales y validación servidor, con pruebas de dos procesos en Fase 4. LIBERADA/FINALIZADA permanecen en el enum sin producirse automáticamente en esa fase.
 
 ### prestamos
 

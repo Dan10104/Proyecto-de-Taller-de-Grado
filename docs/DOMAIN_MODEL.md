@@ -22,7 +22,7 @@ Fuentes: figura 19 (p. 109 / PDF 110), figuras 108–109 (p. 248–249 / PDF 249
 | BloqueoEspacio | `bloqueos_espacio` | Intervalo estricto fin>inicio; responsable y motivo; considerar solo bloqueos aplicables. |
 | TipoEquipamiento | `tipos_equipamiento` | Código único; tipos se incorporan como registros. |
 | EquipamientoTecnologico | `equipamientos_tecnologicos` | PK compartida; serie opcional única; ubicación base opcional; estado operativo según enum. |
-| Reserva | `reservas` | Código único; solicitante/espacio obligatorios; fin>inicio; impedir solapamiento en servidor y transacción. |
+| Reserva | `reservas` | Código único e inmutable; solicitante/espacio obligatorios; fin>inicio; solo APROBADA excluye otro periodo solapado, mediante servidor/transacción. PENDIENTE admite coexistencia. |
 | Prestamo | `prestamos` | Código único; equipo/solicitante obligatorios; fin_previsto>inicio_previsto; aprobar solo si disponible. |
 | EntregaPrestamo | `entregas_prestamo` | Una entrega por préstamo; entregador y receptor obligatorios; comprobación física y estado aprobado. |
 | DevolucionPrestamo | `devoluciones_prestamo` | Una devolución por préstamo; recibido_por obligatorio, confirmado_por opcional; condición incierta conserva revisión. |
@@ -98,7 +98,7 @@ Contrato D-02 resuelto: los 19 campos ENUM del SQL final se conservan completos 
 
 | Objeto | Comportamiento respaldado | Guarda / precisión pendiente |
 | --- | --- | --- |
-| Reserva | Registro PENDIENTE; resolución APROBADA o RECHAZADA; cancelación CANCELADA; política puede producir LIBERADA; existe FINALIZADA | D-05: PENDIENTE/APROBADA cancelables solo con permiso/plazo; APROBADA bloquea el periodo. Plazos y disparador de FINALIZADA se cierran antes de Fase 4 |
+| Reserva | Registro PENDIENTE; resolución APROBADA o RECHAZADA; cancelación CANCELADA; política puede producir LIBERADA; existe FINALIZADA | D-05 resuelta para Fase 4 en Fase 3.5: PENDIENTE/APROBADA cancelables con permiso y ahora<inicio; solo APROBADA bloquea. FINALIZADA automática diferida fuera de Fase 4 |
 | Préstamo | Solicitud PENDIENTE; resolución APROBADO o RECHAZADO; entrega ENTREGADO; devolución confirmada DEVUELTO | Receptor, identificación y recurso disponible; no agregar CANCELADO/ACTIVO/FINALIZADO |
 | Equipamiento | Entrega cambia a PRESTADO; retorno adecuado puede restituir DISPONIBLE; mantenimiento/baja impiden operaciones | Condición desconocida o incidencia no debe devolver disponibilidad automáticamente |
 | Devolución | PENDIENTE_REVISION o CONFIRMADA, con condición separada | No cerrar definitivamente una devolución cuya condición sea NO_DETERMINABLE |
@@ -119,3 +119,20 @@ SesionAcceso corresponde al control de una sesión web autenticada: hash SHA-256
 Piso, TipoEspacio y CaracteristicaEspacio conservan su estructura oficial. RecursoInstitucional representa el padre persistente y EspacioAcademico su subclase por PK/FK compartida recurso_id. EstadoEspacio materializa DISPONIBLE/BLOQUEADO/EN_MANTENIMIENTO. BloqueoEspacio conserva periodo, responsable Usuario y activo; no sustituye al estado general. Política es exclusivamente dependencia estructural, sin conducta de CU23. Características se asocian por belongsToMany/PK compuesta, sin nueva entidad física.
 
 Los modelos, relaciones y límites vigentes están en [SPACES_IMPLEMENTATION.md](SPACES_IMPLEMENTATION.md). No se materializó Reserva, IoT ni los restantes componentes futuros.
+
+## Transiciones de reserva — contrato de Fase 3.5
+
+D-05 **RESUELTA PARA FASE 4**, sin modelo Reserva ni ciclo funcional creados en esta entrega. Conservar exactamente PENDIENTE, APROBADA, RECHAZADA, CANCELADA, LIBERADA y FINALIZADA. CU07 crea PENDIENTE; no hay aprobación implícita. Los únicos cambios de estado previstos para CU09/CU10 son:
+
+| Estado origen | Acción | Estado destino | Actor autorizado | Guardas adicionales |
+| --- | --- | --- | --- | --- |
+| PENDIENTE | Aprobar, CU09 | APROBADA | Administrador/Encargado con reservas.resolver | Disponibilidad completa vigente y comprobación transaccional con lock del espacio |
+| PENDIENTE | Rechazar, CU09 | RECHAZADA | Administrador/Encargado con reservas.resolver | Estado aún pendiente; motivo opcional; no requiere espacio disponible |
+| PENDIENTE | Cancelar, CU10 | CANCELADA | Titular con reservas.cancelar_propias o Administrador/Encargado con reservas.cancelar_administrativas | Hora del servidor < inicio; propiedad cuando es cancelación propia |
+| APROBADA | Cancelar, CU10 | CANCELADA | Titular con reservas.cancelar_propias o Administrador/Encargado con reservas.cancelar_administrativas | Hora del servidor < inicio; preservar responsable/fecha de resolución |
+
+Toda acción requiere cuenta/sesión válida y permiso del rol elegible vigente, con revalidación bajo locks. No hay transición desde RECHAZADA, CANCELADA, LIBERADA o FINALIZADA en Fase 4, ni APROBADA→RECHAZADA, regreso a PENDIENTE, reapertura o edición arbitraria de estados. La guarda temporal también obliga al actor administrativo. Un conflicto al aprobar mantiene PENDIENTE y no es un rechazo.
+
+Solo APROBADA compromete el intervalo `[inicio, fin)`. Varias PENDIENTE pueden compartir espacio/horario y competir por aprobación; no representan posesión provisional. Cancelar retira ese compromiso cuando existía, sin garantizar disponibilidad si persisten otros impedimentos. LIBERADA se reserva a CU23/Fase 8; FINALIZADA automática se difiere a una fase posterior autorizada. No se producen por reloj, cron ni elección manual en Fase 4.
+
+La [definición completa](DECISIONS.md#contrato-de-reservas--cierre-d-05-de-fase-35) establece locks, consulta, código y matriz de permisos. CU08 distingue propiedad y consulta administrativa por módulo/acción; el ámbito fino de D-04 permanece diferido sin nuevas entidades de asignación. Ningún diagrama conceptual autoriza entidades adicionales en este cierre.
