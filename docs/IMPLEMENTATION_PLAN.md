@@ -1,6 +1,6 @@
 # Plan de implementación web
 
-Estado: **Fase 4 implementada y validada; Fases 5–14 no iniciadas**. Fases 0 y 0.5 conservaron su alcance documental; la nueva instrucción de Fase 1 autorizó la fundación técnica descrita en [DEVELOPMENT_SETUP.md](DEVELOPMENT_SETUP.md). No existe Flutter, Android ni cliente nativo en el plan de ejecución.
+Estado: **Fase 4 implementada y validada; Fase 4.5 documental cerrada; Fases 5–14 no iniciadas**. Fases 0 y 0.5 conservaron su alcance documental; la nueva instrucción de Fase 1 autorizó la fundación técnica descrita en [DEVELOPMENT_SETUP.md](DEVELOPMENT_SETUP.md). No existe Flutter, Android ni cliente nativo en el plan de ejecución.
 
 ## Inventario histórico anterior a Fase 1 — 2026-10-23
 
@@ -99,18 +99,22 @@ Ese inventario corresponde a Fases 0/0.5, cuando no se instalaron dependencias n
 | Condición de finalización | CU07–CU10 y excepciones probados; nunca dos APROBADAS solapadas del mismo espacio; responsables/fechas e historia preservados. CU30, avisos y evidencia siguen diferidos y no se declaran satisfechos por los campos de reservas. |
 | Commit esperado | `feat: add reservation lifecycle and conflict checks` |
 
+### Fase 4.5 — Cierre documental de equipamiento y préstamos
+
+Completada documentalmente: D-02/D-11 resueltas para Fase 5; D-04/D-05 aplicadas sin reabrirlas. Estados, receptor, rechazo motivado, devolución/revisión, incidencias, BAJA, recuperación, doce permisos previstos y orden de locks congelados. [Readiness for Phase 5](DECISIONS.md#readiness-for-phase-5): **0 bloqueantes documentales**. Solo documentación; ninguna migración, modelo, permiso en BD, servicio, interfaz ni cambio funcional de disponibilidad.
+
 ### Fase 5 — Equipamiento, préstamos, entrega, devolución e incidencias
 
 | Campo | Plan |
 | --- | --- |
-| Módulos afectados | Gestión de Equipamiento y Préstamos |
+| Módulos afectados | Gestión de Equipamiento y Préstamos; integración CU19 con disponibilidad de espacios |
 | Carpetas principales futuras | app/Models/; app/Services/; app/Policies/; app/Http/; database/; routes/; resources/js/Pages/; tests/ |
 | Requisitos relacionados | RF9–15; DB-07/09/18/21; R-TR-03; R-PR-01 |
 | Casos de uso | CU12–CU19 |
-| Trabajo previsto | Inventario y disponibilidad; solicitudes/decisiones; entrega con receptor; retorno con condición/revisión; incidencias/mantenimiento; contratos condicionales QR para Fase 6. |
-| Pruebas requeridas | Doble préstamo/entrega/devolución; identificación incorrecta; equipo prestado/mantenimiento/baja; retorno desconocido no cierra; incidencias simultáneas; <=3 s listados. |
-| Riesgos / puertas | Aplicar D-02/D-05/D-11; cerrar ámbito D-04; no inventar enum cancelado/finalizado; no marcar completo un flujo que exige QR antes de Fase 6. |
-| Condición de finalización | Ciclo sin QR condicional probado; integraciones pendientes visibles; estados exactos e historia preservada. |
+| Trabajo previsto | Implementar el contrato Fase 4.5: inventario con PK compartida; EquipmentAvailabilityService; solicitud/resolución; entrega al solicitante; devolución y revisión sobre la misma fila; incidencias de ambos subtipos y ampliación de SpaceAvailabilityService. Sin QR en esta fase. |
+| Pruebas requeridas | T-P01–18 de BUSINESS_RULES: MySQL real, aprobaciones incompatibles, entrega/devolución/confirmación únicas, apertura contra cierre, permisos y rollback; esquema exacto, regresión de reservas/CU19, navegador y <=3 s listados con 1.000 registros. |
+| Riesgos / puertas | Puerta documental satisfecha en Fase 4.5: aplicar D-02/D-11 cerradas y D-04/D-05 vigentes. Ámbito fino diferido; no inventar asociaciones/estados. QR en Fase 6 no bloquea entrega/devolución sin QR del núcleo de Fase 5; no declarar probada esa extensión. |
+| Condición de finalización | Núcleo CU12–CU19 sin QR probado; T-P01–18 y regresión de Fase 4 aprobadas, evidencia funcional/visual y rendimiento documentada. Integraciones QR/Blockchain/RF21/CU30 pendientes visibles; esquema, estados y responsables preservados. |
 | Commit esperado | `feat: add equipment loans returns and maintenance` |
 
 ### Fase 6 — Códigos QR y validaciones
@@ -250,9 +254,9 @@ Esta propuesta corresponde al cierre de Fase 2. Fase 3 fue posteriormente autori
 
 | Decisión / detalle restante | Límite antes de trabajo dependiente |
 | --- | --- |
-| D-04, alcance fino por recurso DIFERIDO EN PARTE; RBAC cerrado | Fase 3 autoriza CU05/CU06 por módulo/acción; Fase 3.5 precisa el núcleo CU07–CU10 por módulo/acción y propiedad. Las asignaciones finas siguen diferidas, sin nuevas tablas inferidas |
+| D-04, alcance fino por recurso DIFERIDO EN PARTE; RBAC cerrado | Fase 3 autoriza CU05/CU06 por módulo/acción; Fase 3.5 precisa CU07–CU10 y Fase 4.5 aplica el mismo criterio a CU12–CU19 por módulo/acción y propiedad. Las asignaciones finas siguen diferidas, sin nuevas tablas inferidas |
 | D-07, móvil/API y almacenamiento distribuido; sesión web cerrada | Móvil/API cuando se autorice; despliegue distribuido antes de Fase 14 |
-| D-05, reservas resueltas para Fase 4 en Fase 3.5 | Cancelación antes de inicio; FINALIZADA automática diferida a una fase posterior autorizada; no bloquea CU07–CU10 |
+| D-05, reservas resueltas y aplicación a préstamos confirmada en Fase 4.5 | [inicio, fin), exclusividad APROBADO/ENTREGADO, locks/lecturas actuales; sin reapertura. FINALIZADA automática de reservas sigue diferida |
 | D-09, emisión, vigencia y correlación QR | Antes de Fase 6 |
 | D-10, transporte/payload/unidades/reintentos/frescura IoT | Antes de Fase 7 |
 | D-08, disparador, combinación QR/IoT y versión histórica de política | Antes de Fase 8 |
@@ -274,6 +278,8 @@ No se adelantan scheduler/cron de FINALIZADA, liberación automática, CU11/QR (
 
 Validación documental de Fase 3.5: diez archivos Markdown, ningún archivo funcional modificado, veinte enlaces locales añadidos comprobados y diff sin errores de espacios. SQL de reservas equivalente entre Word/PDF; SHA-256 de ambos originales intacto. Escaneo privado de los 175 archivos públicos, diferencias e historial sin hallazgos de secretos; .env/.env.testing y runtime local siguen excluidos. No se ejecutaron nuevas pruebas funcionales ni migraciones: T-R01–17 permanecen como aceptación obligatoria de Fase 4.
 
-## Continuidad vigente después de Fase 4
+## Continuidad vigente después de Fase 4.5
 
-Siguiente alcance: Fase 5/CU12–CU19, previa nueva instrucción y revisión de D-02/D-04/D-05/D-11. No implementado. La puerta documental anterior fue satisfecha y ejecutada en Fase 4; se conserva como historial. [Cierre de reservas](RESERVATIONS_IMPLEMENTATION.md).
+Siguiente alcance: Fase 5/CU12–CU19, únicamente tras nueva instrucción. El cierre documental de Fase 4.5 satisface sus decisiones: D-02/D-11 resueltas y D-04/D-05 aplicadas. La revisión de decisiones que recomendaba el informe de Fase 4 ya está atendida aquí; ese informe conserva su contexto histórico. [Cierre funcional de reservas](RESERVATIONS_IMPLEMENTATION.md). No se inicia Fase 5 ni se ejecutan pruebas funcionales nuevas en Fase 4.5.
+
+Validación del cierre documental: nueve Markdown afectados; RF/CU, diagramas y seis tablas SQL reconsultados; modelos físicos sin alteraciones. Se verificaron consistencia y trazabilidad, 99 enlaces locales incluidos sus anchors, doce permisos previstos y dieciocho criterios futuros; diff sin errores de espacios. El escaneo privado de 201 archivos públicos, índice, diferencias e historial no encontró secretos; .env/.env.testing siguen ignorados y .env.example no contiene credenciales. T-P01–18 son obligaciones futuras y no resultados de este cierre. Los originales Word/PDF permanecen intactos.

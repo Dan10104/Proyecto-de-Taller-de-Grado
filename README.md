@@ -2,7 +2,7 @@
 
 Sistema de información para la gestión y control de reservas de espacios académicos y préstamos de equipamiento tecnológico en la FICCT, con monitoreo de ocupación mediante IoT y trazabilidad de operaciones mediante Blockchain.
 
-**Estado: Fase 4 implementada y validada.** Seguridad web, espacios y ciclo de reservas CU07–CU10 sobre Laravel, Vue 3, Inertia y MySQL. CU06: **FUNCIONALMENTE COMPLETO PARA DISPONIBILIDAD OPERATIVA; ENRIQUECIMIENTO IoT DIFERIDO A FASE 7**. [Implementación, pruebas y límites](docs/RESERVATIONS_IMPLEMENTATION.md). Fase 5 no iniciada; QR, IoT, liberación, Blockchain, notificaciones y CU30 continúan diferidos.
+**Estado: Fase 4 implementada y validada; Fase 4.5 documental cerrada.** Seguridad web, espacios y ciclo de reservas CU07–CU10 sobre Laravel, Vue 3, Inertia y MySQL. CU06: **FUNCIONALMENTE COMPLETO PARA DISPONIBILIDAD OPERATIVA; ENRIQUECIMIENTO IoT DIFERIDO A FASE 7**. [Implementación, pruebas y límites](docs/RESERVATIONS_IMPLEMENTATION.md). [Fase 5 preparada documentalmente, con 0 bloqueantes](docs/DECISIONS.md#readiness-for-phase-5), todavía no iniciada. QR, IoT, liberación, Blockchain, notificaciones y CU30 continúan diferidos.
 
 ## Fuente de verdad
 
@@ -35,7 +35,7 @@ composer audit
 npm audit
 ```
 
-La suite usa exclusivamente `espacio_u_testing` en MySQL real, con cuenta separada y guarda previa a migraciones/limpieza. Pasaron 127 pruebas / 1395 aserciones, sin omitidas; build y auditorías Composer/npm correctos. Incluye dos procesos simultáneos para asignaciones, último administrador y renovación/logout. No certifica CU30, módulos posteriores, carga ni despliegue.
+La suite usa exclusivamente `espacio_u_testing` en MySQL real, con cuenta separada y guarda previa a migraciones/limpieza. La última evidencia funcional de Fase 4 registra 197 pruebas / 2321 aserciones, sin fallos ni omitidas; build y auditorías Composer/npm correctos. Fase 4.5 solo verifica documentación y no repite esa suite. Incluye dos procesos simultáneos para asignaciones, último administrador y renovación/logout. No certifica CU30, módulos posteriores, carga ni despliegue.
 
 ## Documentación
 
@@ -88,4 +88,4 @@ Fases 0 y 0.5 conservan su cierre documental y sus 17 expedientes. D-15 queda at
 
 D-04 y D-07 están implementadas para el núcleo web: RBAC sin bypass, historia de asignaciones y control de sesiones por hash. [Detalles y límites](docs/SECURITY_IMPLEMENTATION.md). El ámbito fino por recurso, móvil/API, almacenamiento distribuido y CU30 permanecen diferidos.
 
-La Fase 4 aplica el contrato cerrado en Fase 3.5: solicitudes, consultas, resolución, cancelación y disponibilidad con APROBADA. D-05 permanece resuelta. [Evidencia de Fase 4](docs/RESERVATIONS_IMPLEMENTATION.md). La continuidad recomendada es Fase 5 (CU12–CU19), previa nueva instrucción y revisión de D-02/D-04/D-05/D-11; no se inició ese alcance.
+La Fase 4 aplica el contrato cerrado en Fase 3.5: solicitudes, consultas, resolución, cancelación y disponibilidad con APROBADA. D-05 permanece resuelta. [Evidencia de Fase 4](docs/RESERVATIONS_IMPLEMENTATION.md). Fase 4.5 atendió la revisión previa de Fase 5: D-02/D-11 cerradas, D-04/D-05 aplicadas sin reapertura. Quedan definidos receptor, entrega, devolución/revisión, incidencias, recuperación, permisos previstos y concurrencia. [Contrato y fuentes](docs/DECISIONS.md#contrato-de-equipamiento-y-préstamos--fase-45). Fase 5 (CU12–CU19) puede comenzar únicamente con una nueva instrucción; no se inició ese alcance ni se modificó código, esquema, permisos o disponibilidad funcional en Fase 4.5.
