@@ -1,6 +1,6 @@
 # Plan de implementación web
 
-Estado: Fases 1–14 **no iniciadas**. Este plan respeta la secuencia solicitada; la única fase ejecutada ahora es la Fase 0 documental. No existe Flutter, Android ni cliente nativo en el plan de ejecución.
+Estado: Fases 1–14 **no iniciadas**. Este plan respeta la secuencia solicitada; Fases 0 y 0.5 documentales completadas, sin ejecución de software. No existe Flutter, Android ni cliente nativo en el plan de ejecución.
 
 ## Entorno observado el 2026-10-23
 
@@ -22,7 +22,7 @@ No se instalaron dependencias de la aplicación, no se generó APP_KEY, no se ej
 ## Reglas comunes de ejecución
 
 1. Nueva instrucción del usuario para comenzar la fase; abrir la raíz oficial, comprobar rama/remoto/estado y sincronizar sin perder cambios locales.
-2. Resolver las decisiones D que bloqueen el punto afectado, registrando fundamento en el informe. Si existe contradicción, detener ese punto y consultar antes de modificar el modelo.
+2. Aplicar las decisiones vigentes de Fase 0.5. Cerrar solo los detalles diferidos antes de su fase/punto dependiente, registrando fundamento. Una contradicción nueva exige consultar el informe; no reabrir decisiones resueltas sin evidencia.
 3. Usar ubicaciones convencionales del framework. Crear carpetas solamente al incorporar archivos reales. No producir copias completas del proyecto ni scripts temporales permanentes.
 4. Implementar únicamente el alcance de la fase; mantener contratos de los componentes posteriores sin simular que ya funcionan. Planificar migraciones por dependencias: no crear FK hacia tablas inexistentes ni omitirlas silenciosamente del modelo final. Las ampliaciones de tablas por fases deben terminar equivalentes al esquema aprobado.
 5. Ejecutar las pruebas pertinentes a cada cambio y comprobar invariantes integradas. Los hitos que requieren un componente posterior quedan explícitamente pendientes hasta su integración.
@@ -38,9 +38,9 @@ No se instalaron dependencias de la aplicación, no se generó APP_KEY, no se ej
 | Carpetas principales futuras | Raíz convencional del framework; config/; routes/; resources/js/; tests/; docs/ |
 | Requisitos relacionados | IS-01–06; IC-01–05; RD-01–14/23–26/30–32/43–44; RNF-23/25/28/32 |
 | Casos de uso | Preparación transversal; ningún CU de negocio se declara terminado |
-| Trabajo previsto | Elegir versiones compatibles; inicializar Laravel y Vue 3/Inertia/Vite en la misma raíz conservando docs; fijar lockfiles; configurar conexión MySQL, locale y estrategia horaria; punto de arranque y compilación; definir mecanismos de sesión/API sin implementar aún CU01. |
+| Trabajo previsto | Elegir versiones compatibles; inicializar Laravel y Vue 3/Inertia/Vite en la misma raíz conservando docs; fijar lockfiles; configurar conexión MySQL, locale y zona operativa America/La_Paz conforme D-16; punto de arranque y compilación; comprobar compatibilidad futura de sesión/API, sin implementar CU01 ni exigir resolver D-07 en esta fase. |
 | Pruebas requeridas | Arranque, compilación de producción, configuración sin secretos, conexión de prueba a MySQL elegido y comprobación de stack real. |
-| Riesgos / puertas | D-15/D-16; starter kits que agreguen autenticación, tablas o React; dos MySQL activos; .env local nunca versionado. |
+| Riesgos / puertas | D-15: elegir versiones como primer trabajo; aplicar D-16 temporal; starter kits que agreguen autenticación, tablas o React; dos MySQL activos; .env local nunca versionado. |
 | Condición de finalización | Base reproducible y documentada; build/arranque correctos; secretos protegidos; sin funciones de negocio anticipadas. |
 | Commit esperado | `chore: establish Laravel Vue Inertia foundation` |
 
@@ -52,9 +52,9 @@ No se instalaron dependencias de la aplicación, no se generó APP_KEY, no se ej
 | Carpetas principales futuras | app/Models/; app/Http/Controllers/ y Requests/; app/Policies/; app/Services/; routes/; database/; resources/js/Pages/; tests/ |
 | Requisitos relacionados | RF1–3/25; RNF-10–16/21; DB-13/20–22; IC-04/05 |
 | Casos de uso | CU01–CU04; CU30 básico |
-| Trabajo previsto | Resolver D-01/D-03/D-04/D-07; credenciales y cuenta activa; sesión/logout; roles/permisos con historia; bitácora base y consulta autorizada. |
+| Trabajo previsto | Aplicar D-01/D-03/D-17; cerrar mecanismo de ámbito D-04 y autenticación/sesión D-07; credenciales y cuenta activa; sesión/logout; roles/permisos con historia; bitácora base y consulta autorizada. |
 | Pruebas requeridas | Acceso válido/erróneo/inactivo; revocación; autorización directa; escalada de privilegios; historial de roles; no secretos en logs. |
-| Riesgos / puertas | Inconsistencia de permisos; ámbito del encargado no modelado; incompatibilidad de sesiones; FK a entidades de fases posteriores. |
+| Riesgos / puertas | Respetar codigo ASCII y actores CU; ámbito del encargado por concretar; incompatibilidad de sesiones; FK a entidades de fases posteriores. |
 | Condición de finalización | CU de acceso/administración aceptados con pruebas negativas; bitácora base lista; migraciones compatibles con modelo aprobado. |
 | Commit esperado | `feat: add access control users and activity audit` |
 
@@ -66,7 +66,7 @@ No se instalaron dependencias de la aplicación, no se generó APP_KEY, no se ej
 | Carpetas principales futuras | app/Models/; app/Services/; app/Policies/; app/Http/; database/; routes/; resources/js/Pages/; tests/ |
 | Requisitos relacionados | RF4–5; DB-05/14/16/17/20; R-TR-01; R-UR-03 |
 | Casos de uso | CU05–CU06 |
-| Trabajo previsto | Catálogos y superclase de recursos; características M:N; bloqueos; búsqueda por fechas/condiciones; definir D-05 y dependencias con reservas/política. |
+| Trabajo previsto | Catálogos y superclase de recursos; características M:N; bloqueos; búsqueda por fechas/condiciones; aplicar intervalos/estados conflictivos D-05 y conservar dependencias con reservas/política. |
 | Pruebas requeridas | Capacidad/código/periodos inválidos; bloqueos y mantenimiento; ámbito; cálculo de disponibilidad; <=3 s con 500 reservas sintéticas cuando exista el esquema relacionado. |
 | Riesgos / puertas | No reemplazar RecursoInstitucional; no confundir estado de espacio con ocupación; dependencia temporal de tablas de reserva/política. |
 | Condición de finalización | Catálogo y disponibilidad coherentes con contratos aprobados; dependencias FK planificadas sin relaciones ficticias; interfaz responsiva. |
@@ -80,9 +80,9 @@ No se instalaron dependencias de la aplicación, no se generó APP_KEY, no se ej
 | Carpetas principales futuras | app/Models/; app/Services/; app/Policies/; app/Http/; database/; routes/; resources/js/Pages/; tests/ |
 | Requisitos relacionados | RF6–7; DB-04/08/15–17/19/21; R-TR-02; R-PR-01 |
 | Casos de uso | CU07–CU10 |
-| Trabajo previsto | Solicitud, consulta, resolución y cancelación; estados/periodos definidos; control transaccional; actividad confirmada preparada para QR, liberación, notificaciones y evidencia. |
+| Trabajo previsto | Cerrar plazos de cancelación y disparador de finalización de D-05 antes de implementar este ciclo; solicitud, consulta, resolución y cancelación; estados/periodos definidos; control transaccional; actividad confirmada preparada para QR, liberación, notificaciones y evidencia. |
 | Pruebas requeridas | Conflicto concurrente al registrar/aprobar; doble decisión; cancelación ajena/fuera de plazo; rollback; máximo 3 s. |
-| Riesgos / puertas | D-03/D-05; políticas temporales sin definición; efectos externos antes del commit. |
+| Riesgos / puertas | Aplicar D-03 y convención D-05; cerrar parámetros temporales diferidos; efectos externos antes del commit. |
 | Condición de finalización | Flujos y excepciones aceptados; no solapamientos incompatibles; auditoría de decisiones y estados exactos. |
 | Commit esperado | `feat: add reservation lifecycle and conflict checks` |
 
@@ -96,7 +96,7 @@ No se instalaron dependencias de la aplicación, no se generó APP_KEY, no se ej
 | Casos de uso | CU12–CU19 |
 | Trabajo previsto | Inventario y disponibilidad; solicitudes/decisiones; entrega con receptor; retorno con condición/revisión; incidencias/mantenimiento; contratos condicionales QR para Fase 6. |
 | Pruebas requeridas | Doble préstamo/entrega/devolución; identificación incorrecta; equipo prestado/mantenimiento/baja; retorno desconocido no cierra; incidencias simultáneas; <=3 s listados. |
-| Riesgos / puertas | D-02/D-04/D-05/D-11; no inventar enum cancelado/finalizado; no marcar completo un flujo que exige QR antes de Fase 6. |
+| Riesgos / puertas | Aplicar D-02/D-05/D-11; cerrar ámbito D-04; no inventar enum cancelado/finalizado; no marcar completo un flujo que exige QR antes de Fase 6. |
 | Condición de finalización | Ciclo sin QR condicional probado; integraciones pendientes visibles; estados exactos e historia preservada. |
 | Commit esperado | `feat: add equipment loans returns and maintenance` |
 
@@ -108,7 +108,7 @@ No se instalaron dependencias de la aplicación, no se generó APP_KEY, no se ej
 | Carpetas principales futuras | app/Services/; app/Http/; app/Policies/; app/Models/; database/; routes/; resources/js/Pages/ y Components/; tests/ |
 | Requisitos relacionados | RF8/13/14; IH-02/03; RD-08; R-TR-04; R-CC-04 |
 | Casos de uso | CU11/CU20; extensiones de CU17/CU18 |
-| Trabajo previsto | Resolver D-09; generación/identificación según alcance; lectura web; validación servidor; hash, objetivo, contexto y vigencia; correlación con entrega/devolución. |
+| Trabajo previsto | Cerrar detalles diferidos D-09 manteniendo el contrato QR congelado; generación/identificación según alcance; lectura web; validación servidor; hash, objetivo, contexto y vigencia; correlación con entrega/devolución. |
 | Pruebas requeridas | Cámara ausente/denegada; código falso/caducado/ajeno; permiso insuficiente; reintentos; inválido no muta; <=3 s y >=30/min. |
 | Riesgos / puertas | Tratar QR como permiso; cambios silenciosos a UNIQUE/CHECK; exponer tokens; sustituir web por Flutter. |
 | Condición de finalización | CU11/CU20 y ramas QR de entrega/devolución aceptados; contexto y persistencia consistentes. |
@@ -122,7 +122,7 @@ No se instalaron dependencias de la aplicación, no se generó APP_KEY, no se ej
 | Carpetas principales futuras | app/Services/; app/Http/; app/Models/; config/; routes/; database/; resources/js/Pages/; tests/ |
 | Requisitos relacionados | RF16–17; IH-04–08; IS-11; IC-06/07; DB-06/10/23/27; RD-16/40; R-CC-05; R-PR-02 |
 | Casos de uso | CU21–CU22 |
-| Trabajo previsto | Resolver D-10; catálogo y asociación; contrato HTTP o MQTT piloto; recepción validada, historial, última comunicación y vista de ocupación. |
+| Trabajo previsto | Cerrar detalles diferidos D-10 manteniendo las invariantes IoT; catálogo y asociación; contrato HTTP o MQTT piloto; recepción validada, historial, última comunicación y vista de ocupación. |
 | Pruebas requeridas | Sensor desconocido/deshabilitado; duplicados/tardíos según contrato; reasignación histórica; ausencia no determinable; >=120 eventos/min sin pérdida aceptada; <=5 s reflejo. |
 | Riesgos / puertas | Inferir libre de silencio; identificar personas; confundir fecha de evento/recepción; transporte/proveedor no definido. |
 | Condición de finalización | Eventos válidos persistidos y consultables; fallos aislados; monitor distingue frescura y no determinable. |
@@ -136,7 +136,7 @@ No se instalaron dependencias de la aplicación, no se generó APP_KEY, no se ej
 | Carpetas principales futuras | app/Services/; app/Models/; app/Http/; database/; config/; rutas/tareas convencionales Laravel según versión; resources/js/Pages/; tests/ |
 | Requisitos relacionados | RF18; DB-08; RNF-26; R-PR-01 |
 | Casos de uso | CU23; extensión de CU22 |
-| Trabajo previsto | Resolver D-08; política/version/tolerancia; ejecución temporal; combinar QR/IoT; guardar evaluación y evidencias; modos ALERTA/AUTOMATICA. |
+| Trabajo previsto | Cerrar detalles diferidos D-08 con criterio conservador; política/version/tolerancia; ejecución temporal; combinar QR/IoT; guardar evaluación y evidencias; modos ALERTA/AUTOMATICA. |
 | Pruebas requeridas | Uso confirmado; QR/IoT contradictorios; datos insuficientes/antiguos; usa_iot=false; tolerancia; reserva ya modificada; concurrencia. |
 | Riesgos / puertas | Liberación indebida; política mutable que cambia historia; ausencia de eventos impide disparador. |
 | Condición de finalización | Cada resultado del enum probado; ALERTA no libera; AUTOMATICA solo con condiciones suficientes; historia de evaluación íntegra. |
@@ -150,7 +150,7 @@ No se instalaron dependencias de la aplicación, no se generó APP_KEY, no se ej
 | Carpetas principales futuras | app/Services/; app/Models/; app/Http/; config/; database/; ejecución diferida convencional si procede; resources/js/Pages/; tests/ |
 | Requisitos relacionados | RF19–20; RNF-17/19; IS-09/10; IC-09; DB-11/24; RD-17/20/41/42; R-DISP-06; R-PR-03/04 |
 | Casos de uso | CU24–CU25; extensiones críticas acordadas |
-| Trabajo previsto | Resolver D-06/D-12; representación/hash local, evidencia, adaptador externo, pendiente/reintentos y verificación. |
+| Trabajo previsto | Aplicar cardinalidades D-06. Antes de iniciar Fase 9, cerrar especificación exacta D-12: canonicalización (orden, fechas, UTF-8, version_canonica y datos mínimos permitidos), algoritmo/proveedor/recuperación; luego implementar hash local, evidencia, adaptador externo, pendiente/reintentos y verificación. |
 | Pruebas requeridas | Proveedor caído; privacidad previa; operación no confirmada; duplicados; alteración de datos; cuatro resultados; local <=3 s. |
 | Riesgos / puertas | Datos personales on-chain; revertir transacción principal; serialización inestable; doble envío en varias instancias. |
 | Condición de finalización | Operación persistente ante caída externa; evidencia recuperable y verificación reproducible; contrato/algoritmo versionados y documentados. |
@@ -164,7 +164,7 @@ No se instalaron dependencias de la aplicación, no se generó APP_KEY, no se ej
 | Carpetas principales futuras | app/Services/; app/Models/; app/Http/; database/; recursos de interfaz Vue; tests/ |
 | Requisitos relacionados | RF21; DB-08/09/28; R-PR-07 |
 | Casos de uso | CU26 y eventos de reservas/préstamos |
-| Trabajo previsto | Resolver cardinalidad D-06; generación interna tras operación confirmada; destinatario/actividad; listado, detalle y lectura. |
+| Trabajo previsto | Aplicar cardinalidad D-06 resuelta; generación interna tras operación confirmada; destinatario/actividad; listado, detalle y lectura. |
 | Pruebas requeridas | Acceso propio/ajeno; lectura; vacío; fallo de notificación conserva operación; enlace a evento correcto. |
 | Riesgos / puertas | Enviar antes de commit; fuga por destinatario; introducir email/SMS no especificados. |
 | Condición de finalización | Avisos internos consistentes y aislados; consulta personal y estado de lectura probados. |
@@ -192,7 +192,7 @@ No se instalaron dependencias de la aplicación, no se generó APP_KEY, no se ej
 | Carpetas principales futuras | app/Services/; app/Http/; config/; resources/js/Pages/ y Components/; tests/ |
 | Requisitos relacionados | RF24; IU-09; IS-07/08; IC-08; RD-15/42; R-TR-07 |
 | Casos de uso | CU29 |
-| Trabajo previsto | Resolver D-14 y proveedor permitido; integración backend, contexto autorizado y mensajes de error; únicamente orientación. |
+| Trabajo previsto | Aplicar límite de alcance D-14 y seleccionar proveedor permitido; integración backend, contexto autorizado y mensajes de error; únicamente orientación. |
 | Pruebas requeridas | Solicitar acciones protegidas no cambia estado; datos ajenos excluidos; claves no llegan al cliente; fallo/timeout objetivo <=15 s. |
 | Riesgos / puertas | Alucinación de permisos; ejecución de acciones; filtración al proveedor; tabla de historial no autorizada. |
 | Condición de finalización | Asistencia acotada, proveedor aislado y navegación operativa durante caída; sin funciones protegidas ejecutadas por el bot. |
@@ -229,6 +229,24 @@ No se instalaron dependencias de la aplicación, no se generó APP_KEY, no se ej
 
 ## Propuesta exacta para la próxima instrucción: Fase 1
 
-Comenzar con verificación Git/VS Code y lectura de D-07, D-15 y D-16. Consultar documentación oficial vigente para escoger versiones compatibles de PHP/Laravel, Vue 3, Inertia y Vite; elegir una de las instalaciones MySQL reales y comprobar conexión con credenciales privadas. Inicializar el framework en esta misma raíz conservando los documentos y `.gitignore`, sin starter de autenticación ni migraciones de negocio anticipadas. Configurar compilación, español, estrategia de zona horaria y separación de entornos; crear el `.env` local ignorado solo al necesitarlo, y generar allí la APP_KEY. Validar arranque/build/conexión, documentar versiones y comandos reproducibles, revisar secretos, hacer commit/push. Autenticación, CRUD y modelos definitivos de dominio comienzan en las fases correspondientes.
+Comenzar con verificación Git/VS Code y lectura de D-07, D-15 y D-16. Consultar documentación oficial vigente para escoger versiones compatibles de PHP/Laravel, Vue 3, Inertia y Vite; elegir una de las instalaciones MySQL reales y comprobar conexión con credenciales privadas. Inicializar el framework en esta misma raíz conservando los documentos y `.gitignore`, sin starter de autenticación ni migraciones de negocio anticipadas. Configurar compilación, español, zona operativa America/La_Paz según D-16 y separación de entornos; crear el `.env` local ignorado solo al necesitarlo, y generar allí la APP_KEY. Validar arranque/build/conexión, documentar versiones y comandos reproducibles, revisar secretos, hacer commit/push. Autenticación, CRUD y modelos definitivos de dominio comienzan en las fases correspondientes.
 
 Nada de esa propuesta se ejecuta hasta recibir la siguiente instrucción del usuario.
+
+## Preparación de Fase 1 y puertas posteriores
+
+[Readiness for Phase 1](DECISIONS.md#readiness-for-phase-1): **0 contradicciones bloqueantes**. Los identificadores, enums, fuentes, actores y cardinalidades son implementables documentalmente. No falta una decisión de dominio para inicializar el framework. D-15 (selección compatible de versiones y MySQL) es el primer trabajo técnico de Fase 1, no una instalación realizada en Fase 0.5. La autenticación concreta se decide antes de Fase 2, y no se adelantan CU.
+
+| Decisión / detalle restante | Límite antes de trabajo dependiente |
+| --- | --- |
+| D-04, alcance de recursos y catálogo concreto de permisos | Fase 2; antes de acciones sobre recursos en 3–5 |
+| D-07, sesión/API, duración y recuperación | Antes de implementar CU01–CU02 en Fase 2 |
+| D-05, plazos de cancelación y disparador FINALIZADA | Antes de Fase 4; intervalos y estados conflictivos ya fijados |
+| D-09, emisión, vigencia y correlación QR | Antes de Fase 6 |
+| D-10, transporte/payload/unidades/reintentos/frescura IoT | Antes de Fase 7 |
+| D-08, disparador, combinación QR/IoT y versión histórica de política | Antes de Fase 8 |
+| D-12, canonicalización exacta, algoritmo, proveedor, operaciones críticas y recuperación | Antes de Fase 9 |
+| D-16, protocolo de medición y retención operativa | Retención antes de ingestión en 7 y operación en 14; medición antes de aceptación en 13; zona operativa ya fijada |
+| D-17, mecanismos transaccionales y guardas de servidor | Al implementar el componente de Fases 2–10; sin modificar constraints |
+
+D-13/D-14 no requieren desarrollar las funciones históricas/ilustrativas. Los estados RESUELTA/CONVENCIÓN describen contratos; todas las pruebas funcionales del plan siguen pendientes. Fase 1 no comienza con este cierre.

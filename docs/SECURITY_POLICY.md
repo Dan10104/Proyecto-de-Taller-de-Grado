@@ -1,12 +1,12 @@
 # Política de seguridad
 
-Repositorio público. Esta política aplica a documentación, código, pruebas, historial Git, imágenes, logs, issues y artefactos. Fuentes: instrucción de Fase 0; RNF-10–17, IS-14, IC-02/04/05/08/11, RD-19/20/23/43/44 y DB-21–24.
+Repositorio público. Esta política aplica a documentación, código, pruebas, historial Git, imágenes, logs, issues y artefactos. Fuentes: instrucciones de Fases 0 y 0.5; RNF-10–17, IS-14, IC-02/04/05/08/11, RD-19/20/23/43/44 y DB-21–24.
 
 ## Secretos y datos
 
 Nunca publicar `.env`, contraseñas, API keys, tokens, claves privadas, certificados privados, credenciales de base de datos/Google Cloud/Blockchain/chatbot/GitHub ni JSON de service accounts. No usar valores reales como datos de prueba. Seeders/factories futuros utilizarán identidades y correos ficticios; los originales del informe, sus nombres y las capturas con datos personales no se incorporan al repositorio público.
 
-`.env.example` es la única excepción a `.env.*`; contiene valores vacíos o inocuos. `APP_KEY`, usuarios/contraseñas y claves externas permanecen vacíos. Las variables de integración de la plantilla son propuestas de configuración, aún no consumidas por software. No crear ni publicar una clave de aplicación real en Fase 0. Las variables con secretos no usarán prefijos destinados a exponerlas al frontend, como `VITE_`.
+`.env.example` es la única excepción a `.env.*`; contiene valores vacíos o inocuos. `APP_KEY`, usuarios/contraseñas y claves externas permanecen vacíos. Las variables de integración de la plantilla son propuestas de configuración, aún no consumidas por software. No crear ni publicar una clave de aplicación real en Fases 0/0.5. Las variables con secretos no usarán prefijos destinados a exponerlas al frontend, como `VITE_`.
 
 Las llamadas a proveedores salen del backend. Redactar o excluir secretos de logs, excepciones y trazas. Un QR o una sesión se almacenan como hash según el modelo; el hash no autoriza mostrar indiscriminadamente el token. No incluir información sensible en mensajes de commit, comentarios, pruebas ni ejemplos. El control de versiones no reemplaza la gestión privada de secretos.
 
@@ -50,3 +50,13 @@ CSRF, parametrización y salida escapada son controles técnicos propuestos para
 ## Respaldo y recuperación
 
 R-DISP-04 exige al menos un respaldo diario y conservar como mínimo los siete más recientes. R-DISP-05 establece un objetivo de restauración de hasta cuatro horas. Deben probarse con información sintética y luego con el procedimiento operativo autorizado. Es una obligación sobre la información operativa, compatible con la prohibición de duplicar manualmente código fuente.
+
+## Autorización y privacidad congeladas en Fase 0.5
+
+Aplicar D-03: iniciador y flujo del CU, permiso efectivo, RBAC y guardas por objeto. Participantes de RF no reciben facultades implícitas; una acción protegida sin ámbito acreditado se deniega. El mecanismo concreto del ámbito (D-04) y de sesión (D-07) se cierra antes de habilitarlo en Fase 2. No convertir rol Encargado en acceso general a todos los recursos ni inventar tablas de asignación.
+
+QR no autentica: verificar sesión, permisos, código, recurso, operación, estado y tiempo aplicable en servidor. Sensor registrado/habilitado/asociado tampoco identifica personas. Datos insuficientes no autorizan liberación automática. Todos los valores persistidos y exclusividades SQL conservan el contrato de DOMAIN_MODEL/DATA_MODEL.
+
+Blockchain solo recibe evidencia mínima tras confirmación principal; excluir nombres, correos, contraseñas, datos personales completos y datos operativos completos. Especificación canónica antes de Fase 9: determinismo, orden/fechas estables, UTF-8, selección permitida y version_canonica. Fallo externo conserva operación y estado local PENDIENTE cuando corresponda; no afirmar que la cadena sea fuente principal.
+
+Esta fase actualiza Markdown y un comentario de `.env.example` para reflejar D-16. Los valores de la plantilla y las exclusiones de `.gitignore` se conservan; no se crea `.env`, APP_KEY, credencial ni infraestructura. El cierre exige revisar el diff real y staged, rutas privadas y contenido de la plantilla; no equivale a una auditoría de seguridad de una aplicación todavía inexistente.

@@ -1,6 +1,6 @@
 # Modelo del dominio
 
-Fuentes: figura 19 (p. 109 / PDF 110), figuras 108–109 (p. 248–249 / PDF 249–250), mapeo, volúmenes y SQL del cap. VII. El diagrama conceptual simplifica relaciones; las diferencias con el diseño de clases y datos están registradas en D-06. Estado: especificación, sin clases implementadas.
+Fuentes: figura 19 (p. 109 / PDF 110), figuras 108–109 (p. 248–249 / PDF 249–250), mapeo, volúmenes y SQL del cap. VII. El diagrama conceptual simplifica relaciones; las diferencias con el diseño de clases y datos están registradas en D-06. Estado: contrato congelado en Fase 0.5, sin clases implementadas.
 
 ## Conceptos y responsabilidades
 
@@ -8,9 +8,9 @@ Fuentes: figura 19 (p. 109 / PDF 110), figuras 108–109 (p. 248–249 / PDF 249
 | --- | --- | --- |
 | Usuario | `usuarios` | Correo único; contraseña como hash; desactivar conservando historia. |
 | Rol | `roles` | Nombre único; no confundir rol con permiso ni con el ámbito de recursos. |
-| Permiso | `permisos` | Código único pretendido; discrepancia código/codigo bloquea su migración (D-01). |
+| Permiso | `permisos` | Identificador técnico `codigo`, único; corrección ASCII resuelta en D-01. |
 | Asociación Rol–Permiso | `roles_permisos` | PK compuesta evita repetir la misma asociación rol–permiso. |
-| AsignacionRol | `asignaciones_roles` | Conservar usuario, rol, asignador, fechas y retirador opcional; aclarar duplicados activos. |
+| AsignacionRol | `asignaciones_roles` | Conservar usuario, rol, asignador, fechas y retirador opcional; evaluar roles/permisos como conjuntos, sin agregar UNIQUE a la historia (D-17). |
 | SesionAcceso | `sesiones_acceso` | Token hash único; expiración posterior a creación; revocación conserva historia. |
 | Piso | `pisos` | Número único; cada espacio apunta a un piso. |
 | RecursoInstitucional (abstracto) | `recursos_institucionales` | Código único compartido por espacios y equipamiento; superclase abstracta del diseño. |
@@ -46,48 +46,59 @@ Los cuatro pares de asociación se materializan como tablas de unión, no como n
 | --- | --- | --- |
 | Administrador | Administración, decisiones autorizadas, supervisión y bitácora | Verificar permisos en servidor; no inferir excepciones a reglas de consistencia |
 | Encargado de Laboratorio | Gestión de recursos asignados, resolución, entrega, devolución y supervisión autorizada | El modelo no define cómo persistir la asignación de recursos: D-04 |
-| Docente y Estudiante | Solicitudes, seguimiento propio, validación y asistencia habilitada | Propiedad y permisos; RF/CU difieren en actores adicionales: D-03 |
+| Docente y Estudiante | Solicitudes, seguimiento propio, validación y asistencia habilitada | Propiedad y permisos; el iniciador y flujo del CU delimitan la acción (D-03 resuelta) |
 | Dispositivo IoT | Envía eventos de presencia/ocupación | No identifica personas ni decide autorizaciones |
 | Servicio Blockchain | Registra/consulta evidencia mínima | No es la base operativa ni un aprobador de reservas |
 | Proveedor de chatbot | Proporciona orientación a través del servidor | No ejecuta acciones protegidas |
 
 No incorporar “Facultad” como entidad para múltiples instituciones. El contexto único es la FICCT.
 
-## Valores persistidos exactos
+## Valores persistidos y reconciliación narrativa
 
-Los siguientes valores proceden de `ENUM` del SQL y se contrastan con la figura 108. Las etiquetas visibles se traducen a español comprensible sin cambiar el valor almacenado.
+Contrato D-02 resuelto: los 19 campos ENUM del SQL final se conservan completos y en su orden original. Se auditaron términos de RF, CU, narrativa y diagramas frente a clases y SQL. Las etiquetas humanas pueden llevar tildes; los valores persistidos no se traducen ni amplían. Las equivalencias se aplican en su contexto, no como sustituciones universales de palabras.
 
-| Tabla | Columna | Valores permitidos |
+| Entidad / campo | Estados persistidos oficiales | Términos narrativos equivalentes |
 | --- | --- | --- |
-| `usuarios` | `estado` | `ACTIVO, INACTIVO` |
-| `politicas_liberacion` | `modo` | `ALERTA, AUTOMATICA` |
-| `espacios_academicos` | `estado` | `DISPONIBLE, BLOQUEADO, EN_MANTENIMIENTO` |
-| `equipamientos_tecnologicos` | `estado` | `DISPONIBLE, PRESTADO, EN_MANTENIMIENTO, BAJA` |
-| `reservas` | `estado` | `PENDIENTE, APROBADA, RECHAZADA, CANCELADA, LIBERADA, FINALIZADA` |
-| `prestamos` | `estado` | `PENDIENTE, APROBADO, RECHAZADO, ENTREGADO, DEVUELTO` |
-| `devoluciones_prestamo` | `condicion` | `ADECUADA, CON_INCIDENCIA, NO_DETERMINABLE` |
-| `devoluciones_prestamo` | `estado` | `PENDIENTE_REVISION, CONFIRMADA` |
-| `incidencias_mantenimiento` | `tipo` | `INCIDENCIA, MANTENIMIENTO` |
-| `incidencias_mantenimiento` | `estado` | `ABIERTA, CERRADA` |
-| `validaciones_qr` | `resultado` | `VALIDA, INVALIDA` |
-| `validaciones_qr` | `tipo_operacion` | `USO_ESPACIO, ENTREGA, DEVOLUCION` |
-| `sensores_iot` | `estado` | `HABILITADO, DESHABILITADO` |
-| `eventos_ocupacion` | `tipo` | `PRESENCIA, OCUPACION` |
-| `evaluaciones_liberacion` | `resultado` | `MANTENER_POR_USO, NO_DETERMINABLE, ALERTAR, LIBERAR` |
-| `registros_actividad` | `resultado` | `EXITO, RECHAZO, ERROR` |
-| `evidencias_trazabilidad` | `estado` | `PENDIENTE, REGISTRADA` |
-| `evidencias_trazabilidad` | `resultado_verificacion` | `VALIDO, INCONSISTENTE, PENDIENTE, NO_VERIFICABLE` |
-| `notificaciones` | `tipo` | `SOLICITUD, DECISION, CANCELACION, ENTREGA, DEVOLUCION, VENCIMIENTO, INCIDENCIA, LIBERACION` |
+| `usuarios.estado` | `ACTIVO`, `INACTIVO` | Cuenta habilitada = ACTIVO; deshabilitada/inactiva = INACTIVO. No hay un tercer estado de cuenta. |
+| `politicas_liberacion.modo` | `ALERTA`, `AUTOMATICA` | Advertir = ALERTA; liberar automáticamente bajo condiciones suficientes = AUTOMATICA. Activa/inactiva corresponde al booleano activa. |
+| `espacios_academicos.estado` | `DISPONIBLE`, `BLOQUEADO`, `EN_MANTENIMIENTO` | Estado operativo. Libre, ocupado y reservado son disponibilidad/ocupación calculadas; DISPONIBLE no garantiza que el intervalo esté libre. |
+| `equipamientos_tecnologicos.estado` | `DISPONIBLE`, `PRESTADO`, `EN_MANTENIMIENTO`, `BAJA` | Entregado/en préstamo = PRESTADO. Dañado, perdido, bloqueado o no disponible no crean valores ni se convierten automáticamente en BAJA; CU19 y las restricciones concretas determinan el tratamiento. |
+| `reservas.estado` | `PENDIENTE`, `APROBADA`, `RECHAZADA`, `CANCELADA`, `LIBERADA`, `FINALIZADA` | Solicitada = PENDIENTE; autorizada = APROBADA. Activa/en uso describe una APROBADA en su periodo/contexto; no añade ACTIVA. Cancelación, liberación y finalización conservan valores distintos. |
+| `prestamos.estado` | `PENDIENTE`, `APROBADO`, `RECHAZADO`, `ENTREGADO`, `DEVUELTO` | Pendiente de entrega = APROBADO; entregado/activo/pendiente de devolución = ENTREGADO; finalizado por devolución confirmada = DEVUELTO. Cancelado no tiene equivalente automático ni CU de cancelación. Vencido es ENTREGADO sin devolución al superar fin_previsto, condición derivada. |
+| `devoluciones_prestamo.condicion` | `ADECUADA`, `CON_INCIDENCIA`, `NO_DETERMINABLE` | Retorno en buenas condiciones = ADECUADA; anomalía = CON_INCIDENCIA; condición desconocida = NO_DETERMINABLE. No confundir condición con estado de devolución. |
+| `devoluciones_prestamo.estado` | `PENDIENTE_REVISION`, `CONFIRMADA` | En revisión = PENDIENTE_REVISION; confirmación definitiva = CONFIRMADA. NO_DETERMINABLE conserva revisión, sin cerrar préstamo ni liberar equipo automáticamente. |
+| `incidencias_mantenimiento.tipo` | `INCIDENCIA`, `MANTENIMIENTO` | Distingue reporte de incidencia y mantenimiento; tipo no equivale a estado abierto/cerrado. |
+| `incidencias_mantenimiento.estado` | `ABIERTA`, `CERRADA` | Abierta/en atención = ABIERTA; resuelta/cerrada = CERRADA. Cerrar no restaura disponibilidad si persiste otra restricción. |
+| `validaciones_qr.resultado` | `VALIDA`, `INVALIDA` | Aceptada = VALIDA; rechazada = INVALIDA. Una lectura válida no concede autorización por sí misma. |
+| `validaciones_qr.tipo_operacion` | `USO_ESPACIO`, `ENTREGA`, `DEVOLUCION` | Validación de espacio = USO_ESPACIO; validación de entrega o devolución usa su valor correspondiente y contexto exclusivo. |
+| `sensores_iot.estado` | `HABILITADO`, `DESHABILITADO` | Autorizado para recibir eventos = HABILITADO; deshabilitado = DESHABILITADO. Sin conexión/sin lectura reciente es salud calculada, no cambio automático de este enum. |
+| `eventos_ocupacion.tipo` | `PRESENCIA`, `OCUPACION` | Presencia y ocupación describen el evento recibido; no identifican a una persona ni prueban por sí solas que una reserva deba liberarse. |
+| `evaluaciones_liberacion.resultado` | `MANTENER_POR_USO`, `NO_DETERMINABLE`, `ALERTAR`, `LIBERAR` | Uso comprobado mantiene; datos insuficientes = NO_DETERMINABLE; advertencia = ALERTAR; decisión de liberación = LIBERAR. ALERTAR no cambia reserva a LIBERADA. |
+| `registros_actividad.resultado` | `EXITO`, `RECHAZO`, `ERROR` | Operación exitosa = EXITO; denegada = RECHAZO; fallo = ERROR. Es resultado de actividad, no estado del recurso. |
+| `evidencias_trazabilidad.estado` | `PENDIENTE`, `REGISTRADA` | Evidencia en espera/sin registro externo confirmado = PENDIENTE; registro externo confirmado = REGISTRADA. Caída externa no revierte la operación principal. |
+| `evidencias_trazabilidad.resultado_verificacion` | `VALIDO`, `INCONSISTENTE`, `PENDIENTE`, `NO_VERIFICABLE` | Coincidencia = VALIDO; diferencia = INCONSISTENTE; comprobación pendiente = PENDIENTE; imposibilidad de comprobar = NO_VERIFICABLE. Independiente del estado de envío. |
+| `notificaciones.tipo` | `SOLICITUD`, `DECISION`, `CANCELACION`, `ENTREGA`, `DEVOLUCION`, `VENCIMIENTO`, `INCIDENCIA`, `LIBERACION` | Clase del aviso; leído/no leído se deriva de leida_en. VENCIMIENTO no añade VENCIDO al préstamo. |
 
-Políticas: `modo` tiene los valores indicados; `activa`, `requiere_qr` y `usa_iot` son booleanos, no enums de estado. `tolerancia_min` y `max_antiguedad_lectura_min` regulan la evaluación; el segundo admite NULL en el SQL. QR: `activo` es booleano y la vigencia se deriva de sus fechas. Notificación leída/no leída se deriva de `leida_en`; sesión vigente se deriva de expiración/revocación.
+### Entidades sin enum y condiciones calculadas
 
-“Ocupación no determinable” es un resultado conceptual de monitoreo y un valor de evaluación; no agregarlo al enum de `espacios_academicos.estado`. “Ocupado” y “reservado” describen disponibilidad derivada, no estados persistidos adicionales del espacio. “Vencido” puede ser una condición temporal derivada del préstamo; no existe en `prestamos.estado`. CU17/CU18 mencionan “activo”, “finalizado” y “cancelado” en prosa, pero esos valores no están en ese enum (D-02).
+| Entidad / campo | Representación oficial | Interpretación congelada |
+| --- | --- | --- |
+| CodigoQR | activo booleano; generacion/expiración según fechas del modelo | Revocado/inactivo se representa con activo=false; vigente exige comprobar fechas. Caducado no crea un estado ni implica cambiar la bandera automáticamente. |
+| PoliticaLiberacion | activa, requiere_qr, usa_iot booleanos; modo separado | Habilitación y selección de evidencias no son nuevos enums. La antigüedad máxima admite NULL; su semántica precisa es D-08. |
+| BloqueoEspacio | activo y periodo | Un bloqueo aplicable debe estar activo y solaparse con la consulta; no crear enum de bloqueo. |
+| SesionAcceso | fechas de creación, expiración y revocación | Vigente, expirada o revocada son condiciones verificadas; no nuevos estados persistidos. |
+| AsignacionRol | fechas de asignación/retiro | Activa/retirada se deriva; conservar la historia y responsables. |
+| EntregaPrestamo | fila única por préstamo y recepcion_confirmada_en | Entrega/recepción confirmada usa datos existentes; no crear enum propio. |
+| Notificacion | leida_en nullable | NULL = no leída; fecha = leída. El tipo del aviso es independiente. |
+| RegistroActividad | critica booleano | Crítica/no crítica es clasificación independiente del resultado. |
+| Ocupación y disponibilidad | cálculo de servicio | Sin lectura reciente: NO_DETERMINABLE conceptual; jamás asumir LIBRE ni añadir estados a espacios/eventos. |
+| Piso, Rol, Permiso, RecursoInstitucional, tipos y características, tablas de asociación | sin columna de estado | No añadir estados activo/inactivo a catálogos o pivotes por analogía. |
 
 ## Ciclos de vida y reglas de transición
 
 | Objeto | Comportamiento respaldado | Guarda / precisión pendiente |
 | --- | --- | --- |
-| Reserva | Registro PENDIENTE; resolución APROBADA o RECHAZADA; cancelación CANCELADA; política puede producir LIBERADA; existe FINALIZADA | Resolver D-05: estados cancelables, límites y mecanismo exacto de finalización. No confundir activa con un enum |
+| Reserva | Registro PENDIENTE; resolución APROBADA o RECHAZADA; cancelación CANCELADA; política puede producir LIBERADA; existe FINALIZADA | D-05: PENDIENTE/APROBADA cancelables solo con permiso/plazo; APROBADA bloquea el periodo. Plazos y disparador de FINALIZADA se cierran antes de Fase 4 |
 | Préstamo | Solicitud PENDIENTE; resolución APROBADO o RECHAZADO; entrega ENTREGADO; devolución confirmada DEVUELTO | Receptor, identificación y recurso disponible; no agregar CANCELADO/ACTIVO/FINALIZADO |
 | Equipamiento | Entrega cambia a PRESTADO; retorno adecuado puede restituir DISPONIBLE; mantenimiento/baja impiden operaciones | Condición desconocida o incidencia no debe devolver disponibilidad automáticamente |
 | Devolución | PENDIENTE_REVISION o CONFIRMADA, con condición separada | No cerrar definitivamente una devolución cuya condición sea NO_DETERMINABLE |
@@ -95,4 +106,4 @@ Políticas: `modo` tiene los valores indicados; `activa`, `requiere_qr` y `usa_i
 | Sensor | HABILITADO / DESHABILITADO | Falta de comunicación no crea un tercer valor; se muestra salud/frescura como información derivada |
 | Evidencia | PENDIENTE / REGISTRADA | El resultado de verificación tiene su enum independiente; no mezclar ambos |
 
-La tabla describe comportamientos observados, no completa una máquina de estados que el informe no define. Las transiciones de frontera deben resolverse antes de sus pruebas de implementación. Véanse [BUSINESS_RULES.md](BUSINESS_RULES.md) y [DECISIONS.md](DECISIONS.md).
+La tabla describe comportamientos observados, no completa una máquina de estados que el informe no define. Las guardas fijadas en Fase 0.5 se aplican desde su fase; solo los detalles enumerados como diferidos en DECISIONS deben cerrarse antes de implementar su punto dependiente. Véanse [BUSINESS_RULES.md](BUSINESS_RULES.md) y [DECISIONS.md](DECISIONS.md).
