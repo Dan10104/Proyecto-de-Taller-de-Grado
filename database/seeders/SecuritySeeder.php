@@ -14,14 +14,20 @@ class SecuritySeeder extends Seeder
     public function run(): void
     {
         DB::transaction(function () {
+            $newPermissions = [];
             foreach (PermissionCatalog::DEFINITIONS as $code => $definition) {
-                Permiso::updateOrCreate(['codigo' => $code], ['nombre' => $definition['nombre'], 'descripcion' => $definition['fuente']]);
+                $permission = Permiso::updateOrCreate(['codigo' => $code], ['nombre' => $definition['nombre'], 'descripcion' => $definition['fuente']]);
+                if ($permission->wasRecentlyCreated) {
+                    $newPermissions[] = $permission->id;
+                }
             }
             foreach (RolInstitucional::cases() as $base) {
                 $role = Rol::firstOrCreate(['nombre' => $base->value], ['descripcion' => 'Rol institucional de la FICCT.']);
-                if ($base === RolInstitucional::ADMINISTRADOR && $role->wasRecentlyCreated) {
-                    $role->permisos()->sync(Permiso::whereIn('codigo', array_keys(PermissionCatalog::DEFINITIONS))->pluck('id'));
+                $eligible = Permiso::whereIn('codigo', PermissionCatalog::forRole($base->value));
+                if (! $role->wasRecentlyCreated) {
+                    $eligible->whereIn('id', $newPermissions);
                 }
+                $role->permisos()->syncWithoutDetaching($eligible->pluck('id'));
             }
         });
     }
