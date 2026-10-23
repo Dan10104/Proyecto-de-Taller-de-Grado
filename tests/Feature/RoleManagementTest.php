@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Permiso;
 use App\Models\Rol;
+use App\Support\PermissionCatalog;
 use Database\Seeders\SecuritySeeder;
 use Inertia\Testing\AssertableInertia as Assert;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -59,7 +60,7 @@ class RoleManagementTest extends SecurityTestCase
         $this->login($this->user('Administrador'));
         $role = Rol::where('nombre', 'Administrador')->first();
         $this->put('/roles/'.$role->id.'/permisos', ['permisos' => []])->assertSessionHasErrors('administracion');
-        $this->assertSame(11, $role->permisos()->count());
+        $this->assertSame(count(PermissionCatalog::forRole('Administrador')), $role->permisos()->count());
     }
 
     public function test_permission_selection_must_be_real_and_actor_compatible(): void
@@ -68,8 +69,8 @@ class RoleManagementTest extends SecurityTestCase
         $admin = Rol::where('nombre', 'Administrador')->first();
         $teacher = Rol::where('nombre', 'Docente')->first();
         $this->put('/roles/'.$admin->id.'/permisos', ['permisos' => [999999]])->assertSessionHasErrors('permisos.0');
-        $this->put('/roles/'.$teacher->id.'/permisos', ['permisos' => [Permiso::first()->id]])->assertSessionHasErrors('permisos');
-        $this->assertSame(0, $teacher->permisos()->count());
+        $this->put('/roles/'.$teacher->id.'/permisos', ['permisos' => [Permiso::where('codigo', 'usuarios.ver')->sole()->id]])->assertSessionHasErrors('permisos');
+        $this->assertSame(['espacios.ver'], $teacher->permisos()->pluck('codigo')->all());
     }
 
     public function test_assignment_retirement_and_reassignment_preserve_history(): void
@@ -123,7 +124,7 @@ class RoleManagementTest extends SecurityTestCase
         $this->seed(SecuritySeeder::class);
         $this->assertFalse($role->permisos()->whereKey($permission->id)->exists());
         $this->assertDatabaseCount('roles', 4);
-        $this->assertDatabaseCount('permisos', 11);
+        $this->assertDatabaseCount('permisos', count(PermissionCatalog::DEFINITIONS));
     }
 
     public static function nonAdministrativeRoles(): array
@@ -137,7 +138,7 @@ class RoleManagementTest extends SecurityTestCase
         $user = $this->user($name);
         $user->rolesActivos()->first()->permisos()->sync(Permiso::pluck('id'));
         $this->login($user);
-        $this->get('/inicio')->assertOk()->assertInertia(fn (Assert $p) => $p->has('auth.permisos', 0));
+        $this->get('/inicio')->assertOk()->assertInertia(fn (Assert $p) => $p->where('auth.permisos', fn ($codes) => $codes->sort()->values()->all() === collect(PermissionCatalog::forRole($name))->sort()->values()->all()));
         foreach (['/usuarios', '/usuarios/crear', '/roles', '/roles/crear', '/permisos', '/asignaciones/candidatos?q=Persona'] as $url) {
             $this->get($url)->assertForbidden();
         }
@@ -163,7 +164,7 @@ class RoleManagementTest extends SecurityTestCase
         $role = Rol::where('nombre', 'Administrador')->first();
         $this->get('/roles')->assertOk();
         $this->get('/permisos')->assertOk();
-        $this->get('/roles/'.$role->id)->assertOk()->assertInertia(fn (Assert $p) => $p->has('catalogo', 11)->missing('usuarios.data.0.password_hash'));
+        $this->get('/roles/'.$role->id)->assertOk()->assertInertia(fn (Assert $p) => $p->has('catalogo', count(PermissionCatalog::DEFINITIONS))->missing('usuarios.data.0.password_hash'));
         $this->get('/asignaciones/candidatos?q=Persona')->assertOk()->assertDontSee('password_hash')->assertDontSee('token_hash');
     }
 

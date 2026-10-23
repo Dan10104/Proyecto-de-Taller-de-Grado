@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Enums\EstadoUsuario;
 use App\Models\SesionAcceso;
 use App\Services\AccessSessionService;
+use App\Support\PermissionCatalog;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Testing\AssertableInertia as Assert;
@@ -30,7 +31,7 @@ class AuthenticationTest extends SecurityTestCase
         $this->assertSame($user->id, $row->usuario_id);
         $this->assertNull($row->revocada_en);
         $this->assertEqualsWithDelta(config('session.lifetime') * 60, $row->creada_en->diffInSeconds($row->expira_en), 1);
-        $this->get('/inicio')->assertOk()->assertInertia(fn (Assert $p) => $p->component('Home')->has('auth.roles', 1)->has('auth.permisos', 11)->missing('auth.usuario.password_hash'));
+        $this->get('/inicio')->assertOk()->assertInertia(fn (Assert $p) => $p->component('Home')->has('auth.roles', 1)->has('auth.permisos', count(PermissionCatalog::DEFINITIONS))->missing('auth.usuario.password_hash'));
     }
 
     public static function invalidCredentials(): array
