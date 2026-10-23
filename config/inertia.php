@@ -9,4 +9,5 @@ return [
         'extensions' => ['vue'],
     ],
     'devtools' => ['enabled' => false],
+    'history' => ['encrypt' => true],
 ];

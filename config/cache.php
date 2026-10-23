@@ -49,8 +49,8 @@ return [
 
         'file' => [
             'driver' => 'file',
-            'path' => storage_path('framework/cache/data'),
-            'lock_path' => storage_path('framework/cache/locks'),
+            'path' => (env('APP_ENV') === 'testing' ? base_path('.local/testing/cache') : storage_path('framework/cache/data')),
+            'lock_path' => (env('APP_ENV') === 'testing' ? base_path('.local/testing/locks') : storage_path('framework/cache/locks')),
         ],
 
         'storage' => [
