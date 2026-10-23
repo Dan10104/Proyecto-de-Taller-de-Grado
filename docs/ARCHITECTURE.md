@@ -97,3 +97,7 @@ Autenticación nativa Laravel Session (guard web, proveedor adaptado a usuarios/
 Middleware coordinará identidad/vigencia; Gates y Policies aplicarán capacidades y guardas de objetos. La resolución RBAC usa asignaciones_roles activas y roles_permisos, con permisos derivados de RF/CU y efecto de cambios en la siguiente solicitud. No bypass de Administrador, permisos confiados desde Vue ni condiciones de rol dispersas. El ámbito fino de recursos se resolverá cuando existan sus entidades, antes de exponer operaciones; su ausencia no otorga alcance global.
 
 Contratos completos, límites de expiración/concurrencia/logout y fuentes técnicas: [D-04/D-07](DECISIONS.md#readiness-for-phase-2). API móvil, autenticación por tokens y almacenamiento distribuido siguen diferidos. Las seis tablas autorizadas para el próximo núcleo no incluyen bitácora general; no se crean adaptadores, endpoints o tablas como sustitución de ese módulo.
+
+## Implementación posterior de Fase 2
+
+Los apartados de Fases 1/1.5 conservan su descripción histórica. El núcleo ahora usa SessionGuard/Usuario, middleware de sesión de acceso, Gates de capacidades y servicios transaccionales. Inertia sirve Login, Inicio, Usuarios y Roles/Permisos con AppLayout compartido. El driver file y SHA-256 en sesiones_acceso cumplen funciones distintas. Dos esquemas MySQL y cuentas exclusivas separan desarrollo/testing. No hay API duplicada, módulos futuros ni bitácora general. [Diseño implementado y pruebas](SECURITY_IMPLEMENTATION.md).

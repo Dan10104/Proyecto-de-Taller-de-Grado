@@ -1,6 +1,6 @@
 # Plan de implementación web
 
-Estado: **Fase 1 técnica y Fase 1.5 documental completadas; Fases 2–14 no iniciadas**. Fases 0 y 0.5 conservaron su alcance documental; la nueva instrucción de Fase 1 autorizó la fundación técnica descrita en [DEVELOPMENT_SETUP.md](DEVELOPMENT_SETUP.md). No existe Flutter, Android ni cliente nativo en el plan de ejecución.
+Estado: **Fase 2 implementada; revisión manual e integración pendientes; Fases 3–14 no iniciadas**. Fases 0 y 0.5 conservaron su alcance documental; la nueva instrucción de Fase 1 autorizó la fundación técnica descrita en [DEVELOPMENT_SETUP.md](DEVELOPMENT_SETUP.md). No existe Flutter, Android ni cliente nativo en el plan de ejecución.
 
 ## Inventario histórico anterior a Fase 1 — 2026-10-23
 
@@ -52,7 +52,7 @@ Ese inventario corresponde a Fases 0/0.5, cuando no se instalaron dependencias n
 
 ### Fase 2 — Núcleo web de autenticación, usuarios, roles y permisos
 
-**Todavía no iniciada.** La lista de Fase 1.5 §15 sustituye el alcance anterior de bitácora base: solo seis tablas académicas. RF25/CU30 y la auditoría general exigida por otros CU permanecen pendientes hasta que se autorice implementar registros_actividad. No se consideran satisfechos por logs técnicos ni por sesiones_acceso. Esta dependencia no bloquea construir el núcleo, pero limita la aceptación integral de esos CU.
+**Núcleo implementado; revisión manual bloqueada por el navegador integrado e integración pendiente.** La lista de Fase 1.5 §15 sustituye el alcance anterior de bitácora base: solo seis tablas académicas. RF25/CU30 y la auditoría general exigida por otros CU permanecen pendientes hasta que se autorice implementar registros_actividad. No se consideran satisfechos por logs técnicos ni por sesiones_acceso. Esta dependencia no bloquea construir el núcleo, pero limita la aceptación integral de esos CU.
 
 | Campo | Plan |
 | --- | --- |
@@ -236,11 +236,9 @@ Ese inventario corresponde a Fases 0/0.5, cuando no se instalaron dependencias n
 | Commit esperado | `build: prepare Docker and Google Cloud deployment` |
 
 
-## Próxima instrucción propuesta: Fase 2
+## Próxima instrucción propuesta: Fase 3
 
-Verificar Git/VS Code y aplicar D-04/D-07 cerradas, sin reabrirlas como bloqueantes. Derivar el catálogo de permisos de RF/CU y preparar MySQL espacio_u_testing con credenciales privadas y guardas de conexión antes de pruebas que escriban. Implementar exclusivamente las seis tablas del núcleo y la parte web de CU01–CU04, respetando correo/password_hash, asignaciones históricas y el contrato de sesiones_acceso. No adoptar esquemas de starter kits. Conservar pendiente la auditoría general dependiente de registros_actividad hasta autorizar su alcance, así como QR/IoT/Blockchain y autenticación móvil/API.
-
-Nada de esa propuesta se ejecuta hasta recibir la siguiente instrucción del usuario.
+Después de cerrar la validación manual e integrar Fase 2, y con nueva autorización, revisar contratos de pisos/espacios/características/bloqueos y las dependencias de disponibilidad con reservas/políticas. Acreditar el ámbito por recurso antes de exponer operaciones. Conservar pruebas MySQL aisladas y las seis tablas de seguridad, sin inventar FK ni adelantar el ciclo de reservas. Fase 3 no se inicia en esta entrega.
 
 ## Preparación de Fase 1 y puertas posteriores
 
@@ -248,7 +246,7 @@ Nada de esa propuesta se ejecuta hasta recibir la siguiente instrucción del usu
 
 | Decisión / detalle restante | Límite antes de trabajo dependiente |
 | --- | --- |
-| D-04, alcance fino por recurso DIFERIDO EN PARTE; RBAC cerrado | Derivar catálogo como trabajo de Fase 2; acreditar alcance antes del flujo funcional de recursos correspondiente, sin nuevas tablas inferidas |
+| D-04, alcance fino por recurso DIFERIDO EN PARTE; RBAC cerrado | Catálogo administrativo implementado en Fase 2; acreditar alcance antes del flujo funcional de recursos correspondiente, sin nuevas tablas inferidas |
 | D-07, móvil/API y almacenamiento distribuido; sesión web cerrada | Móvil/API cuando se autorice; despliegue distribuido antes de Fase 14 |
 | D-05, plazos de cancelación y disparador FINALIZADA | Antes de Fase 4; intervalos y estados conflictivos ya fijados |
 | D-09, emisión, vigencia y correlación QR | Antes de Fase 6 |
@@ -258,4 +256,6 @@ Nada de esa propuesta se ejecuta hasta recibir la siguiente instrucción del usu
 | D-16, protocolo de medición y retención operativa | Retención antes de ingestión en 7 y operación en 14; medición antes de aceptación en 13; zona operativa ya fijada |
 | D-17, mecanismos transaccionales y guardas de servidor | Al implementar el componente de Fases 2–10; sin modificar constraints |
 
-D-13/D-14 no requieren desarrollar las funciones históricas/ilustrativas. Los estados RESUELTA/CONVENCIÓN describen contratos. Las pruebas de fundación de Fase 1 están completadas; las pruebas funcionales de negocio y rendimiento de Fases 2–14 siguen pendientes.
+D-13/D-14 no requieren desarrollar las funciones históricas/ilustrativas. Los estados RESUELTA/CONVENCIÓN describen contratos. Las pruebas de fundación de Fase 1 están completadas; el núcleo web de Fase 2 tiene 65 pruebas / 493 aserciones aprobadas. Las pruebas de módulos posteriores y rendimiento siguen pendientes.
+
+Evidencia de Fase 2: [SECURITY_IMPLEMENTATION.md](SECURITY_IMPLEMENTATION.md). Las pruebas no acreditan la bitácora pendiente ni amplían el alcance de Fase 3.

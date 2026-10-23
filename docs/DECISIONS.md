@@ -517,3 +517,11 @@ Se implementó y verificó exclusivamente la fundación web; el cierre de Fase 0
 - **Estado de entrega:** solo contratos documentales. No se crearon migraciones, modelos, middleware, Policies, seeders, pantallas de login, cuentas ni bases de testing; no se instalaron paquetes. Fase 2 puede comenzar con nueva instrucción, pero **no se inicia en esta entrega**.
 
 Revisión de fuentes de Fase 1.5: CU01/CU02 (tablas 38/39; pp. 175–177), descripción del Encargado y las seis tablas de seguridad reconsultadas en el Word; CU01/CU02 contrastados con el PDF. Huellas de ambos originales intactas. Se mantiene la normalización D-01 de codigo, los tipos, FK, índices y enums del modelo. La clasificación de Fase 0.5 se conserva como historia, sin reabrir el resto de decisiones.
+
+## Concreción posterior de Fase 2 — sin reabrir contratos
+
+D-04/D-07 implementadas para el núcleo web. Se derivaron once códigos administrativos trazados a CU03/CU04; solo el Administrador vigente y con permiso aportado por ese rol ejecuta esas acciones. Los otros tres roles conservan acceso a su propia sesión e Inicio. El alta de roles solo completa identidades oficiales ausentes; el nombre canónico no se renombra y su descripción es editable.
+
+D-17 se concreta en bloqueo transaccional común sobre Administrador, reautorización tras adquirirlo, bloqueo de usuario al asignar y retiro de todas las filas activas del par, sin borrar historia ni alterar el SQL. Se conserva al menos un administrador activo y los seis permisos de recuperación de PermissionCatalog::RECOVERY; pruebas concurrentes verifican el invariante. Bootstrap atribuye su primera asignación al propio administrador, no crea un actor ficticio ni modifica FK. Estas son convenciones de implementación dentro de lo autorizado, no decisiones de dominio nuevas.
+
+Testing MySQL está aprovisionado y aislado. D-04 ámbito por recurso, D-07 móvil/distribución y todos los detalles posteriores mantienen su estado diferido. CU30 no está implementado; ninguna conclusión de las secciones históricas equivale a implementarlo. [Implementación y comprobaciones](SECURITY_IMPLEMENTATION.md).

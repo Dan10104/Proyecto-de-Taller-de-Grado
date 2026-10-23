@@ -730,3 +730,7 @@ Las fichas conservan actores, flujo, excepciones y tablas del informe. La column
 - CU30 y el registro general de actividad exigido por otros CU permanecen pendientes: la nueva limitación de tablas no incluye registros_actividad. No usar logs técnicos, asignaciones_roles o sesiones_acceso para afirmar que se implementó la bitácora; la parte de auditoría general de las postcondiciones no se declarará satisfecha hasta autorizar e integrar ese componente.
 
 Pruebas negativas y de fallos previstas en [BUSINESS_RULES.md](BUSINESS_RULES.md); aislamiento MySQL en [DEVELOPMENT_SETUP.md](DEVELOPMENT_SETUP.md#aislamiento-de-pruebas-para-fase-2).
+
+## Evidencia de implementación posterior — Fase 2
+
+CU01/CU02: autenticación web y sesiones implementadas y probadas. CU03/CU04: núcleo de usuarios, roles, permisos e historia implementado; bitácora general aún pendiente. CU30 no implementado. El catálogo de once permisos y la matriz vigente se documentan en [SECURITY_IMPLEMENTATION.md](SECURITY_IMPLEMENTATION.md). Las fichas normativas y sus dependencias se conservan; no se declara satisfacción de las partes excluidas. 65 pruebas/493 aserciones del núcleo y la fundación sobre MySQL testing, sin SQLite ni datos reales.
