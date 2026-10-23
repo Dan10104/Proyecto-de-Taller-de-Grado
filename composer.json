@@ -9,6 +9,7 @@
     ],
     "require": {
         "php": "^8.5",
+        "inertiajs/inertia-laravel": "^3.0",
         "laravel/framework": "^13.17"
     },
     "require-dev": {
