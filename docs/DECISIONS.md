@@ -525,3 +525,11 @@ D-04/D-07 implementadas para el núcleo web. Se derivaron once códigos administ
 D-17 se concreta en bloqueo transaccional común sobre Administrador, reautorización tras adquirirlo, bloqueo de usuario al asignar y retiro de todas las filas activas del par, sin borrar historia ni alterar el SQL. Se conserva al menos un administrador activo y los seis permisos de recuperación de PermissionCatalog::RECOVERY; pruebas concurrentes verifican el invariante. Bootstrap atribuye su primera asignación al propio administrador, no crea un actor ficticio ni modifica FK. Estas son convenciones de implementación dentro de lo autorizado, no decisiones de dominio nuevas.
 
 Testing MySQL está aprovisionado y aislado. D-04 ámbito por recurso, D-07 móvil/distribución y todos los detalles posteriores mantienen su estado diferido. CU30 no está implementado; ninguna conclusión de las secciones históricas equivale a implementarlo. [Implementación y comprobaciones](SECURITY_IMPLEMENTATION.md).
+
+## Precisión e implementación autorizadas en Fase 3
+
+D-04: la nueva petición §35 autoriza expresamente CU05 a nivel de módulo/acción y mantiene diferido el ámbito fino por recurso. Sustituye para esta fase el requisito histórico de acreditarlo antes de exponer espacios; no autoriza inventar encargado_espacio, usuarios_espacios ni responsabilidades_recursos. La matriz concede consulta a los cuatro roles y tres acciones de gestión a Administrador/Encargado, siempre con permiso del mismo rol vigente y sin bypass.
+
+D-05: se aplica [inicio, fin), fin > inicio y America/La_Paz a bloqueos/consulta. Se admiten bloqueos solapados porque SQL no prohíbe esa situación; cualquiera activo excluye, desactivación explícita conserva historia. La expiración temporal no reescribe activo. Parámetros pendientes del ciclo de reservas siguen diferidos.
+
+Las ocho estructuras SQL Word/PDF fueron contrastadas y las huellas originales no cambiaron. politicas_liberacion se adelanta únicamente para integridad FK, sin lógica de Fase 8. CU06 queda IMPLEMENTACIÓN PARCIAL — FASE 3: reservas Fase 4 e IoT Fase 7. CU30 y demás decisiones diferidas se conservan. [Implementación y evidencia](SPACES_IMPLEMENTATION.md).

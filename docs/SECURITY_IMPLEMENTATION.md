@@ -99,3 +99,9 @@ Lectura final en MySQL: un Administrador ACTIVO con once permisos y descripción
 ## Límites explícitos
 
 No se implementó CU30 ni registros_actividad; sesiones e historial de roles no sustituyen auditoría general. Los CU03/CU04 tienen implementado su núcleo autorizado; aceptación de la parte de bitácora sigue pendiente. No se implementó Fase 3, recursos, reservas, préstamos, QR, IoT, Blockchain, reportes, chatbot, API/móvil ni despliegue. No se afirma capacidad de carga ni disponibilidad de producción.
+
+## Extensión posterior de Fase 3
+
+Las cifras y límites anteriores describen el cierre histórico de Fase 2. El catálogo actual tiene 15 permisos: los once de seguridad mantienen elegibilidad exclusiva de Administrador; cuatro de espacios habilitan consulta a todos y gestión/estado/bloqueos solo a Administrador y Encargado. La asignación inicial total es 15/4/1/1. AuthorizationService ahora evalúa elegibilidad por cada acción, sin bypass y sin combinar elegibilidad de un rol con el permiso de otro. Seeder incremental conserva revocaciones, y la UI de roles ofrece solo permisos elegibles.
+
+Los 65 tests anteriores siguen pasando dentro de 127 tests / 1395 aserciones. Se conservan guardas de sesión, invariantes administrativas y aislamiento MySQL. D-04 se concreta por módulo/acción para espacios conforme §35; ámbito fino y CU30 siguen pendientes. [Evidencia de Fase 3](SPACES_IMPLEMENTATION.md).

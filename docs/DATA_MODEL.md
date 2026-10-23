@@ -894,3 +894,9 @@ La coordinación del guard web, revocación y cambios de permisos deberá verifi
 ## Materialización de Fase 2
 
 Solo usuarios, roles, permisos, roles_permisos, asignaciones_roles y sesiones_acceso están implementadas: seis migraciones, 29 columnas, siete FK y dos CHECK. Se preservó el SQL oficial, incluyendo ENUM ACTIVO/INACTIVO, fechas propias, acciones CASCADE/RESTRICT y PK compuesta; únicamente codigo aplica D-01. No hay timestamps agregados, UNIQUE sobre la historia ni tabla users/sessions alternativa. migrations es técnica. El resto del diccionario continúa como contrato, no como esquema ejecutado. SchemaContractTest verifica metadatos y restricciones sobre MySQL testing real.
+
+## Materialización posterior de Fase 3
+
+Se añaden pisos, recursos_institucionales, tipos_espacio, caracteristicas_espacio, politicas_liberacion, espacios_academicos, espacios_caracteristicas y bloqueos_espacio: 37 columnas, ocho FK y cuatro CHECK. Total actual: 14 tablas académicas, 66 columnas, 15 FK y seis CHECK, más migrations técnica. Las 17 tablas restantes del diccionario no están materializadas.
+
+politicas_liberacion: **Tabla incorporada anticipadamente únicamente como dependencia estructural del FK de espacios académicos.** Estructura exacta sin CRUD, selección, seed ni evaluación funcional; Fase 8. espacio.recurso_id es PK/FK no autoincremental compartida con recurso, pivot tiene PK compuesta; no se añaden timestamps ni ubicaciones alternativas. SpaceSchemaTest verifica metadatos, defaults, unicidad, CHECK, acciones FK y rollback; el detalle está en [SPACES_IMPLEMENTATION.md](SPACES_IMPLEMENTATION.md).

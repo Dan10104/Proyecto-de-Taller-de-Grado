@@ -127,6 +127,8 @@ Fuente: tabla 41; p. 179 (PDF 180); figura 32; análisis figura 78.
 
 ## CU05 — Gestionar espacios académicos
 
+**Estado Fase 3: núcleo funcional implementado y probado; integración de bitácora CU30 diferida.** RBAC por módulo/acción según petición §35; ámbito fino por recurso pendiente. [Código y evidencia](SPACES_IMPLEMENTATION.md).
+
 Fuente: tabla 42; p. 180 (PDF 181); figura 33; análisis figura 79.
 
 | Campo | Especificación |
@@ -146,6 +148,8 @@ Fuente: tabla 42; p. 180 (PDF 181); figura 33; análisis figura 79.
 | Pruebas necesarias | T-CU05: Piso/tipo válidos; capacidad positiva; código duplicado; características únicas; bloqueo con periodo válido. |
 
 ## CU06 — Consultar disponibilidad de espacios académicos
+
+**Estado: IMPLEMENTACIÓN PARCIAL — FASE 3.** Filtros, ubicación, tipos, capacidad, características, estados y bloqueos implementados. Reservas activas: Fase 4; dato complementario IoT: Fase 7. Las relaciones y pruebas futuras de esta ficha describen el CU final y no implican tablas ya creadas. [Evidencia](SPACES_IMPLEMENTATION.md).
 
 Fuente: tabla 43; p. 182 (PDF 183); figura 34; análisis figura 80.
 
@@ -734,3 +738,7 @@ Pruebas negativas y de fallos previstas en [BUSINESS_RULES.md](BUSINESS_RULES.md
 ## Evidencia de implementación posterior — Fase 2
 
 CU01/CU02: autenticación web y sesiones implementadas y probadas. CU03/CU04: núcleo de usuarios, roles, permisos e historia implementado; bitácora general aún pendiente. CU30 no implementado. El catálogo de once permisos y la matriz vigente se documentan en [SECURITY_IMPLEMENTATION.md](SECURITY_IMPLEMENTATION.md). Las fichas normativas y sus dependencias se conservan; no se declara satisfacción de las partes excluidas. 65 pruebas/493 aserciones del núcleo y la fundación sobre MySQL testing, sin SQLite ni datos reales.
+
+## Precisión autorizada para CU05/CU06 — Fase 3
+
+La petición §35 sustituye en estos dos flujos la puerta histórica de ámbito fino: se habilita RBAC por módulo/acción sin inventar tablas. CU05 permite gestión a Administrador/Encargado con permiso; CU06 permite consulta a los cuatro roles con espacios.ver. La matriz de iniciadores de otros CU no cambia. CU05 conserva pendiente la bitácora; CU06 conserva reservas e IoT pendientes. No hay CU07–CU11 ni CU23 funcional.
