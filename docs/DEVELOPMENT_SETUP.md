@@ -111,7 +111,7 @@ php artisan test
 
 Los comandos validan puerto y directorio de datos antes de operar. `Stop` ejecuta un apagado SQL de la instancia del proyecto. Si `Status` informa indisponibilidad tras `Stop`, iniciar de nuevo con `Start`; no intentar acceder a las otras instancias. No ejecutar `Init` en este equipo ya preparado.
 
-Sesiones anónimas y caché técnicas usan archivos; cola `sync` y correo `log` son configuración base, sin jobs ni envío de mensajes. No requieren tablas y no resuelven D-07 ni implementan autenticación. Laravel usa español y `America/La_Paz`; las conexiones MySQL fijan `-04:00`. La conversión de instantes externos sigue diferida.
+Sesiones anónimas y caché técnicas usan archivos; cola `sync` y correo `log` son configuración base, sin jobs ni envío de mensajes. En Fase 1 no requirieron tablas ni implementaron autenticación. La posterior Fase 1.5 resolvió documentalmente D-07 para la web; ese contrato aún no se ha programado. Laravel usa español y `America/La_Paz`; las conexiones MySQL fijan `-04:00`. La conversión de instantes externos sigue diferida.
 
 ## Ejecutar y detener la aplicación
 
@@ -144,7 +144,7 @@ npm audit
 php vendor/bin/pint --test app bootstrap/app.php bootstrap/providers.php config public routes scripts tests
 ```
 
-Resultado al cierre: 3 pruebas / 17 aserciones, HTTP 200 e Inertia `Foundation`, `/up`, conexión MySQL real mediante `SELECT 1`, zona MySQL `-04:00` y Laravel en español / `America/La_Paz`. La prueba de BD es de solo lectura y usa `.env` local: no hay SQLite, mocks de conexión ni `RefreshDatabase`. Los tests futuros con escritura deberán definir su aislamiento antes de ejecutarse.
+Resultado al cierre: 3 pruebas / 17 aserciones, HTTP 200 e Inertia `Foundation`, `/up`, conexión MySQL real mediante `SELECT 1`, zona MySQL `-04:00` y Laravel en español / `America/La_Paz`. La prueba de BD es de solo lectura y usa `.env` local: no hay SQLite, mocks de conexión ni `RefreshDatabase`. Los tests futuros con escritura deberán aplicar el aislamiento definido en Fase 1.5 antes de ejecutarse.
 
 Build de producción correcto. Vue muestra el mensaje recibido de Laravel tanto con build como con Vite en desarrollo; conexión de Vite comprobada y consola sin errores/advertencias. Composer y npm: cero avisos de vulnerabilidad en la consulta del 2026-10-23. No equivale a una garantía de seguridad permanente ni a validación de CU o rendimiento.
 
@@ -161,4 +161,23 @@ Incidencias resueltas: PHP global insuficiente, credenciales desconocidas de los
 - [Tailwind: integración Vite](https://tailwindcss.com/docs/installation/using-vite).
 - [MySQL 9.7: notas de versión](https://dev.mysql.com/doc/relnotes/mysql/9.7/en/) e [inicialización](https://dev.mysql.com/doc/refman/9.7/en/data-directory-initialization.html).
 
-No publicar `.env`, `.tools/`, `.local/`, dependencias, logs ni datos privados. La plantilla conserva vacíos todos los secretos y los lockfiles fijan dependencias públicas. Aplicar [SECURITY_POLICY.md](SECURITY_POLICY.md) antes de cada commit/push. Fase 2 requiere nueva autorización y el cierre previo de D-04/D-07.
+No publicar `.env`, `.tools/`, `.local/`, dependencias, logs ni datos privados. La plantilla conserva vacíos todos los secretos y los lockfiles fijan dependencias públicas. Aplicar [SECURITY_POLICY.md](SECURITY_POLICY.md) antes de cada commit/push. D-04/D-07 están resueltas documentalmente para Fase 2; implementarla requiere nueva autorización.
+
+## Aislamiento de pruebas para Fase 2
+
+**Contrato conceptual de Fase 1.5; todavía no provisionado.** Las tres pruebas actuales de fundación solo leen MySQL de desarrollo. Antes de introducir migraciones destructivas, RefreshDatabase, truncados, seeders o cualquier escritura de tests, Fase 2 deberá:
+
+1. Crear la base **MySQL espacio_u_testing** en la instancia aislada del proyecto, con charset/colación/motor compatibles. Puede compartir el servidor local 127.0.0.1:3308, pero no el esquema, los datos ni la cuenta de espacio_u. No usar SQLite ni las otras dos instancias del equipo.
+2. Crear una cuenta distinta limitada a espacio_u_testing.* y sin permisos sobre espacio_u ni privilegios globales. La aplicación y las pruebas no usarán la cuenta administrativa. Guardar las credenciales y una APP_KEY exclusiva únicamente en .env.testing local; no copiar secretos de .env, no publicarlos ni pasarlos por argumentos.
+3. Configurar APP_ENV=testing y DB_CONNECTION=mysql con esa base explícita. Adaptar phpunit.xml/configuración antes de usar tests con escritura: su estado de Fase 1 todavía no separa base. Un DB_URL, variable heredada o caché de configuración nunca debe permitir redirigir silenciosamente la conexión a desarrollo.
+4. Incorporar una guarda previa a toda migración/limpieza que confirme entorno testing, driver mysql y destino efectivo: host/puerto locales autorizados y SELECT DATABASE() exactamente espacio_u_testing. Ante ausencia o discrepancia, abortar **antes de escribir**. No basta con comprobar que el nombre contiene la palabra test o confiar solo en un archivo de entorno.
+5. Aislar caché, sesiones, archivos temporales y colas de prueba respecto del desarrollo; usar datos ficticios y los mecanismos de prueba del framework. Las pruebas que necesiten persistencia técnica entre solicitudes deberán usar un almacén exclusivo de testing. Ninguna prueba enviará correo ni llamará a integraciones reales.
+6. Migrar únicamente el núcleo autorizado a esa BD y probar login/logout, RBAC, cambios de permisos, expiración y fallos/concurrencia. Las pruebas de rechazo del destino erróneo no ejecutarán comandos destructivos contra espacio_u. Paralelismo con bases adicionales queda deshabilitado hasta definir nombres permitidos y cuentas aisladas; no conceder permisos globales para facilitarlo.
+
+Esta entrega no modifica .env, .env.example, phpunit.xml, config ni scripts; no crea .env.testing ni inicia servidores. El trabajo posterior configurará el entorno de pruebas antes del primer test con escritura. Procedimiento/credenciales permanecen separados: aquí se documentan reglas, nunca valores privados.
+
+## Parámetros web previstos, todavía sin activar
+
+En Fase 2, configurar el guard session y proveedor Usuario respetando correo/password_hash; Hash usará Argon2id, disponible en el PHP local comprobado. Conservar file para sesiones técnicas locales y configurar cookies según D-07. SESSION_LIFETIME seguirá siendo la única fuente de duración a través de config('session.lifetime'); no duplicar su default en lógica de aplicación. Los límites de intentos se parametrizarán y probarán antes de exponer login. No instalar paquetes de RBAC/API que reemplacen el esquema.
+
+No se provisionarán en Fase 2 tablas de otros módulos: el núcleo permitido son las seis tablas de seguridad. Registros de actividad y CU30 requieren autorización de alcance posterior; los logs técnicos no equivalen a esa bitácora. [Contratos y readiness](DECISIONS.md#readiness-for-phase-2).

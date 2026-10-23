@@ -874,3 +874,19 @@ Fuentes: figura 19 (dominio, p. 109), figura 108 (clases, p. 248), figura 109 (B
 | RecursoInstitucional → subtipos | Superclase abstracta de EspacioAcademico y EquipamientoTecnologico | Subtipo → 1 recurso; recurso → 0..1 fila por cada tabla subtipo | espacios_academicos.recurso_id; equipamientos_tecnologicos.recurso_id | NO; PK compartida | SQL no asegura totalidad/disyunción entre tablas. Servidor crea coherentemente recurso y subtipo en transacción; no añadir discriminador ni nuevas FK. |
 
 La clase expresa el dominio; las FK, nulabilidad y restricciones expresan la persistencia. Esta reconciliación no añade relaciones, columnas, índices ni entidades. No se cambia el contrato por preferencias del ORM. D-17 cubre las guardas del servidor que complementan, sin sustituir, las restricciones del SQL.
+
+## Contrato físico de seguridad para Fase 2 — cierre de Fase 1.5
+
+No cambia ninguna columna, tipo, default, FK, índice, CHECK o ENUM del diccionario. Solo se autoriza implementar progresivamente usuarios, roles, permisos, roles_permisos, asignaciones_roles y sesiones_acceso, más tablas estrictamente técnicas justificadas. No se crearán en esa fase tablas funcionales de recursos, reservas, préstamos, IoT, Blockchain ni registros_actividad; este último permanece requisito del modelo y requiere autorización de alcance posterior. El registro de sesiones no lo sustituye.
+
+| Correspondencia | Regla de implementación documental |
+| --- | --- |
+| Identidad Laravel | Adaptar a usuarios.correo y usuarios.password_hash; Argon2id mediante Hash. No añadir email, password o remember_token por convenciones de un starter. |
+| Roles históricos | asignaciones_roles conserva usuario_id, rol_id, asignado_por_id, retirado_por_id, fecha_asignacion y fecha_retiro; activa si fecha_retiro IS NULL. No usuarios.rol_id ni enum nuevo. |
+| Permisos | roles_permisos conserva M:N y PK compuesta. permisos.codigo sigue D-01 y límite 100; convención recurso.accion, sin catálogo definitivo inventado. |
+| Control de sesiones | sesiones_acceso.token_hash guarda SHA-256 hex de 64 caracteres del ID final; se conserva VARCHAR(255)/UNIQUE, sin ID/cookie/token crudo. |
+| Vigencia | expira_en deriva de session.lifetime y se renueva por inactividad solo tras validar vigencia; creada_en inmutable y revocada_en histórica. Se respeta expira_en > creada_en. |
+| Sesión técnica | file en desarrollo; no usar sesiones_acceso como tabla sessions de Laravel ni agregarle payload/last_activity. |
+| Pruebas con escritura | Mismo modelo en MySQL espacio_u_testing, separado de espacio_u, con usuario restringido y configuración local ignorada. No provisionado en Fase 1.5. |
+
+La coordinación del guard web, revocación y cambios de permisos deberá verificarse según D-04/D-07. La mera existencia de una fila de sesión o de una asignación histórica no concede acceso.

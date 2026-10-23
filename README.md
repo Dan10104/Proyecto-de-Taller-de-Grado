@@ -2,7 +2,7 @@
 
 Sistema de información para la gestión y control de reservas de espacios académicos y préstamos de equipamiento tecnológico en la FICCT, con monitoreo de ocupación mediante IoT y trazabilidad de operaciones mediante Blockchain.
 
-**Estado: Fase 1 completada; Fase 2 no iniciada.** Funciona la fundación Laravel + Vue 3 + Inertia + Vite, con MySQL real y una única página técnica. No están implementados autenticación, usuarios, roles, permisos, reservas, préstamos, QR, IoT, Blockchain, notificaciones, reportes ni chatbot. Flutter/Android y despliegue siguen fuera de esta fase.
+**Estado: Fase 1 completada y Fase 1.5 documental cerrada; Fase 2 no iniciada.** Funciona la fundación Laravel + Vue 3 + Inertia + Vite, con MySQL real y una única página técnica. No están implementados autenticación, usuarios, roles, permisos, reservas, préstamos, QR, IoT, Blockchain, notificaciones, reportes ni chatbot. Flutter/Android y despliegue siguen fuera de esta fase.
 
 ## Fuente de verdad
 
@@ -84,4 +84,6 @@ ESPACIO-U/
 
 Fases 0 y 0.5 conservan su cierre documental y sus 17 expedientes. D-15 queda atendida para el entorno web de Fase 1; Docker sigue pendiente de su fase. D-16 se aplica a la configuración `America/La_Paz` y sesión MySQL `-04:00`, sin lógica de conversión externa anticipada.
 
-El siguiente paso, solo con autorización de Fase 2, es cerrar D-04 (ámbito/permisos) y D-07 (autenticación/sesión), y planificar migraciones por dependencias antes de implementar CU01–CU04 y bitácora base.
+D-04 y D-07 están **resueltas para Fase 2**, con cero bloqueantes para el núcleo web: RBAC sobre el esquema oficial, Laravel Session y control por hash en sesiones_acceso. El ámbito fino por recurso y la autenticación móvil/API siguen diferidos. Consultar [Readiness for Phase 2](docs/DECISIONS.md#readiness-for-phase-2).
+
+La siguiente instrucción podrá autorizar las seis tablas de seguridad y CU01–CU04, precedidos por el catálogo de permisos trazado y MySQL de testing separado. La bitácora funcional/CU30 requiere autorización de registros_actividad, fuera de esa lista de seis tablas. Fase 1.5 solo modificó documentos; no creó autenticación, migraciones ni una base de testing.

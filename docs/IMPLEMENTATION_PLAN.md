@@ -1,6 +1,6 @@
 # Plan de implementación web
 
-Estado: **Fase 1 completada; Fases 2–14 no iniciadas**. Fases 0 y 0.5 conservaron su alcance documental; la nueva instrucción de Fase 1 autorizó la fundación técnica descrita en [DEVELOPMENT_SETUP.md](DEVELOPMENT_SETUP.md). No existe Flutter, Android ni cliente nativo en el plan de ejecución.
+Estado: **Fase 1 técnica y Fase 1.5 documental completadas; Fases 2–14 no iniciadas**. Fases 0 y 0.5 conservaron su alcance documental; la nueva instrucción de Fase 1 autorizó la fundación técnica descrita en [DEVELOPMENT_SETUP.md](DEVELOPMENT_SETUP.md). No existe Flutter, Android ni cliente nativo en el plan de ejecución.
 
 ## Inventario histórico anterior a Fase 1 — 2026-10-23
 
@@ -22,7 +22,7 @@ Ese inventario corresponde a Fases 0/0.5, cuando no se instalaron dependencias n
 ## Reglas comunes de ejecución
 
 1. Nueva instrucción del usuario para comenzar la fase; abrir la raíz oficial, comprobar rama/remoto/estado y sincronizar sin perder cambios locales.
-2. Aplicar las decisiones vigentes de Fase 0.5. Cerrar solo los detalles diferidos antes de su fase/punto dependiente, registrando fundamento. Una contradicción nueva exige consultar el informe; no reabrir decisiones resueltas sin evidencia.
+2. Aplicar las decisiones vigentes de Fases 0.5 y 1.5. Cerrar solo los detalles diferidos antes de su fase/punto dependiente, registrando fundamento. Una contradicción nueva exige consultar el informe; no reabrir decisiones resueltas sin evidencia.
 3. Usar ubicaciones convencionales del framework. Crear carpetas solamente al incorporar archivos reales. No producir copias completas del proyecto ni scripts temporales permanentes.
 4. Implementar únicamente el alcance de la fase; mantener contratos de los componentes posteriores sin simular que ya funcionan. Planificar migraciones por dependencias: no crear FK hacia tablas inexistentes ni omitirlas silenciosamente del modelo final. Las ampliaciones de tablas por fases deben terminar equivalentes al esquema aprobado.
 5. Ejecutar las pruebas pertinentes a cada cambio y comprobar invariantes integradas. Los hitos que requieren un componente posterior quedan explícitamente pendientes hasta su integración.
@@ -46,19 +46,26 @@ Ese inventario corresponde a Fases 0/0.5, cuando no se instalaron dependencias n
 | Condición de finalización | Base reproducible y documentada; build/arranque correctos; secretos protegidos; sin funciones de negocio anticipadas. |
 | Commit esperado | `chore: establish Laravel Vue Inertia foundation` |
 
-### Fase 2 — Autenticación, usuarios, roles, permisos y bitácora base
+### Fase 1.5 — Contratos de autorización y sesión web
+
+**Cierre documental el 2026-10-23.** D-04 y D-07 resueltas para el núcleo web; cero bloqueantes de decisión para Fase 2. RBAC oficial, historia de asignaciones, Laravel Session, control por hash, expiración coherente y aislamiento MySQL de pruebas definidos en DECISIONS.md y DEVELOPMENT_SETUP.md. No se implementaron funciones, ni se aprovisionó testing ni se modificó configuración. El ámbito fino por recurso y la autenticación móvil/API siguen diferidos.
+
+### Fase 2 — Núcleo web de autenticación, usuarios, roles y permisos
+
+**Todavía no iniciada.** La lista de Fase 1.5 §15 sustituye el alcance anterior de bitácora base: solo seis tablas académicas. RF25/CU30 y la auditoría general exigida por otros CU permanecen pendientes hasta que se autorice implementar registros_actividad. No se consideran satisfechos por logs técnicos ni por sesiones_acceso. Esta dependencia no bloquea construir el núcleo, pero limita la aceptación integral de esos CU.
 
 | Campo | Plan |
 | --- | --- |
-| Módulos afectados | Seguridad y Administración |
+| Módulos afectados | Núcleo de Seguridad y Administración |
 | Carpetas principales futuras | app/Models/; app/Http/Controllers/ y Requests/; app/Policies/; app/Services/; routes/; database/; resources/js/Pages/; tests/ |
-| Requisitos relacionados | RF1–3/25; RNF-10–16/21; DB-13/20–22; IC-04/05 |
-| Casos de uso | CU01–CU04; CU30 básico |
-| Trabajo previsto | Aplicar D-01/D-03/D-17; cerrar mecanismo de ámbito D-04 y autenticación/sesión D-07; credenciales y cuenta activa; sesión/logout; roles/permisos con historia; bitácora base y consulta autorizada. |
-| Pruebas requeridas | Acceso válido/erróneo/inactivo; revocación; autorización directa; escalada de privilegios; historial de roles; no secretos en logs. |
-| Riesgos / puertas | Respetar codigo ASCII y actores CU; ámbito del encargado por concretar; incompatibilidad de sesiones; FK a entidades de fases posteriores. |
-| Condición de finalización | CU de acceso/administración aceptados con pruebas negativas; bitácora base lista; migraciones compatibles con modelo aprobado. |
-| Commit esperado | `feat: add access control users and activity audit` |
+| Requisitos relacionados | RF1–3; RNF-10–16/21 en su parte web aplicable; DB-13/20–22; IC-04/05 como límites de seguridad, sin implementar todavía autenticación móvil/API |
+| Casos de uso | CU01–CU04 en el núcleo web; auditoría general pendiente de su componente autorizado; CU30 fuera de esta fase delimitada |
+| Tablas académicas permitidas | usuarios, roles, permisos, roles_permisos, asignaciones_roles, sesiones_acceso. Tablas técnicas de Laravel solo si son estrictamente necesarias y diferenciadas; file no exige una tabla sessions. |
+| Trabajo previsto | Aplicar D-01/D-03/D-04/D-07/D-17 ya resueltas para este núcleo. Derivar el catálogo trazable de permisos antes de seeders/Policies; adaptar correo/password_hash; autenticación nativa, cuenta ACTIVO, hash Argon2id, regeneración/CSRF, control obligatorio de sesión, logout y expiración desde configuración. RBAC central sobre relaciones M:N e historia oficial, sin bypass de Administrador ni tablas de alcance inventadas. |
+| Pruebas requeridas | Antes de escribir: aprovisionar y verificar MySQL espacio_u_testing y cuenta exclusiva según DEVELOPMENT_SETUP. Probar credenciales/inactividad, fijación, CSRF, vigencia/revocación, concurrencia de renovación/logout, fallos de registro, autorización directa/escalada, iniciador CU, cambios de permisos e historial de roles. Criterios en BUSINESS_RULES; no secretos en logs. |
+| Riesgos / puertas | Derivar permisos de RF/CU, no de participantes; no usar espacio_u para pruebas con escritura. Mantener esquema académico y límites de tablas. No declarar auditoría general completa ni habilitar recursos de fases posteriores sin acreditar ámbito. |
+| Condición de finalización | Núcleo de CU01–CU04 probado, con aceptación de auditoría general explícitamente pendiente; pruebas negativas e aislamiento MySQL verificados; seis tablas equivalentes al modelo; ninguna funcionalidad posterior anticipada. |
+| Commit esperado | `feat: add web authentication users roles and permissions` |
 
 ### Fase 3 — Pisos, espacios, características, bloqueos y disponibilidad
 
@@ -231,18 +238,18 @@ Ese inventario corresponde a Fases 0/0.5, cuando no se instalaron dependencias n
 
 ## Próxima instrucción propuesta: Fase 2
 
-Verificar Git/VS Code y volver a leer los contratos. Cerrar D-04 (ámbito/catálogo de permisos) y D-07 (autenticación, sesiones y revocación) antes de programar CU01–CU04 y bitácora base. Planificar las migraciones por dependencias y el aislamiento de pruebas con escritura, conservando el modelo oficial. No adoptar automáticamente usuarios, sesiones o permisos de un starter kit. Mantener las decisiones de QR/IoT/Blockchain diferidas.
+Verificar Git/VS Code y aplicar D-04/D-07 cerradas, sin reabrirlas como bloqueantes. Derivar el catálogo de permisos de RF/CU y preparar MySQL espacio_u_testing con credenciales privadas y guardas de conexión antes de pruebas que escriban. Implementar exclusivamente las seis tablas del núcleo y la parte web de CU01–CU04, respetando correo/password_hash, asignaciones históricas y el contrato de sesiones_acceso. No adoptar esquemas de starter kits. Conservar pendiente la auditoría general dependiente de registros_actividad hasta autorizar su alcance, así como QR/IoT/Blockchain y autenticación móvil/API.
 
 Nada de esa propuesta se ejecuta hasta recibir la siguiente instrucción del usuario.
 
 ## Preparación de Fase 1 y puertas posteriores
 
-[Readiness for Phase 1](DECISIONS.md#readiness-for-phase-1): **0 contradicciones bloqueantes**. Los identificadores, enums, fuentes, actores y cardinalidades son implementables documentalmente. No falta una decisión de dominio para inicializar el framework. D-15 tiene selección compatible de versiones y MySQL completada en Fase 1; solo Docker sigue pendiente antes de los ensayos de Fase 14. La autenticación concreta se decide antes de Fase 2, y no se adelantan CU.
+[Readiness for Phase 1](DECISIONS.md#readiness-for-phase-1): **0 contradicciones bloqueantes**. Los identificadores, enums, fuentes, actores y cardinalidades son implementables documentalmente. No falta una decisión de dominio para inicializar el framework. D-15 tiene selección compatible de versiones y MySQL completada en Fase 1; solo Docker sigue pendiente antes de los ensayos de Fase 14. La autenticación web y RBAC quedaron definidos en Fase 1.5; no se adelantan CU. [Readiness for Phase 2](DECISIONS.md#readiness-for-phase-2): **0 bloqueantes para el núcleo web de seis tablas**.
 
 | Decisión / detalle restante | Límite antes de trabajo dependiente |
 | --- | --- |
-| D-04, alcance de recursos y catálogo concreto de permisos | Fase 2; antes de acciones sobre recursos en 3–5 |
-| D-07, sesión/API, duración y recuperación | Antes de implementar CU01–CU02 en Fase 2 |
+| D-04, alcance fino por recurso DIFERIDO EN PARTE; RBAC cerrado | Derivar catálogo como trabajo de Fase 2; acreditar alcance antes del flujo funcional de recursos correspondiente, sin nuevas tablas inferidas |
+| D-07, móvil/API y almacenamiento distribuido; sesión web cerrada | Móvil/API cuando se autorice; despliegue distribuido antes de Fase 14 |
 | D-05, plazos de cancelación y disparador FINALIZADA | Antes de Fase 4; intervalos y estados conflictivos ya fijados |
 | D-09, emisión, vigencia y correlación QR | Antes de Fase 6 |
 | D-10, transporte/payload/unidades/reintentos/frescura IoT | Antes de Fase 7 |

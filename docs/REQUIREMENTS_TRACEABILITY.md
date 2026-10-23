@@ -7,7 +7,7 @@ La restricción conserva el contenido normativo del identificador; el criterio l
 | Fases | Módulo / responsabilidad |
 | --- | --- |
 | 1 | Fundación técnica y configuración |
-| 2 | Seguridad y Administración; bitácora base |
+| 2 | Núcleo de Seguridad y Administración; bitácora funcional pendiente de autorización según Fase 1.5 §15 |
 | 3–4 | Gestión de Espacios y Reservas |
 | 5 | Gestión de Equipamiento y Préstamos |
 | 6 | QR transversal a espacios/equipamiento |
@@ -48,7 +48,7 @@ La restricción conserva el contenido normativo del identificador; el criterio l
 | RF22 — Visualización de dashboard e indicadores | Importante | El sistema deberá presentar paneles de control con indicadores relacionados con reservas, espacios académicos, equipamiento tecnológico, préstamos, ocupación e incidencias, mostrando únicamente la información autorizada para cada rol. | CU27 | 11 | Planificado web | T-CU27 — Indicadores por rol y filtros consistentes; sin datos; cambios de permisos; <=5 s con carga piloto. |
 | RF23 — Generación y exportación de reportes | Importante | El sistema deberá permitir a los usuarios autorizados generar reportes sobre reservas, espacios académicos, equipamiento tecnológico, préstamos, incidencias y actividad del sistema, con filtros y opciones de exportación en formatos definidos como PDF y Excel. | CU28 | 11 | Planificado web | T-CU28 — PDF/Excel coherentes con filtros/permisos; 10.000 filas <=30 s; reporte vacío; fallo de exportación sin bloquear a otros. |
 | RF24 — Chatbot de asistencia al usuario | Importante | El sistema deberá ofrecer un chatbot de asistencia que oriente a los usuarios sobre el funcionamiento de la plataforma, reservas, préstamos, códigos QR, reportes y demás procedimientos habilitados, sin ejecutar de forma autónoma operaciones que requieran autorización. | CU29 | 12 | Planificado web | T-CU29 — Petición de aprobar/cancelar no modifica nada; contexto ajeno excluido; proveedor caído; respuesta/aviso objetivo <=15 s. |
-| RF25 — Registro de actividad y bitácora del sistema | Importante | El sistema deberá registrar las acciones relevantes realizadas sobre usuarios, espacios académicos, reservas, equipamiento tecnológico, préstamos, incidencias, configuraciones y otros elementos definidos para fines de control y auditoría interna. | CU30 | 2 | Planificado web | T-CU30 — Filtros y paginación; usuario no autorizado; evento humano/automático; secreto ausente; conservación de historia. |
+| RF25 — Registro de actividad y bitácora del sistema | Importante | El sistema deberá registrar las acciones relevantes realizadas sobre usuarios, espacios académicos, reservas, equipamiento tecnológico, préstamos, incidencias, configuraciones y otros elementos definidos para fines de control y auditoría interna. | CU30 | Pendiente de autorización de bitácora | Planificado web | T-CU30 — Filtros y paginación; usuario no autorizado; evento humano/automático; secreto ausente; conservación de historia. |
 | RF26 — Acceso desde aplicación móvil | Importante | El sistema deberá permitir a los usuarios acceder desde una aplicación móvil orientada inicialmente a Android para consultar información, gestionar las operaciones habilitadas para su rol y realizar validaciones mediante códigos QR. | Sin CU exclusivo de app; reutiliza CU por funcionalidad | Fuera de fases 1–14 | Diferido móvil | No crear cliente nativo en estas fases; validar alcance RF26 cuando se autorice. |
 
 ## RNF
@@ -324,10 +324,10 @@ Esta tabla agrega criterios documentales/de aceptación futura; no añade RF, no
 | D-01 | RF3; CU04; IS-06; DB-20 | Migración futura usa permisos.codigo, ASCII y UNIQUE correcto; sin cambios de tipo/nulabilidad. | 1–2 |
 | D-02 | IU-05; CU01–CU30 según entidad | Exactitud de 19 ENUM; pruebas rechazan valores narrativos inexistentes y muestran derivados sin persistir nuevos estados. | 2–12 |
 | D-03 | RF1–25; CU01–CU30 | Probar que participantes RF no ejecutan acciones reservadas a otro iniciador; CU/RBAC/permiso/objeto en servidor. | 2–12 |
-| D-04 | RF4/6/7/9/11–15; CU05–CU20 | Ámbito demostrable antes de habilitar acciones; denegar fuera de alcance. Sin nueva entidad de asignación por suposición. | 2–5 |
+| D-04 | RF4/6/7/9/11–15; CU05–CU20 | Cierre histórico 0.5: ámbito demostrable, sin nueva tabla inferida. Actualización 1.5: RBAC resuelto para Fase 2; ámbito fino pendiente antes del flujo funcional. | 2; recursos en sus fases |
 | D-05 | DB-16/17/18; CU06–CU10/CU13–CU18 | Intervalos contiguos válidos, solapamientos incompatibles rechazados en concurrencia, fin>inicio; no liberar equipo por vencer periodo. | 3–5 |
 | D-06 | DB-06/24; CU21–CU26 | Cardinalidad/nulabilidad/UNIQUE reales; 0..1 evidencia por actividad; notificación con actividad obligatoria; mantener M:N. | 2–10 |
-| D-07 | RF1; CU01–CU02; RNF-10/12/16; IC-04/05 | Mecanismo compatible con sesiones_acceso; acceso expirado/revocado denegado; red caída no se presenta como revocación remota confirmada. | 2 |
+| D-07 | RF1; CU01–CU02; RNF-10/12/16; IC-04/05 | Cierre histórico 0.5: vigencia/revocación. Actualización 1.5: Laravel Session web y control por hash resueltos; móvil/API diferido. Red caída no acredita cierre remoto. | 2 web; móvil pendiente |
 | D-08 | RF18; CU23 | Evaluación conservadora con política/version/evidencias; ALERTA no libera; información insuficiente/contradictoria no permite liberación indebida. | 8 |
 | D-09 | RF8/13/14; CU11/CU20 | QR no autentica; contexto/tipo exclusivo, permisos y vigencia; inválido bloquea; correlación respeta UNIQUE/CHECK. | 6 |
 | D-10 | RF16/17; CU21–CU22; DB-23 | Sensor habilitado/asociado; espacio histórico; sin lecturas recientes muestra NO_DETERMINABLE; nunca identidad. | 7 |
@@ -346,3 +346,9 @@ Preparación documental: [Readiness for Phase 1](DECISIONS.md#readiness-for-phas
 Se conserva el inventario de 217 requisitos y todos sus criterios normativos. Se ha construido la base transversal asociada a Fase 1 del plan: Laravel/PHP, Vue/Inertia/Vite, MySQL real, locale/zona y seguridad de configuración. Evidencia: `tests/Feature/FoundationTest.php` (3 pruebas, 17 aserciones), build de producción, página Vue en navegador y auditorías Composer/npm sin avisos de vulnerabilidad. Versiones, comandos y límites en [DEVELOPMENT_SETUP.md](DEVELOPMENT_SETUP.md).
 
 Esta evidencia acredita únicamente los componentes técnicos usados y su conexión. Los estados de los requisitos completos permanecen planificados hasta cubrir todos sus criterios en sus fases. No hay tablas del dominio, autenticación, API funcional, pruebas CU01–CU30, ensayos de carga, integraciones, móvil ni despliegue. D-15 se ha atendido para versiones/instancia local; Docker sigue pendiente. D-16 tiene configuración base aplicada, sin conversión externa anticipada.
+
+## Cierre documental de Fase 1.5
+
+Los 217 requisitos mantienen sus cláusulas normativas. D-04 fija autorización por identidad, rol vigente, permiso, iniciador/flujo, restricciones y ámbito; convención recurso.accion y relaciones M:N/historia oficiales. D-07 fija Laravel Session web, correo/password_hash, Hash/Argon2id, CSRF, regeneración y control obligatorio mediante sesiones_acceso con SHA-256 del ID final y expiración desde configuración. Las pruebas futuras de aceptación se detallan en BUSINESS_RULES; no se ejecutaron CU01–CU04 ni se marcaron RF/RNF satisfechos.
+
+La planificación de RF25/CU30 se ajusta a Fase 1.5 §15: registros_actividad no pertenece a las seis tablas del próximo núcleo, por lo que su implementación requiere autorización posterior. Se conserva el requisito, sus criterios y las dependencias de auditoría de los demás CU; una referencia analítica anterior a Fase 2 no autoriza crear esa tabla. La aceptación de auditoría general continúa pendiente. Alcance fino por recurso y autenticación móvil/API siguen diferidos; no bloquean la implementación del núcleo web delimitado. [Readiness for Phase 2](DECISIONS.md#readiness-for-phase-2).

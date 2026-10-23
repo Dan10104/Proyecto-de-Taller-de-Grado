@@ -86,8 +86,8 @@ Contrato D-02 resuelto: los 19 campos ENUM del SQL final se conservan completos 
 | CodigoQR | activo booleano; generacion/expiración según fechas del modelo | Revocado/inactivo se representa con activo=false; vigente exige comprobar fechas. Caducado no crea un estado ni implica cambiar la bandera automáticamente. |
 | PoliticaLiberacion | activa, requiere_qr, usa_iot booleanos; modo separado | Habilitación y selección de evidencias no son nuevos enums. La antigüedad máxima admite NULL; su semántica precisa es D-08. |
 | BloqueoEspacio | activo y periodo | Un bloqueo aplicable debe estar activo y solaparse con la consulta; no crear enum de bloqueo. |
-| SesionAcceso | fechas de creación, expiración y revocación | Vigente, expirada o revocada son condiciones verificadas; no nuevos estados persistidos. |
-| AsignacionRol | fechas de asignación/retiro | Activa/retirada se deriva; conservar la historia y responsables. |
+| SesionAcceso | fechas de creación, expiración y revocación | Vigente exige revocada_en IS NULL y ahora < expira_en, junto a sesión Laravel y cuenta ACTIVO. Control por hash, sin enum adicional (D-07/Fase 1.5). |
+| AsignacionRol | fechas de asignación/retiro | Activa = fecha_retiro IS NULL; retirada = fecha_retiro informada. Conservar historia y responsables, sin enum adicional (D-04/Fase 1.5). |
 | EntregaPrestamo | fila única por préstamo y recepcion_confirmada_en | Entrega/recepción confirmada usa datos existentes; no crear enum propio. |
 | Notificacion | leida_en nullable | NULL = no leída; fecha = leída. El tipo del aviso es independiente. |
 | RegistroActividad | critica booleano | Crítica/no crítica es clasificación independiente del resultado. |
@@ -107,3 +107,9 @@ Contrato D-02 resuelto: los 19 campos ENUM del SQL final se conservan completos 
 | Evidencia | PENDIENTE / REGISTRADA | El resultado de verificación tiene su enum independiente; no mezclar ambos |
 
 La tabla describe comportamientos observados, no completa una máquina de estados que el informe no define. Las guardas fijadas en Fase 0.5 se aplican desde su fase; solo los detalles enumerados como diferidos en DECISIONS deben cerrarse antes de implementar su punto dependiente. Véanse [BUSINESS_RULES.md](BUSINESS_RULES.md) y [DECISIONS.md](DECISIONS.md).
+
+## Interpretación de seguridad cerrada en Fase 1.5
+
+Usuario puede conservar varias asignaciones históricas y varios roles vigentes. Roles y permisos se evalúan como conjuntos, con un rol elegible para el CU que aporte el permiso; retirar un rol cierra sus asignaciones activas sin borrar historia. Los cuatro roles oficiales no incluyen a los actores técnicos externos. D-04 permite implementar capacidades/módulos en Fase 2; el vínculo fino Encargado–recurso se resolverá en su fase funcional sin inferir una entidad nueva ni autorización global.
+
+SesionAcceso corresponde al control de una sesión web autenticada: hash SHA-256 del ID final, titular, creada_en, expira_en y revocada_en. No es una credencial reutilizable ni RegistroActividad. Varias sesiones por usuario son independientes; revocación/expiración y cuenta INACTIVO impiden acceso. La renovación por inactividad usa la misma duración configurada de Laravel y nunca reactiva una fila revocada/expirada. Las seis tablas de seguridad son el único núcleo funcional autorizado para la próxima fase; los demás conceptos permanecen documentales.
