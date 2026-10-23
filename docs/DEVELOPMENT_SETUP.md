@@ -188,7 +188,7 @@ El catálogo se carga con `php artisan db:seed`; es idempotente y no restituye p
 
 En una base recién migrada y sin usuarios, ejecutar `php artisan security:bootstrap-admin`: solicita correo y contraseña mediante entrada oculta y confirmación. Alternativamente, completar **solo** `.env` privado con `SEED_ADMIN_EMAIL` y `SEED_ADMIN_PASSWORD` y ejecutar `php artisan security:bootstrap-admin --from-env`. La plantilla deja ambas vacías. Se valida la entrada y se almacena Argon2id; cualquier usuario existente impide reutilizar el bootstrap. La primera asignación se atribuye al propio administrador, única convención de arranque sin actor previo. Nunca pasar secretos por argumentos ni imprimir `.env`.
 
-**Este equipo ya está preparado:** el administrador inicial y sus credenciales aleatorias locales existen. No repetir el comando ni regenerar APP_KEY. La comprobación manual usa únicamente cuentas sintéticas. Su cierre debe deshabilitarlas mediante el servicio de aplicación y conservar su historia; esta limpieza no sustituye los pasos pendientes de revisión en navegador.
+**Este equipo ya está preparado:** el administrador inicial y sus credenciales aleatorias locales existen. No repetir el comando ni regenerar APP_KEY. La comprobación manual utilizó únicamente cuentas sintéticas: ambas quedaron INACTIVAS y conservan su historia. La primera se deshabilitó mediante el servicio durante la incidencia del navegador; la segunda se creó, editó y deshabilitó desde la interfaz en la revisión final completada. No se almacenaron contraseñas de esas cuentas en archivos públicos ni documentación.
 
 ## Parámetros de sesión web
 

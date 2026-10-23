@@ -1,6 +1,6 @@
 # Plan de implementación web
 
-Estado: **Fase 2 implementada; revisión manual e integración pendientes; Fases 3–14 no iniciadas**. Fases 0 y 0.5 conservaron su alcance documental; la nueva instrucción de Fase 1 autorizó la fundación técnica descrita en [DEVELOPMENT_SETUP.md](DEVELOPMENT_SETUP.md). No existe Flutter, Android ni cliente nativo en el plan de ejecución.
+Estado: **Fase 2 implementada y validada; Fases 3–14 no iniciadas**. Fases 0 y 0.5 conservaron su alcance documental; la nueva instrucción de Fase 1 autorizó la fundación técnica descrita en [DEVELOPMENT_SETUP.md](DEVELOPMENT_SETUP.md). No existe Flutter, Android ni cliente nativo en el plan de ejecución.
 
 ## Inventario histórico anterior a Fase 1 — 2026-10-23
 
@@ -52,7 +52,7 @@ Ese inventario corresponde a Fases 0/0.5, cuando no se instalaron dependencias n
 
 ### Fase 2 — Núcleo web de autenticación, usuarios, roles y permisos
 
-**Núcleo implementado; revisión manual bloqueada por el navegador integrado e integración pendiente.** La lista de Fase 1.5 §15 sustituye el alcance anterior de bitácora base: solo seis tablas académicas. RF25/CU30 y la auditoría general exigida por otros CU permanecen pendientes hasta que se autorice implementar registros_actividad. No se consideran satisfechos por logs técnicos ni por sesiones_acceso. Esta dependencia no bloquea construir el núcleo, pero limita la aceptación integral de esos CU.
+**Núcleo implementado y validado el 2026-10-23 mediante 65 pruebas / 493 aserciones y el flujo manual de 15 pasos.** La lista de Fase 1.5 §15 sustituye el alcance anterior de bitácora base: solo seis tablas académicas. RF25/CU30 y la auditoría general exigida por otros CU permanecen pendientes hasta que se autorice implementar registros_actividad. No se consideran satisfechos por logs técnicos ni por sesiones_acceso. Esta dependencia no bloquea construir el núcleo, pero limita la aceptación integral de esos CU.
 
 | Campo | Plan |
 | --- | --- |
@@ -238,7 +238,7 @@ Ese inventario corresponde a Fases 0/0.5, cuando no se instalaron dependencias n
 
 ## Próxima instrucción propuesta: Fase 3
 
-Después de cerrar la validación manual e integrar Fase 2, y con nueva autorización, revisar contratos de pisos/espacios/características/bloqueos y las dependencias de disponibilidad con reservas/políticas. Acreditar el ámbito por recurso antes de exponer operaciones. Conservar pruebas MySQL aisladas y las seis tablas de seguridad, sin inventar FK ni adelantar el ciclo de reservas. Fase 3 no se inicia en esta entrega.
+Con nueva autorización para Fase 3, revisar contratos de pisos/espacios/características/bloqueos y las dependencias de disponibilidad con reservas/políticas. Acreditar el ámbito por recurso antes de exponer operaciones. Conservar pruebas MySQL aisladas y las seis tablas de seguridad, sin inventar FK ni adelantar el ciclo de reservas. Fase 3 no se inicia en esta entrega.
 
 ## Preparación de Fase 1 y puertas posteriores
 

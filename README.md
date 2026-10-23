@@ -2,7 +2,7 @@
 
 Sistema de información para la gestión y control de reservas de espacios académicos y préstamos de equipamiento tecnológico en la FICCT, con monitoreo de ocupación mediante IoT y trazabilidad de operaciones mediante Blockchain.
 
-**Estado: núcleo de Fase 2 implementado; revisión manual pendiente de desbloquear el navegador.** Laravel + Vue 3 + Inertia + Vite, con autenticación web, usuarios, cuatro roles institucionales, permisos y sesiones de acceso sobre MySQL. Se implementan exclusivamente las seis tablas de seguridad; CU30, auditoría general, Fase 3 y módulos posteriores siguen pendientes. Flutter/Android, API móvil y despliegue no se han iniciado.
+**Estado: núcleo de Fase 2 implementado y validado.** Laravel + Vue 3 + Inertia + Vite, con autenticación web, usuarios, cuatro roles institucionales, permisos y sesiones de acceso sobre MySQL. Se implementan exclusivamente las seis tablas de seguridad; CU30, auditoría general, Fase 3 y módulos posteriores siguen pendientes. Flutter/Android, API móvil y despliegue no se han iniciado.
 
 ## Fuente de verdad
 
@@ -87,4 +87,4 @@ Fases 0 y 0.5 conservan su cierre documental y sus 17 expedientes. D-15 queda at
 
 D-04 y D-07 están implementadas para el núcleo web: RBAC sin bypass, historia de asignaciones y control de sesiones por hash. [Detalles y límites](docs/SECURITY_IMPLEMENTATION.md). El ámbito fino por recurso, móvil/API, almacenamiento distribuido y CU30 permanecen diferidos.
 
-Antes de cerrar Fase 2 e integrar `main`, falta completar la revisión manual descrita en [SECURITY_IMPLEMENTATION.md](docs/SECURITY_IMPLEMENTATION.md). La siguiente fase requiere una nueva instrucción. Antes de construir pisos, espacios y disponibilidad, revisar las FK y dependencias de reservas/políticas y acreditar el ámbito autorizado por recurso. No se inició Fase 3.
+La revisión automática y manual de Fase 2 está completada; su evidencia y límites están en [SECURITY_IMPLEMENTATION.md](docs/SECURITY_IMPLEMENTATION.md). La siguiente fase requiere una nueva instrucción. Antes de construir pisos, espacios y disponibilidad, revisar las FK y dependencias de reservas/políticas y acreditar el ámbito autorizado por recurso. No se inició Fase 3.
