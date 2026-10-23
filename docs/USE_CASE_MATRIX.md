@@ -1,0 +1,654 @@
+# Matriz CU01–CU30
+
+Cobertura: 30/30 casos de uso del cap. V, tablas 38–67; prioridad según tabla 37. Cada ficha reúne iniciador, actores, precondición, flujo, alternativas, excepciones, resultado, RF, entidades/tablas, paquete/fase y pruebas. La asignación RF→CU→tabla→fase es trazabilidad analítica basada en los flujos y diagramas; no crea nuevas funciones.
+
+**Alcance web:** las menciones a aplicación móvil en el texto fuente describen el sistema global. En estas fases se implementará la variante web y el soporte de servidor aplicable, sin Flutter/Android. “Activo”, “finalizado”, “vencido” o “cancelado” en la prosa del préstamo no se traducen automáticamente a un enum; consultar D-02. Todas las pruebas indicadas están pendientes de implementación.
+
+## Índice
+
+| CU | Nombre | Prioridad | RF principal/relacionado | Fase principal |
+| --- | --- | --- | --- | --- |
+| CU01 | Iniciar sesión | Alta | RF1 | 2 |
+| CU02 | Cerrar sesión | Alta | RF1 | 2 |
+| CU03 | Gestionar usuarios | Alta | RF2 | 2 |
+| CU04 | Gestionar roles y permisos | Alta | RF3 | 2 |
+| CU05 | Gestionar espacios académicos | Alta | RF4 | 3 |
+| CU06 | Consultar disponibilidad de espacios académicos | Alta | RF5 | 3 |
+| CU07 | Registrar solicitud de reserva | Alta | RF6 | 4 |
+| CU08 | Consultar estado de reservas | Media | RF6, RF7 | 4 |
+| CU09 | Resolver solicitud de reserva | Alta | RF7 | 4 |
+| CU10 | Cancelar reserva | Alta | RF7 | 4 |
+| CU11 | Validar uso de espacio mediante código QR | Alta | RF8 | 6 |
+| CU12 | Gestionar equipamiento tecnológico | Alta | RF9 | 5 |
+| CU13 | Consultar disponibilidad de equipamiento tecnológico | Alta | RF10 | 5 |
+| CU14 | Registrar solicitud de préstamo | Alta | RF11 | 5 |
+| CU15 | Consultar estado de préstamos | Media | RF11, RF12, RF13, RF14 | 5 |
+| CU16 | Resolver solicitud de préstamo | Alta | RF12 | 5 |
+| CU17 | Registrar entrega de equipamiento tecnológico | Alta | RF13 | 5 |
+| CU18 | Registrar devolución de equipamiento tecnológico | Alta | RF14 | 5 |
+| CU19 | Gestionar incidencias y mantenimiento | Media | RF15 | 5 |
+| CU20 | Validar operación de equipamiento mediante código QR | Alta | RF13, RF14 | 6 |
+| CU21 | Gestionar sensores IoT | Alta | RF16 | 7 |
+| CU22 | Monitorear ocupación de espacios académicos | Alta | RF17 | 7 |
+| CU23 | Aplicar política de liberación de reserva | Media | RF18 | 8 |
+| CU24 | Generar evidencia de trazabilidad mediante Blockchain | Alta | RF19 | 9 |
+| CU25 | Verificar evidencia de trazabilidad | Alta | RF20 | 9 |
+| CU26 | Gestionar notificaciones | Media | RF21 | 10 |
+| CU27 | Visualizar dashboard e indicadores | Media | RF22 | 11 |
+| CU28 | Generar y exportar reportes | Media | RF23 | 11 |
+| CU29 | Consultar chatbot de asistencia | Media | RF24 | 12 |
+| CU30 | Consultar bitácora de actividad | Media | RF25 | 2 |
+
+## Relaciones de los diagramas
+
+CU07 y CU09 incluyen CU06; CU14 y CU16 incluyen CU13. CU20 extiende CU17/CU18 cuando la política exige QR; CU19 extiende CU18 al detectar anomalías; CU23 extiende CU22; CU24 extiende condicionalmente CU09, CU10, CU17 y CU18 cuando la operación es crítica. Un include representa comportamiento reutilizado; un extend es condicional y no exige ejecutarlo en todos los casos. RF19 enuncia además un conjunto configurable de operaciones críticas: D-12 debe fijar ese conjunto antes de ampliarlo.
+
+Las fichas citan la página inicial impresa; el índice PDF incluye la portada, por lo que es una página mayor. Las excepciones y pre/postcondiciones conservan el sentido de las tablas oficiales, incluidas las ambigüedades abiertas. Ningún estado de tabla se modifica para adaptar una frase del CU.
+
+## CU01 — Iniciar sesión
+
+Fuente: tabla 38; p. 175 (PDF 176); figura 29; análisis figura 75.
+
+| Campo | Especificación |
+| --- | --- |
+| Prioridad | Alta |
+| Actor iniciador | Usuario registrado. |
+| Actores | Administrador, Encargado de Laboratorio, Docente y Estudiante. |
+| Precondiciones | El usuario debe contar con una cuenta registrada y activa. El sistema y el servicio de autenticación deben encontrarse disponibles. |
+| Flujo principal (síntesis) | Ingresar credenciales; validar campos, identidad y cuenta; obtener roles/permisos; crear sesión; presentar opciones autorizadas. |
+| Alternativas / extensiones | Credenciales incorrectas o cuenta inactiva: interrumpir sin revelar información sensible. |
+| Excepciones documentadas | Credenciales incorrectas: el sistema rechaza el acceso y permite un nuevo intento. Cuenta inexistente, inactiva o deshabilitada: no se crea la sesión. Servicio no disponible: se informa la indisponibilidad temporal sin crear una sesión parcial. Token o sesión inválida: el usuario debe autenticarse nuevamente. |
+| Postcondición documentada | El usuario queda autenticado con una sesión válida y acceso limitado por sus roles y permisos. |
+| RF relacionado | RF1 |
+| Entidades / clases principales | Usuario, Rol, Permiso, Asociación Rol–Permiso, AsignacionRol, SesionAcceso |
+| Tablas directamente relacionadas | `usuarios`, `roles`, `permisos`, `roles_permisos`, `asignaciones_roles`, `sesiones_acceso` |
+| Módulo futuro y fase | Seguridad y Administración; Fase 2 |
+| Pruebas necesarias | T-CU01: Cuenta activa accede; inactiva/contraseña errónea no; sesión expirada rechazada; ninguna credencial en respuesta/log. |
+
+## CU02 — Cerrar sesión
+
+Fuente: tabla 39; p. 176 (PDF 177); figura 30; análisis figura 76.
+
+| Campo | Especificación |
+| --- | --- |
+| Prioridad | Alta |
+| Actor iniciador | Usuario autenticado. |
+| Actores | Administrador, Encargado de Laboratorio, Docente y Estudiante. |
+| Precondiciones | El usuario debe tener una sesión o token de acceso activo. |
+| Flujo principal (síntesis) | Identificar la sesión activa; invalidarla en servidor; eliminar información temporal de autenticación del cliente; volver al acceso; exigir nueva autenticación. |
+| Alternativas / extensiones | Sesión ya expirada: volver al acceso. Si falla comunicación, limpiar credenciales locales y exigir autenticación futura; revisar garantía de revocación (D-07). |
+| Excepciones documentadas | Sesión expirada previamente: se redirige al acceso sin intentar reutilizarla. Fallo de comunicación durante el cierre: la aplicación elimina las credenciales locales y solicita una nueva autenticación para futuros accesos. |
+| Postcondición documentada | La sesión queda finalizada y el usuario ya no puede acceder a funciones protegidas con la sesión anterior. |
+| RF relacionado | RF1 |
+| Entidades / clases principales | Usuario, SesionAcceso |
+| Tablas directamente relacionadas | `usuarios`, `sesiones_acceso` |
+| Módulo futuro y fase | Seguridad y Administración; Fase 2 |
+| Pruebas necesarias | T-CU02: Token anterior rechazado tras cierre confirmado; sesión expirada; caída de red y revocación según D-07. |
+
+## CU03 — Gestionar usuarios
+
+Fuente: tabla 40; p. 177 (PDF 178); figura 31; análisis figura 77.
+
+| Campo | Especificación |
+| --- | --- |
+| Prioridad | Alta |
+| Actor iniciador | Administrador. |
+| Actores | Administrador. |
+| Precondiciones | El Administrador debe encontrarse autenticado. El Administrador debe contar con permisos de gestión de usuarios. |
+| Flujo principal (síntesis) | Consultar usuarios; registrar o editar datos; comprobar campos/duplicidad y permisos; asignar lo autorizado o cambiar estado; guardar y registrar actividad. |
+| Alternativas / extensiones | Datos incompletos/duplicados: corregir. Desactivar usuario conserva operaciones históricas. |
+| Excepciones documentadas | Identificador o correo duplicado: no se registra la nueva cuenta. Datos obligatorios incompletos o inválidos: se solicita su corrección. Usuario inexistente al intentar modificarlo: se cancela la operación. Permisos insuficientes: el sistema bloquea la gestión. |
+| Postcondición documentada | La cuenta queda registrada, modificada o deshabilitada de acuerdo con la operación realizada. |
+| RF relacionado | RF2 |
+| Entidades / clases principales | Usuario, Rol, AsignacionRol, RegistroActividad |
+| Tablas directamente relacionadas | `usuarios`, `roles`, `asignaciones_roles`, `registros_actividad` |
+| Módulo futuro y fase | Seguridad y Administración; Fase 2 |
+| Pruebas necesarias | T-CU03: Alta sintética válida; correo duplicado; campos inválidos; edición ajena; baja conserva historial. |
+
+## CU04 — Gestionar roles y permisos
+
+Fuente: tabla 41; p. 179 (PDF 180); figura 32; análisis figura 78.
+
+| Campo | Especificación |
+| --- | --- |
+| Prioridad | Alta |
+| Actor iniciador | Administrador. |
+| Actores | Administrador. |
+| Precondiciones | El Administrador debe encontrarse autenticado y autorizado para administrar roles y permisos. Deben existir usuarios registrados cuando se realicen asignaciones. |
+| Flujo principal (síntesis) | Consultar roles/permisos; seleccionar alta, modificación o asignación; validar coherencia y autorización; persistir relación y registrar actividad. |
+| Alternativas / extensiones | Asignaciones o datos incompatibles: rechazar sin afectar relaciones vigentes; conservar historia de asignación/retiro. |
+| Excepciones documentadas | Rol duplicado o con nombre inválido: no se guarda. Permiso inexistente o configuración incompleta: se solicita corregir la selección. Usuario inexistente: no se realiza la asignación. Permisos insuficientes del Administrador: la operación es rechazada. |
+| Postcondición documentada | Los roles, permisos y asignaciones quedan actualizados y disponibles para el control de acceso. |
+| RF relacionado | RF3 |
+| Entidades / clases principales | Usuario, Rol, Permiso, Asociación Rol–Permiso, AsignacionRol, RegistroActividad |
+| Tablas directamente relacionadas | `usuarios`, `roles`, `permisos`, `roles_permisos`, `asignaciones_roles`, `registros_actividad` |
+| Módulo futuro y fase | Seguridad y Administración; Fase 2 |
+| Pruebas necesarias | T-CU04: Asignar/retirar rol; cambio de permiso efectivo; acceso denegado; no escalada propia sin autorización; historia íntegra. |
+
+## CU05 — Gestionar espacios académicos
+
+Fuente: tabla 42; p. 180 (PDF 181); figura 33; análisis figura 79.
+
+| Campo | Especificación |
+| --- | --- |
+| Prioridad | Alta |
+| Actor iniciador | Administrador o Encargado de Laboratorio autorizado. |
+| Actores | Administrador y Encargado de Laboratorio. |
+| Precondiciones | El actor debe encontrarse autenticado. El actor debe contar con permisos sobre los espacios académicos que desea gestionar. |
+| Flujo principal (síntesis) | Consultar catálogo; crear o modificar espacio, piso, tipo, capacidad, características y restricciones; validar coherencia; guardar y actualizar disponibilidad. |
+| Alternativas / extensiones | Restricción o modificación incompatible con operaciones existentes: informar y mantener consistencia; consultar D-05. |
+| Excepciones documentadas | Identificador duplicado: se rechaza el registro. Datos obligatorios incompletos: se solicita corregirlos. Espacio inexistente al intentar modificarlo. Actor sin permisos sobre el espacio seleccionado. |
+| Postcondición documentada | El espacio queda registrado o actualizado y su información queda disponible para consultas y procesos de reserva. |
+| RF relacionado | RF4 |
+| Entidades / clases principales | Piso, RecursoInstitucional (abstracto), TipoEspacio, CaracteristicaEspacio, PoliticaLiberacion, EspacioAcademico, Asociación Espacio–Característica, BloqueoEspacio, RegistroActividad |
+| Tablas directamente relacionadas | `pisos`, `recursos_institucionales`, `tipos_espacio`, `caracteristicas_espacio`, `politicas_liberacion`, `espacios_academicos`, `espacios_caracteristicas`, `bloqueos_espacio`, `registros_actividad` |
+| Módulo futuro y fase | Gestión de Espacios y Reservas; Fase 3 |
+| Pruebas necesarias | T-CU05: Piso/tipo válidos; capacidad positiva; código duplicado; características únicas; bloqueo con periodo válido. |
+
+## CU06 — Consultar disponibilidad de espacios académicos
+
+Fuente: tabla 43; p. 182 (PDF 183); figura 34; análisis figura 80.
+
+| Campo | Especificación |
+| --- | --- |
+| Prioridad | Alta |
+| Actor iniciador | Usuario autenticado. |
+| Actores | Administrador, Encargado de Laboratorio, Docente y Estudiante. |
+| Precondiciones | Deben existir espacios académicos registrados. El actor debe contar con permiso para consultar la disponibilidad. La fecha u horario consultado debe poder expresarse dentro del formato admitido por el sistema. |
+| Flujo principal (síntesis) | Ingresar periodo y filtros; validar fechas; consultar espacios, reservas y restricciones; calcular disponibilidad y mostrar alternativas permitidas. |
+| Alternativas / extensiones | Sin alternativas: mostrar ausencia de disponibilidad; ajustar filtros sin crear reservas. |
+| Excepciones documentadas | Sin resultados: se informa que no existen espacios disponibles bajo los criterios seleccionados. Datos insuficientes o desactualizados: se informa la limitación de la consulta. Falla de lectura IoT: la consulta continúa con la información operativa disponible y se indica que no existe una lectura reciente. Fallo de conexión: no se completa la consulta. |
+| Postcondición documentada | El actor obtiene una vista actualizada de la disponibilidad de espacios según los criterios seleccionados. |
+| RF relacionado | RF5 |
+| Entidades / clases principales | Piso, TipoEspacio, CaracteristicaEspacio, EspacioAcademico, Asociación Espacio–Característica, BloqueoEspacio, Reserva, IncidenciaMantenimiento |
+| Tablas directamente relacionadas | `pisos`, `tipos_espacio`, `caracteristicas_espacio`, `espacios_academicos`, `espacios_caracteristicas`, `bloqueos_espacio`, `reservas`, `incidencias_mantenimiento` |
+| Módulo futuro y fase | Gestión de Espacios y Reservas; Fase 3 |
+| Pruebas necesarias | T-CU06: Periodo inválido; bloqueo/mantenimiento; reservas conflictivas; filtro sin datos; <=3 s con 500 reservas. |
+
+## CU07 — Registrar solicitud de reserva
+
+Fuente: tabla 44; p. 183 (PDF 184); figura 35; análisis figura 81.
+
+| Campo | Especificación |
+| --- | --- |
+| Prioridad | Alta |
+| Actor iniciador | Docente o Estudiante autorizado. |
+| Actores | Docente y Estudiante. |
+| Precondiciones | El actor debe encontrarse autenticado. El actor debe estar habilitado para registrar solicitudes de reserva. Debe existir al menos un espacio potencialmente disponible para el periodo requerido. |
+| Flujo principal (síntesis) | Consultar disponibilidad mediante CU06; elegir espacio/periodo/motivo; validar datos y permisos; revalidar disponibilidad; confirmar y persistir solicitud pendiente. |
+| Alternativas / extensiones | 6.A datos inválidos: corregir; 7.A recurso ya no disponible: no registrar y seleccionar otro. |
+| Excepciones documentadas | El espacio deja de estar disponible antes de la confirmación. Datos incompletos, fecha inválida o rango horario inconsistente. El actor no cuenta con permisos para solicitar ese tipo de espacio. Fallo de conexión antes de confirmar: la solicitud no debe quedar registrada parcialmente. |
+| Postcondición documentada | La solicitud de reserva queda registrada y disponible para seguimiento y resolución. |
+| RF relacionado | RF6 |
+| Entidades / clases principales | EspacioAcademico, BloqueoEspacio, Reserva, RegistroActividad |
+| Tablas directamente relacionadas | `espacios_academicos`, `bloqueos_espacio`, `reservas`, `registros_actividad` |
+| Módulo futuro y fase | Gestión de Espacios y Reservas; Fase 4 |
+| Pruebas necesarias | T-CU07: Dos peticiones concurrentes al mismo periodo; cambio de disponibilidad; falta de permiso; rollback; <=3 s. |
+
+## CU08 — Consultar estado de reservas
+
+Fuente: tabla 45; p. 185 (PDF 186); figura 36; análisis figura 82.
+
+| Campo | Especificación |
+| --- | --- |
+| Prioridad | Media |
+| Actor iniciador | Usuario autenticado. |
+| Actores | Administrador, Encargado de Laboratorio, Docente y Estudiante. |
+| Precondiciones | El actor debe encontrarse autenticado. El sistema debe permitirle acceder al módulo de reservas según sus permisos. |
+| Flujo principal (síntesis) | Identificar usuario y alcance; consultar reservas propias o autorizadas con filtros; mostrar estado, datos y seguimiento disponibles. |
+| Alternativas / extensiones | Sin resultados: mostrar estado vacío; detalle únicamente si pertenece al ámbito permitido. |
+| Excepciones documentadas | No existen reservas para los filtros seleccionados. La reserva seleccionada dejó de existir o no es accesible para el actor. Fallo de conexión durante la consulta. |
+| Postcondición documentada | El actor visualiza información actualizada de las reservas autorizadas para su rol. |
+| RF relacionado | RF6, RF7 |
+| Entidades / clases principales | Reserva |
+| Tablas directamente relacionadas | `reservas` |
+| Módulo futuro y fase | Gestión de Espacios y Reservas; Fase 4 |
+| Pruebas necesarias | T-CU08: Otro titular no ve detalle; encargado limitado; filtros y paginación; estados reflejan decisiones persistidas. |
+
+## CU09 — Resolver solicitud de reserva
+
+Fuente: tabla 46; p. 186 (PDF 187); figura 37; análisis figura 83.
+
+| Campo | Especificación |
+| --- | --- |
+| Prioridad | Alta |
+| Actor iniciador | Administrador o Encargado de Laboratorio autorizado. |
+| Actores | Administrador y Encargado de Laboratorio. |
+| Precondiciones | Debe existir una solicitud de reserva en estado pendiente. El actor debe contar con permisos para resolver la solicitud correspondiente. |
+| Flujo principal (síntesis) | Consultar solicitud pendiente; comprobar permisos y disponibilidad mediante CU06; aprobar o rechazar; registrar decisión, responsable, fecha y motivo aplicable; actualizar seguimiento. |
+| Alternativas / extensiones | Aprobación bloqueada si cambió disponibilidad; rechazo conserva decisión/motivo según regla pendiente D-05; CU24 solo si crítica. |
+| Excepciones documentadas | La solicitud ya fue resuelta o cambió de estado. El espacio dejó de estar disponible al intentar aprobar. El actor no posee permisos para resolver esa solicitud. Fallo de actualización: el sistema debe evitar dejar una decisión parcialmente registrada. |
+| Postcondición documentada | La solicitud queda aprobada o rechazada y el resultado queda disponible para seguimiento. |
+| RF relacionado | RF7 |
+| Entidades / clases principales | EspacioAcademico, BloqueoEspacio, Reserva, RegistroActividad |
+| Tablas directamente relacionadas | `espacios_academicos`, `bloqueos_espacio`, `reservas`, `registros_actividad` |
+| Módulo futuro y fase | Gestión de Espacios y Reservas; Fase 4 |
+| Pruebas necesarias | T-CU09: Doble resolución concurrente; responsable fuera de ámbito; conflicto sobrevenido; rechazo; <=3 s. |
+
+## CU10 — Cancelar reserva
+
+Fuente: tabla 47; p. 188 (PDF 189); figura 38; análisis figura 84.
+
+| Campo | Especificación |
+| --- | --- |
+| Prioridad | Alta |
+| Actor iniciador | Usuario autorizado para cancelar la reserva. |
+| Actores | Administrador, Encargado de Laboratorio, Docente y Estudiante. |
+| Precondiciones | Debe existir una reserva en un estado que permita cancelación. El actor debe ser titular de la reserva o contar con permiso administrativo para cancelarla. |
+| Flujo principal (síntesis) | Seleccionar reserva; comprobar titularidad/permiso, estado y plazo; confirmar cancelación y motivo pertinente; registrar cambio y actualizar disponibilidad. |
+| Alternativas / extensiones | Operación fuera de condiciones: no cancelar. CU24 condicional si la cancelación está definida como crítica. |
+| Excepciones documentadas | Reserva ya cancelada, finalizada o fuera del periodo permitido para cancelar. Actor sin autorización para cancelar la reserva. La reserva cambió de estado antes de la confirmación. Error al actualizar el estado: no debe liberarse el espacio sin registrar correctamente la cancelación. |
+| Postcondición documentada | La reserva queda cancelada y el espacio vuelve a estar disponible según la fecha, horario y demás restricciones existentes. |
+| RF relacionado | RF7 |
+| Entidades / clases principales | EspacioAcademico, Reserva, RegistroActividad |
+| Tablas directamente relacionadas | `espacios_academicos`, `reservas`, `registros_actividad` |
+| Módulo futuro y fase | Gestión de Espacios y Reservas; Fase 4 |
+| Pruebas necesarias | T-CU10: Cancelación propia autorizada; ajena/fuera de plazo denegada; doble cancelación; disponibilidad resultante; <=3 s. |
+
+## CU11 — Validar uso de espacio mediante código QR
+
+Fuente: tabla 48; p. 190 (PDF 191); figura 39; análisis figura 85.
+
+| Campo | Especificación |
+| --- | --- |
+| Prioridad | Alta |
+| Actor iniciador | Usuario autorizado que realiza el escaneo. |
+| Actores | Administrador, Encargado de Laboratorio, Docente y Estudiante. |
+| Precondiciones | El actor debe encontrarse autenticado. El dispositivo debe disponer de una cámara funcional y permiso para utilizarla. El código QR debe encontrarse asociado previamente a un espacio u operación válida. |
+| Flujo principal (síntesis) | Leer QR; enviar token/contexto al servidor; validar identidad, vigencia, espacio, reserva y autorización; registrar resultado y mostrar confirmación de uso válida. |
+| Alternativas / extensiones | Código no vigente, inválido o ajeno al contexto: resultado inválido y explicación; no confirmar uso. |
+| Excepciones documentadas | Código QR inválido, inexistente o vencido. Usuario no autorizado para el espacio o reserva. Reserva inexistente, cancelada o fuera del periodo permitido. Cámara no disponible o permiso de cámara denegado. |
+| Postcondición documentada | La validación queda registrada y asociada al uso del espacio o reserva correspondiente. |
+| RF relacionado | RF8 |
+| Entidades / clases principales | RecursoInstitucional (abstracto), EspacioAcademico, Reserva, CodigoQR, ValidacionQR |
+| Tablas directamente relacionadas | `recursos_institucionales`, `espacios_academicos`, `reservas`, `codigos_qr`, `validaciones_qr` |
+| Módulo futuro y fase | Validación QR transversal; Fase 6 |
+| Pruebas necesarias | T-CU11: Cámara denegada/código ilegible; expirado; espacio/usuario/contexto incorrecto; resultado <=3 s tras lectura. |
+
+## CU12 — Gestionar equipamiento tecnológico
+
+Fuente: tabla 49; p. 191 (PDF 192); figura 40; análisis figura 86.
+
+| Campo | Especificación |
+| --- | --- |
+| Prioridad | Alta |
+| Actor iniciador | Administrador o Encargado de Laboratorio autorizado. |
+| Actores | Administrador y Encargado de Laboratorio. |
+| Precondiciones | El actor debe encontrarse autenticado. El actor debe contar con permisos para administrar el equipamiento seleccionado. |
+| Flujo principal (síntesis) | Consultar inventario; registrar o modificar código/nombre, tipo, características, ubicación y estado; validar identidad y datos; persistir y conservar historial. |
+| Alternativas / extensiones | Duplicado o cambio incompatible con préstamo/incidencia: impedir modificación incoherente. |
+| Excepciones documentadas | Identificador de equipamiento duplicado. Datos obligatorios incompletos o inválidos. Equipo inexistente al intentar modificarlo. Actor sin permisos suficientes. |
+| Postcondición documentada | El equipamiento queda registrado o actualizado con la información y estado vigentes. |
+| RF relacionado | RF9 |
+| Entidades / clases principales | RecursoInstitucional (abstracto), TipoEquipamiento, EquipamientoTecnologico, RegistroActividad |
+| Tablas directamente relacionadas | `recursos_institucionales`, `tipos_equipamiento`, `equipamientos_tecnologicos`, `registros_actividad` |
+| Módulo futuro y fase | Gestión de Equipamiento y Préstamos; Fase 5 |
+| Pruebas necesarias | T-CU12: Código/serie duplicados; tipo/base inexistentes; estado permitido; cambio incompatible con préstamo activo. |
+
+## CU13 — Consultar disponibilidad de equipamiento tecnológico
+
+Fuente: tabla 50; p. 192 (PDF 193); figura 41; análisis figura 87.
+
+| Campo | Especificación |
+| --- | --- |
+| Prioridad | Alta |
+| Actor iniciador | Usuario autenticado. |
+| Actores | Administrador, Encargado de Laboratorio, Docente y Estudiante. |
+| Precondiciones | Debe existir equipamiento tecnológico registrado. El actor debe contar con permiso de consulta. |
+| Flujo principal (síntesis) | Solicitar periodo/filtros; validar; consultar estado, préstamos e incidencias del equipamiento; mostrar disponibilidad autorizada. |
+| Alternativas / extensiones | Equipo no disponible o sin coincidencias: informar y permitir otro filtro/periodo. |
+| Excepciones documentadas | Filtros inválidos o incompletos. No existen equipos disponibles bajo los criterios seleccionados. Información de disponibilidad no actualizada. Fallo de conexión con el servidor. |
+| Postcondición documentada | El actor obtiene la disponibilidad actual del equipamiento tecnológico consultado. |
+| RF relacionado | RF10 |
+| Entidades / clases principales | TipoEquipamiento, EquipamientoTecnologico, Prestamo, IncidenciaMantenimiento |
+| Tablas directamente relacionadas | `tipos_equipamiento`, `equipamientos_tecnologicos`, `prestamos`, `incidencias_mantenimiento` |
+| Módulo futuro y fase | Gestión de Equipamiento y Préstamos; Fase 5 |
+| Pruebas necesarias | T-CU13: Equipo prestado, mantenimiento o baja excluido; solapamientos; 1.000 registros <=3 s; paginación <=100. |
+
+## CU14 — Registrar solicitud de préstamo
+
+Fuente: tabla 51; p. 194 (PDF 195); figura 42; análisis figura 88.
+
+| Campo | Especificación |
+| --- | --- |
+| Prioridad | Alta |
+| Actor iniciador | Docente o Estudiante autorizado. |
+| Actores | Docente y Estudiante. |
+| Precondiciones | El actor debe encontrarse autenticado. El actor debe estar habilitado para solicitar préstamos. Debe existir equipamiento que pueda estar disponible para el periodo requerido. |
+| Flujo principal (síntesis) | Consultar disponibilidad mediante CU13; seleccionar equipo y periodo/motivo; validar permisos y datos; revalidar disponibilidad; confirmar solicitud pendiente. |
+| Alternativas / extensiones | Información inválida: corregir. Equipo deja de estar disponible: no confirmar solicitud. |
+| Excepciones documentadas | El equipamiento deja de estar disponible antes de la confirmación. Periodo inválido o datos incompletos. El actor no cuenta con permisos para solicitar el recurso. Fallo de conexión antes de confirmar: no debe generarse una solicitud parcial. |
+| Postcondición documentada | La solicitud de préstamo queda registrada y disponible para seguimiento y resolución. |
+| RF relacionado | RF11 |
+| Entidades / clases principales | EquipamientoTecnologico, Prestamo, RegistroActividad |
+| Tablas directamente relacionadas | `equipamientos_tecnologicos`, `prestamos`, `registros_actividad` |
+| Módulo futuro y fase | Gestión de Equipamiento y Préstamos; Fase 5 |
+| Pruebas necesarias | T-CU14: Dos solicitudes incompatibles concurrentes; datos inválidos; equipo deja de estar disponible; atomicidad. |
+
+## CU15 — Consultar estado de préstamos
+
+Fuente: tabla 52; p. 195 (PDF 196); figura 43; análisis figura 89.
+
+| Campo | Especificación |
+| --- | --- |
+| Prioridad | Media |
+| Actor iniciador | Usuario autenticado. |
+| Actores | Administrador, Encargado de Laboratorio, Docente y Estudiante. |
+| Precondiciones | El actor debe encontrarse autenticado. El sistema debe permitirle acceder al módulo de préstamos según su rol. |
+| Flujo principal (síntesis) | Identificar usuario y permisos; filtrar préstamos propios o supervisables; mostrar estado y datos de entrega/devolución pertinentes. |
+| Alternativas / extensiones | Sin préstamos: vacío comprensible; limitar supervisión al ámbito permitido. |
+| Excepciones documentadas | No existen registros para los filtros seleccionados. El préstamo no existe o no es accesible para el actor. Fallo de conexión durante la consulta. |
+| Postcondición documentada | El actor visualiza el estado actualizado de los préstamos autorizados para su rol. |
+| RF relacionado | RF11, RF12, RF13, RF14 |
+| Entidades / clases principales | Prestamo |
+| Tablas directamente relacionadas | `prestamos` |
+| Módulo futuro y fase | Gestión de Equipamiento y Préstamos; Fase 5 |
+| Pruebas necesarias | T-CU15: Consulta propia frente a ajena; estados y fechas; vacío; 1.000 registros <=3 s; máximo 100 por página. |
+
+## CU16 — Resolver solicitud de préstamo
+
+Fuente: tabla 53; p. 196 (PDF 197); figura 44; análisis figura 90.
+
+| Campo | Especificación |
+| --- | --- |
+| Prioridad | Alta |
+| Actor iniciador | Administrador o Encargado de Laboratorio autorizado. |
+| Actores | Administrador y Encargado de Laboratorio. |
+| Precondiciones | Debe existir una solicitud de préstamo en estado pendiente. El actor debe contar con permisos para resolverla. |
+| Flujo principal (síntesis) | Revisar solicitud pendiente; validar responsable y disponibilidad mediante CU13; aprobar/rechazar con motivo aplicable; registrar decisión y seguimiento. |
+| Alternativas / extensiones | Disponibilidad modificada: no aprobar; alternativa de rechazo con motivo pertinente. |
+| Excepciones documentadas | La solicitud ya fue resuelta. El equipamiento dejó de estar disponible o presenta una incidencia incompatible. Actor sin permisos para resolver la solicitud. Fallo de actualización: la decisión no debe quedar parcialmente registrada. |
+| Postcondición documentada | La solicitud queda aprobada o rechazada y el resultado queda registrado para seguimiento. |
+| RF relacionado | RF12 |
+| Entidades / clases principales | EquipamientoTecnologico, Prestamo, RegistroActividad |
+| Tablas directamente relacionadas | `equipamientos_tecnologicos`, `prestamos`, `registros_actividad` |
+| Módulo futuro y fase | Gestión de Equipamiento y Préstamos; Fase 5 |
+| Pruebas necesarias | T-CU16: Doble decisión; estado no pendiente; recurso no disponible; motivo de rechazo; decisión auditada. |
+
+## CU17 — Registrar entrega de equipamiento tecnológico
+
+Fuente: tabla 54; p. 198 (PDF 199); figura 45; análisis figura 91.
+
+| Campo | Especificación |
+| --- | --- |
+| Prioridad | Alta |
+| Actor iniciador | Administrador o Encargado de Laboratorio autorizado. |
+| Actores | Administrador y Encargado de Laboratorio. |
+| Precondiciones | Debe existir un préstamo aprobado pendiente de entrega. El equipamiento debe encontrarse disponible y sin una incidencia que impida su entrega. El usuario receptor debe estar identificado. |
+| Flujo principal (síntesis) | Revisar préstamo aprobado, equipo y receptor; verificar físicamente identidad/condición; validar QR si aplica; confirmar; registrar entrega y actualizar equipo/préstamo. |
+| Alternativas / extensiones | CU20 extiende si se requiere QR: inválido impide entrega. CU24 puede extender si operación crítica. |
+| Excepciones documentadas | Préstamo no aprobado, cancelado o ya entregado. Equipamiento distinto al autorizado. Equipamiento no disponible o con incidencia previa. Receptor no identificado o no autorizado. Validación QR inválida cuando la política exige su uso. |
+| Postcondición documentada | El préstamo queda registrado como entregado y el equipamiento queda asociado temporalmente al receptor con estado prestado. |
+| RF relacionado | RF13 |
+| Entidades / clases principales | EquipamientoTecnologico, Prestamo, EntregaPrestamo, IncidenciaMantenimiento, ValidacionQR, RegistroActividad |
+| Tablas directamente relacionadas | `equipamientos_tecnologicos`, `prestamos`, `entregas_prestamo`, `incidencias_mantenimiento`, `validaciones_qr`, `registros_actividad` |
+| Módulo futuro y fase | Gestión de Equipamiento y Préstamos; Fase 5 |
+| Pruebas necesarias | T-CU17: Receptor/equipo incorrectos; QR exigido inválido; una única entrega; estados ENTREGADO/PRESTADO atómicos. |
+
+## CU18 — Registrar devolución de equipamiento tecnológico
+
+Fuente: tabla 55; p. 199 (PDF 200); figura 46; análisis figura 92.
+
+| Campo | Especificación |
+| --- | --- |
+| Prioridad | Alta |
+| Actor iniciador | Administrador o Encargado de Laboratorio autorizado. |
+| Actores | Administrador y Encargado de Laboratorio. |
+| Precondiciones | Debe existir un préstamo entregado y activo asociado al equipamiento. El equipamiento a devolver debe poder identificarse dentro del sistema. |
+| Flujo principal (síntesis) | Identificar préstamo y equipo recibido; comprobar condición física y QR si aplica; registrar responsable/fecha; determinar disponibilidad y cierre o revisión; mostrar resultado. |
+| Alternativas / extensiones | QR inválido impide confirmar; retorno adecuado permite disponibilidad; anomalía extiende CU19; condición desconocida queda pendiente de revisión; CU24 condicional. |
+| Excepciones documentadas | Préstamo inexistente, cancelado o no entregado. El equipamiento recibido no corresponde al préstamo. Validación QR inválida cuando sea requerida. No es posible determinar la condición física: la operación debe quedar pendiente de revisión. |
+| Postcondición documentada | El préstamo queda finalizado y el equipamiento queda disponible o marcado con un estado de incidencia/mantenimiento según su condición. |
+| RF relacionado | RF14 |
+| Entidades / clases principales | EquipamientoTecnologico, Prestamo, EntregaPrestamo, DevolucionPrestamo, IncidenciaMantenimiento, ValidacionQR, RegistroActividad |
+| Tablas directamente relacionadas | `equipamientos_tecnologicos`, `prestamos`, `entregas_prestamo`, `devoluciones_prestamo`, `incidencias_mantenimiento`, `validaciones_qr`, `registros_actividad` |
+| Módulo futuro y fase | Gestión de Equipamiento y Préstamos; Fase 5 |
+| Pruebas necesarias | T-CU18: Retorno adecuado; daño e incidencia; NO_DETERMINABLE/PENDIENTE_REVISION; préstamo no entregado; devolución única. |
+
+## CU19 — Gestionar incidencias y mantenimiento
+
+Fuente: tabla 56; p. 201 (PDF 202); figura 47; análisis figura 93.
+
+| Campo | Especificación |
+| --- | --- |
+| Prioridad | Media |
+| Actor iniciador | Administrador o Encargado de Laboratorio autorizado; también puede activarse como extensión de CU18 cuando se detecta una anomalía durante la devolución. |
+| Actores | Administrador y Encargado de Laboratorio. |
+| Precondiciones | El recurso afectado debe estar registrado en el sistema. El actor debe contar con permisos para gestionar incidencias o modificar su estado. |
+| Flujo principal (síntesis) | Identificar recurso/incidencia; registrar tipo, descripción, responsables y periodo; actualizar restricción del recurso; seguir atención y cerrar con solución cuando proceda. |
+| Alternativas / extensiones | Atención posterior/cierre exige condición compatible; se activa desde CU18 cuando existe anomalía. |
+| Excepciones documentadas | Recurso inexistente o no accesible para el actor. Datos obligatorios de la incidencia incompletos. Intento de habilitar un recurso mientras existe una condición activa incompatible. Actor sin permisos para modificar el estado del recurso. |
+| Postcondición documentada | La incidencia o mantenimiento queda registrado y el recurso refleja su condición real para futuras operaciones. |
+| RF relacionado | RF15 |
+| Entidades / clases principales | RecursoInstitucional (abstracto), EquipamientoTecnologico, DevolucionPrestamo, IncidenciaMantenimiento, RegistroActividad |
+| Tablas directamente relacionadas | `recursos_institucionales`, `equipamientos_tecnologicos`, `devoluciones_prestamo`, `incidencias_mantenimiento`, `registros_actividad` |
+| Módulo futuro y fase | Gestión de Equipamiento y Préstamos; Fase 5 |
+| Pruebas necesarias | T-CU19: Apertura/cierre autorizado; fechas inválidas; otra incidencia impide disponibilidad; historia preservada. |
+
+## CU20 — Validar operación de equipamiento mediante código QR
+
+Fuente: tabla 57; p. 203 (PDF 204); figura 48; análisis figura 94.
+
+| Campo | Especificación |
+| --- | --- |
+| Prioridad | Alta |
+| Actor iniciador | Administrador o Encargado de Laboratorio durante CU17 Registrar entrega o CU18 Registrar devolución. |
+| Actores | Administrador y Encargado de Laboratorio. |
+| Precondiciones | Debe existir una entrega o devolución en curso. El dispositivo utilizado debe disponer de cámara habilitada. El código QR debe encontrarse asociado al equipamiento u operación correspondiente. |
+| Flujo principal (síntesis) | Leer QR durante entrega/devolución; recuperar código, objetivo y contexto; validar usuario, equipo y préstamo; registrar resultado y permitir continuidad solo si corresponde. |
+| Alternativas / extensiones | QR inválido impide confirmar la operación que extendió; validación correcta permite continuar CU17 o CU18. |
+| Excepciones documentadas | Código QR inválido, inexistente o no registrado. El código corresponde a un equipamiento diferente al del préstamo. Cámara no disponible o permiso denegado. La entrega o devolución dejó de estar activa antes de completar la validación. |
+| Postcondición documentada | La operación principal dispone de un resultado de validación QR registrado y verificable. |
+| RF relacionado | RF13, RF14 |
+| Entidades / clases principales | RecursoInstitucional (abstracto), EquipamientoTecnologico, Prestamo, EntregaPrestamo, DevolucionPrestamo, CodigoQR, ValidacionQR |
+| Tablas directamente relacionadas | `recursos_institucionales`, `equipamientos_tecnologicos`, `prestamos`, `entregas_prestamo`, `devoluciones_prestamo`, `codigos_qr`, `validaciones_qr` |
+| Módulo futuro y fase | Validación QR transversal; Fase 6 |
+| Pruebas necesarias | T-CU20: Token de otro equipo/operación; permisos; contexto obligatorio; reintentos; enlace único entrega/devolución; <=3 s. |
+
+## CU21 — Gestionar sensores IoT
+
+Fuente: tabla 58; p. 204 (PDF 205); figura 49; análisis figura 95.
+
+| Campo | Especificación |
+| --- | --- |
+| Prioridad | Alta |
+| Actor iniciador | Administrador o Encargado de Laboratorio autorizado. |
+| Actores | Administrador y Encargado de Laboratorio. |
+| Precondiciones | El actor debe encontrarse autenticado y autorizado. El espacio académico que será monitoreado debe estar registrado. El dispositivo IoT debe disponer de un identificador válido. |
+| Flujo principal (síntesis) | Registrar/consultar sensor; configurar identificador, tipo, espacio y estado; validar unicidad/coherencia; habilitar o deshabilitar conservando historial. |
+| Alternativas / extensiones | Reasignar o deshabilitar sensor no borra eventos históricos; identificador duplicado impide alta. |
+| Excepciones documentadas | Identificador de sensor duplicado. Espacio académico inexistente. Datos obligatorios incompletos. Actor sin permisos para gestionar sensores. |
+| Postcondición documentada | El sensor queda registrado y asociado a un espacio, con un estado que determina si sus eventos serán aceptados. |
+| RF relacionado | RF16 |
+| Entidades / clases principales | SensorIoT, RegistroActividad |
+| Tablas directamente relacionadas | `sensores_iot`, `registros_actividad` |
+| Módulo futuro y fase | Monitoreo IoT y Disponibilidad; Fase 7 |
+| Pruebas necesarias | T-CU21: Identificador duplicado; espacio inexistente; habilitar/deshabilitar; reasignación no altera historia. |
+
+## CU22 — Monitorear ocupación de espacios académicos
+
+Fuente: tabla 59; p. 206 (PDF 207); figura 50; análisis figura 96.
+
+| Campo | Especificación |
+| --- | --- |
+| Prioridad | Alta |
+| Actor iniciador | Dispositivo IoT registrado y habilitado. |
+| Actores | Administrador, Encargado de Laboratorio y Dispositivo IoT. |
+| Precondiciones | El dispositivo debe estar registrado, habilitado y asociado a un espacio académico. Debe existir conectividad y el evento debe utilizar el formato de comunicación definido. |
+| Flujo principal (síntesis) | Recibir evento; verificar sensor y formato; asociar espacio y fechas; persistir evento válido/última comunicación; mostrar ocupación y evidencias a usuarios autorizados. |
+| Alternativas / extensiones | Sensor/estructura inválidos: rechazar evento; datos recientes insuficientes: no determinable; evaluación CU23 solo bajo condiciones aplicables. |
+| Excepciones documentadas | Sensor no registrado o deshabilitado: se rechaza el evento. Evento con formato inválido o datos obligatorios faltantes. Pérdida de conectividad del dispositivo. Lectura desactualizada o ausencia de eventos recientes: se informa que la ocupación no puede determinarse con información IoT actual. |
+| Postcondición documentada | El evento IoT válido queda registrado y la información de monitoreo del espacio queda actualizada. |
+| RF relacionado | RF17 |
+| Entidades / clases principales | EspacioAcademico, SensorIoT, EventoOcupacion |
+| Tablas directamente relacionadas | `espacios_academicos`, `sensores_iot`, `eventos_ocupacion` |
+| Módulo futuro y fase | Monitoreo IoT y Disponibilidad; Fase 7 |
+| Pruebas necesarias | T-CU22: Sensor inválido/deshabilitado; dato malformado/antiguo; no determinable; >=120 eventos/min; reflejo <=5 s. |
+
+## CU23 — Aplicar política de liberación de reserva
+
+Fuente: tabla 60; p. 207 (PDF 208); figura 51; análisis figura 97.
+
+| Campo | Especificación |
+| --- | --- |
+| Prioridad | Media |
+| Actor iniciador | CU22 Monitorear ocupación de espacios académicos, cuando se cumplen las condiciones temporales y operativas definidas por la política. |
+| Actores | No posee un actor humano directo. Este caso de uso se ejecuta como una extensión condicional de CU22 Monitorear ocupación de espacios académicos. |
+| Precondiciones | Debe existir una reserva aprobada y activa. Debe existir una política de liberación aplicable al espacio académico asociado a la reserva. Si la política utiliza IoT, el espacio debe contar con un sensor habilitado y con información suficiente. |
+| Flujo principal (síntesis) | Desde CU22, recuperar reserva aprobada/activa y política; revisar periodo, QR y eventos recientes cuando apliquen; evaluar; guardar resultado/evidencias y actuar según modo. |
+| Alternativas / extensiones | 5.A evidencia de uso mantiene reserva; 5.B insuficiente conserva y registra no determinable; 5.C libera o alerta según política; no liberar por falta de lecturas. |
+| Excepciones documentadas | Información IoT insuficiente o sensor sin lecturas recientes: no se libera automáticamente el espacio cuando la política requiera esos datos. Reserva ya modificada, cancelada o finalizada antes de la evaluación. La política aplicable no se encuentra configurada correctamente: se conserva la reserva y se registra la incidencia de configuración. |
+| Postcondición documentada | La reserva y la disponibilidad del espacio quedan actualizadas únicamente cuando se cumplen las condiciones establecidas por la política. |
+| RF relacionado | RF18 |
+| Entidades / clases principales | PoliticaLiberacion, EspacioAcademico, Reserva, ValidacionQR, SensorIoT, EventoOcupacion, EvaluacionLiberacion, Asociación Evaluación–Evento, Asociación Evaluación–Validación, RegistroActividad |
+| Tablas directamente relacionadas | `politicas_liberacion`, `espacios_academicos`, `reservas`, `validaciones_qr`, `sensores_iot`, `eventos_ocupacion`, `evaluaciones_liberacion`, `evaluaciones_eventos_ocupacion`, `evaluaciones_validaciones_qr`, `registros_actividad` |
+| Módulo futuro y fase | Monitoreo IoT y Disponibilidad; Fase 8 |
+| Pruebas necesarias | T-CU23: Tolerancia no vencida; evidencia de uso; ausencia/contradicción; ALERTA frente a AUTOMATICA; reserva ya modificada. |
+
+## CU24 — Generar evidencia de trazabilidad mediante Blockchain
+
+Fuente: tabla 61; p. 209 (PDF 210); figura 52; análisis figura 98.
+
+| Campo | Especificación |
+| --- | --- |
+| Prioridad | Alta |
+| Actor iniciador | Caso de uso base CU09, CU10, CU17 o CU18 al finalizar correctamente una operación configurada como crítica. |
+| Actores | Servicio Blockchain. |
+| Precondiciones | La operación principal debe haberse registrado correctamente en MySQL. La operación debe pertenecer al conjunto de acciones configuradas para generar evidencia. Debe existir una configuración válida para el mecanismo de trazabilidad. |
+| Flujo principal (síntesis) | Detectar operación crítica confirmada; seleccionar datos mínimos permitidos; generar representación/hash; persistir evidencia local; solicitar registro externo; conservar referencia o pendiente. |
+| Alternativas / extensiones | Servicio externo no disponible: evidencia PENDIENTE e intento posterior; operación principal permanece confirmada. |
+| Excepciones documentadas | Servicio Blockchain temporalmente no disponible: la evidencia queda pendiente. Error al generar el hash o preparar la evidencia: se registra el fallo para revisión. Operación principal inexistente o incompleta. Se detecta información no permitida en los datos destinados al registro externo: el envío se cancela. |
+| Postcondición documentada | La operación crítica queda asociada a una evidencia local y, cuando el servicio está disponible, a una referencia registrada mediante Blockchain. |
+| RF relacionado | RF19 |
+| Entidades / clases principales | RegistroActividad, EvidenciaTrazabilidad |
+| Tablas directamente relacionadas | `registros_actividad`, `evidencias_trazabilidad` |
+| Módulo futuro y fase | Trazabilidad Blockchain; Fase 9 |
+| Pruebas necesarias | T-CU24: Privacidad previa al envío; operación no confirmada; local <=3 s; proveedor caído; recuperación sin duplicados. |
+
+## CU25 — Verificar evidencia de trazabilidad
+
+Fuente: tabla 62; p. 210 (PDF 211); figura 53; análisis figura 99.
+
+| Campo | Especificación |
+| --- | --- |
+| Prioridad | Alta |
+| Actor iniciador | Administrador. |
+| Actores | Administrador y Servicio Blockchain. |
+| Precondiciones | Debe existir una operación crítica con evidencia local asociada. El Administrador debe contar con permiso para consultar la evidencia. Para una comprobación externa debe existir una referencia Blockchain o disponibilidad del servicio. |
+| Flujo principal (síntesis) | Seleccionar evidencia autorizada; recuperar datos mínimos, algoritmo y versión; recalcular hash; consultar referencia cuando corresponda; comparar y presentar resultado. |
+| Alternativas / extensiones | Coincide: VALIDO; difiere: INCONSISTENTE; aún pendiente: PENDIENTE; imposibilidad de verificación: NO_VERIFICABLE según causa. |
+| Excepciones documentadas | Evidencia inexistente o todavía pendiente de registro. Servicio Blockchain no disponible para una verificación externa. Datos de la operación incompletos o no recuperables. Administrador sin permisos suficientes para consultar la evidencia. |
+| Postcondición documentada | El Administrador obtiene un resultado de verificación que permite determinar la correspondencia entre la operación y su evidencia. |
+| RF relacionado | RF20 |
+| Entidades / clases principales | RegistroActividad, EvidenciaTrazabilidad |
+| Tablas directamente relacionadas | `registros_actividad`, `evidencias_trazabilidad` |
+| Módulo futuro y fase | Trazabilidad Blockchain; Fase 9 |
+| Pruebas necesarias | T-CU25: Hash alterado; versión canónica incorrecta; referencia ausente; servicio caído; cuatro resultados; permisos. |
+
+## CU26 — Gestionar notificaciones
+
+Fuente: tabla 63; p. 212 (PDF 213); figura 54; análisis figura 100.
+
+| Campo | Especificación |
+| --- | --- |
+| Prioridad | Media |
+| Actor iniciador | Administrador, Encargado de Laboratorio, Docente o Estudiante autenticado. |
+| Actores | Administrador, Encargado de Laboratorio, Docente y Estudiante. |
+| Precondiciones | Debe existir un evento sujeto a notificación. Debe existir al menos un destinatario válido identificado por las reglas del sistema. |
+| Flujo principal (síntesis) | Identificar usuario; recuperar únicamente sus avisos; listar estado; abrir detalle del evento; marcar lectura cuando corresponda y continuar consulta. |
+| Alternativas / extensiones | Sin avisos: informar. La generación automática de avisos se especifica en RF21 y complementa este flujo de consulta. |
+| Excepciones documentadas | No existe un destinatario válido: no se genera un aviso sin receptor. El evento no posee una regla de notificación configurada. Fallo temporal al generar el aviso: la operación principal debe mantenerse registrada. El usuario intenta consultar una notificación que no le pertenece: el acceso es rechazado. |
+| Postcondición documentada | La notificación queda registrada y disponible para el destinatario con su estado de lectura correspondiente. |
+| RF relacionado | RF21 |
+| Entidades / clases principales | Usuario, Notificacion, RegistroActividad |
+| Tablas directamente relacionadas | `usuarios`, `notificaciones`, `registros_actividad` |
+| Módulo futuro y fase | Servicios de Notificación y Asistencia; Fase 10 |
+| Pruebas necesarias | T-CU26: Aviso propio/ajeno; lectura persistida; sin avisos; fallo de generación no revierte operación confirmada. |
+
+## CU27 — Visualizar dashboard e indicadores
+
+Fuente: tabla 64; p. 213 (PDF 214); figura 55; análisis figura 101.
+
+| Campo | Especificación |
+| --- | --- |
+| Prioridad | Media |
+| Actor iniciador | Usuario autenticado. |
+| Actores | Administrador, Encargado de Laboratorio, Docente y Estudiante. |
+| Precondiciones | El actor debe encontrarse autenticado. El actor debe contar con permiso para visualizar el dashboard o los indicadores correspondientes. |
+| Flujo principal (síntesis) | Identificar rol/permisos; consultar información consolidada; calcular indicadores autorizados; mostrar panel y actualizar filtros/vista. |
+| Alternativas / extensiones | Sin datos para un filtro: presentar vacío/limitación sin inventar indicadores; falla parcial no expone información indebida. |
+| Excepciones documentadas | No existen datos suficientes para calcular un indicador. Fallo al consultar o consolidar la información. El actor intenta visualizar un indicador no autorizado. Parámetros de filtro inválidos: se solicita su corrección. |
+| Postcondición documentada | El actor visualiza indicadores actualizados y limitados a los datos autorizados para su rol. |
+| RF relacionado | RF22 |
+| Entidades / clases principales | RecursoInstitucional, EspacioAcademico, Reserva, EquipamientoTecnologico, Prestamo, EntregaPrestamo, DevolucionPrestamo, IncidenciaMantenimiento, EventoOcupacion, EvaluacionLiberacion |
+| Tablas directamente relacionadas | `recursos_institucionales`, `espacios_academicos`, `reservas`, `equipamientos_tecnologicos`, `prestamos`, `entregas_prestamo`, `devoluciones_prestamo`, `incidencias_mantenimiento`, `eventos_ocupacion`, `evaluaciones_liberacion` |
+| Módulo futuro y fase | Reportes e Indicadores; Fase 11 |
+| Pruebas necesarias | T-CU27: Indicadores por rol y filtros consistentes; sin datos; cambios de permisos; <=5 s con carga piloto. |
+
+## CU28 — Generar y exportar reportes
+
+Fuente: tabla 65; p. 214 (PDF 215); figura 56; análisis figura 102.
+
+| Campo | Especificación |
+| --- | --- |
+| Prioridad | Media |
+| Actor iniciador | Administrador o Encargado de Laboratorio autorizado. |
+| Actores | Administrador y Encargado de Laboratorio. |
+| Precondiciones | El actor debe encontrarse autenticado y autorizado para el tipo de reporte solicitado. Debe existir información disponible para los criterios seleccionados. |
+| Flujo principal (síntesis) | Elegir reporte y filtros autorizados; validar parámetros; consultar datos; mostrar resultados; generar PDF o Excel; autorizar descarga y registrar actividad si aplica. |
+| Alternativas / extensiones | Sin datos: informar; cambiar filtros; exportar exclusivamente formatos/alcance habilitados. |
+| Excepciones documentadas | No existen datos para los filtros seleccionados. Parámetros de consulta inválidos. Error durante la generación del archivo. Actor sin permisos para acceder al reporte solicitado. |
+| Postcondición documentada | El reporte queda generado con los filtros solicitados y disponible para consulta o descarga autorizada. |
+| RF relacionado | RF23 |
+| Entidades / clases principales | Usuario, RecursoInstitucional, EspacioAcademico, Reserva, EquipamientoTecnologico, Prestamo, EntregaPrestamo, DevolucionPrestamo, IncidenciaMantenimiento, EventoOcupacion, RegistroActividad |
+| Tablas directamente relacionadas | `usuarios`, `recursos_institucionales`, `espacios_academicos`, `reservas`, `equipamientos_tecnologicos`, `prestamos`, `entregas_prestamo`, `devoluciones_prestamo`, `incidencias_mantenimiento`, `eventos_ocupacion`, `registros_actividad` |
+| Módulo futuro y fase | Reportes e Indicadores; Fase 11 |
+| Pruebas necesarias | T-CU28: PDF/Excel coherentes con filtros/permisos; 10.000 filas <=30 s; reporte vacío; fallo de exportación sin bloquear a otros. |
+
+## CU29 — Consultar chatbot de asistencia
+
+Fuente: tabla 66; p. 216 (PDF 217); figura 57; análisis figura 103.
+
+| Campo | Especificación |
+| --- | --- |
+| Prioridad | Media |
+| Actor iniciador | Usuario autenticado. |
+| Actores | Administrador, Encargado de Laboratorio, Docente, Estudiante y Proveedor del chatbot. |
+| Precondiciones | El usuario debe encontrarse autenticado. El servidor debe disponer de la configuración necesaria para comunicarse con el Proveedor del chatbot. |
+| Flujo principal (síntesis) | Recibir consulta de usuario autenticado; validar contexto permitido; enviar al proveedor desde backend; presentar orientación o indisponibilidad sin ejecutar operaciones protegidas. |
+| Alternativas / extensiones | Consulta fuera de alcance o respuesta no disponible: orientar/informar; nunca ejecutar una acción administrativa como alternativa. |
+| Excepciones documentadas | Proveedor externo no disponible o cuota de uso agotada. Consulta fuera del ámbito de asistencia definido. Intento de obtener información no autorizada para el rol. Error de comunicación con el proveedor: las demás funciones del sistema permanecen disponibles. |
+| Postcondición documentada | El usuario recibe orientación relacionada con el uso de la plataforma o un mensaje claro de indisponibilidad cuando el servicio no pueda responder. |
+| RF relacionado | RF24 |
+| Entidades / clases principales | Usuario, Rol, Permiso, Asociación Rol–Permiso, AsignacionRol |
+| Tablas directamente relacionadas | `usuarios`, `roles`, `permisos`, `roles_permisos`, `asignaciones_roles` |
+| Persistencia de conversación | No definida en el modelo; no crear tabla de chat. Las tablas listadas sustentan identidad/permisos; el contexto adicional solo se consulta si se autoriza. |
+| Módulo futuro y fase | Servicios de Notificación y Asistencia; Fase 12 |
+| Pruebas necesarias | T-CU29: Petición de aprobar/cancelar no modifica nada; contexto ajeno excluido; proveedor caído; respuesta/aviso objetivo <=15 s. |
+
+## CU30 — Consultar bitácora de actividad
+
+Fuente: tabla 67; p. 217 (PDF 218); figura 58; análisis figura 104.
+
+| Campo | Especificación |
+| --- | --- |
+| Prioridad | Media |
+| Actor iniciador | Administrador. |
+| Actores | Administrador. |
+| Precondiciones | El Administrador debe encontrarse autenticado y autorizado para consultar la bitácora. Deben existir registros de actividad almacenados para la consulta solicitada. |
+| Flujo principal (síntesis) | Comprobar autorización; filtrar actividad por criterios disponibles; consultar registros; mostrar operación, responsable, fecha, resultado y contexto permitido. |
+| Alternativas / extensiones | Sin coincidencias: vacío comprensible; permisos insuficientes: no devolver registros. |
+| Excepciones documentadas | No existen registros para los filtros seleccionados. Filtros inválidos o rango de fechas inconsistente. El Administrador intenta consultar información fuera de sus permisos. Fallo al recuperar la información de bitácora. |
+| Postcondición documentada | El Administrador obtiene la información histórica necesaria para seguimiento y auditoría interna. |
+| RF relacionado | RF25 |
+| Entidades / clases principales | Usuario, RegistroActividad |
+| Tablas directamente relacionadas | `usuarios`, `registros_actividad` |
+| Módulo futuro y fase | Seguridad y Administración; Fase 2; integración final de consulta en Fase 13 |
+| Pruebas necesarias | T-CU30: Filtros y paginación; usuario no autorizado; evento humano/automático; secreto ausente; conservación de historia. |
+
+
+## Dependencias transversales de la matriz
+
+Todos los CU humanos requieren las verificaciones de identidad/permiso que indiquen sus precondiciones; Usuario/Rol/Permiso/SesionAcceso no se repiten como escritura directa en cada ficha. CU27/CU28 consultan las fuentes operativas pertinentes; no necesitan tablas de indicadores inventadas. Notificaciones y evidencia se vinculan por RegistroActividad, no mediante FK nuevas en cada reserva/préstamo. Las pruebas negativas deben comprobar tanto el resultado devuelto como que no se produjo una mutación no autorizada.
+
+D-03 conserva las diferencias entre actores RF y CU; D-04 impide inventar la asignación de recursos al encargado. CU23 no tiene actor humano directo; CU24 se inicia por una operación confirmada. CU26 describe consulta/lectura, mientras RF21 también prescribe generación automática posterior al evento. Son responsabilidades complementarias.
