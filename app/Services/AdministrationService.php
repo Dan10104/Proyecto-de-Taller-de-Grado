@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Enums\EstadoUsuario;
 use App\Enums\RolInstitucional;
 use App\Models\AsignacionRol;
+use App\Models\Permiso;
 use App\Models\Rol;
 use App\Models\Usuario;
 use App\Support\PermissionCatalog;
@@ -109,8 +110,9 @@ class AdministrationService
     {
         $this->change($actor, 'roles.gestionar_permisos', function () use ($target, $ids) {
             $role = Rol::whereKey($target->id)->lockForUpdate()->firstOrFail();
-            if ($ids && $role->nombre !== RolInstitucional::ADMINISTRADOR->value) {
-                throw ValidationException::withMessages(['permisos' => 'Los permisos de esta fase corresponden al Administrador, iniciador de CU03 y CU04.']);
+            $codes = Permiso::whereIn('id', $ids)->pluck('codigo')->all();
+            if (array_diff($codes, PermissionCatalog::forRole($role->nombre))) {
+                throw ValidationException::withMessages(['permisos' => 'La selección contiene acciones que no corresponden a este rol institucional.']);
             }
             $role->permisos()->sync($ids);
         });

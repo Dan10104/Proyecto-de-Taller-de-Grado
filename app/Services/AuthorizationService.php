@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Enums\EstadoUsuario;
-use App\Enums\RolInstitucional;
 use App\Models\Usuario;
 use App\Support\PermissionCatalog;
 
@@ -15,11 +14,13 @@ class AuthorizationService
             return [];
         }
 
-        return $user->rolesActivos()->where('roles.nombre', RolInstitucional::ADMINISTRADOR->value)
+        return $user->rolesActivos()
             ->join('roles_permisos', 'roles_permisos.rol_id', '=', 'roles.id')
             ->join('permisos', 'permisos.id', '=', 'roles_permisos.permiso_id')
             ->whereIn('permisos.codigo', array_keys(PermissionCatalog::DEFINITIONS))
-            ->distinct()->pluck('permisos.codigo')->all();
+            ->distinct()->get(['roles.nombre as rol', 'permisos.codigo'])
+            ->filter(fn ($row) => in_array($row->rol, PermissionCatalog::eligibleRoles($row->codigo), true))
+            ->pluck('codigo')->unique()->values()->all();
     }
 
     public function allows(Usuario $user, string $permission): bool

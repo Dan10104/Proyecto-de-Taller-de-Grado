@@ -10,6 +10,7 @@ use App\Models\Permiso;
 use App\Models\Rol;
 use App\Models\Usuario;
 use App\Services\AdministrationService;
+use App\Support\PermissionCatalog;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -46,7 +47,7 @@ class RoleController extends Controller
 
     public function show(Request $request, Rol $rol)
     {
-        return Inertia::render('Roles/Show', ['rol' => $rol->load('permisos'), 'catalogo' => $request->user()->can('permisos.ver') ? Permiso::orderBy('codigo')->get() : [],
+        return Inertia::render('Roles/Show', ['rol' => $rol->load('permisos'), 'catalogo' => $request->user()->can('permisos.ver') ? Permiso::whereIn('codigo', PermissionCatalog::forRole($rol->nombre))->orderBy('codigo')->get() : [],
             'usuarios' => $rol->usuariosActivos()->select('usuarios.id', 'nombres', 'apellidos', 'correo', 'estado')->orderBy('usuarios.id')->paginate(15)->withQueryString()]);
     }
 

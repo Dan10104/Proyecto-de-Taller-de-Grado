@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\SpaceCatalogController;
+use App\Http\Controllers\SpaceController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -11,6 +13,19 @@ Route::get('/login', [AuthController::class, 'create'])->name('login');
 Route::post('/login', [AuthController::class, 'store'])->name('login.store');
 Route::post('/logout', [AuthController::class, 'destroy'])->name('logout');
 Route::middleware(['auth', 'access.session'])->group(function () {
+    Route::get('/disponibilidad', [SpaceController::class, 'availability'])->middleware('can:espacios.ver')->name('disponibilidad.index');
+    Route::get('/espacios', [SpaceController::class, 'index'])->middleware('can:espacios.ver')->name('espacios.index');
+    Route::get('/espacios/crear', [SpaceController::class, 'create'])->middleware('can:espacios.gestionar')->name('espacios.create');
+    Route::post('/espacios', [SpaceController::class, 'store'])->middleware('can:espacios.gestionar')->name('espacios.store');
+    Route::get('/espacios/catalogos/{catalogo}', [SpaceCatalogController::class, 'index'])->whereIn('catalogo', ['pisos', 'tipos', 'caracteristicas'])->middleware('can:espacios.gestionar')->name('espacios.catalogos');
+    Route::post('/espacios/catalogos/{catalogo}', [SpaceCatalogController::class, 'save'])->whereIn('catalogo', ['pisos', 'tipos', 'caracteristicas'])->middleware('can:espacios.gestionar')->name('espacios.catalogos.store');
+    Route::put('/espacios/catalogos/{catalogo}/{registro}', [SpaceCatalogController::class, 'save'])->whereIn('catalogo', ['pisos', 'tipos', 'caracteristicas'])->whereNumber('registro')->middleware('can:espacios.gestionar')->name('espacios.catalogos.update');
+    Route::get('/espacios/{espacio}', [SpaceController::class, 'show'])->middleware('can:espacios.ver')->name('espacios.show');
+    Route::get('/espacios/{espacio}/editar', [SpaceController::class, 'edit'])->middleware('can:espacios.gestionar')->name('espacios.edit');
+    Route::put('/espacios/{espacio}', [SpaceController::class, 'update'])->middleware('can:espacios.gestionar')->name('espacios.update');
+    Route::patch('/espacios/{espacio}/estado', [SpaceController::class, 'state'])->middleware('can:espacios.cambiar_estado')->name('espacios.state');
+    Route::post('/espacios/{espacio}/bloqueos', [SpaceController::class, 'block'])->middleware('can:espacios.gestionar_bloqueos')->name('espacios.blocks.store');
+    Route::patch('/espacios/{espacio}/bloqueos/{bloqueo}/desactivar', [SpaceController::class, 'deactivate'])->whereNumber('bloqueo')->middleware('can:espacios.gestionar_bloqueos')->name('espacios.blocks.deactivate');
     Route::get('/inicio', fn () => Inertia::render('Home'))->name('inicio');
     Route::get('/usuarios', [UserController::class, 'index'])->middleware('can:usuarios.ver')->name('usuarios.index');
     Route::get('/usuarios/crear', [UserController::class, 'create'])->middleware('can:usuarios.crear')->name('usuarios.create');
