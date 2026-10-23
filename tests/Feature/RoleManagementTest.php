@@ -47,9 +47,9 @@ class RoleManagementTest extends SecurityTestCase
         $admin = $this->user('Administrador');
         $this->login($admin);
         $role = Rol::where('nombre', 'Administrador')->first();
-        $ids = Permiso::pluck('id')->all();
+        $ids = Permiso::whereIn('codigo', PermissionCatalog::forRole('Administrador'))->pluck('id')->all();
         $edit = Permiso::where('codigo', 'usuarios.editar')->sole();
-        $this->put('/roles/'.$role->id.'/permisos', ['permisos' => array_values(array_diff($ids, [$edit->id]))])->assertRedirect();
+        $this->put('/roles/'.$role->id.'/permisos', ['permisos' => array_values(array_diff($ids, [$edit->id]))])->assertSessionHasNoErrors()->assertRedirect();
         $this->get('/usuarios/'.$admin->id.'/editar')->assertForbidden();
         $this->put('/roles/'.$role->id.'/permisos', ['permisos' => $ids])->assertRedirect();
         $this->get('/usuarios/'.$admin->id.'/editar')->assertOk();
@@ -70,7 +70,7 @@ class RoleManagementTest extends SecurityTestCase
         $teacher = Rol::where('nombre', 'Docente')->first();
         $this->put('/roles/'.$admin->id.'/permisos', ['permisos' => [999999]])->assertSessionHasErrors('permisos.0');
         $this->put('/roles/'.$teacher->id.'/permisos', ['permisos' => [Permiso::where('codigo', 'usuarios.ver')->sole()->id]])->assertSessionHasErrors('permisos');
-        $this->assertSame(['espacios.ver'], $teacher->permisos()->pluck('codigo')->all());
+        $this->assertEqualsCanonicalizing(['espacios.ver', 'reservas.ver_propias', 'reservas.solicitar', 'reservas.cancelar_propias'], $teacher->permisos()->pluck('codigo')->all());
     }
 
     public function test_assignment_retirement_and_reassignment_preserve_history(): void
@@ -164,7 +164,7 @@ class RoleManagementTest extends SecurityTestCase
         $role = Rol::where('nombre', 'Administrador')->first();
         $this->get('/roles')->assertOk();
         $this->get('/permisos')->assertOk();
-        $this->get('/roles/'.$role->id)->assertOk()->assertInertia(fn (Assert $p) => $p->has('catalogo', count(PermissionCatalog::DEFINITIONS))->missing('usuarios.data.0.password_hash'));
+        $this->get('/roles/'.$role->id)->assertOk()->assertInertia(fn (Assert $p) => $p->has('catalogo', count(PermissionCatalog::forRole('Administrador')))->missing('usuarios.data.0.password_hash'));
         $this->get('/asignaciones/candidatos?q=Persona')->assertOk()->assertDontSee('password_hash')->assertDontSee('token_hash');
     }
 

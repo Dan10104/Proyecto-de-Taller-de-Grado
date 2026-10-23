@@ -1905,3 +1905,34 @@ input[type=checkbox] {
     padding: 10px;
   }
 }
+
+/* Reservations reuse the application form, table and native dialog primitives. */
+.reservation-filter-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.reservation-filter-grid > * { min-width: 0; }
+.reservation-table { position: relative; min-width: 1050px; }
+.reservation-code { overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+.reservation-table .reservation-code { display: block; width: 168px; white-space: normal; }
+.reservation-purpose { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; white-space: normal; width: 190px; overflow-wrap: anywhere; }
+.cell-subline { display: block; color: #596579; margin-top: 5px; }
+.reservation-period { white-space: nowrap; }
+.reservation-space-summary { border-bottom: 1px solid #e4e8ee; padding-bottom: 20px; margin-bottom: 24px; }
+.reservation-space-summary p { margin: 8px 0 0; color: #596579; }
+.reservation-explanation { margin-top: 20px; }
+.reservation-full-purpose { white-space: pre-wrap; overflow-wrap: anywhere; }
+.reservation-details dd { margin: 6px 0 0; }
+.reservation-actions { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 24px; margin-bottom: 24px; flex-wrap: wrap; }
+.reservation-actions h2 { margin-bottom: 6px; }
+.reservation-dialog { max-height: calc(100dvh - 32px); overflow-y: auto; }
+.reservation-dialog .form-actions { flex-wrap: wrap; }
+.reservation-history { list-style: none; padding: 0; margin: 24px 0 0; }
+.reservation-history li { display: grid; gap: 6px; border-left: 3px solid #24885c; padding: 0 0 24px 20px; }
+.reservation-history li:last-child { padding-bottom: 0; }
+.reservation-history time,.reservation-history span { color: #596579; }
+.reservation-request-link { margin-top: 18px; width: 100%; }
+@media (max-width: 1000px) { .reservation-filter-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 600px) {
+  .reservation-filter-grid { grid-template-columns: minmax(0, 1fr); }
+  .reservation-actions { padding: 20px; }
+  .reservation-actions .button-group,.reservation-dialog .form-actions { width: 100%; }
+  .reservation-actions .button-group .btn,.reservation-dialog .form-actions .btn { flex: 1 1 100%; }
+}
