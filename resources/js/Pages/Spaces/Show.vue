@@ -28,7 +28,7 @@ function deactivate(id) { router.patch(`/espacios/${props.espacio.recurso_id}/bl
         <Link v-if="can('espacios.gestionar')" :href="`/espacios/${espacio.recurso_id}/editar`" class="btn btn-primary">Editar espacio</Link>
       </div>
     </div>
-    <section class="panel detail-panel">
+    <section class="panel detail-panel"><div class="button-group operational-links"><Link v-if="can('incidencias.ver')" :href="'/incidencias?recurso_id='+espacio.recurso_id" class="text-link">Ver incidencias del espacio</Link><Link v-if="can('incidencias.gestionar')" :href="'/incidencias/crear?recurso_id='+espacio.recurso_id" class="text-link">Registrar incidencia o mantenimiento</Link></div>
       <div class="space-card-top">
         <h2>Información del espacio</h2>
         <SpaceState :value="espacio.estado"/>

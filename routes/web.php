@@ -1,19 +1,53 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\EquipmentController;
+use App\Http\Controllers\IncidentController;
+use App\Http\Controllers\LoanController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SpaceCatalogController;
 use App\Http\Controllers\SpaceController;
 use App\Http\Controllers\UserController;
+use App\Models\EquipamientoTecnologico;
+use App\Models\IncidenciaMantenimiento;
+use App\Models\TipoEquipamiento;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
+Route::model('equipamiento', EquipamientoTecnologico::class);
+Route::model('tipo', TipoEquipamiento::class);
+Route::model('incidencia', IncidenciaMantenimiento::class);
 Route::get('/', fn () => redirect()->route('login'));
 Route::get('/login', [AuthController::class, 'create'])->name('login');
 Route::post('/login', [AuthController::class, 'store'])->name('login.store');
 Route::post('/logout', [AuthController::class, 'destroy'])->name('logout');
 Route::middleware(['auth', 'access.session'])->group(function () {
+    Route::get('/equipamientos', [EquipmentController::class, 'index'])->middleware('can:equipamientos.ver')->name('equipamientos.index');
+    Route::get('/equipamientos/disponibilidad', [EquipmentController::class, 'index'])->middleware('can:equipamientos.ver')->name('equipamientos.availability');
+    Route::get('/equipamientos/crear', [EquipmentController::class, 'create'])->middleware('can:equipamientos.gestionar')->name('equipamientos.create');
+    Route::post('/equipamientos', [EquipmentController::class, 'store'])->middleware('can:equipamientos.gestionar')->name('equipamientos.store');
+    Route::get('/equipamientos/tipos', [EquipmentController::class, 'types'])->middleware('can:equipamientos.gestionar')->name('equipamientos.types');
+    Route::post('/equipamientos/tipos', [EquipmentController::class, 'saveType'])->middleware('can:equipamientos.gestionar')->name('equipamientos.types.store');
+    Route::put('/equipamientos/tipos/{tipo}', [EquipmentController::class, 'saveType'])->middleware('can:equipamientos.gestionar')->name('equipamientos.types.update');
+    Route::get('/equipamientos/{equipamiento}', [EquipmentController::class, 'show'])->middleware('can:equipamientos.ver')->name('equipamientos.show');
+    Route::get('/equipamientos/{equipamiento}/editar', [EquipmentController::class, 'edit'])->middleware('can:equipamientos.gestionar')->name('equipamientos.edit');
+    Route::put('/equipamientos/{equipamiento}', [EquipmentController::class, 'update'])->middleware('can:equipamientos.gestionar')->name('equipamientos.update');
+    Route::patch('/equipamientos/{equipamiento}/estado', [EquipmentController::class, 'state'])->middleware('can:equipamientos.cambiar_estado')->name('equipamientos.state');
+    Route::get('/prestamos', [LoanController::class, 'index'])->name('prestamos.index');
+    Route::get('/prestamos/crear', [LoanController::class, 'create'])->middleware('can:prestamos.solicitar')->name('prestamos.create');
+    Route::post('/prestamos', [LoanController::class, 'store'])->middleware('can:prestamos.solicitar')->name('prestamos.store');
+    Route::get('/prestamos/{prestamo}', [LoanController::class, 'show'])->name('prestamos.show');
+    Route::post('/prestamos/{prestamo}/aprobar', [LoanController::class, 'approve'])->middleware('can:prestamos.resolver')->name('prestamos.approve');
+    Route::post('/prestamos/{prestamo}/rechazar', [LoanController::class, 'reject'])->middleware('can:prestamos.resolver')->name('prestamos.reject');
+    Route::post('/prestamos/{prestamo}/entregar', [LoanController::class, 'deliver'])->middleware('can:prestamos.registrar_entrega')->name('prestamos.deliver');
+    Route::post('/prestamos/{prestamo}/devolver', [LoanController::class, 'receive'])->middleware('can:prestamos.registrar_devolucion')->name('prestamos.receive');
+    Route::post('/prestamos/{prestamo}/revisar', [LoanController::class, 'review'])->middleware('can:prestamos.registrar_devolucion')->name('prestamos.review');
+    Route::get('/incidencias', [IncidentController::class, 'index'])->middleware('can:incidencias.ver')->name('incidencias.index');
+    Route::get('/incidencias/crear', [IncidentController::class, 'create'])->middleware('can:incidencias.gestionar')->name('incidencias.create');
+    Route::post('/incidencias', [IncidentController::class, 'store'])->middleware('can:incidencias.gestionar')->name('incidencias.store');
+    Route::get('/incidencias/{incidencia}', [IncidentController::class, 'show'])->middleware('can:incidencias.ver')->name('incidencias.show');
+    Route::post('/incidencias/{incidencia}/cerrar', [IncidentController::class, 'close'])->middleware('can:incidencias.cerrar')->name('incidencias.close');
     Route::get('/reservas', [ReservationController::class, 'index'])->name('reservas.index');
     Route::get('/reservas/crear', [ReservationController::class, 'create'])->middleware('can:reservas.solicitar')->name('reservas.create');
     Route::post('/reservas', [ReservationController::class, 'store'])->middleware('can:reservas.solicitar')->name('reservas.store');

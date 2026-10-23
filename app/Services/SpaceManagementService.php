@@ -44,6 +44,9 @@ class SpaceManagementService
                 Gate::forUser($actor->fresh())->authorize('espacios.cambiar_estado');
             }
             $resource = $target ? RecursoInstitucional::whereKey($space->getKey())->lockForUpdate()->firstOrFail() : new RecursoInstitucional;
+            if ($target && ($data['estado'] ?? $previous) === 'DISPONIBLE' && $previous !== 'DISPONIBLE') {
+                app(ResourceOperationService::class)->assertSpaceCanEnable($space);
+            }
             $resource->fill(['codigo' => $data['codigo'], 'nombre' => $data['nombre']])->save();
             if (! $target) {
                 $space->recurso_id = $resource->id;
@@ -60,6 +63,9 @@ class SpaceManagementService
         $this->change($actor, 'espacios.cambiar_estado', function () use ($actor, $target, $state) {
             $space = EspacioAcademico::whereKey($target->getKey())->lockForUpdate()->firstOrFail();
             Gate::forUser($actor->fresh())->authorize('changeState', $space);
+            if ($state === 'DISPONIBLE') {
+                app(ResourceOperationService::class)->assertSpaceCanEnable($space);
+            }
             $space->update(['estado' => $state]);
         });
     }

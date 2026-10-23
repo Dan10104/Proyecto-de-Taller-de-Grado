@@ -43,7 +43,8 @@ class SpaceAvailabilityService
 
         return $this->operational($filters)
             ->whereDoesntHave('bloqueos', fn ($q) => $this->activeBlocks($q, $start, $end))
-            ->whereDoesntHave('reservas', fn ($q) => $this->approvedReservations($q, $start, $end));
+            ->whereDoesntHave('reservas', fn ($q) => $this->approvedReservations($q, $start, $end))
+            ->whereDoesntHave('incidencias', fn ($q) => $q->where('estado', 'ABIERTA'));
     }
 
     public function assertAvailable(EspacioAcademico $space, CarbonImmutable $start, CarbonImmutable $end, ?int $exceptReservation = null, array $filters = []): void
@@ -56,7 +57,8 @@ class SpaceAvailabilityService
         $operational = $this->operational($filters)->whereKey($space->getKey())->lockForUpdate()->first();
         $block = $this->activeBlocks($space->bloqueos()->getQuery(), $start, $end)->lockForUpdate()->first(['id']);
         $reservation = $this->approvedReservations($space->reservas()->getQuery(), $start, $end, $exceptReservation)->lockForUpdate()->first(['id']);
-        if (! $operational || $block || $reservation) {
+        $incident = $space->incidencias()->where('estado', 'ABIERTA')->orderBy('id')->lockForUpdate()->first(['id']);
+        if (! $operational || $block || $reservation || $incident) {
             throw new ReservationConflictException('El espacio ya no se encuentra disponible para el periodo solicitado.');
         }
     }
