@@ -187,7 +187,7 @@ Fuente: tabla 44; p. 183 (PDF 184); figura 35; análisis figura 81.
 | Entidades / clases principales | EspacioAcademico, BloqueoEspacio, Reserva, RegistroActividad |
 | Tablas directamente relacionadas | `espacios_academicos`, `bloqueos_espacio`, `reservas`, `registros_actividad` |
 | Módulo futuro y fase | Gestión de Espacios y Reservas; Fase 4 |
-| Pruebas necesarias | T-CU07: Dos peticiones concurrentes al mismo periodo; cambio de disponibilidad; falta de permiso; rollback; <=3 s. |
+| Pruebas necesarias | T-CU07: Dos PENDIENTE del mismo espacio/periodo coexisten; revalidación final bajo locks frente a bloqueo/APROBADA; permiso; rollback; <=3 s. T-R01/06/07/11/14/15. |
 
 ## CU08 — Consultar estado de reservas
 
@@ -207,7 +207,7 @@ Fuente: tabla 45; p. 185 (PDF 186); figura 36; análisis figura 82.
 | Entidades / clases principales | Reserva |
 | Tablas directamente relacionadas | `reservas` |
 | Módulo futuro y fase | Gestión de Espacios y Reservas; Fase 4 |
-| Pruebas necesarias | T-CU08: Otro titular no ve detalle; encargado limitado; filtros y paginación; estados reflejan decisiones persistidas. |
+| Pruebas necesarias | T-CU08: Consulta propia sin terceros; gestión solo con permiso de Administrador/Encargado; filtros/paginación no amplían alcance; estados persistidos. Ámbito fino diferido. T-R12/16/17. |
 
 ## CU09 — Resolver solicitud de reserva
 
@@ -220,14 +220,14 @@ Fuente: tabla 46; p. 186 (PDF 187); figura 37; análisis figura 83.
 | Actores | Administrador y Encargado de Laboratorio. |
 | Precondiciones | Debe existir una solicitud de reserva en estado pendiente. El actor debe contar con permisos para resolver la solicitud correspondiente. |
 | Flujo principal (síntesis) | Consultar solicitud pendiente; comprobar permisos y disponibilidad mediante CU06; aprobar o rechazar; registrar decisión, responsable, fecha y motivo aplicable; actualizar seguimiento. |
-| Alternativas / extensiones | Aprobación bloqueada si cambió disponibilidad; rechazo conserva decisión/motivo según regla pendiente D-05; CU24 solo si crítica. |
+| Alternativas / extensiones | Conflicto al aprobar mantiene PENDIENTE; rechazo explícito solo de PENDIENTE, motivo opcional según cierre D-05 de Fase 3.5; CU24 condicional, diferido a Fase 9. |
 | Excepciones documentadas | La solicitud ya fue resuelta o cambió de estado. El espacio dejó de estar disponible al intentar aprobar. El actor no posee permisos para resolver esa solicitud. Fallo de actualización: el sistema debe evitar dejar una decisión parcialmente registrada. |
 | Postcondición documentada | La solicitud queda aprobada o rechazada y el resultado queda disponible para seguimiento. |
 | RF relacionado | RF7 |
 | Entidades / clases principales | EspacioAcademico, BloqueoEspacio, Reserva, RegistroActividad |
 | Tablas directamente relacionadas | `espacios_academicos`, `bloqueos_espacio`, `reservas`, `registros_actividad` |
 | Módulo futuro y fase | Gestión de Espacios y Reservas; Fase 4 |
-| Pruebas necesarias | T-CU09: Doble resolución concurrente; responsable fuera de ámbito; conflicto sobrevenido; rechazo; <=3 s. |
+| Pruebas necesarias | T-CU09: Dos procesos reales, una sola aprobación solapada; perdedora PENDIENTE; contiguas aprobables; doble resolución; permiso; rechazo; <=3 s. T-R02–08/10/11/13/14. |
 
 ## CU10 — Cancelar reserva
 
@@ -247,7 +247,7 @@ Fuente: tabla 47; p. 188 (PDF 189); figura 38; análisis figura 84.
 | Entidades / clases principales | EspacioAcademico, Reserva, RegistroActividad |
 | Tablas directamente relacionadas | `espacios_academicos`, `reservas`, `registros_actividad` |
 | Módulo futuro y fase | Gestión de Espacios y Reservas; Fase 4 |
-| Pruebas necesarias | T-CU10: Cancelación propia autorizada; ajena/fuera de plazo denegada; doble cancelación; disponibilidad resultante; <=3 s. |
+| Pruebas necesarias | T-CU10: Propia y administrativa con permisos distintos; denegar ajena no autorizada, ahora>=inicio y estados no cancelables; motivo opcional; preservar resolución; concurrencia/rollback; <=3 s. T-R08–14. |
 
 ## CU11 — Validar uso de espacio mediante código QR
 
@@ -672,7 +672,7 @@ Fuentes contrastadas: tabla 36 (RF) y tablas 38–67 (detalle CU). La lista Usua
 | CU07 / RF6 | RF6: Docente, Estudiante, Administrador y Encargado de laboratorio, según permisos. | Docente o Estudiante autorizado. | Docente o Estudiante con permiso y cuenta activa. Administrador/Encargado mencionados en RF6 no reciben por ese solo rol facultad de solicitar en CU07. |
 | CU08 / RF6, RF7 | RF6: Docente, Estudiante, Administrador y Encargado de laboratorio, según permisos.; RF7: Administrador, Encargado de laboratorio, Docente y Estudiante, según la operación permitida. | Usuario autenticado. | Consulta propia del solicitante o supervisión autorizada del Administrador/Encargado; filtrar por propiedad/ámbito. |
 | CU09 / RF7 | RF7: Administrador, Encargado de laboratorio, Docente y Estudiante, según la operación permitida. | Administrador o Encargado de Laboratorio autorizado. | Administrador o Encargado autorizado resuelve; Docente/Estudiante de RF7 participan como solicitantes, no aprobadores. |
-| CU10 / RF7 | RF7: Administrador, Encargado de laboratorio, Docente y Estudiante, según la operación permitida. | Usuario autorizado para cancelar la reserva. | Titular de la reserva o responsable con permiso administrativo según CU10 (sus actores incluyen los cuatro roles); comprobar permiso, propiedad/ámbito, estado y plazo. No limitar ese permiso por una etiqueta de rol ni conceder cancelación ajena por la lista de RF7. |
+| CU10 / RF7 | RF7: Administrador, Encargado de laboratorio, Docente y Estudiante, según la operación permitida. | Usuario autorizado para cancelar la reserva. | Titular con permiso propio, o Administrador/Encargado con permiso administrativo según precisión de Fase 3.5; comprobar estado y ahora<inicio. Docente/Estudiante no cancelan ajenas; no conceder facultades por la lista general de RF7. |
 | CU11 / RF8 | RF8: Docente, Estudiante, Administrador y Encargado de laboratorio. | Usuario autorizado que realiza el escaneo. | Los cuatro roles solo con autorización para el recurso/reserva/contexto y horario; escanear no autentica ni concede permisos. |
 | CU12 / RF9 | RF9: Administrador y Encargado de laboratorio. | Administrador o Encargado de Laboratorio autorizado. | Administrador o Encargado autorizado gestiona inventario dentro de su ámbito; no ampliar desde las consultas. |
 | CU13 / RF10 | RF10: Administrador, Encargado de laboratorio, Docente y Estudiante. | Usuario autenticado. | Los cuatro roles consultan con permiso y alcance. La disponibilidad mostrada no autoriza resolución ni entrega. |
@@ -742,3 +742,17 @@ CU01/CU02: autenticación web y sesiones implementadas y probadas. CU03/CU04: n�
 ## Precisión autorizada para CU05/CU06 — Fase 3
 
 La petición §35 sustituye en estos dos flujos la puerta histórica de ámbito fino: se habilita RBAC por módulo/acción sin inventar tablas. CU05 permite gestión a Administrador/Encargado con permiso; CU06 permite consulta a los cuatro roles con espacios.ver. La matriz de iniciadores de otros CU no cambia. CU05 conserva pendiente la bitácora; CU06 conserva reservas e IoT pendientes. No hay CU07–CU11 ni CU23 funcional.
+
+## Contrato congelado de CU07–CU10 — Fase 3.5
+
+**D-05 resuelta para Fase 4; CU07–CU10 NO IMPLEMENTADOS.** Las fichas conservan las fuentes completas, incluidas relaciones con RegistroActividad y extensiones futuras; esas referencias no autorizan crear bitácora, notificaciones, QR o Blockchain en Fase 4.
+
+| CU | Contrato de núcleo para Fase 4 | Dependencias y límites |
+| --- | --- | --- |
+| CU06 | Mismo predicado central de disponibilidad utilizado por CU07 y aprobación de CU09 | Base implementada en Fase 3; integración de APROBADAS en Fase 4; IoT complementario en Fase 7 |
+| CU07 | Docente/Estudiante con reservas.solicitar; espacio operativo, propósito y periodo válidos; transacción con revalidación; alta PENDIENTE | Pendientes pueden coexistir; no crear si hay APROBADA solapada o bloqueo activo; no aprobación implícita ni elección de solicitante ajeno |
+| CU08 | Propiedad obligatoria en consulta propia; gestión para Administrador/Encargado con reservas.ver_administrativas | Filtros fecha/estado/espacio; solicitante solo con consulta administrativa. D-04 mantiene ámbito fino diferido, sin tabla nueva |
+| CU09 | Administrador/Encargado con reservas.resolver; solo PENDIENTE; aprobar con lock y disponibilidad vigente, o rechazar explícitamente | Conflicto deja PENDIENTE; responsable/fecha atómicos. Rechazo opcionalmente motivado; aprobación deja motivo_rechazo NULL |
+| CU10 | PENDIENTE/APROBADA y ahora<inicio; titular con reservas.cancelar_propias o responsable con reservas.cancelar_administrativas | Motivo opcional; actor/fecha de cancelación; conservar resolución previa; no liberar automáticamente ni forzar estado del espacio |
+
+La [matriz de seis permisos](DECISIONS.md#cu08-y-catálogo-mínimo-de-permisos-previsto), [tabla de transiciones](DOMAIN_MODEL.md#transiciones-de-reserva--contrato-de-fase-35) y [aceptación T-R01–17](BUSINESS_RULES.md#aceptación-futura-de-reservas--fase-4) son contratos, no nuevas filas en permisos ni pruebas ejecutadas. No hay bypass administrativo. La precisión de consulta/gestión por módulo y propiedad sustituye para este núcleo la puerta histórica de acreditar asignaciones finas de recursos; no habilita esas asignaciones por inferencia.

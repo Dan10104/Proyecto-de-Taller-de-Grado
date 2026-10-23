@@ -1,6 +1,6 @@
 # Plan de implementación web
 
-Estado: **Fase 3 implementada y validada; Fases 4–14 no iniciadas**. Fases 0 y 0.5 conservaron su alcance documental; la nueva instrucción de Fase 1 autorizó la fundación técnica descrita en [DEVELOPMENT_SETUP.md](DEVELOPMENT_SETUP.md). No existe Flutter, Android ni cliente nativo en el plan de ejecución.
+Estado: **Fase 3 implementada y validada; Fase 3.5 cerrada documentalmente; Fases 4–14 no iniciadas**. Fases 0 y 0.5 conservaron su alcance documental; la nueva instrucción de Fase 1 autorizó la fundación técnica descrita en [DEVELOPMENT_SETUP.md](DEVELOPMENT_SETUP.md). No existe Flutter, Android ni cliente nativo en el plan de ejecución.
 
 ## Inventario histórico anterior a Fase 1 — 2026-10-23
 
@@ -91,10 +91,10 @@ Ese inventario corresponde a Fases 0/0.5, cuando no se instalaron dependencias n
 | Carpetas principales futuras | app/Models/; app/Services/; app/Policies/; app/Http/; database/; routes/; resources/js/Pages/; tests/ |
 | Requisitos relacionados | RF6–7; DB-04/08/15–17/19/21; R-TR-02; R-PR-01 |
 | Casos de uso | CU07–CU10 |
-| Trabajo previsto | Cerrar plazos de cancelación y disparador de finalización de D-05 antes de implementar este ciclo; solicitud, consulta, resolución y cancelación; estados/periodos definidos; control transaccional; actividad confirmada preparada para QR, liberación, notificaciones y evidencia. |
-| Pruebas requeridas | Conflicto concurrente al registrar/aprobar; doble decisión; cancelación ajena/fuera de plazo; rollback; máximo 3 s. |
-| Riesgos / puertas | Aplicar D-03 y convención D-05; cerrar parámetros temporales diferidos; efectos externos antes del commit. |
-| Condición de finalización | Flujos y excepciones aceptados; no solapamientos incompatibles; auditoría de decisiones y estados exactos. |
+| Trabajo previsto | Aplicar D-05 cerrado en Fase 3.5: solicitud PENDIENTE, consulta propia/administrativa, aprobación/rechazo y cancelación antes de inicio; extender SpaceAvailabilityService con APROBADA; lock del espacio, lecturas actuales y escritura condicional. Solo documentar puntos posteriores al commit para integraciones diferidas. |
+| Pruebas requeridas | T-R01–17 de BUSINESS_RULES: dos pendientes coexisten; primera aprobación; segunda en conflicto sigue pendiente; dos procesos MySQL reales con una aprobada; contiguas válidas; permisos, frontera de cancelación, rollback y regresión; máximo 3 s según CU. |
+| Riesgos / puertas | Aplicar D-03/D-04 y D-05 RESUELTA PARA FASE 4; cero bloqueadores documentales del núcleo. Evitar snapshot obsoleto, inversión de locks, bypass de permisos y efectos externos antes del commit. |
+| Condición de finalización | CU07–CU10 y excepciones probados; nunca dos APROBADAS solapadas del mismo espacio; responsables/fechas e historia preservados. CU30, avisos y evidencia siguen diferidos y no se declaran satisfechos por los campos de reservas. |
 | Commit esperado | `feat: add reservation lifecycle and conflict checks` |
 
 ### Fase 5 — Equipamiento, préstamos, entrega, devolución e incidencias
@@ -238,9 +238,9 @@ Ese inventario corresponde a Fases 0/0.5, cuando no se instalaron dependencias n
 | Commit esperado | `build: prepare Docker and Google Cloud deployment` |
 
 
-## Próxima instrucción propuesta: Fase 3
+## Propuesta histórica anterior a Fase 3
 
-Con nueva autorización para Fase 3, revisar contratos de pisos/espacios/características/bloqueos y las dependencias de disponibilidad con reservas/políticas. Acreditar el ámbito por recurso antes de exponer operaciones. Conservar pruebas MySQL aisladas y las seis tablas de seguridad, sin inventar FK ni adelantar el ciclo de reservas. Fase 3 no se inicia en esta entrega.
+Esta propuesta corresponde al cierre de Fase 2. Fase 3 fue posteriormente autorizada e implementada, con RBAC por módulo/acción y ámbito fino diferido según su instrucción §35. La continuación vigente es Fase 4, cuyo contrato se cierra en Fase 3.5 al final de este documento.
 
 ## Preparación de Fase 1 y puertas posteriores
 
@@ -248,9 +248,9 @@ Con nueva autorización para Fase 3, revisar contratos de pisos/espacios/caracte
 
 | Decisión / detalle restante | Límite antes de trabajo dependiente |
 | --- | --- |
-| D-04, alcance fino por recurso DIFERIDO EN PARTE; RBAC cerrado | Catálogo administrativo implementado en Fase 2; acreditar alcance antes del flujo funcional de recursos correspondiente, sin nuevas tablas inferidas |
+| D-04, alcance fino por recurso DIFERIDO EN PARTE; RBAC cerrado | Fase 3 autoriza CU05/CU06 por módulo/acción; Fase 3.5 precisa el núcleo CU07–CU10 por módulo/acción y propiedad. Las asignaciones finas siguen diferidas, sin nuevas tablas inferidas |
 | D-07, móvil/API y almacenamiento distribuido; sesión web cerrada | Móvil/API cuando se autorice; despliegue distribuido antes de Fase 14 |
-| D-05, plazos de cancelación y disparador FINALIZADA | Antes de Fase 4; intervalos y estados conflictivos ya fijados |
+| D-05, reservas resueltas para Fase 4 en Fase 3.5 | Cancelación antes de inicio; FINALIZADA automática diferida a una fase posterior autorizada; no bloquea CU07–CU10 |
 | D-09, emisión, vigencia y correlación QR | Antes de Fase 6 |
 | D-10, transporte/payload/unidades/reintentos/frescura IoT | Antes de Fase 7 |
 | D-08, disparador, combinación QR/IoT y versión histórica de política | Antes de Fase 8 |
@@ -261,3 +261,13 @@ Con nueva autorización para Fase 3, revisar contratos de pisos/espacios/caracte
 D-13/D-14 no requieren desarrollar las funciones históricas/ilustrativas. Los estados RESUELTA/CONVENCIÓN describen contratos. Las pruebas de fundación de Fase 1 están completadas; el núcleo web de Fase 2 tiene 65 pruebas / 493 aserciones aprobadas. Las pruebas de módulos posteriores y rendimiento siguen pendientes.
 
 Evidencia de Fase 2: [SECURITY_IMPLEMENTATION.md](SECURITY_IMPLEMENTATION.md). Las pruebas no acreditan la bitácora pendiente ni amplían el alcance de Fase 3.
+
+## Cierre documental de Fase 3.5 y puerta de Fase 4
+
+D-05 está **RESUELTA PARA FASE 4**: exclusividad solo de APROBADA, pendientes coexistentes, cuatro transiciones, cancelación estrictamente antes del inicio con motivo opcional, consulta/permisos y código estable definidos. El [Readiness for Phase 4](DECISIONS.md#readiness-for-phase-4) registra cero bloqueadores documentales para el núcleo.
+
+Fase 4 podrá comenzar con una nueva instrucción. Deberá implementar y verificar el contrato, conservar SQL e índices oficiales y usar exclusivamente testing MySQL aislado en las pruebas con escritura. La suite obligatoria incluye dos procesos reales y comprobación de lectura vigente después de la espera; no basta un test secuencial.
+
+No se adelantan scheduler/cron de FINALIZADA, liberación automática, CU11/QR (6), IoT (7), CU23 (8), Blockchain (9), notificaciones (10) ni registros_actividad/CU30 (pendiente de autorización de alcance). Su ausencia no bloquea el núcleo acordado y sus obligaciones siguen visibles en trazabilidad. La entrega 3.5 modifica únicamente documentación; no crea la tabla reservas, permisos, servicios, pantallas ni tests funcionales de Fase 4.
+
+Validación documental de Fase 3.5: diez archivos Markdown, ningún archivo funcional modificado, veinte enlaces locales añadidos comprobados y diff sin errores de espacios. SQL de reservas equivalente entre Word/PDF; SHA-256 de ambos originales intacto. Escaneo privado de los 175 archivos públicos, diferencias e historial sin hallazgos de secretos; .env/.env.testing y runtime local siguen excluidos. No se ejecutaron nuevas pruebas funcionales ni migraciones: T-R01–17 permanecen como aceptación obligatoria de Fase 4.

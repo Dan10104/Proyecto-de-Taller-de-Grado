@@ -1,6 +1,6 @@
 # Registro de decisiones y auditoría documental
 
-Fecha: 2026-10-23. Fase 0.5: contratos de implementación congelados según la instrucción del usuario. Se conservan los 17 expedientes D-01–D-17 y su conflicto original; Git conserva la redacción inicial de Fase 0. No se cambian el Word/PDF, el alcance funcional ni el stack. Fase 1 técnica completada por instrucción posterior; D-15 y la configuración de D-16 tienen evidencia en [DEVELOPMENT_SETUP.md](DEVELOPMENT_SETUP.md). Fase 1.5 documental completada: D-04/D-07 resueltas para el núcleo web de Fase 2, todavía no iniciado.
+Fecha: 2026-10-23. Fase 0.5: contratos de implementación congelados según la instrucción del usuario. Se conservan los 17 expedientes D-01–D-17 y su conflicto original; Git conserva la redacción inicial de Fase 0. No se cambian el Word/PDF, el alcance funcional ni el stack. Fase 1 técnica completada por instrucción posterior; D-15 y la configuración de D-16 tienen evidencia en [DEVELOPMENT_SETUP.md](DEVELOPMENT_SETUP.md). Fase 1.5 cerró D-04/D-07; el núcleo web de Fase 2 y los espacios de Fase 3 están implementados. Fase 3.5 cierra D-05 para reservas; Fase 4 no iniciada.
 
 ## Fuentes verificadas
 
@@ -53,7 +53,7 @@ SQL es contrato principal de tablas, columnas, tipos, PK/FK, nulabilidad, enums,
 
 ## Clasificación de las 17 decisiones originales (cierre de Fase 0.5)
 
-Esta clasificación conserva la fotografía histórica de Fase 0.5, con **un único estado por expediente en ese cierre**. Los estados vigentes de D-04 y D-07 se actualizan en sus fichas y en Readiness for Phase 2; no se reescribe el recuento histórico. La clasificación cuenta expedientes de Fase 0, no cada parámetro interno. Una convención puede dejar parámetros posteriores expresamente enumerados; eso no los declara resueltos ni bloquea la fundación.
+Esta clasificación conserva la fotografía histórica de Fase 0.5, con **un único estado por expediente en ese cierre**. Los estados vigentes de D-04/D-07 y el cierre de D-05 se actualizan en sus fichas y en Readiness for Phase 2/4; no se reescribe el recuento histórico. La clasificación cuenta expedientes de Fase 0, no cada parámetro interno. Una convención puede dejar parámetros posteriores expresamente enumerados; eso no los declara resueltos ni bloquea la fundación.
 
 | Estado | Cantidad |
 | --- | --- |
@@ -69,7 +69,7 @@ Esta clasificación conserva la fotografía histórica de Fase 0.5, con **un ún
 | D-02 | Discrepancia confirmada: estados narrados | RESUELTA | 2–12 según entidad. |
 | D-03 | Diferencias de alcance entre actores RF y CU | RESUELTA | 2–12; matriz desde 1. |
 | D-04 | Vacío de diseño: recursos asignados al encargado | DIFERIDA A UNA FASE POSTERIOR | 2 antes de habilitar permisos de alcance; 3–5 antes de acciones por recurso. |
-| D-05 | Vacíos y precisión temporal | CONVENCIÓN DE IMPLEMENTACIÓN | 3–5; servicios de disponibilidad y transición. |
+| D-05 | Vacíos y precisión temporal | CONVENCIÓN DE IMPLEMENTACIÓN en 0.5; RESUELTA PARA FASE 4 en 3.5 | Cierre documental de reservas; préstamos conservan su alcance de Fase 5. |
 | D-06 | Diferencia entre modelo conceptual y diseño de datos | RESUELTA | 2–10 según tabla. |
 | D-07 | Decisión técnica pendiente: autenticación y sesión | DIFERIDA A UNA FASE POSTERIOR | 2 antes de CU01–CU02; estudio de compatibilidad permitido en 1 cuando se autorice. |
 | D-08 | Vacío de ejecución de liberación | DIFERIDA A UNA FASE POSTERIOR | 8; contrato con monitoreo en 7. |
@@ -197,9 +197,9 @@ Un usuario puede tener varios roles activos. Evaluar identificadores y permisos 
 | Impacto | Fronteras temporales y sentido de activo no estaban fijados de forma uniforme. |
 | Decisión vigente de Fase 0.5 | Intervalos `[inicio, fin)`, fin>inicio y solapamiento si inicio_A<fin_B e inicio_B<fin_A, sobre el mismo recurso. Reserva APROBADA compromete su periodo; PENDIENTE es solicitud aún sin exclusividad y exige revalidación al aprobar; estados terminales no bloquean el periodo. Préstamos APROBADO/ENTREGADO comprometen el periodo previsto; PENDIENTE no asigna exclusividad. Equipo PRESTADO o no disponible bloquea aprobación/entrega aunque haya terminado el periodo previsto. Cancelación de reserva solo desde PENDIENTE/APROBADA, con iniciador de CU10, permiso/propiedad y dentro de la política aplicable; no se fija un plazo arbitrario. |
 | Justificación | Convención técnica explícita de intervalos y de solicitudes frente a compromisos, compatible con resolución posterior del CU. No cambia enums, tipos ni añade funciones. Pruebas concurrentes deben excluir la propia solicitud al comprobar conflictos. |
-| Estado | CONVENCIÓN DE IMPLEMENTACIÓN |
+| Estado | RESUELTA PARA FASE 4 — cierre de Fase 3.5; convenciones explícitas, sin implementación de reservas. |
 | Fase afectada | 3–5; servicios de disponibilidad y transición. |
-| Detalle diferido / límite de la resolución | Antes de Fase 4 fijar parámetros temporales de cancelación y disparador de FINALIZADA; motivos cuando corresponda según CU09/CU10/CU16, sin convertir NULL en NOT NULL. No bloquean Fase 1. |
+| Detalle diferido / límite de la resolución | Cancelación, motivos, estados y concurrencia de reservas cerrados en el contrato de Fase 3.5 al final de este documento. FINALIZADA no tiene disparador automático en Fase 4; se difiere a una fase posterior expresamente autorizada. Los detalles de préstamos/CU16 conservan su momento de Fase 5. |
 | Bloquea iniciar Fase 1 | No |
 | Fecha de adopción | 2026-10-23; instrucción Fase 0.5 |
 
@@ -469,8 +469,8 @@ Estos puntos no se implementaron ni se presentan como especificaciones completas
 
 | Expediente | Detalle pendiente | Momento límite |
 | --- | --- | --- |
-| D-04 | Alcance fino por recurso DIFERIDO EN PARTE; RBAC y convención cerrados para Fase 2, sin nueva tabla inferida | Antes de habilitar el flujo funcional del recurso; catálogo trazable como trabajo de Fase 2 |
-| D-05 | Plazos de cancelación, disparador de FINALIZADA y condiciones operativas de motivos | Antes del flujo correspondiente en Fase 4/5; intervalos y estados persistidos ya fijados |
+| D-04 | Alcance fino por recurso DIFERIDO EN PARTE; RBAC implementado, sin nueva tabla inferida | Fase 3 concreta CU05/CU06 y Fase 3.5 el núcleo CU07–CU10 por módulo/acción y propiedad. Resolver asignaciones finas solo cuando se autorice ese alcance |
+| D-05 | Reservas: resueltas para Fase 4 en Fase 3.5. FINALIZADA automática y detalles de préstamos permanecen diferidos | Finalización solo en una fase posterior autorizada; préstamos en Fase 5. No bloquean CU07–CU10 |
 | D-07 | Autenticación móvil/API y almacenamiento distribuido; web ya resuelta | Cuando se autorice el cliente/API; despliegue antes de Fase 14 |
 | D-08 | Ejecución temporal de monitoreo/liberación, umbrales y combinación de evidencia, conservación de versiones aplicadas | Fase 8, con contrato de datos preparado en 7 |
 | D-09 | Ciclo de emisión/vigencia, obligatoriedad QR por operación y correlación de intentos | Fase 6; ninguna relajación de CHECK/UNIQUE |
@@ -530,6 +530,136 @@ Testing MySQL está aprovisionado y aislado. D-04 ámbito por recurso, D-07 móv
 
 D-04: la nueva petición §35 autoriza expresamente CU05 a nivel de módulo/acción y mantiene diferido el ámbito fino por recurso. Sustituye para esta fase el requisito histórico de acreditarlo antes de exponer espacios; no autoriza inventar encargado_espacio, usuarios_espacios ni responsabilidades_recursos. La matriz concede consulta a los cuatro roles y tres acciones de gestión a Administrador/Encargado, siempre con permiso del mismo rol vigente y sin bypass.
 
-D-05: se aplica [inicio, fin), fin > inicio y America/La_Paz a bloqueos/consulta. Se admiten bloqueos solapados porque SQL no prohíbe esa situación; cualquiera activo excluye, desactivación explícita conserva historia. La expiración temporal no reescribe activo. Parámetros pendientes del ciclo de reservas siguen diferidos.
+D-05: se aplica [inicio, fin), fin > inicio y America/La_Paz a bloqueos/consulta. Se admiten bloqueos solapados porque SQL no prohíbe esa situación; cualquiera activo excluye, desactivación explícita conserva historia. La expiración temporal no reescribe activo. Al cierre histórico de Fase 3, los parámetros del ciclo de reservas seguían diferidos; el contrato de Fase 3.5 siguiente resuelve los necesarios para CU07–CU10.
 
 Las ocho estructuras SQL Word/PDF fueron contrastadas y las huellas originales no cambiaron. politicas_liberacion se adelanta únicamente para integridad FK, sin lógica de Fase 8. CU06 queda IMPLEMENTACIÓN PARCIAL — FASE 3: reservas Fase 4 e IoT Fase 7. CU30 y demás decisiones diferidas se conservan. [Implementación y evidencia](SPACES_IMPLEMENTATION.md).
+
+## Contrato de reservas — cierre D-05 de Fase 3.5
+
+**Estado: RESUELTA PARA FASE 4. Fecha: 2026-10-23. Entrega exclusivamente documental.** La instrucción de Fase 3.5 cierra las ambigüedades necesarias para CU07–CU10, sin iniciar su implementación ni reabrir las demás decisiones. Mantiene D-03, D-04, los seis estados y el esquema oficial. Las reglas de préstamos de D-05 no se amplían en esta entrega.
+
+### Fuentes y naturaleza de las decisiones
+
+Se reconsultaron el Word oficial `PERFIL DEL PROYECTO 2-2026.docx` y su PDF `Fase2-grupo21.pdf`: RF5, RF6 y RF7 (tablas 14–16; páginas impresas 116, 118 y 120 / PDF 117, 119 y 121); CU06–CU10 (tablas 43–47; impresas 182–189 / PDF 183–190); y `CREATE TABLE reservas` (impresas 279–281 / PDF 280–282). El SQL de reservas coincide entre ambos originales después de normalizar espacios y retirar encabezados de página. Sus huellas originales se conservan.
+
+Las fuentes exigen revalidar disponibilidad, respetar permisos/propiedad, resolver solicitudes pendientes y evitar cambios parciales. CU09 condiciona el motivo de rechazo a cuando corresponda; CU10 condiciona el motivo a una política. RF7 menciona el motivo de rechazo de manera general: se adopta la precisión del flujo CU09 y la nulabilidad del SQL, sin deducir una obligación universal. El motivo opcional es una convención explícita para Fase 4; no se afirma que RF7 omita toda referencia al motivo.
+
+La semántica de exclusividad, frontera temporal de cancelación, formato del código y mecanismo de serialización son convenciones de implementación adoptadas por esta instrucción. No se atribuyen al informe como normas institucionales literales. No se encontraron un plazo numérico, un formato institucional del código ni un disparador obligatorio de FINALIZADA que deban incorporarse a Fase 4.
+
+### Estados, intervalos y disponibilidad compartida
+
+Los únicos estados persistidos son `PENDIENTE`, `APROBADA`, `RECHAZADA`, `CANCELADA`, `LIBERADA` y `FINALIZADA`, con inicio en PENDIENTE. Solo APROBADA compromete el intervalo. PENDIENTE significa solicitud en revisión: varias pendientes del mismo espacio y periodo pueden coexistir; ninguna garantiza aprobación ni bloquea exclusividad. Los otros cuatro estados tampoco bloquean. No se añade ACTIVA como estado.
+
+Todo intervalo es `[inicio, fin)`, con `fin > inicio`. Existe solapamiento si `existente.inicio < solicitado.fin AND existente.fin > solicitado.inicio`, siempre sobre el mismo espacio. Los periodos 08:00–09:00 y 09:00–10:00 son contiguos y compatibles. Fechas capturadas, persistidas y comparadas mantienen `America/La_Paz` y la conexión local ya configurada; el cliente no decide el reloj ni la validez temporal.
+
+La disponibilidad completa exige conjuntamente: espacio existente con estado `DISPONIBLE`, todos los filtros solicitados satisfechos, ningún bloqueo activo solapado y ninguna reserva APROBADA solapada. BLOQUEADO y EN_MANTENIMIENTO excluyen aunque no haya reservas. Un filtro de estado no habilita reservar un espacio no operativo. IoT solo será complemento desde Fase 7.
+
+CU06, CU07 y la aprobación de CU09 compartirán **SpaceAvailabilityService**, ampliando en Fase 4 el servicio existente. Los predicados de estado, filtros, bloqueos, APROBADA y solapamiento tendrán una sola definición. La consulta CU06 es informativa; el mismo servicio ofrecerá revalidación transaccional con lecturas actuales para CU07/CU09. Cambia la garantía de lectura, no la regla de disponibilidad. No se duplica el cálculo en controladores, Vue ni otro servicio independiente. El servicio actual permanece sin cambios y todavía no consulta reservas.
+
+### CU07 — Solicitud y confirmación
+
+El iniciador es Docente o Estudiante con cuenta/sesión válida y `reservas.solicitar`, conforme a D-03. Administrador/Encargado no obtienen esa facultad por su rol de gestión; si además poseen un rol solicitante vigente, este debe aportar el permiso correspondiente.
+
+Validar espacio existente y operativo, propósito obligatorio de hasta 500 caracteres, fechas interpretables, `fin > inicio` y permisos. Antes de persistir, volver a comprobar dentro de la transacción la disponibilidad completa, incluso si CU06 mostró disponible segundos antes. La propiedad se toma del usuario autenticado; el cliente no elige otro solicitante, código, estado, responsables ni fechas de registro/decisión.
+
+Si la comprobación final es válida, generar código en servidor, registrar PENDIENTE y `solicitada_en`, dejando los datos de resolución/cancelación nulos. Confirmar únicamente después del commit. Si apareció un bloqueo, APROBADA solapada, mantenimiento u otra condición incompatible, rechazar el registro sin fila parcial. Otra PENDIENTE no constituye ese conflicto. No se inventan horas mínimas de anticipación ni políticas de duración máxima.
+
+### CU09 — Resolución y conflicto
+
+Solo una PENDIENTE puede aprobarse o rechazarse. Ambas acciones requieren Administrador o Encargado con `reservas.resolver`, reautorización y comprobación del estado vigente dentro de la transacción.
+
+Aprobar requiere la disponibilidad completa actual; excluir del conjunto de conflictos la propia solicitud por id. Registrar atómicamente APROBADA, `resuelta_por_id` del actor autenticado, `resuelta_en` del servidor y `motivo_rechazo = NULL`. El predicado de escritura debe exigir todavía PENDIENTE y afectar exactamente una fila; nunca aceptar un estado arbitrario enviado por el cliente.
+
+Si la disponibilidad cambió, **no aprobar y mantener PENDIENTE** sin responsable/fecha de resolución nuevos. Informar el conflicto sin revelar detalles de terceros no autorizados. No auto-rechazar ni modificar las demás solicitudes pendientes, ni crear una prioridad de adjudicación por fecha de solicitud. El orden efectivo lo determina la adquisición del bloqueo y la validación completa.
+
+Rechazar registra atómicamente RECHAZADA, `resuelta_por_id`, `resuelta_en` y `motivo_rechazo` opcional, de hasta 500 caracteres; ausencia o texto vacío normalizado se conserva como NULL. Un rechazo explícito no exige que el espacio esté disponible: puede rechazar una solicitud conflictiva. No se borra la solicitud. Una solicitud ya resuelta, cancelada, liberada o finalizada no vuelve a resolverse.
+
+### Protocolo transaccional y orden de bloqueos
+
+La unidad de exclusión de reservas es **la fila existente de `espacios_academicos`, identificada por `recurso_id`, mediante `SELECT ... FOR UPDATE` en InnoDB**. Bloquear solo las reservas encontradas no basta cuando aún no existe ninguna APROBADA. Todos los caminos que puedan alterar la decisión deben respetar la misma coordinación: CU07, CU09, CU10 y los escritores de estado/bloqueos de CU05. No hay tabla nueva de locks, bloqueo basado en navegador ni constraint de exclusión temporal inexistente en MySQL.
+
+Orden previsto compatible con los servicios actuales:
+
+1. Iniciar transacción. Adquirir el bloqueo de coordinación RBAC ya existente sobre la fila del rol Administrador y reautorizar al actor con datos vigentes. Es el protocolo de AdministrationService/SpaceManagementService, no un bypass ni una concesión de rol.
+2. Adquirir `FOR UPDATE` sobre la fila del espacio por su PK. En CU09/CU10, un id obtenido antes de la transacción sirve solo para localizar; volver a comprobar la relación bajo bloqueo.
+3. En una transición, bloquear después la reserva por PK y releer estado/propiedad/periodo. El espacio y periodo de una reserva no tienen edición genérica en CU07–CU10. Todas las operaciones usan ese orden, evitando invertir reserva→espacio.
+4. Revalidar autorización, estado y guardas de la operación. Para solicitud/aprobación, el servicio central realiza lecturas actuales del estado del espacio, bloqueos activos solapados y reservas APROBADAS solapadas. Para cancelar, releer además el reloj del servidor después de cualquier espera y comprobar `ahora < inicio`.
+5. Insertar la solicitud o actualizar condicionalmente el estado permitido, junto con todos sus campos de responsabilidad/fecha. Una transición fallida no modifica campos secundarios. Confirmar la transacción completa; liberar locks al commit o rollback.
+
+El bloqueo RBAC existente también serializa operaciones de distintos espacios: es una limitación conocida de la implementación actual, no una promesa de paralelismo por espacio. Mantener además el bloqueo de espacio conserva el invariante de dominio y permite revisar la coordinación global en una fase futura sin depender de ella como única defensa. No se cambia esa arquitectura en Fase 3.5.
+
+Con REPEATABLE READ, una consulta ordinaria puede conservar una instantánea anterior. Las comprobaciones decisorias usarán consultas de filas con bloqueo dentro de la transacción; un `FOR UPDATE` exterior no hace actuales ni bloquea por sí mismo las subconsultas de un `NOT EXISTS`. No usar `SKIP LOCKED`, porque omitiría conflictos. Estos cuidados se sustentan en [MySQL: locking reads](https://dev.mysql.com/doc/refman/9.7/en/innodb-locking-reads.html) y [niveles de aislamiento](https://dev.mysql.com/doc/refman/9.7/en/innodb-transaction-isolation-levels.html). No se cambia globalmente el aislamiento de MySQL.
+
+Ante dos aprobaciones compatibles en todo salvo el solapamiento, A obtiene la coordinación, aprueba y confirma. B espera; después relee la decisión confirmada de A y devuelve conflicto, conservando su solicitud PENDIENTE. Si A revierte, B puede aprobar si sus demás condiciones siguen válidas. Si los intervalos son contiguos, ambas pueden aprobarse. El protocolo evita la carrera entre consultar y escribir; no promete disponibilidad inmutable después del commit frente a cambios operativos posteriores.
+
+Un error previo al commit revierte toda la operación. Los reintentos por deadlock serán acotados a tres intentos totales de la transacción, repitiendo autorización y validación completa; un timeout agotado devuelve un fallo controlado, sin transición parcial. No reintentar ciegamente una creación si una desconexión deja incierto el resultado del commit: consultar el estado confirmado antes de repetir. No ejecutar efectos externos dentro de estos reintentos.
+
+### CU10 — Cancelación propia y administrativa
+
+Solo PENDIENTE o APROBADA son cancelables. RECHAZADA, CANCELADA, LIBERADA y FINALIZADA no lo son. La cancelación propia exige `solicitante_id == usuario_autenticado.id` y `reservas.cancelar_propias`. La administrativa exige rol Administrador/Encargado vigente y `reservas.cancelar_administrativas`; Docente/Estudiante no cancelan reservas ajenas.
+
+**Convención temporal mínima: `ahora < inicio`.** En la igualdad y después del inicio se deniega la cancelación ordinaria, incluido el responsable administrativo. La comparación se hace con hora del servidor en America/La_Paz dentro de la transacción y después de esperar locks. No se fija 24 horas, dos horas, minutos de tolerancia ni una configuración nueva. No se autoriza una excepción administrativa después del inicio.
+
+`motivo_cancelacion` es opcional en Fase 4 y conserva `VARCHAR(500) NULL`; vacío normalizado equivale a NULL. Persistir en una misma transición CANCELADA, `cancelada_por_id`, `cancelada_en` y el motivo si se aportó. Conservar código, solicitante, periodo, propósito, `solicitada_en`, `resuelta_por_id`, `resuelta_en` y motivo de resolución existente. No confundir CANCELADA con LIBERADA. La disponibilidad resultante se recalcula con todas las demás restricciones; no se fuerza DISPONIBLE ni se desactiva un bloqueo del espacio.
+
+Si aprobar y cancelar compiten, se aplica el orden de locks: una cancelación que confirma primero impide resolver; una aprobación que confirma primero permite después cancelar solo si todavía cumple propiedad/permiso y `ahora < inicio`. Dos cancelaciones no producen dos transiciones ni reemplazan al primer responsable.
+
+La [tabla formal de transiciones](DOMAIN_MODEL.md#transiciones-de-reserva--contrato-de-fase-35) contiene los únicos cuatro cambios de estado autorizados para Fase 4. Alta PENDIENTE no equivale a aprobación. No habrá selector genérico de estados ni asignación masiva de `estado = APROBADA` desde el formulario.
+
+### CU08 y catálogo mínimo de permisos previsto
+
+Docente/Estudiante consultan solo sus propias reservas. Administrador/Encargado pueden usar consulta administrativa con el permiso correspondiente. Por la precisión de esta instrucción sobre D-04, la consulta y gestión administrativa se habilitarán por módulo/acción, sin atribuir recursos asignados que el modelo no acredita. **El alcance fino por recurso continúa diferido**; no crear tablas de responsabilidad. Esto no concede acceso administrativo a quien solo tenga permisos propios.
+
+Los siguientes seis códigos son un contrato, **no permisos creados en la base de datos**. Una marca indica elegibilidad de ese rol para la asignación prevista; no reemplaza comprobar el permiso concreto en servidor.
+
+| Código previsto | CU / acción | Administrador | Encargado | Docente | Estudiante |
+| --- | --- | --- | --- | --- | --- |
+| `reservas.ver_propias` | CU08, propiedad obligatoria | Sí | Sí | Sí | Sí |
+| `reservas.ver_administrativas` | CU08, consulta de gestión | Sí | Sí | No | No |
+| `reservas.solicitar` | CU07 | No | No | Sí | Sí |
+| `reservas.resolver` | CU09, aprobar o rechazar | Sí | Sí | No | No |
+| `reservas.cancelar_propias` | CU10, propiedad obligatoria | Sí | Sí | Sí | Sí |
+| `reservas.cancelar_administrativas` | CU10, cancelación de gestión | Sí | Sí | No | No |
+
+No hay permiso adicional para cada estado, rechazo separado innecesario ni bypass del Administrador. Un rol elegible vigente debe aportar el permiso; no combinar elegibilidad de un rol y permiso de otro incompatible. Mantener cuenta/sesión válida, revocación y autorización servidor de Fase 2. Las facultades propias de un responsable permiten consultar/cancelar reservas de las que sea titular, sin darle por ello facultad de crear solicitudes con su solo rol administrativo.
+
+Filtros conceptuales: fecha, estado y espacio; solicitante solo en consulta administrativa autorizada. Se aplican por conjunción después de delimitar el conjunto autorizado, también en detalle, contadores y paginación. Un filtro o id/código manipulado no amplía ese conjunto; rechazar el filtro de solicitante en la consulta propia. No devolver opciones de terceros a un usuario que no tiene permiso de consulta administrativa.
+
+Convención técnica del filtro fecha: seleccionar reservas cuyo intervalo se solape con el día local `[00:00, 00:00 del día siguiente)`, incluyendo reservas que cruzan medianoche. El filtro de estado usa únicamente el enum oficial. Vista y filtros muestran el estado persistido; nunca simulan FINALIZADA por la hora actual.
+
+### Código estable y estados de fases posteriores
+
+`reservas.codigo` se genera exclusivamente en servidor como **`RES-` seguido de un UUID v4 de 36 caracteres, en minúsculas: 40 caracteres ASCII en total**. Es una convención técnica sin significado institucional, secuencia por facultad ni datos personales. Utilizar aleatoriedad criptográfica, conservar `uq_reservas_codigo` y reintentar con código nuevo solo ante colisión de ese UNIQUE, hasta tres intentos totales; cada intento fallido revierte. No confundir con un token de autenticación ni con un QR. El código es inmutable después de la creación y no se edita por interfaz.
+
+LIBERADA conserva su lugar en el enum y se reserva para CU23/Fase 8 bajo D-08; no hay liberación automática en Fase 4. FINALIZADA también se conserva, pero su mecanismo/disparador queda diferido a una fase posterior autorizada. No crear cron, scheduler ni transición por `ahora >= fin` en Fase 4. Una APROBADA cuyo intervalo terminó puede conservar ese estado; su intervalo no se solapa con un periodo futuro y no lo bloquea. No se cambia el resultado de consultas históricas ni se inventa una transición para limpiar estados.
+
+### Integraciones diferidas y contrato físico
+
+Después del commit de una creación, resolución o cancelación quedará un punto conceptual para avisos y actividad, cuando su fase sea autorizada. Notificaciones pertenecen a Fase 10; `registros_actividad`/CU30 permanecen fuera del alcance actual, sin ser sustituidos por logs técnicos. RF6/RF7 conservan esas obligaciones pendientes y no se declararán íntegramente satisfechos por este cierre documental.
+
+Blockchain/CU24 corresponde a Fase 9, solo después de una operación confirmada que cumpla la condición de crítica: conservar los puntos previstos en CU09/CU10, sin agregar CU07 como operación crítica por inferencia. No crear hashes ficticios, evidencias, outbox ni envíos externos en Fase 4. QR/CU11 se implementará en Fase 6; IoT en Fase 7; liberación en Fase 8. Ninguna de esas integraciones se ejecuta dentro de la transacción de reservas ni se anticipa en este cierre.
+
+Se mantienen las quince columnas, nulabilidades, cuatro FK, PK, UNIQUE, CHECK y tres índices oficiales de `reservas`, descritos en [DATA_MODEL.md](DATA_MODEL.md#reservas). Los índices apoyan las consultas; **no garantizan por sí solos ausencia de intervalos solapados**. Esa garantía corresponde al protocolo de transacción/bloqueo y a sus pruebas. No añadir constraint temporal imposible, tabla de locks ni tabla de asignación de recursos.
+
+Las [pruebas obligatorias de Fase 4](BUSINESS_RULES.md#aceptación-futura-de-reservas--fase-4) incluyen los cinco escenarios de concurrencia exigidos, frontera temporal, RBAC y rollback. Son obligaciones futuras, no resultados ejecutados en Fase 3.5.
+
+## Readiness for Phase 4
+
+**D-05: RESUELTA PARA FASE 4. Bloqueadores documentales restantes para CU07–CU10: 0.**
+
+| Punto de preparación | Contrato cerrado |
+| --- | --- |
+| PENDIENTE | Solicitud en revisión; admite coexistencia y no concede exclusividad |
+| Estados que bloquean | Solo APROBADA, mismo espacio y periodo solapado |
+| Estados cancelables | PENDIENTE y APROBADA |
+| Transiciones | PENDIENTE→APROBADA/RECHAZADA/CANCELADA; APROBADA→CANCELADA |
+| Concurrencia | Transacción, coordinación RBAC existente, lock del espacio antes de la reserva, lecturas actuales y escritura condicional; perdedora de aprobación continúa PENDIENTE |
+| Intervalos | [inicio, fin), fin>inicio; contiguos permitidos |
+| Consulta por rol | Propia para Docente/Estudiante; administrativa con permiso para Administrador/Encargado; ámbito fino D-04 diferido |
+| Cancelación temporal | Hora del servidor estrictamente anterior a inicio; motivo opcional |
+| Responsables/código | Actores y fechas del servidor; historia preservada; código RES-UUID v4 único e inmutable |
+| Servicio compartido | Ampliar SpaceAvailabilityService en Fase 4; mismo predicado en CU06/CU07/CU09 |
+| Fuera de Fase 4 | LIBERADA automática, FINALIZADA automática, QR, IoT, notificaciones, Blockchain y bitácora general |
+| Verificación futura | Cinco escenarios obligatorios, dos procesos MySQL reales, fronteras, permisos y rollback |
+
+Puede comenzar Fase 4 mediante **una nueva instrucción del usuario**. Este cierre no ejecuta migraciones, crea permisos ni implementa CU07–CU10. Los diferidos enumerados no impiden implementar el núcleo acordado; tampoco desaparecen del alcance de sus fases posteriores. El cero de bloqueadores certifica preparación documental, no ejecución de pruebas ni funcionamiento de reservas.
