@@ -124,9 +124,10 @@ class SpaceAvailabilityTest extends SpaceTestCase
         $queries = DB::getQueryLog();
         DB::disableQueryLog();
         $this->assertCount(5, $queries);
-        $this->assertFalse(Schema::hasTable('reservas'));
+        $this->assertTrue(Schema::hasTable('reservas'));
+        $this->assertStringContainsString('reservas', $queries[0]['query']);
         foreach ($queries as $query) {
-            $this->assertStringNotContainsString('reservas', strtolower($query['query']));
+            $this->assertStringNotContainsString('lecturas_iot', strtolower($query['query']));
         }
     }
 }

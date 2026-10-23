@@ -50,6 +50,9 @@ const { auth, can } = useAccess();
           <Icon name="arrow"/>
         </span>
       </Link>
+      <Link v-if="can('reservas.ver_propias') || can('reservas.ver_administrativas')" href="/reservas" class="access-card">
+        <span class="tile-icon"><Icon name="building"/></span><h3>Reservas de espacios</h3><p>Consulte sus solicitudes y las decisiones registradas.</p><span class="text-link">Ver reservas<Icon name="arrow"/></span>
+      </Link>
       <Link v-if="can('usuarios.ver')" href="/usuarios" class="access-card">
         <span class="tile-icon">
           <Icon name="users"/>
@@ -72,7 +75,7 @@ const { auth, can } = useAccess();
           <Icon name="arrow"/>
         </span>
       </Link>
-      <div v-if="!can('usuarios.ver')&&!can('roles.ver')&&!can('espacios.ver')" class="panel empty-state">
+      <div v-if="!can('usuarios.ver')&&!can('roles.ver')&&!can('espacios.ver')&&!can('reservas.ver_propias')&&!can('reservas.ver_administrativas')" class="panel empty-state">
         <Icon name="shield"/>
         <h3>Su sesión está activa</h3>
         <p>Actualmente su cuenta no tiene funciones de administración habilitadas. Consulte a la administración si necesita un cambio de acceso.</p>

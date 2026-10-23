@@ -1,5 +1,6 @@
 <?php
 
+use App\Exceptions\ReservationConflictException;
 use App\Exceptions\SessionStorageException;
 use App\Http\Middleware\EnsureAccessSession;
 use App\Http\Middleware\HandleInertiaRequests;
@@ -22,7 +23,12 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->redirectUsersTo('/inicio');
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        $exceptions->dontReport([QueryException::class, SessionStorageException::class]);
+        $exceptions->dontReport([QueryException::class, SessionStorageException::class, ReservationConflictException::class]);
+        $exceptions->render(function (ReservationConflictException $error, Request $request) {
+            return $request->expectsJson()
+                ? response()->json(['message' => $error->getMessage()], 409)
+                : back()->withErrors(['reserva' => $error->getMessage()])->withInput($request->only(['espacio_id', 'inicio', 'fin', 'proposito', 'motivo_rechazo', 'motivo_cancelacion']));
+        });
         $exceptions->render(function (QueryException $error, Request $request) {
             // SQL bindings may contain hashes. Never log the query/exception payload.
             Log::warning('Operación de datos no disponible.', ['sqlstate' => $error->errorInfo[0] ?? 'unknown']);

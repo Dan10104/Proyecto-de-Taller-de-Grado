@@ -7,6 +7,12 @@ use App\Enums\RolInstitucional;
 class PermissionCatalog
 {
     public const DEFINITIONS = [
+        'reservas.ver_propias' => ['nombre' => 'Consultar reservas propias', 'fuente' => 'RF6–7 / CU08: seguimiento del titular'],
+        'reservas.ver_administrativas' => ['nombre' => 'Consultar reservas administrativas', 'fuente' => 'RF6–7 / CU08: consulta de gestión autorizada'],
+        'reservas.solicitar' => ['nombre' => 'Solicitar reserva', 'fuente' => 'RF6 / CU07: Docente o Estudiante autorizado'],
+        'reservas.resolver' => ['nombre' => 'Aprobar o rechazar solicitudes de reserva', 'fuente' => 'RF7 / CU09: resolver pendientes'],
+        'reservas.cancelar_propias' => ['nombre' => 'Cancelar reservas propias', 'fuente' => 'RF7 / CU10: titular antes del inicio'],
+        'reservas.cancelar_administrativas' => ['nombre' => 'Cancelar reservas administrativamente', 'fuente' => 'RF7 / CU10: responsable autorizado antes del inicio'],
         'espacios.ver' => ['nombre' => 'Consultar espacios y disponibilidad', 'fuente' => 'RF4–5 / CU05–06: catálogo, detalle y disponibilidad base'],
         'espacios.gestionar' => ['nombre' => 'Registrar y editar espacios', 'fuente' => 'RF4 / CU05: datos, características y catálogos auxiliares'],
         'espacios.cambiar_estado' => ['nombre' => 'Cambiar estado de espacios', 'fuente' => 'RF4 / CU05: estado operativo'],
@@ -29,10 +35,13 @@ class PermissionCatalog
         if (! array_key_exists($code, self::DEFINITIONS)) {
             return [];
         }
-        if ($code === 'espacios.ver') {
+        if (in_array($code, ['reservas.ver_propias', 'reservas.cancelar_propias', 'espacios.ver'], true)) {
             return array_column(RolInstitucional::cases(), 'value');
         }
-        if (str_starts_with($code, 'espacios.')) {
+        if ($code === 'reservas.solicitar') {
+            return ['Docente', 'Estudiante'];
+        }
+        if (str_starts_with($code, 'espacios.') || str_starts_with($code, 'reservas.')) {
             return ['Administrador', 'Encargado de Laboratorio'];
         }
 

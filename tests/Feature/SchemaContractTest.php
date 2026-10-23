@@ -21,7 +21,7 @@ class SchemaContractTest extends SecurityTestCase
         $tables = DB::select('SELECT TABLE_NAME AS name FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE()');
         $names = array_column($tables, 'name');
         sort($names);
-        $allowed = [...array_keys($expected), 'migrations', 'pisos', 'recursos_institucionales', 'tipos_espacio', 'caracteristicas_espacio', 'politicas_liberacion', 'espacios_academicos', 'espacios_caracteristicas', 'bloqueos_espacio'];
+        $allowed = [...array_keys($expected), 'migrations', 'pisos', 'recursos_institucionales', 'tipos_espacio', 'caracteristicas_espacio', 'politicas_liberacion', 'espacios_academicos', 'espacios_caracteristicas', 'bloqueos_espacio', 'reservas'];
         sort($allowed);
         $this->assertSame($allowed, $names);
         foreach ($expected as $table => $columns) {

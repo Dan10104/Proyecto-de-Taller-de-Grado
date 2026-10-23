@@ -5,7 +5,12 @@ import SpaceFilters from '../../Components/SpaceFilters.vue';
 import SpaceState from '../../Components/SpaceState.vue';
 import Pagination from '../../Components/Pagination.vue';
 import Icon from '../../Components/Icon.vue';
-defineProps({ espacios: Object, periodo: Object, filtros: Object, opciones: Object, fechaActual: String });
+import { useAccess } from '../../security';
+const { can } = useAccess();
+const props = defineProps({ espacios: Object, periodo: Object, filtros: Object, opciones: Object, fechaActual: String });
+function requestUrl(space) {
+  return '/reservas/crear?' + new URLSearchParams({ espacio_id: space.recurso_id, inicio: `${props.periodo.fecha}T${props.periodo.inicio}`, fin: `${props.periodo.fecha}T${props.periodo.fin}` });
+}
 </script>
 <template>
   <AppLayout title="Disponibilidad de espacios">
@@ -18,14 +23,14 @@ defineProps({ espacios: Object, periodo: Object, filtros: Object, opciones: Obje
       <Icon name="building"/>
     </section>
     <div class="availability-notice">
-      <strong>Disponibilidad según estado y bloqueos actuales</strong>
-      <p>Esta consulta aún no verifica reservas. Los resultados identifican espacios candidatos para el periodo seleccionado.</p>
+      <strong>Disponibilidad para el periodo seleccionado</strong>
+      <p>Los resultados consideran el estado del espacio, los bloqueos y las reservas aprobadas. La disponibilidad se comprueba nuevamente al confirmar una solicitud.</p>
     </div>
     <SpaceFilters :filtros="filtros" :opciones="opciones" availability :fecha-actual="fechaActual"/>
     <section v-if="periodo" aria-labelledby="resultados-heading">
       <div class="section-heading results-heading">
         <div>
-          <h2 id="resultados-heading">{{ espacios.total }} {{ espacios.total === 1 ? 'espacio candidato' : 'espacios candidatos' }}</h2>
+          <h2 id="resultados-heading">{{ espacios.total }} {{ espacios.total === 1 ? 'espacio disponible' : 'espacios disponibles' }}</h2>
           <p>{{ periodo.fecha.split('-').reverse().join('/') }} · {{ periodo.inicio }}–{{ periodo.fin }} · Hora de Bolivia</p>
         </div>
         <span class="muted">Con todas las características solicitadas</span>
@@ -50,12 +55,13 @@ defineProps({ espacios: Object, periodo: Object, filtros: Object, opciones: Obje
             <span v-if="!space.caracteristicas.length">Sin características registradas</span>
           </div>
           <div class="space-card-bottom">
-            <span>Sin bloqueos activos en el periodo</span>
+            <span>Disponible en este horario</span>
             <Link :href="`/espacios/${space.recurso_id}`" class="text-link">
               Ver detalle
               <Icon name="arrow"/>
             </Link>
           </div>
+          <Link v-if="can('reservas.solicitar')" :href="requestUrl(space)" class="btn btn-primary reservation-request-link">Solicitar reserva<span class="sr-only"> de {{ space.recurso.nombre }}</span></Link>
         </article>
       </div>
       <div v-else class="panel empty-state">

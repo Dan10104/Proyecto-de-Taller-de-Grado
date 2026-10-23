@@ -54,10 +54,10 @@ class SpaceSchemaTest extends SpaceTestCase
             $this->assertSame('CASCADE', $row->u);
             $this->assertSame($delete, $row->d);
         }
-        $this->assertCount(15, $fk);
+        $this->assertCount(19, $fk);
         $checks = DB::select('SELECT CONSTRAINT_NAME AS name FROM information_schema.CHECK_CONSTRAINTS WHERE CONSTRAINT_SCHEMA=DATABASE()');
-        $this->assertEqualsCanonicalizing(['chk_asigrol_fechas', 'chk_sesion_expiracion', 'chk_politica_tolerancia', 'chk_politica_antiguedad', 'chk_espacio_capacidad', 'chk_bloqueo_fechas'], array_column($checks, 'name'));
-        $this->assertFalse(Schema::hasTable('reservas'));
+        $this->assertEqualsCanonicalizing(['chk_asigrol_fechas', 'chk_sesion_expiracion', 'chk_politica_tolerancia', 'chk_politica_antiguedad', 'chk_espacio_capacidad', 'chk_bloqueo_fechas', 'chk_reserva_fechas'], array_column($checks, 'name'));
+        $this->assertTrue(Schema::hasTable('reservas'));
         $this->assertSame(0, DB::table('politicas_liberacion')->count());
     }
 

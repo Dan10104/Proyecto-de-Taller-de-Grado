@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SpaceCatalogController;
 use App\Http\Controllers\SpaceController;
@@ -13,6 +14,13 @@ Route::get('/login', [AuthController::class, 'create'])->name('login');
 Route::post('/login', [AuthController::class, 'store'])->name('login.store');
 Route::post('/logout', [AuthController::class, 'destroy'])->name('logout');
 Route::middleware(['auth', 'access.session'])->group(function () {
+    Route::get('/reservas', [ReservationController::class, 'index'])->name('reservas.index');
+    Route::get('/reservas/crear', [ReservationController::class, 'create'])->middleware('can:reservas.solicitar')->name('reservas.create');
+    Route::post('/reservas', [ReservationController::class, 'store'])->middleware('can:reservas.solicitar')->name('reservas.store');
+    Route::get('/reservas/{reserva}', [ReservationController::class, 'show'])->whereNumber('reserva')->name('reservas.show');
+    Route::post('/reservas/{reserva}/aprobar', [ReservationController::class, 'approve'])->whereNumber('reserva')->middleware('can:reservas.resolver')->name('reservas.approve');
+    Route::post('/reservas/{reserva}/rechazar', [ReservationController::class, 'reject'])->whereNumber('reserva')->middleware('can:reservas.resolver')->name('reservas.reject');
+    Route::post('/reservas/{reserva}/cancelar', [ReservationController::class, 'cancel'])->whereNumber('reserva')->name('reservas.cancel');
     Route::get('/disponibilidad', [SpaceController::class, 'availability'])->middleware('can:espacios.ver')->name('disponibilidad.index');
     Route::get('/espacios', [SpaceController::class, 'index'])->middleware('can:espacios.ver')->name('espacios.index');
     Route::get('/espacios/crear', [SpaceController::class, 'create'])->middleware('can:espacios.gestionar')->name('espacios.create');

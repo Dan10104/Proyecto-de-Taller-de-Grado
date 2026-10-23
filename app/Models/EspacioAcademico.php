@@ -50,6 +50,11 @@ class EspacioAcademico extends Model
         return $this->belongsToMany(CaracteristicaEspacio::class, 'espacios_caracteristicas', 'espacio_id', 'caracteristica_id', 'recurso_id', 'id');
     }
 
+    public function reservas()
+    {
+        return $this->hasMany(Reserva::class, 'espacio_id', 'recurso_id');
+    }
+
     public function bloqueos()
     {
         return $this->hasMany(BloqueoEspacio::class, 'espacio_id', 'recurso_id');

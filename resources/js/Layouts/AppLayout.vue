@@ -60,6 +60,9 @@ onUnmounted(() => document.removeEventListener('keydown', keydown));
           <Icon name="building"/>
           Espacios académicos
         </Link>
+        <Link v-if="can('reservas.ver_propias') || can('reservas.ver_administrativas')" href="/reservas" :class="{active:page.url.startsWith('/reservas')}" @click="drawer=false">
+          <Icon name="building"/>Reservas
+        </Link>
         <Link v-if="can('usuarios.ver')" href="/usuarios" :class="{active:page.url.startsWith('/usuarios')}" @click="drawer=false">
           <Icon name="users"/>
           Usuarios
