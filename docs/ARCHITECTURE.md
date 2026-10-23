@@ -1,0 +1,79 @@
+# Arquitectura web de ESPACIO-U
+
+Fuentes: cap. II, apartados Laravel/API, Vue/Inertia, IoT, QR, Blockchain y despliegue; cap. VI, figuras 60–105; cap. VII, figuras 106–114; IS, IC y RD. Las figuras 106 y 107 corresponden a las páginas impresas 246–247 (PDF 247–248). Estado: diseño, sin código implementado.
+
+## Componentes y límites
+
+```mermaid
+flowchart LR
+  Web["Navegador: Vue 3 + Inertia + Vite"] -->|HTTPS / rutas web| Laravel["Servidor central PHP / Laravel"]
+  API["API REST / JSON: integraciones y futuro cliente"] --> Laravel
+  IoT["Sensores IoT / ESP32"] -->|HTTP o MQTT, según piloto| Entrada["Interfaz IoT"]
+  Entrada --> Laravel
+  Laravel --> MySQL["MySQL: información completa e histórica"]
+  Laravel -->|evidencia mínima| BC["Servicio Blockchain externo"]
+  Laravel -->|consulta autorizada| IA["Proveedor externo de chatbot"]
+```
+
+El esquema sintetiza el informe; no introduce microservicios, otro backend ni un cliente móvil implementado. La web usa rutas y controladores Laravel con respuestas Inertia; no necesita una API duplicada para cada interacción. La API utiliza las mismas reglas de servidor y preserva el acceso de un cliente futuro. No se permiten conexiones directas del navegador o del sensor a MySQL.
+
+## Capas del diseño lógico
+
+| Capa | Responsabilidad | Ubicación futura propuesta dentro de Laravel |
+| --- | --- | --- |
+| Presentación | Formularios, filtros, confirmaciones, estados, dashboard, QR y mensajes en español | `resources/js/Pages/`, `Components/`, `Layouts/`; respetar la convención de mayúsculas del scaffold elegido |
+| Entrada web/API | Rutas, autenticación, autorización y validación de solicitudes | `routes/`, `app/Http/Controllers/`, `Requests/`, `Middleware/`, `app/Policies/` |
+| Aplicación | Coordinar el CU y su transacción, sin reglas duplicadas en Vue | Controladores delgados y servicios de aplicación |
+| Negocio | Disponibilidad, estados, préstamos, QR, políticas y trazabilidad | `app/Services/`, agrupados cuando el volumen lo justifique |
+| Datos | Eloquent, consultas, claves, consistencia e historia | `app/Models/`, consultas junto a su responsabilidad, `database/` |
+| Integraciones | Adaptadores IoT, Blockchain, chatbot y ejecución posterior a la confirmación | Servicios y contratos concretos; `config/`; jobs/eventos solo cuando su implementación esté justificada |
+| Verificación | Reglas puras, comportamiento HTTP, BD real, concurrencia, fallos externos y navegador | `tests/Unit/`, `tests/Feature/` y ubicación convencional de pruebas de navegador elegida después |
+
+Estas carpetas son propuestas de ubicación, no carpetas creadas en Fase 0. La figura 107 nombra servicios como `AuthService`, `UserManagementService`, `RolePermissionService`, `SpaceManagementService`, `ReservationService`, `QRValidationService`, `EquipmentService`, `LoanService`, `IncidentMaintenanceService`, `IoTDeviceService`, `OccupancyMonitoringService`, `ReservationReleasePolicyService`, `TraceabilityService`, `NotificationService`, `DashboardIndicatorService`, `ReportService`, `ChatbotAssistanceService` y `AuditLogService`. No obligan a generar clases vacías. `Repositories / Consultas` expresa acceso a datos; no exige envolver cada operación Eloquent en un repositorio genérico.
+
+## Paquetes del informe
+
+| Paquete | Casos de uso | Dependencias relevantes |
+| --- | --- | --- |
+| Seguridad y Administración | CU01–CU04, CU30 | Usuario, roles, permisos, sesión, registro de actividad |
+| Gestión de Espacios y Reservas | CU05–CU11 | Disponibilidad, autorización, QR, políticas, auditoría |
+| Gestión de Equipamiento y Préstamos | CU12–CU20 | Disponibilidad, receptor, devolución, incidencias, QR |
+| Monitoreo IoT y Disponibilidad | CU21–CU23 | Sensor, evento histórico, reserva y política |
+| Trazabilidad Blockchain | CU24–CU25 | Registro de actividad confirmado y evidencia local |
+| Servicios de Notificación y Asistencia | CU26, CU29 | Identidad, permisos, evento confirmado; proveedor IA solo para asistencia |
+| Reportes e Indicadores | CU27–CU28 | Lectura autorizada de información persistida |
+
+QR es una responsabilidad transversal de los paquetes de espacios/equipamiento, no una nueva entidad “Módulo”. Las relaciones include/extend del informe se conservan en la matriz de CU.
+
+## Persistencia y concurrencia
+
+La validación del cliente mejora la interacción; la validación del servidor determina el resultado. Una solicitud debe autorizarse por acción, propietario y ámbito antes de consultar datos protegidos. Las operaciones relacionadas se confirman de manera atómica. Revalidar disponibilidad al registrar y al resolver; comprobar nuevamente el estado al entregar, devolver o liberar.
+
+**Propuesta técnica por validar en su fase:** serializar las operaciones incompatibles sobre el recurso y reconsultar intervalos dentro de una transacción MySQL, con pruebas de dos solicitudes simultáneas y de rollback. El informe exige el resultado sin solapamientos; no prescribe un algoritmo concreto de bloqueo. Aclarar primero estados conflictivos y límites temporales (D-05). No ejecutar llamadas remotas dentro de una transacción que retenga bloqueos operativos.
+
+Una vez confirmada la operación, generar los efectos complementarios sin deshacerla por caída externa. El informe permite envío Blockchain inmediato o pendiente; la estrategia durable de recuperación, idempotencia y ejecución en varias instancias debe decidirse antes de Fase 9. No afirmar “exactly once” sin una garantía probada.
+
+## Integraciones
+
+| Integración | Contrato mínimo oficial | Decisiones pendientes |
+| --- | --- | --- |
+| IoT | Sensor registrado/habilitado, espacio, tipo de evento, valor cuando proceda y fechas; HTTP/MQTT; historial y frescura | Autenticación del dispositivo, payload, unidades, deduplicación, desfase temporal, selección de transporte y puente MQTT |
+| QR | Token con hash, vigencia y objetivo; usuario y contexto de reserva/préstamo/operación; resultado con motivo | Emisión/renovación, política de uso por operación, reintentos y correlación con entrega/devolución |
+| Blockchain | Hash local con algoritmo/versión canónica, operación de origen y referencia externa; privacidad previa al envío | Proveedor/red, conjunto exacto de operaciones críticas, formato canónico, reintentos y verificación |
+| Chatbot | Backend con credenciales privadas, alcance por usuario y respuesta/error comprensible | Proveedor/modelo, contenido de orientación autorizado y límites de contexto; sin persistencia adicional asumida |
+
+No se añaden contratos de proveedores imaginarios. Sustituir un proveedor no debe cambiar las reglas operativas. Los fallos se registran con datos sanitizados y se presentan sin revelar secretos.
+
+## Interfaz y comportamiento visual
+
+Las figuras 115–124 muestran navegación lateral, fondo claro, jerarquía visual azul, tarjetas, tablas, filtros y formularios con resumen. Son referencia visual, no datos reales para seeders ni una definición alternativa de enums. El dashboard distingue permisos; los formularios identifican campos obligatorios; errores, estados vacíos y fallos externos tienen mensajes comprensibles. La web es responsiva y usa español y fechas de Bolivia. Las capturas con “Recordar sesión”/“Olvidaste tu contraseña” requieren resolver alcance antes de implementarse.
+
+El escaneo QR web está contemplado por la figura 121; la frontera móvil de la secuencia 111 no obliga a implementar Flutter en esta etapa. Deben probarse cámara denegada, código ilegible, contexto incorrecto y respuesta inválida.
+
+## Despliegue futuro
+
+Docker empaquetará Laravel y los recursos web compilados. Google Artifact Registry alojará la imagen; Cloud Run ejecutará el servicio; Cloud SQL for MySQL conservará los datos. Ninguno de estos recursos se aprovisiona en Fase 0. HTTPS es obligatorio en producción; HTTP se permite localmente según IC-01.
+
+Antes de desplegar, decidir persistencia de sesiones y archivos, ejecución de tareas, conexión segura a Cloud SQL, secretos por entorno y coordinación de varias instancias. El informe no selecciona un broker MQTT ni una cola concretos. No alojar MySQL como almacenamiento efímero dentro del contenedor del servidor. La retención y recuperación de datos son requisitos, no promesas ya validadas.
+
+Inventario real del equipo y puertas de preparación: [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md). Modelo y restricciones: [DATA_MODEL.md](DATA_MODEL.md). Los puntos sin definición suficiente están en [DECISIONS.md](DECISIONS.md).
