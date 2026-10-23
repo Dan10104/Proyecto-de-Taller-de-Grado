@@ -10,13 +10,9 @@ class FoundationTest extends TestCase
 {
     public function test_initial_page_responds_successfully(): void
     {
-        $this->get('/')
-            ->assertOk()
-            ->assertSee('lang="es"', false)
-            ->assertInertia(fn (Assert $page) => $page
-                ->component('Foundation')
-                ->where('message', 'Fundación técnica configurada correctamente')
-            );
+        $this->get('/')->assertRedirect('/login');
+        $this->get('/login')->assertOk()->assertSee('lang="es"', false)
+            ->assertInertia(fn (Assert $page) => $page->component('Auth/Login'));
     }
 
     public function test_health_endpoint_responds_successfully(): void
