@@ -67,27 +67,34 @@ MySQL testing real, base/cuenta/clave exclusivas y guarda antes de limpieza; det
 
 Resultado automatizado 2026-10-23: **65 tests / 493 aserciones, sin omitidos, 67,84 s**. Pint y build aprobados. Composer audit y npm audit: cero vulnerabilidades reportadas, incluidas dependencias de desarrollo. Solo Faker/Mockery y transitiva Hamcrest añadidos en Composer; package.json/package-lock.json sin cambios.
 
-## Revisión manual pendiente
+## Revisión manual completada
 
-**Fase 2 no se declara cerrada y no se integra en main.** La revisión del 2026-10-23 comenzó después de pasar los automatizados. El navegador integrado dejó de aceptar clics tras una confirmación nativa para retirar un rol; las API de diálogo no recuperaron esa confirmación y la recuperación con otra pestaña tampoco restableció las acciones. Se solicitó cerrar/cancelar el diálogo en la aplicación. Esto limita la evidencia manual, aunque los escenarios de servidor estén cubiertos por pruebas.
+**Validación manual completada el 2026-10-23 sobre la compilación publicada.** Al reanudar con una pestaña nueva, el navegador volvió a aceptar acciones. La incidencia anterior no dejó operaciones pendientes: se repitieron login, alta/edición de cuenta ficticia, asignación/retiro, baja lógica, cambios de permisos y logout. No fue necesario modificar código durante este cierre.
 
 | Pasos solicitados | Resultado observado |
 | --- | --- |
-| 1–4: entorno, login, credenciales inválidas y administrador | Completados en navegador; error genérico y acceso correcto |
-| 5–8: Inicio, Usuarios, alta ficticia y edición | Completados; búsqueda y filtro ACTIVO también comprobados |
-| 9: deshabilitar mediante interfaz | Pendiente; una limpieza posterior por servicio no acredita este paso |
-| 10–11: Roles y permisos, asignar rol | Completados; rol adicional visible y mensaje de éxito |
-| 12: retirar rol | Se alcanzó la confirmación, pero no se pudo confirmar ni verificar el retiro |
-| 13: verificar permisos modificados | Pendiente en navegador; retirada/403/restauración sí cubiertas en MySQL testing |
-| 14–15: logout y acceso posterior a URL protegida | Pendientes en navegador; cubiertos por pruebas automatizadas |
+| 1–4: entorno, login, credenciales inválidas y administrador | Entorno aislado iniciado; error genérico y acceso correcto con credenciales privadas |
+| 5–8: Inicio, Usuarios, alta ficticia y edición | Completados; edición sin cambiar contraseña y filtros por nombre, estado y rol verificados |
+| 9: deshabilitar mediante interfaz | Cancelar conservó ACTIVO; Confirmar produjo INACTIVO, desapareció del filtro de activos y apareció en inactivos |
+| 10–11: Roles y permisos, asignar rol | Catálogo real consultado; asignación adicional visible e incorporada al historial |
+| 12: retirar rol | Escape canceló sin cambios; Confirmar retiró Estudiante y conservó la fila con fecha y responsable |
+| 13: verificar permisos modificados | Retirar usuarios.editar al Administrador produjo 403 al abrir la URL de edición; después se restauraron los once permisos |
+| 14–15: logout y acceso posterior a URL protegida | Logout desde escritorio y móvil redirigió al login; acceder a la URL protegida volvió a requerir autenticación |
 
-Las confirmaciones nativas se sustituyeron por `ConfirmAction` con `<dialog>`, Cancelar/Confirmar y cierre por Escape. La compilación pasa; falta probar sus clics y foco en un navegador recuperado. No se considera finalizada la revisión de accesibilidad por teclado ni de consola en todas las vistas.
+Se comprobó además el rechazo de la cuenta INACTIVA con su contraseña correcta, con el mismo mensaje genérico. La descripción de Administrador se editó y se restauró desde CU04. El alta de rol muestra el estado correcto y deshabilita guardar cuando las cuatro identidades ya existen; no se borraron roles para probarla en desarrollo.
 
-Comprobaciones visuales realizadas: login y roles a 1440×900; Inicio a 1366×768; formulario de usuario a 768×1024; roles a 390×844. En esas capturas no se observó desbordamiento horizontal ni controles recortados. El registro de consola consultado en roles no informó errores ni advertencias. Estas muestras no sustituyen comprobar todas las pantallas, el menú móvil y los flujos pendientes.
+ConfirmAction usa `<dialog>`: el foco inicial está en Cancelar; Cancelar y Escape no ejecutan la operación; Confirmar aplica la acción. El menú móvil abre con Enter, cierra con Escape y al seleccionar navegación; al estar cerrado, el recorrido de teclado omite sus enlaces. En login, Tab pasa de correo a contraseña y el foco tiene contorno visible.
 
-La cuenta ficticia creada en esta revisión quedó INACTIVA mediante AdministrationService, preservando sus asignaciones. No se contó esa limpieza como validación manual del botón Deshabilitar. El administrador inicial conserva su estado y permisos.
+| Tamaño solicitado | Comprobación visual |
+| --- | --- |
+| 1440×900 | Login y roles; alineación, contraste, controles y mensajes |
+| 1366×768 | Inicio y navegación de escritorio |
+| 768×1024 | Formulario de usuario, etiquetas, columnas y acciones |
+| 390×844 | Login, roles y menú; listas, detalle, formularios de usuario/rol, configuración de permisos y catálogo |
 
-Para continuar: cerrar la confirmación/pestaña bloqueada, iniciar el entorno, abrir la compilación actual y repetir retiro con historial, baja lógica, cambio de permiso con denegación real, restauración, logout y URL protegida. Revisar consola, foco y menú móvil. Solo después actualizar esta evidencia, revisar secretos, publicar el cierre e integrar main sin force push.
+En las vistas revisadas no se observó desbordamiento horizontal de página. Las tablas anchas usan desplazamiento interno accesible. La inspección de formularios no encontró campos sin etiqueta. La consola consultada en las vistas y flujos revisados no reportó errores ni advertencias. El tamaño de prueba se restableció al terminar. Esto acredita los recorridos y tamaños revisados, no una auditoría exhaustiva de accesibilidad ni compatibilidad con todos los navegadores.
+
+Lectura final en MySQL: un Administrador ACTIVO con once permisos y descripción original; dos cuentas sintéticas INACTIVAS; retiro histórico con responsable; cero sesiones de acceso vigentes sin revocar. La primera cuenta se limpió mediante AdministrationService durante la incidencia anterior; la segunda se deshabilitó en navegador. No se borraron usuarios ni asignaciones. La suite automática conserva 65 pruebas / 493 aserciones aprobadas; este cierre solo actualiza documentación después de validar la interfaz existente.
 
 ## Límites explícitos
 
