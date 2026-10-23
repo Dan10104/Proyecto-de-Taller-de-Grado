@@ -1,5 +1,6 @@
 <?php
 
+use App\Exceptions\EquipmentConflictException;
 use App\Exceptions\ReservationConflictException;
 use App\Exceptions\SessionStorageException;
 use App\Http\Middleware\EnsureAccessSession;
@@ -23,7 +24,11 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->redirectUsersTo('/inicio');
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        $exceptions->dontReport([QueryException::class, SessionStorageException::class, ReservationConflictException::class]);
+        $exceptions->dontReport([QueryException::class, SessionStorageException::class, ReservationConflictException::class, EquipmentConflictException::class]);
+        $exceptions->render(function (EquipmentConflictException $error, Request $request) {
+            return $request->expectsJson() ? response()->json(['message' => $error->getMessage()], 409)
+                : back()->withErrors(['operacion' => $error->getMessage()]);
+        });
         $exceptions->render(function (ReservationConflictException $error, Request $request) {
             return $request->expectsJson()
                 ? response()->json(['message' => $error->getMessage()], 409)

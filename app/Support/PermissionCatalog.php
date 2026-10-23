@@ -7,6 +7,18 @@ use App\Enums\RolInstitucional;
 class PermissionCatalog
 {
     public const DEFINITIONS = [
+        'equipamientos.ver' => ['nombre' => 'Consultar equipamiento y disponibilidad', 'fuente' => 'RF9–15 / CU12–19: contrato Fase 4.5'],
+        'equipamientos.gestionar' => ['nombre' => 'Gestionar equipamiento y tipos', 'fuente' => 'RF9–15 / CU12–19: contrato Fase 4.5'],
+        'equipamientos.cambiar_estado' => ['nombre' => 'Cambiar estado operativo de equipamiento', 'fuente' => 'RF9–15 / CU12–19: contrato Fase 4.5'],
+        'prestamos.ver_propios' => ['nombre' => 'Consultar préstamos propios', 'fuente' => 'RF9–15 / CU12–19: contrato Fase 4.5'],
+        'prestamos.ver_administrativos' => ['nombre' => 'Consultar préstamos administrativos', 'fuente' => 'RF9–15 / CU12–19: contrato Fase 4.5'],
+        'prestamos.solicitar' => ['nombre' => 'Solicitar préstamo', 'fuente' => 'RF9–15 / CU12–19: contrato Fase 4.5'],
+        'prestamos.resolver' => ['nombre' => 'Aprobar o rechazar préstamo', 'fuente' => 'RF9–15 / CU12–19: contrato Fase 4.5'],
+        'prestamos.registrar_entrega' => ['nombre' => 'Registrar entrega de equipamiento', 'fuente' => 'RF9–15 / CU12–19: contrato Fase 4.5'],
+        'prestamos.registrar_devolucion' => ['nombre' => 'Registrar y confirmar devolución', 'fuente' => 'RF9–15 / CU12–19: contrato Fase 4.5'],
+        'incidencias.ver' => ['nombre' => 'Consultar incidencias y mantenimiento', 'fuente' => 'RF9–15 / CU12–19: contrato Fase 4.5'],
+        'incidencias.gestionar' => ['nombre' => 'Registrar incidencias y mantenimiento', 'fuente' => 'RF9–15 / CU12–19: contrato Fase 4.5'],
+        'incidencias.cerrar' => ['nombre' => 'Cerrar incidencias y mantenimiento', 'fuente' => 'RF9–15 / CU12–19: contrato Fase 4.5'],
         'reservas.ver_propias' => ['nombre' => 'Consultar reservas propias', 'fuente' => 'RF6–7 / CU08: seguimiento del titular'],
         'reservas.ver_administrativas' => ['nombre' => 'Consultar reservas administrativas', 'fuente' => 'RF6–7 / CU08: consulta de gestión autorizada'],
         'reservas.solicitar' => ['nombre' => 'Solicitar reserva', 'fuente' => 'RF6 / CU07: Docente o Estudiante autorizado'],
@@ -35,13 +47,13 @@ class PermissionCatalog
         if (! array_key_exists($code, self::DEFINITIONS)) {
             return [];
         }
-        if (in_array($code, ['reservas.ver_propias', 'reservas.cancelar_propias', 'espacios.ver'], true)) {
+        if (in_array($code, ['reservas.ver_propias', 'reservas.cancelar_propias', 'espacios.ver', 'equipamientos.ver'], true)) {
             return array_column(RolInstitucional::cases(), 'value');
         }
-        if ($code === 'reservas.solicitar') {
+        if (in_array($code, ['reservas.solicitar', 'prestamos.solicitar', 'prestamos.ver_propios'], true)) {
             return ['Docente', 'Estudiante'];
         }
-        if (str_starts_with($code, 'espacios.') || str_starts_with($code, 'reservas.')) {
+        if (str_starts_with($code, 'espacios.') || str_starts_with($code, 'reservas.') || str_starts_with($code, 'equipamientos.') || str_starts_with($code, 'prestamos.') || str_starts_with($code, 'incidencias.')) {
             return ['Administrador', 'Encargado de Laboratorio'];
         }
 

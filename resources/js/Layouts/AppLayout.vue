@@ -63,6 +63,9 @@ onUnmounted(() => document.removeEventListener('keydown', keydown));
         <Link v-if="can('reservas.ver_propias') || can('reservas.ver_administrativas')" href="/reservas" :class="{active:page.url.startsWith('/reservas')}" @click="drawer=false">
           <Icon name="building"/>Reservas
         </Link>
+        <Link v-if="can('equipamientos.ver')" href="/equipamientos" :class="{active:page.url.startsWith('/equipamientos')}" @click="drawer=false"><Icon name="building"/>Equipamiento</Link>
+        <Link v-if="can('prestamos.ver_propios') || can('prestamos.ver_administrativos')" href="/prestamos" :class="{active:page.url.startsWith('/prestamos')}" @click="drawer=false"><Icon name="users"/>Préstamos</Link>
+        <Link v-if="can('incidencias.ver')" href="/incidencias" :class="{active:page.url.startsWith('/incidencias')}" @click="drawer=false"><Icon name="shield"/>Incidencias</Link>
         <Link v-if="can('usuarios.ver')" href="/usuarios" :class="{active:page.url.startsWith('/usuarios')}" @click="drawer=false">
           <Icon name="users"/>
           Usuarios
@@ -113,6 +116,7 @@ onUnmounted(() => document.removeEventListener('keydown', keydown));
         <div v-if="page.props.flash?.success" class="alert alert-success" role="status">{{ page.props.flash.success }}</div>
         <div v-if="page.props.flash?.notice" class="alert" role="status">{{ page.props.flash.notice }}</div>
         <FormErrors v-if="page.props.errors?.administracion" :errors="{administracion:page.props.errors.administracion}"/>
+        <FormErrors v-if="page.props.errors?.operacion && page.url.startsWith('/espacios')" :errors="{operacion:page.props.errors.operacion}"/>
         <slot/>
       </main>
       <footer class="app-footer">

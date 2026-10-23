@@ -24,7 +24,7 @@ function requestUrl(space) {
     </section>
     <div class="availability-notice">
       <strong>Disponibilidad para el periodo seleccionado</strong>
-      <p>Los resultados consideran el estado del espacio, los bloqueos y las reservas aprobadas. La disponibilidad se comprueba nuevamente al confirmar una solicitud.</p>
+      <p>Los resultados consideran el estado del espacio, los bloqueos, las reservas aprobadas y las incidencias abiertas. La disponibilidad se comprueba nuevamente al confirmar una solicitud.</p>
     </div>
     <SpaceFilters :filtros="filtros" :opciones="opciones" availability :fecha-actual="fechaActual"/>
     <section v-if="periodo" aria-labelledby="resultados-heading">

@@ -1936,3 +1936,23 @@ input[type=checkbox] {
   .reservation-actions .button-group,.reservation-dialog .form-actions { width: 100%; }
   .reservation-actions .button-group .btn,.reservation-dialog .form-actions .btn { flex: 1 1 100%; }
 }
+
+/* Equipment, custody and operational restrictions share the institutional layout. */
+.equipment-filter-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}
+.equipment-table{position:relative;min-width:780px;width:100%}
+.equipment-table td{max-width:280px;overflow-wrap:anywhere}
+.operational-text{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.7}
+.operational-links{margin-top:1.25rem}
+.operational-check{margin-top:1rem;line-height:1.6}
+.operational-check input{flex-shrink:0}
+.operational-badges{display:flex;flex-wrap:wrap;gap:.4rem}
+.operational-state{white-space:normal}
+.operational-disponible,.operational-devuelto,.operational-confirmada,.operational-cerrada,.operational-adecuada{background:#e8f5ee;color:#175a3a}
+.operational-aprobado,.operational-prestado,.operational-entregado{background:#eaf0fc;color:#244b89}
+.operational-pendiente,.operational-pendiente_revision,.operational-en_mantenimiento,.operational-no_determinable{background:#fff4d9;color:#80510c}
+.operational-baja,.operational-rechazado,.operational-abierta,.operational-con_incidencia{background:#fce9e7;color:#962e28}
+.operational-divider{border:0;border-top:1px solid #e2e7ef;margin:2rem 0}
+.operational-commitments{padding:0;list-style:none}
+.operational-commitments li{display:flex;flex-wrap:wrap;align-items:center;gap:1rem;border-bottom:1px solid #e2e7ef;padding:1rem 0}
+@media(max-width:1100px){.equipment-filter-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:640px){.equipment-filter-grid{grid-template-columns:minmax(0,1fr)}.operational-commitments li{align-items:flex-start;flex-direction:column}.operational-links .btn{white-space:normal;text-align:center}}

@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\EstadoEspacio;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class EspacioAcademico extends Model
 {
@@ -58,5 +59,15 @@ class EspacioAcademico extends Model
     public function bloqueos()
     {
         return $this->hasMany(BloqueoEspacio::class, 'espacio_id', 'recurso_id');
+    }
+
+    public function equipamientos(): HasMany
+    {
+        return $this->hasMany(EquipamientoTecnologico::class, 'espacio_base_id', 'recurso_id');
+    }
+
+    public function incidencias(): HasMany
+    {
+        return $this->hasMany(IncidenciaMantenimiento::class, 'recurso_id', 'recurso_id');
     }
 }
