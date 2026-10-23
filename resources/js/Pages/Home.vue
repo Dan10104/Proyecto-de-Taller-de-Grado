@@ -25,9 +25,31 @@ const { auth, can } = useAccess();
     </section>
     <section class="section-heading">
       <h2>Accesos disponibles</h2>
-      <p>Herramientas de administración de ESPACIO-U.</p>
+      <p>Consultas y herramientas habilitadas para su cuenta.</p>
     </section>
     <div class="access-grid">
+      <Link v-if="can('espacios.ver')" href="/disponibilidad" class="access-card">
+        <span class="tile-icon">
+          <Icon name="search"/>
+        </span>
+        <h3>Disponibilidad de espacios</h3>
+        <p>Encuentre espacios por horario, capacidad, ubicación y características.</p>
+        <span class="text-link">
+          Consultar disponibilidad
+          <Icon name="arrow"/>
+        </span>
+      </Link>
+      <Link v-if="can('espacios.ver')" href="/espacios" class="access-card">
+        <span class="tile-icon">
+          <Icon name="building"/>
+        </span>
+        <h3>Espacios académicos</h3>
+        <p>Consulte los ambientes y sus condiciones de uso.</p>
+        <span class="text-link">
+          Ver espacios
+          <Icon name="arrow"/>
+        </span>
+      </Link>
       <Link v-if="can('usuarios.ver')" href="/usuarios" class="access-card">
         <span class="tile-icon">
           <Icon name="users"/>
@@ -50,7 +72,7 @@ const { auth, can } = useAccess();
           <Icon name="arrow"/>
         </span>
       </Link>
-      <div v-if="!can('usuarios.ver')&&!can('roles.ver')" class="panel empty-state">
+      <div v-if="!can('usuarios.ver')&&!can('roles.ver')&&!can('espacios.ver')" class="panel empty-state">
         <Icon name="shield"/>
         <h3>Su sesión está activa</h3>
         <p>Actualmente su cuenta no tiene funciones de administración habilitadas. Consulte a la administración si necesita un cambio de acceso.</p>
