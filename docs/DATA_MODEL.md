@@ -890,3 +890,7 @@ No cambia ninguna columna, tipo, default, FK, índice, CHECK o ENUM del dicciona
 | Pruebas con escritura | Mismo modelo en MySQL espacio_u_testing, separado de espacio_u, con usuario restringido y configuración local ignorada. No provisionado en Fase 1.5. |
 
 La coordinación del guard web, revocación y cambios de permisos deberá verificarse según D-04/D-07. La mera existencia de una fila de sesión o de una asignación histórica no concede acceso.
+
+## Materialización de Fase 2
+
+Solo usuarios, roles, permisos, roles_permisos, asignaciones_roles y sesiones_acceso están implementadas: seis migraciones, 29 columnas, siete FK y dos CHECK. Se preservó el SQL oficial, incluyendo ENUM ACTIVO/INACTIVO, fechas propias, acciones CASCADE/RESTRICT y PK compuesta; únicamente codigo aplica D-01. No hay timestamps agregados, UNIQUE sobre la historia ni tabla users/sessions alternativa. migrations es técnica. El resto del diccionario continúa como contrato, no como esquema ejecutado. SchemaContractTest verifica metadatos y restricciones sobre MySQL testing real.

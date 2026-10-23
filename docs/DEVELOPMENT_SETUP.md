@@ -1,4 +1,4 @@
-# Entorno de desarrollo — Fase 1
+# Entorno de desarrollo — Fases 1 y 2
 
 Fecha de verificación: 2026-10-23. Único workspace: `C:\Users\BlackMaster69\Desktop\ESPACIO-U`, raíz de Visual Studio Code. La aplicación es una sola instalación convencional Laravel con Vue/Inertia; no existen proyectos backend/frontend separados.
 
@@ -11,7 +11,7 @@ Fecha de verificación: 2026-10-23. Único workspace: `C:\Users\BlackMaster69\De
 | Composer | 2.10.3 | PHAR local, ejecutado con el PHP del proyecto |
 | Node.js | 24.22.1 LTS | Rama LTS compatible con Vite 8 |
 | npm | 11.19.1 | Incluido con ese Node; se conserva este conjunto compatible, sin actualizar el npm global |
-| Vue | 3.5.44 | Única página técnica |
+| Vue | 3.5.44 | Interfaces institucionales de seguridad |
 | inertiajs/inertia-laravel | 3.5.2 | Adaptador servidor |
 | @inertiajs/vue3 / @inertiajs/vite | 3.9.1 / 3.9.1 | Adaptador Vue y resolución de páginas |
 | Vite | 8.3.5 | Compilación de desarrollo y producción |
@@ -22,9 +22,9 @@ Fecha de verificación: 2026-10-23. Único workspace: `C:\Users\BlackMaster69\De
 | PHPUnit / Pint / Collision | 12.5.40 / 1.32.1 / 8.9.5 | Pruebas, formato PHP y salida de pruebas |
 | PowerShell / Git | 7.6.5 / 2.54.0.windows.1 | Entorno Windows utilizado |
 
-Las versiones resueltas están en `composer.lock` y `package-lock.json`; conservar ambos. Usar `composer install` y `npm ci` para reproducirlas. Las actualizaciones futuras deben ser deliberadas y volver a validarse. No se instalaron starter kits, autenticación/API, Tinker, Faker, Mockery, Redis, librerías de integraciones ni componentes de negocio.
+Las versiones resueltas están en `composer.lock` y `package-lock.json`; conservar ambos. Usar `composer install` y `npm ci` para reproducirlas. Las actualizaciones futuras deben ser deliberadas y volver a validarse. No se instalaron starter kits, paquetes de RBAC/API, Tinker, Redis ni integraciones. Fase 2 añade únicamente Faker 1.24.1 para factories y Mockery 1.6.15 para simular fallos de persistencia (Hamcrest 3.0.0 es transitiva). No se añadieron dependencias npm.
 
-El informe contempla Tailwind y Bootstrap como herramientas de presentación. En Fase 1 se utiliza solamente Tailwind para evitar dos sistemas de estilos en una página mínima. No se ha elegido un dashboard ni se ha convertido el prototipo en interfaces funcionales.
+El informe contempla Tailwind y Bootstrap como herramientas de presentación. En Fase 1 se utiliza solamente Tailwind para evitar dos sistemas de estilos en una página mínima. Fase 2 conserva esta base de estilos e implementa el lenguaje visual institucional azul, navegación y formularios funcionales, sin plantilla de dashboard externa.
 
 ## Herramientas aisladas en este equipo
 
@@ -87,6 +87,10 @@ Con los campos de credenciales todavía vacíos y sin directorio de datos previo
 
 ```powershell
 .\scripts\mysql-dev.ps1 -Action Init
+php artisan migrate --force
+php artisan db:seed --force
+php scripts/mysql-testing.php
+php artisan migrate --env=testing --force
 npm run build
 php artisan test
 ```
@@ -101,7 +105,7 @@ php artisan test
 - Cuenta de aplicación: generada localmente, limitada a `espacio_u.*` y host loopback. Laravel utiliza exclusivamente esta cuenta. La administración aislada usa una contraseña distinta; ambos secretos permanecen solamente en `.env` en texto legible.
 - No se guardan contraseñas en logs, argumentos, plantilla, código ni documentación. MySQL conserva sus verificadores internos de autenticación en su propio directorio privado.
 - Los servicios MySQL80 (3306) y MySQL97 (3307) permanecen intactos. No se modificaron configuración, cuentas, datos, puertos ni estado de esos servicios.
-- La base de aplicación contiene **cero tablas al cierre de Fase 1**. No existen migraciones ni usuarios de la aplicación; los usuarios técnicos de MySQL no son el módulo funcional de usuarios.
+- Al cierre histórico de Fase 1 la base estaba vacía. En Fase 2 contiene las seis tablas de seguridad y `migrations`, más los cuatro roles, once permisos y el administrador creado por bootstrap local. Los usuarios técnicos de MySQL no son cuentas del módulo funcional.
 
 ```powershell
 .\scripts\mysql-dev.ps1 -Action Start
@@ -111,7 +115,7 @@ php artisan test
 
 Los comandos validan puerto y directorio de datos antes de operar. `Stop` ejecuta un apagado SQL de la instancia del proyecto. Si `Status` informa indisponibilidad tras `Stop`, iniciar de nuevo con `Start`; no intentar acceder a las otras instancias. No ejecutar `Init` en este equipo ya preparado.
 
-Sesiones anónimas y caché técnicas usan archivos; cola `sync` y correo `log` son configuración base, sin jobs ni envío de mensajes. En Fase 1 no requirieron tablas ni implementaron autenticación. La posterior Fase 1.5 resolvió documentalmente D-07 para la web; ese contrato aún no se ha programado. Laravel usa español y `America/La_Paz`; las conexiones MySQL fijan `-04:00`. La conversión de instantes externos sigue diferida.
+Sesiones anónimas y caché técnicas usan archivos; cola `sync` y correo `log` son configuración base, sin jobs ni envío de mensajes. En Fase 1 no requirieron tablas ni implementaron autenticación. Fase 1.5 resolvió D-07 y Fase 2 lo implementa con control obligatorio en `sesiones_acceso`. Laravel usa español y `America/La_Paz`; las conexiones MySQL fijan `-04:00`. La conversión de instantes externos sigue diferida.
 
 ## Ejecutar y detener la aplicación
 
@@ -122,33 +126,29 @@ npm run build
 php artisan serve --host=127.0.0.1 --port=8000
 ```
 
-Abrir http://127.0.0.1:8000. `/` renderiza `Foundation.vue`; `/up` comprueba la salud básica de Laravel, **no la disponibilidad de MySQL**. La conexión se comprueba mediante `Status` y las pruebas.
+Abrir http://127.0.0.1:8000. `/` redirige al login; tras autenticarse se muestra `/inicio`; `/up` comprueba la salud básica de Laravel, **no la disponibilidad de MySQL**. La conexión de desarrollo se comprueba mediante `Status`; las pruebas conectan exclusivamente a MySQL testing.
 
 Para editar con recarga de Vite, en una segunda terminal activar el entorno y ejecutar `npm run dev`. Vite escucha solo en `127.0.0.1:5173` y falla si el puerto está ocupado. No observará `.tools/`, `.local/` ni material temporal. Solo compila CSS de las vistas y páginas reales.
 
-Detener Laravel y Vite con Ctrl+C en sus terminales y ejecutar `mysql-dev.ps1 -Action Stop`. Si un cierre forzado dejó `public/hot` después de detener Vite, borrar únicamente ese archivo y ejecutar `npm run build` antes de usar los assets compilados. Al cierre quedaron detenidos Laravel, Vite y la instancia MySQL del proyecto; los puertos 8000, 5173 y 3308 quedaron libres. Los servicios MySQL80/MySQL97 continuaron activos.
+Detener Laravel y Vite con Ctrl+C en sus terminales y ejecutar `mysql-dev.ps1 -Action Stop`. Si un cierre forzado dejó `public/hot` después de detener Vite, borrar únicamente ese archivo y ejecutar `npm run build` antes de usar los assets compilados. Al terminar una sesión de trabajo, detener únicamente los procesos del proyecto; no actuar sobre los servicios MySQL80/MySQL97. El estado de la revisión de Fase 2 se registra en SECURITY_IMPLEMENTATION.md.
 
 ## Integración y verificaciones
 
-`routes/web.php` devuelve una respuesta Inertia con un mensaje técnico; `HandleInertiaRequests` forma parte del grupo web. `resources/views/app.blade.php` contiene exclusivamente el punto de montaje y assets. `resources/js/app.js` inicia Inertia y resuelve `Pages/`; Vue recibe y muestra el mensaje del servidor. SSR y DevTools están deshabilitados. No hay API funcional, rutas de login, modelos de dominio ni migraciones automáticas.
+`routes/web.php` expone exclusivamente CU01–CU04 y la página de inicio. Inertia comparte capacidades calculadas en servidor; nunca contraseñas, IDs de sesión ni hashes. SSR y DevTools siguen deshabilitados. No hay API móvil ni módulos de recursos.
 
 ```powershell
-php artisan --version
-php artisan about
 php artisan route:list
 php artisan test
 composer check-platform-reqs
 composer audit
 npm run build
 npm audit
-php vendor/bin/pint --test app bootstrap/app.php bootstrap/providers.php config public routes scripts tests
+php vendor/bin/pint --test app bootstrap/app.php bootstrap/providers.php config database lang routes scripts tests
 ```
 
-Resultado al cierre: 3 pruebas / 17 aserciones, HTTP 200 e Inertia `Foundation`, `/up`, conexión MySQL real mediante `SELECT 1`, zona MySQL `-04:00` y Laravel en español / `America/La_Paz`. La prueba de BD es de solo lectura y usa `.env` local: no hay SQLite, mocks de conexión ni `RefreshDatabase`. Los tests futuros con escritura deberán aplicar el aislamiento definido en Fase 1.5 antes de ejecutarse.
+Verificación de Fase 2: 65 pruebas, 493 aserciones, sin omitidas, con MySQL real; tres carreras con dos procesos/conexiones independientes. Build correcto, Pint aprobado y cero avisos de vulnerabilidad en Composer y npm (incluidas dependencias de desarrollo), consulta del 2026-10-23. La evidencia no certifica CU30, rendimiento de carga ni despliegue. Registro funcional y visual en [SECURITY_IMPLEMENTATION.md](SECURITY_IMPLEMENTATION.md).
 
-Build de producción correcto. Vue muestra el mensaje recibido de Laravel tanto con build como con Vite en desarrollo; conexión de Vite comprobada y consola sin errores/advertencias. Composer y npm: cero avisos de vulnerabilidad en la consulta del 2026-10-23. No equivale a una garantía de seguridad permanente ni a validación de CU o rendimiento.
-
-Incidencias resueltas: PHP global insuficiente, credenciales desconocidas de los MySQL existentes y motor Docker inactivo; se resolvieron con runtimes y BD locales autorizados. El puerto 3308 evita colisiones. El wrapper `.bat` de Composer evita que subprocesos detecten el Composer global. Un arranque inicial del servidor PHP desde el directorio incorrecto se corrigió usando `artisan serve`; no hubo cambio del framework. `composer validate` conserva únicamente una advertencia de metadatos por ausencia de licencia del proyecto: no se atribuyó una licencia de distribución sin decisión del titular; `--strict` trata esa advertencia como salida no exitosa. No se encontraron vulnerabilidades pendientes.
+Se conserva la advertencia de metadatos de Composer por licencia aún no definida; no se asignó una licencia sin decisión del titular. Los incidentes históricos de PHP global insuficiente, Docker inactivo y credenciales desconocidas de las otras instancias se resolvieron en Fase 1 mediante runtimes y MySQL aislados. No deben reinicializarse ahora.
 
 ## Fuentes técnicas consultadas
 
@@ -161,23 +161,37 @@ Incidencias resueltas: PHP global insuficiente, credenciales desconocidas de los
 - [Tailwind: integración Vite](https://tailwindcss.com/docs/installation/using-vite).
 - [MySQL 9.7: notas de versión](https://dev.mysql.com/doc/relnotes/mysql/9.7/en/) e [inicialización](https://dev.mysql.com/doc/refman/9.7/en/data-directory-initialization.html).
 
-No publicar `.env`, `.tools/`, `.local/`, dependencias, logs ni datos privados. La plantilla conserva vacíos todos los secretos y los lockfiles fijan dependencias públicas. Aplicar [SECURITY_POLICY.md](SECURITY_POLICY.md) antes de cada commit/push. D-04/D-07 están resueltas documentalmente para Fase 2; implementarla requiere nueva autorización.
+No publicar `.env`, `.tools/`, `.local/`, dependencias, logs ni datos privados. La plantilla conserva vacíos todos los secretos y los lockfiles fijan dependencias públicas. Aplicar [SECURITY_POLICY.md](SECURITY_POLICY.md) antes de cada commit/push. D-04/D-07 están implementadas para la web; otros módulos requieren su autorización posterior.
 
 ## Aislamiento de pruebas para Fase 2
 
-**Contrato conceptual de Fase 1.5; todavía no provisionado.** Las tres pruebas actuales de fundación solo leen MySQL de desarrollo. Antes de introducir migraciones destructivas, RefreshDatabase, truncados, seeders o cualquier escritura de tests, Fase 2 deberá:
+**Provisionado y verificado en este equipo.** `espacio_u_testing` comparte únicamente el servidor aislado `127.0.0.1:3308`; tiene esquema, usuario y APP_KEY propios. La cuenta solo tiene privilegios sobre `espacio_u_testing.*`; una consulta a desarrollo fue denegada por MySQL con código 1142. No usa SQLite, servicios externos ni la cuenta administrativa.
 
-1. Crear la base **MySQL espacio_u_testing** en la instancia aislada del proyecto, con charset/colación/motor compatibles. Puede compartir el servidor local 127.0.0.1:3308, pero no el esquema, los datos ni la cuenta de espacio_u. No usar SQLite ni las otras dos instancias del equipo.
-2. Crear una cuenta distinta limitada a espacio_u_testing.* y sin permisos sobre espacio_u ni privilegios globales. La aplicación y las pruebas no usarán la cuenta administrativa. Guardar las credenciales y una APP_KEY exclusiva únicamente en .env.testing local; no copiar secretos de .env, no publicarlos ni pasarlos por argumentos.
-3. Configurar APP_ENV=testing y DB_CONNECTION=mysql con esa base explícita. Adaptar phpunit.xml/configuración antes de usar tests con escritura: su estado de Fase 1 todavía no separa base. Un DB_URL, variable heredada o caché de configuración nunca debe permitir redirigir silenciosamente la conexión a desarrollo.
-4. Incorporar una guarda previa a toda migración/limpieza que confirme entorno testing, driver mysql y destino efectivo: host/puerto locales autorizados y SELECT DATABASE() exactamente espacio_u_testing. Ante ausencia o discrepancia, abortar **antes de escribir**. No basta con comprobar que el nombre contiene la palabra test o confiar solo en un archivo de entorno.
-5. Aislar caché, sesiones, archivos temporales y colas de prueba respecto del desarrollo; usar datos ficticios y los mecanismos de prueba del framework. Las pruebas que necesiten persistencia técnica entre solicitudes deberán usar un almacén exclusivo de testing. Ninguna prueba enviará correo ni llamará a integraciones reales.
-6. Migrar únicamente el núcleo autorizado a esa BD y probar login/logout, RBAC, cambios de permisos, expiración y fallos/concurrencia. Las pruebas de rechazo del destino erróneo no ejecutarán comandos destructivos contra espacio_u. Paralelismo con bases adicionales queda deshabilitado hasta definir nombres permitidos y cuentas aisladas; no conceder permisos globales para facilitarlo.
+En una instalación nueva, después de preparar `.env`, MySQL de desarrollo y dependencias, ejecutar una sola vez:
 
-Esta entrega no modifica .env, .env.example, phpunit.xml, config ni scripts; no crea .env.testing ni inicia servidores. El trabajo posterior configurará el entorno de pruebas antes del primer test con escritura. Procedimiento/credenciales permanecen separados: aquí se documentan reglas, nunca valores privados.
+```powershell
+php scripts/mysql-testing.php
+php artisan migrate --env=testing --force
+php artisan db:seed --env=testing --force
+php artisan test
+```
 
-## Parámetros web previstos, todavía sin activar
+El script verifica el puerto/directorio de datos del servidor y rechaza sobrescribir `.env.testing` o una base existente. Genera credenciales y APP_KEY aleatorias, guardadas solo en `.env.testing` ignorado. Si se interrumpe, conservar el archivo y el estado de MySQL para diagnóstico; no borrar ni reiniciar a ciegas. El script restringe el archivo antes de escribir secretos: usuario actual y SYSTEM en Windows; modo 0600 en sistemas POSIX.
 
-En Fase 2, configurar el guard session y proveedor Usuario respetando correo/password_hash; Hash usará Argon2id, disponible en el PHP local comprobado. Conservar file para sesiones técnicas locales y configurar cookies según D-07. SESSION_LIFETIME seguirá siendo la única fuente de duración a través de config('session.lifetime'); no duplicar su default en lógica de aplicación. Los límites de intentos se parametrizarán y probarán antes de exponer login. No instalar paquetes de RBAC/API que reemplacen el esquema.
+PHPUnit fuerza APP_ENV=testing, driver MySQL y una ubicación de caché de configuración exclusiva. `TestingDatabaseGuard` comprueba primero configuración estricta (sin URL/socket alternativos) y después base efectiva, puerto y directorio de datos antes de cualquier `RefreshDatabase` o limpieza. `migrate:fresh`, `migrate:refresh`, `migrate:reset`, `migrate:rollback` y `db:wipe` también exigen ese destino incluso con `--force`; en desarrollo se utiliza únicamente migración incremental. Una configuración incoherente aborta, no cambia a otra BD automáticamente.
 
-No se provisionarán en Fase 2 tablas de otros módulos: el núcleo permitido son las seis tablas de seguridad. Registros de actividad y CU30 requieren autorización de alcance posterior; los logs técnicos no equivalen a esa bitácora. [Contratos y readiness](DECISIONS.md#readiness-for-phase-2).
+Caché y sesión de tests usan `array`; rutas de archivos, locks y configuración, cuando hacen falta, van bajo `.local/testing`. Cola sync y correo array; datos ficticios. La suite se ejecuta en serie. Las pruebas de concurrencia lanzan dos procesos dentro del mismo esquema autorizado, con limpieza protegida antes y después. No usar `artisan test --parallel`, que intentaría crear esquemas no autorizados.
+
+## Administrador inicial y acceso local
+
+El catálogo se carga con `php artisan db:seed`; es idempotente y no restituye permisos retirados de un rol ya existente. No crea cuentas ni contraseñas por defecto.
+
+En una base recién migrada y sin usuarios, ejecutar `php artisan security:bootstrap-admin`: solicita correo y contraseña mediante entrada oculta y confirmación. Alternativamente, completar **solo** `.env` privado con `SEED_ADMIN_EMAIL` y `SEED_ADMIN_PASSWORD` y ejecutar `php artisan security:bootstrap-admin --from-env`. La plantilla deja ambas vacías. Se valida la entrada y se almacena Argon2id; cualquier usuario existente impide reutilizar el bootstrap. La primera asignación se atribuye al propio administrador, única convención de arranque sin actor previo. Nunca pasar secretos por argumentos ni imprimir `.env`.
+
+**Este equipo ya está preparado:** el administrador inicial y sus credenciales aleatorias locales existen. No repetir el comando ni regenerar APP_KEY. La comprobación manual usa únicamente cuentas sintéticas. Su cierre debe deshabilitarlas mediante el servicio de aplicación y conservar su historia; esta limpieza no sustituye los pasos pendientes de revisión en navegador.
+
+## Parámetros de sesión web
+
+Guard `web`/proveedor `Usuario`, correo y password_hash; Laravel Hash Argon2id con parámetros del framework. Sesión técnica file y registro obligatorio en sesiones_acceso; nunca usar esa tabla como driver database. `config('session.lifetime')` deriva de SESSION_LIFETIME y es la única duración. Límite: cinco fallos por correo/IP y treinta intentos por IP en sesenta segundos, parametrizado en config/security.php. Cookies HttpOnly y SameSite=Lax; Secure obligatorio fuera de local/testing. Producción exige HTTPS y configuración propia.
+
+CU30/registros_actividad, API/móvil y persistencia distribuida permanecen pendientes. No instalar paquetes que sustituyan el esquema académico. [Implementación y límites](SECURITY_IMPLEMENTATION.md).

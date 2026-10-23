@@ -2,7 +2,7 @@
 
 Sistema de información para la gestión y control de reservas de espacios académicos y préstamos de equipamiento tecnológico en la FICCT, con monitoreo de ocupación mediante IoT y trazabilidad de operaciones mediante Blockchain.
 
-**Estado: Fase 1 completada y Fase 1.5 documental cerrada; Fase 2 no iniciada.** Funciona la fundación Laravel + Vue 3 + Inertia + Vite, con MySQL real y una única página técnica. No están implementados autenticación, usuarios, roles, permisos, reservas, préstamos, QR, IoT, Blockchain, notificaciones, reportes ni chatbot. Flutter/Android y despliegue siguen fuera de esta fase.
+**Estado: núcleo de Fase 2 implementado; revisión manual pendiente de desbloquear el navegador.** Laravel + Vue 3 + Inertia + Vite, con autenticación web, usuarios, cuatro roles institucionales, permisos y sesiones de acceso sobre MySQL. Se implementan exclusivamente las seis tablas de seguridad; CU30, auditoría general, Fase 3 y módulos posteriores siguen pendientes. Flutter/Android, API móvil y despliegue no se han iniciado.
 
 ## Fuente de verdad
 
@@ -21,11 +21,11 @@ npm run build
 php artisan serve --host=127.0.0.1 --port=8000
 ```
 
-Abrir http://127.0.0.1:8000. Debe mostrarse “ESPACIO-U” y “Fundación técnica configurada correctamente”. Para editar con Vite, activar el mismo entorno en una segunda terminal y ejecutar `npm run dev`; Laravel sigue ejecutándose en la primera. Detener los servidores con Ctrl+C y MySQL con `.\scripts\mysql-dev.ps1 -Action Stop`.
+Abrir http://127.0.0.1:8000. Se muestra el login institucional. El administrador local ya fue creado; sus credenciales permanecen únicamente en `.env` privado. No ejecutar de nuevo el bootstrap ni publicar ese archivo. Para editar con Vite, activar el mismo entorno en una segunda terminal y ejecutar `npm run dev`; Laravel sigue ejecutándose en la primera. Detener los servidores con Ctrl+C y MySQL con `.\scripts\mysql-dev.ps1 -Action Stop`.
 
-Para preparar un entorno sin dependencias instaladas, consultar primero [DEVELOPMENT_SETUP.md](docs/DEVELOPMENT_SETUP.md). Allí se explican `composer install`, `npm ci`, `.env`, herramientas locales y creación segura de MySQL. No ejecutar migraciones de dominio en Fase 1.
+Para preparar un entorno sin dependencias instaladas, consultar primero [DEVELOPMENT_SETUP.md](docs/DEVELOPMENT_SETUP.md). Allí se explican `composer install`, `npm ci`, `.env`, herramientas locales y creación segura de MySQL. En desarrollo se usan migraciones incrementales; la limpieza destructiva se permite exclusivamente en testing protegido.
 
-## Comprobar la fundación
+## Comprobar el núcleo de seguridad
 
 Con MySQL iniciado y los assets compilados:
 
@@ -35,7 +35,7 @@ composer audit
 npm audit
 ```
 
-La suite realiza lecturas reales de MySQL y comprueba HTTP, Inertia, español y zona operativa. Al cierre pasaron 3 pruebas / 17 aserciones, build de producción, comprobación de navegador y ambas auditorías. No certifica CU01–CU30 ni requisitos completos de rendimiento.
+La suite usa exclusivamente `espacio_u_testing` en MySQL real, con cuenta separada y guarda previa a migraciones/limpieza. Pasaron 65 pruebas / 493 aserciones, sin omitidas; build y auditorías Composer/npm correctos. Incluye dos procesos simultáneos para asignaciones, último administrador y renovación/logout. No certifica CU30, módulos posteriores, carga ni despliegue.
 
 ## Documentación
 
@@ -48,6 +48,7 @@ La suite realiza lecturas reales de MySQL y comprueba HTTP, Inertia, español y 
 | [Reglas de negocio](docs/BUSINESS_RULES.md) | Invariantes y comprobaciones futuras |
 | [Casos de uso](docs/USE_CASE_MATRIX.md) | Fichas completas CU01–CU30 y pruebas necesarias |
 | [Trazabilidad](docs/REQUIREMENTS_TRACEABILITY.md) | Los 217 requisitos, incluidos 26 RF, con criterios y fases |
+| [Implementación de seguridad](docs/SECURITY_IMPLEMENTATION.md) | Catálogo, matriz, sesiones, invariantes y evidencia de Fase 2 |
 | [Seguridad](docs/SECURITY_POLICY.md) | Secretos, datos, controles y revisión antes de cada push |
 | [Plan](docs/IMPLEMENTATION_PLAN.md) | Inventario real del entorno y Fases 1–14 |
 | [Entorno de desarrollo](docs/DEVELOPMENT_SETUP.md) | Versiones, instalación, MySQL aislado, ejecución y verificaciones |
@@ -57,18 +58,18 @@ La suite realiza lecturas reales de MySQL y comprueba HTTP, Inertia, español y 
 
 ```text
 ESPACIO-U/
-├── app/                 # Entrada HTTP, middleware Inertia y proveedor base
+├── app/                 # Modelos, servicios, solicitudes validadas, Gates y middleware
 ├── bootstrap/           # Arranque Laravel
 ├── config/              # Configuración sin secretos
-├── database/            # Sin migraciones, modelos o seeders del dominio
+├── database/            # Seis migraciones, seeders de catálogo y factories sintéticas
 ├── docs/                # Contratos y procedimiento de desarrollo
 ├── public/              # Punto de entrada; build generado e ignorado
 ├── resources/
 │   ├── css/app.css
 │   ├── js/app.js
-│   ├── js/Pages/Foundation.vue
+│   ├── js/Pages/{Auth,Users,Roles}/
 │   └── views/app.blade.php
-├── routes/              # Solo / y /up
+├── routes/              # Login, inicio, usuarios, roles, permisos y /up
 ├── scripts/             # Entorno de terminal y ciclo de MySQL local
 ├── storage/             # Datos generados privados
 ├── tests/Feature/
@@ -78,12 +79,12 @@ ESPACIO-U/
 └── vite.config.js
 ```
 
-`.tools/`, `.local/`, `.env`, `vendor/`, `node_modules/`, logs y compilados permanecen locales e ignorados. `.env.example` contiene secretos vacíos. MySQL de desarrollo usa `espacio_u` en `127.0.0.1:3308`; el modelo documental de 31 tablas todavía no se ha materializado.
+`.tools/`, `.local/`, `.env`, `vendor/`, `node_modules/`, logs y compilados permanecen locales e ignorados. `.env.example` contiene secretos vacíos. MySQL de desarrollo usa `espacio_u` en `127.0.0.1:3308`; las seis tablas de seguridad están materializadas; las otras 25 tablas documentales permanecen pendientes. `espacio_u_testing` tiene credenciales exclusivas en `.env.testing` local.
 
 ## Continuidad
 
 Fases 0 y 0.5 conservan su cierre documental y sus 17 expedientes. D-15 queda atendida para el entorno web de Fase 1; Docker sigue pendiente de su fase. D-16 se aplica a la configuración `America/La_Paz` y sesión MySQL `-04:00`, sin lógica de conversión externa anticipada.
 
-D-04 y D-07 están **resueltas para Fase 2**, con cero bloqueantes para el núcleo web: RBAC sobre el esquema oficial, Laravel Session y control por hash en sesiones_acceso. El ámbito fino por recurso y la autenticación móvil/API siguen diferidos. Consultar [Readiness for Phase 2](docs/DECISIONS.md#readiness-for-phase-2).
+D-04 y D-07 están implementadas para el núcleo web: RBAC sin bypass, historia de asignaciones y control de sesiones por hash. [Detalles y límites](docs/SECURITY_IMPLEMENTATION.md). El ámbito fino por recurso, móvil/API, almacenamiento distribuido y CU30 permanecen diferidos.
 
-La siguiente instrucción podrá autorizar las seis tablas de seguridad y CU01–CU04, precedidos por el catálogo de permisos trazado y MySQL de testing separado. La bitácora funcional/CU30 requiere autorización de registros_actividad, fuera de esa lista de seis tablas. Fase 1.5 solo modificó documentos; no creó autenticación, migraciones ni una base de testing.
+Antes de cerrar Fase 2 e integrar `main`, falta completar la revisión manual descrita en [SECURITY_IMPLEMENTATION.md](docs/SECURITY_IMPLEMENTATION.md). La siguiente fase requiere una nueva instrucción. Antes de construir pisos, espacios y disponibilidad, revisar las FK y dependencias de reservas/políticas y acreditar el ámbito autorizado por recurso. No se inició Fase 3.

@@ -78,3 +78,7 @@ Laravel Session será el mecanismo web, con Hash/Argon2id para password_hash, cu
 Cookie de autenticación HttpOnly/SameSite=Lax y Secure bajo HTTPS; excepción Secure=false solo para HTTP local. Conservar el flujo CSRF estándar, incluida la cookie XSRF-TOKEN de propósito distinto. Logout requiere revocación, invalidación y CSRF nuevo; un fallo de red no demuestra revocación y la UI no puede borrar HttpOnly. El comportamiento compensatorio está definido en D-07.
 
 Las pruebas con escritura usarán MySQL separado y usuario exclusivo con permisos solo en espacio_u_testing; secretos en .env.testing local ignorado, nunca en phpunit.xml, plantillas, docs, Git ni consola. Comprobar base efectiva y entorno antes de migrar/limpiar; abortar ante desvío o configuración cacheada de otro entorno. No se creó esa base ni se generaron credenciales en Fase 1.5. El núcleo autorizado tampoco incluye todavía bitácora general; sesiones_acceso no sustituye registros_actividad.
+
+## Controles materializados en Fase 2
+
+Autenticación Session web/Argon2id, CSRF, RateLimiter, hash de sesión final, vigencia/revocación, consultas RBAC en servidor sin bypass, validación de solicitudes y bloqueo del último administrador implementados. Testing tiene base/cuenta/APP_KEY propias y guarda estricta antes de comandos destructivos, incluidos --force. Secretos de desarrollo y bootstrap solo en .env; testing solo en .env.testing, ambos ignorados y privados. No se sustituyen CU30 ni políticas futuras por estos controles. [Evidencia y límites](SECURITY_IMPLEMENTATION.md).
