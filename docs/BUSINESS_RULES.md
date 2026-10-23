@@ -1,5 +1,7 @@
 # Reglas de negocio y controles verificables
 
+**Estado vigente de reservas: Fase 4 implementada.** Los cierres de Fases 2/3/3.5 conservan su contexto histórico. [Implementación y evidencia actual](RESERVATIONS_IMPLEMENTATION.md).
+
 Estas reglas sintetizan el informe. Los identificadores BR son internos para organizar pruebas; no sustituyen los RF/CU. Los estados exactos están en [DOMAIN_MODEL.md](DOMAIN_MODEL.md). Las decisiones D clasificadas y sus detalles diferidos están en [DECISIONS.md](DECISIONS.md).
 
 | Regla | Tema | Fuente | Restricción | Prueba futura necesaria |
@@ -138,3 +140,7 @@ T-R04 requiere sincronización observable entre dos procesos, no llamadas secuen
 T-R07 debe cubrir cambios de CU05 con el mismo orden de locks. Un escritor que confirma después de CU07 puede volver inviable la solicitud pendiente; CU09 revalida y no la aprueba. No se inventa cancelación automática ni prioridad sobre cambios operativos futuros.
 
 El ensayo de disponibilidad con 500 reservas y los límites de respuesta de los CU se ejecutarán cuando exista el esquema de Fase 4. La regresión de seguridad/espacios seguirá formando parte de esa validación. Esta fase documental solo verifica coherencia, trazabilidad, alcance del diff y ausencia de secretos.
+
+## Aceptación ejecutada de reservas — Fase 4
+
+La tabla T-R01–17 anterior era aceptación futura en el cierre 3.5; ahora cuenta con pruebas de esquema, HTTP, servicios y procesos MySQL independientes. Se conserva íntegro el contrato. [Correspondencia de cada T-R y resultados](RESERVATIONS_IMPLEMENTATION.md#evidencia-automática-y-rendimiento). Se comprobó la cancelación posterior a espera por lock y la aprobación contra un commit posterior al snapshot. El ensayo local con 500 reservas es evidencia del servicio/BD; la aceptación integral de rendimiento sigue en Fase 13.

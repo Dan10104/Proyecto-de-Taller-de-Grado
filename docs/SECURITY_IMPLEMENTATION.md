@@ -1,5 +1,7 @@
 # Implementación de seguridad — Fase 2
 
+**Estado vigente de reservas: Fase 4 implementada.** Los cierres de Fases 2/3/3.5 conservan su contexto histórico. [Implementación y evidencia actual](RESERVATIONS_IMPLEMENTATION.md).
+
 Catálogo derivado antes de seeders/Policies. Cada código representa exclusivamente una acción de CU03/CU04. El iniciador elegible es Administrador con asignación vigente y permiso aportado por ese mismo rol.
 
 | Código | Nombre | Trazabilidad |
@@ -105,3 +107,7 @@ No se implementó CU30 ni registros_actividad; sesiones e historial de roles no 
 Las cifras y límites anteriores describen el cierre histórico de Fase 2. El catálogo actual tiene 15 permisos: los once de seguridad mantienen elegibilidad exclusiva de Administrador; cuatro de espacios habilitan consulta a todos y gestión/estado/bloqueos solo a Administrador y Encargado. La asignación inicial total es 15/4/1/1. AuthorizationService ahora evalúa elegibilidad por cada acción, sin bypass y sin combinar elegibilidad de un rol con el permiso de otro. Seeder incremental conserva revocaciones, y la UI de roles ofrece solo permisos elegibles.
 
 Los 65 tests anteriores siguen pasando dentro de 127 tests / 1395 aserciones. Se conservan guardas de sesión, invariantes administrativas y aislamiento MySQL. D-04 se concreta por módulo/acción para espacios conforme §35; ámbito fino y CU30 siguen pendientes. [Evidencia de Fase 3](SPACES_IMPLEMENTATION.md).
+
+## Extensión de permisos en Fase 4
+
+El catálogo total ahora contiene 21 permisos. La [matriz de reservas](RESERVATIONS_IMPLEMENTATION.md#permisos-y-alcance) agrega seis sin cambiar los once de seguridad ni los cuatro de espacios. Administrador tiene 20 permisos elegibles, no 21: solicitar requiere Docente/Estudiante. El seeder conserva revocaciones. Las pruebas anteriores se conservan con expectativas actualizadas por rol; una prueba concurrente verifica revocación mientras se espera el lock RBAC. Las cuentas sintéticas de revisión se deshabilitaron y sus sesiones se revocaron; no se publican credenciales.

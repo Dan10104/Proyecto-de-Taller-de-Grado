@@ -1,6 +1,8 @@
 # Arquitectura web de ESPACIO-U
 
-Fuentes: cap. II, apartados Laravel/API, Vue/Inertia, IoT, QR, Blockchain y despliegue; cap. VI, figuras 60–105; cap. VII, figuras 106–114; IS, IC y RD. Las figuras 106 y 107 corresponden a las páginas impresas 246–247 (PDF 247–248). Estado: arquitectura contractual congelada en Fase 0.5; implementadas fundación, seguridad web y espacios/disponibilidad base hasta Fase 3. El diagrama representa también integraciones futuras que siguen pendientes.
+**Estado vigente de reservas: Fase 4 implementada.** Los cierres de Fases 2/3/3.5 conservan su contexto histórico. [Implementación y evidencia actual](RESERVATIONS_IMPLEMENTATION.md).
+
+Fuentes: cap. II, apartados Laravel/API, Vue/Inertia, IoT, QR, Blockchain y despliegue; cap. VI, figuras 60–105; cap. VII, figuras 106–114; IS, IC y RD. Las figuras 106 y 107 corresponden a las páginas impresas 246–247 (PDF 247–248). Estado: arquitectura contractual congelada en Fase 0.5; implementadas fundación, seguridad web, espacios y reservas hasta Fase 4. El diagrama representa también integraciones futuras que siguen pendientes.
 
 ## Componentes y límites
 
@@ -107,3 +109,7 @@ Los apartados de Fases 1/1.5 conservan su descripción histórica. El núcleo ah
 SpaceController/SpaceCatalogController entregan DTOs Inertia; Requests validan entradas, Gates y EspacioAcademicoPolicy reutilizan AuthorizationService. SpaceManagementService concentra transacciones, PK compartida, sincronización M:N, estado y bloqueos, con reautorización tras el bloqueo común. SpaceAvailabilityService concentra filtros y exclusión de bloqueos mediante NOT EXISTS; eager loading y paginación de 15 evitan N+1. No hay repositorio ficticio ni consulta a reservas.
 
 La ampliación Fase 4 se incorporará en candidates para reservas activas y en su operación transaccional correspondiente. Política de liberación solo tiene tabla/modelo/relación; CU23 no existe. Alcance RBAC por módulo/acción autorizado en §35, ámbito fino diferido. [Contrato y evidencia](SPACES_IMPLEMENTATION.md).
+
+## Materialización de reservas — Fase 4
+
+`ReservationController` delega mutaciones a `ReservationService` y consultas con scope a `ReservationQueryService`; `ReservaPolicy` y Form Requests autorizan/validan. `SpaceAvailabilityService` comparte predicados operativos entre CU06, CU07 y CU09, con lecturas actuales transaccionales para escrituras. No se crea una API paralela, servicio alternativo de disponibilidad ni integración externa dentro de locks. [Orden de coordinación, evidencia y límites](RESERVATIONS_IMPLEMENTATION.md#disponibilidad-y-concurrencia).

@@ -1,6 +1,8 @@
 # Modelo del dominio
 
-Fuentes: figura 19 (p. 109 / PDF 110), figuras 108–109 (p. 248–249 / PDF 249–250), mapeo, volúmenes y SQL del cap. VII. El diagrama conceptual simplifica relaciones; las diferencias con el diseño de clases y datos están registradas en D-06. Estado: contrato congelado en Fase 0.5; materialización incremental hasta Fase 3 descrita al final. Las entidades de fases posteriores siguen siendo documentales.
+**Estado vigente de reservas: Fase 4 implementada.** Los cierres de Fases 2/3/3.5 conservan su contexto histórico. [Implementación y evidencia actual](RESERVATIONS_IMPLEMENTATION.md).
+
+Fuentes: figura 19 (p. 109 / PDF 110), figuras 108–109 (p. 248–249 / PDF 249–250), mapeo, volúmenes y SQL del cap. VII. El diagrama conceptual simplifica relaciones; las diferencias con el diseño de clases y datos están registradas en D-06. Estado: contrato congelado en Fase 0.5; materialización incremental hasta Fase 4 descrita al final. Las entidades de fases posteriores siguen siendo documentales.
 
 ## Conceptos y responsabilidades
 
@@ -136,3 +138,7 @@ Toda acción requiere cuenta/sesión válida y permiso del rol elegible vigente,
 Solo APROBADA compromete el intervalo `[inicio, fin)`. Varias PENDIENTE pueden compartir espacio/horario y competir por aprobación; no representan posesión provisional. Cancelar retira ese compromiso cuando existía, sin garantizar disponibilidad si persisten otros impedimentos. LIBERADA se reserva a CU23/Fase 8; FINALIZADA automática se difiere a una fase posterior autorizada. No se producen por reloj, cron ni elección manual en Fase 4.
 
 La [definición completa](DECISIONS.md#contrato-de-reservas--cierre-d-05-de-fase-35) establece locks, consulta, código y matriz de permisos. CU08 distingue propiedad y consulta administrativa por módulo/acción; el ámbito fino de D-04 permanece diferido sin nuevas entidades de asignación. Ningún diagrama conceptual autoriza entidades adicionales en este cierre.
+
+## Materialización de reservas — Fase 4
+
+`Reserva`, `EstadoReserva`, sus cuatro relaciones y `EspacioAcademico.reservas` materializan el contrato anterior. El código inmutable se genera en el modelo; solicitud y transiciones específicas se ejecutan mediante `ReservationService`. Las cuatro transiciones congeladas están implementadas y verificadas; LIBERADA/FINALIZADA no tienen acción actual. [Evidencia](RESERVATIONS_IMPLEMENTATION.md).

@@ -1,5 +1,7 @@
 # Política de seguridad
 
+**Estado vigente de reservas: Fase 4 implementada.** Los cierres de Fases 2/3/3.5 conservan su contexto histórico. [Implementación y evidencia actual](RESERVATIONS_IMPLEMENTATION.md).
+
 Repositorio público. Esta política aplica a documentación, código, pruebas, historial Git, imágenes, logs, issues y artefactos. Fuentes: instrucciones de Fases 0, 0.5, 1 y 1.5; RNF-10–17, IS-14, IC-02/04/05/08/11, RD-19/20/23/43/44 y DB-21–24.
 
 ## Secretos y datos
@@ -88,3 +90,7 @@ Autenticación Session web/Argon2id, CSRF, RateLimiter, hash de sesión final, v
 La petición §35 autoriza para CU05 RBAC por módulo/acción; el alcance fino por recurso sigue diferido, precisando la puerta histórica de Fase 1.5. AuthorizationService exige elegibilidad y permiso de un mismo rol vigente. Se incorporan cuatro permisos de espacios con matriz 4/4/1/1; los once administrativos anteriores siguen exclusivos de Administrador. El catálogo total es 15 y no hay bypass. El seeder incremental no restituye revocaciones al repetirse.
 
 Gates/Policy y reautorización dentro de transacciones protegen escrituras. No se aceptan responsable de bloqueo, PK compartida ni política desde cliente. Lectores no reciben motivos/responsables administrativos de bloqueos. Se mantienen CSRF, sesión, último administrador y guarda MySQL testing; credenciales de revisión solo temporales en .env privado. [Evidencia y límites](SPACES_IMPLEMENTATION.md).
+
+## Aplicación a reservas — Fase 4
+
+Seis permisos específicos, elegibilidad de rol y scope propio/administrativo aplicados en servidor. Código, solicitante, estado, actores y fechas de resolución/cancelación no son editables desde request. Reautorización después de coordinación RBAC; cancelación exige hora confiable después de esperar locks. DTO sin correos, hashes o sesiones. [Matriz y verificación](RESERVATIONS_IMPLEMENTATION.md#permisos-y-alcance). El ámbito fino de D-04 continúa diferido; no hay bypass administrativo.

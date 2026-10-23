@@ -1,6 +1,6 @@
 # Registro de decisiones y auditoría documental
 
-Fecha: 2026-10-23. Fase 0.5: contratos de implementación congelados según la instrucción del usuario. Se conservan los 17 expedientes D-01–D-17 y su conflicto original; Git conserva la redacción inicial de Fase 0. No se cambian el Word/PDF, el alcance funcional ni el stack. Fase 1 técnica completada por instrucción posterior; D-15 y la configuración de D-16 tienen evidencia en [DEVELOPMENT_SETUP.md](DEVELOPMENT_SETUP.md). Fase 1.5 cerró D-04/D-07; el núcleo web de Fase 2 y los espacios de Fase 3 están implementados. Fase 3.5 cierra D-05 para reservas; Fase 4 no iniciada.
+Fecha: 2026-10-23. Fase 0.5: contratos de implementación congelados según la instrucción del usuario. Se conservan los 17 expedientes D-01–D-17 y su conflicto original; Git conserva la redacción inicial de Fase 0. No se cambian el Word/PDF, el alcance funcional ni el stack. Fase 1 técnica completada por instrucción posterior; D-15 y la configuración de D-16 tienen evidencia en [DEVELOPMENT_SETUP.md](DEVELOPMENT_SETUP.md). Fase 1.5 cerró D-04/D-07; el núcleo web de Fase 2 y los espacios de Fase 3 están implementados. Fase 3.5 cerró D-05 para reservas; Fase 4 aplica ese contrato con implementación y pruebas. Fase 5 no iniciada.
 
 ## Fuentes verificadas
 
@@ -197,7 +197,7 @@ Un usuario puede tener varios roles activos. Evaluar identificadores y permisos 
 | Impacto | Fronteras temporales y sentido de activo no estaban fijados de forma uniforme. |
 | Decisión vigente de Fase 0.5 | Intervalos `[inicio, fin)`, fin>inicio y solapamiento si inicio_A<fin_B e inicio_B<fin_A, sobre el mismo recurso. Reserva APROBADA compromete su periodo; PENDIENTE es solicitud aún sin exclusividad y exige revalidación al aprobar; estados terminales no bloquean el periodo. Préstamos APROBADO/ENTREGADO comprometen el periodo previsto; PENDIENTE no asigna exclusividad. Equipo PRESTADO o no disponible bloquea aprobación/entrega aunque haya terminado el periodo previsto. Cancelación de reserva solo desde PENDIENTE/APROBADA, con iniciador de CU10, permiso/propiedad y dentro de la política aplicable; no se fija un plazo arbitrario. |
 | Justificación | Convención técnica explícita de intervalos y de solicitudes frente a compromisos, compatible con resolución posterior del CU. No cambia enums, tipos ni añade funciones. Pruebas concurrentes deben excluir la propia solicitud al comprobar conflictos. |
-| Estado | RESUELTA PARA FASE 4 — cierre de Fase 3.5; convenciones explícitas, sin implementación de reservas. |
+| Estado | RESUELTA PARA FASE 4 — cierre de Fase 3.5, aplicado y verificado en Fase 4 sin reinterpretación. |
 | Fase afectada | 3–5; servicios de disponibilidad y transición. |
 | Detalle diferido / límite de la resolución | Cancelación, motivos, estados y concurrencia de reservas cerrados en el contrato de Fase 3.5 al final de este documento. FINALIZADA no tiene disparador automático en Fase 4; se difiere a una fase posterior expresamente autorizada. Los detalles de préstamos/CU16 conservan su momento de Fase 5. |
 | Bloquea iniciar Fase 1 | No |
@@ -536,6 +536,8 @@ Las ocho estructuras SQL Word/PDF fueron contrastadas y las huellas originales n
 
 ## Contrato de reservas — cierre D-05 de Fase 3.5
 
+Nota de continuidad: el texto siguiente conserva el contrato y estado histórico de la entrega 3.5. La implementación posterior está en [RESERVATIONS_IMPLEMENTATION.md](RESERVATIONS_IMPLEMENTATION.md).
+
 **Estado: RESUELTA PARA FASE 4. Fecha: 2026-10-23. Entrega exclusivamente documental.** La instrucción de Fase 3.5 cierra las ambigüedades necesarias para CU07–CU10, sin iniciar su implementación ni reabrir las demás decisiones. Mantiene D-03, D-04, los seis estados y el esquema oficial. Las reglas de préstamos de D-05 no se amplían en esta entrega.
 
 ### Fuentes y naturaleza de las decisiones
@@ -663,3 +665,9 @@ Las [pruebas obligatorias de Fase 4](BUSINESS_RULES.md#aceptación-futura-de-res
 | Verificación futura | Cinco escenarios obligatorios, dos procesos MySQL reales, fronteras, permisos y rollback |
 
 Puede comenzar Fase 4 mediante **una nueva instrucción del usuario**. Este cierre no ejecuta migraciones, crea permisos ni implementa CU07–CU10. Los diferidos enumerados no impiden implementar el núcleo acordado; tampoco desaparecen del alcance de sus fases posteriores. El cero de bloqueadores certifica preparación documental, no ejecución de pruebas ni funcionamiento de reservas.
+
+## Aplicación y verificación de D-05 — Fase 4
+
+D-05 permanece **RESUELTA PARA FASE 4**. El contrato precedente se materializó sin nueva ambigüedad: SQL exacto, APROBADA exclusiva, pendientes coexistentes, cuatro transiciones, permisos por rol/propiedad, reloj posterior al lock y lecturas actuales. Se ejecutaron los cinco escenarios obligatorios y nueve pruebas multiproceso, incluida espera del espacio independiente de la coordinación RBAC. [Código, resultados y límites](RESERVATIONS_IMPLEMENTATION.md).
+
+El Readiness anterior es histórico: la nueva instrucción de Fase 4 autorizó su ejecución. No cambia D-04 fino ni los diferidos QR/IoT/liberación/FINALIZADA/Blockchain/notificaciones/CU30. Fase 5 continúa sin iniciar.

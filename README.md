@@ -2,7 +2,7 @@
 
 Sistema de información para la gestión y control de reservas de espacios académicos y préstamos de equipamiento tecnológico en la FICCT, con monitoreo de ocupación mediante IoT y trazabilidad de operaciones mediante Blockchain.
 
-**Estado: Fase 3 implementada y validada.** Laravel + Vue 3 + Inertia + Vite con seguridad web, gestión de pisos/espacios/tipos/características, bloqueos y disponibilidad base sobre MySQL. CU05 tiene su núcleo funcional; CU06 está en **IMPLEMENTACIÓN PARCIAL — FASE 3**: comprueba estado y bloqueos, con reservas pendientes de Fase 4 e IoT de Fase 7. Políticas solo como dependencia estructural del FK. CU30, auditoría general, Flutter/Android, API móvil y despliegue continúan pendientes.
+**Estado: Fase 4 implementada y validada.** Seguridad web, espacios y ciclo de reservas CU07–CU10 sobre Laravel, Vue 3, Inertia y MySQL. CU06: **FUNCIONALMENTE COMPLETO PARA DISPONIBILIDAD OPERATIVA; ENRIQUECIMIENTO IoT DIFERIDO A FASE 7**. [Implementación, pruebas y límites](docs/RESERVATIONS_IMPLEMENTATION.md). Fase 5 no iniciada; QR, IoT, liberación, Blockchain, notificaciones y CU30 continúan diferidos.
 
 ## Fuente de verdad
 
@@ -62,15 +62,15 @@ ESPACIO-U/
 ├── app/                 # Modelos, servicios, solicitudes validadas, Gates y middleware
 ├── bootstrap/           # Arranque Laravel
 ├── config/              # Configuración sin secretos
-├── database/            # Catorce migraciones, catálogo RBAC y factories sintéticas
+├── database/            # Quince migraciones, catálogo RBAC y factories sintéticas
 ├── docs/                # Contratos y procedimiento de desarrollo
 ├── public/              # Punto de entrada; build generado e ignorado
 ├── resources/
 │   ├── css/app.css
 │   ├── js/app.js
-│   ├── js/Pages/{Auth,Users,Roles,Spaces}/
+│   ├── js/Pages/{Auth,Users,Roles,Spaces,Reservations}/
 │   └── views/app.blade.php
-├── routes/              # Seguridad, espacios, catálogos, disponibilidad y /up
+├── routes/              # Seguridad, espacios, reservas, disponibilidad y /up
 ├── scripts/             # Entorno de terminal y ciclo de MySQL local
 ├── storage/             # Datos generados privados
 ├── tests/Feature/
@@ -80,7 +80,7 @@ ESPACIO-U/
 └── vite.config.js
 ```
 
-`.tools/`, `.local/`, `.env`, `vendor/`, `node_modules/`, logs y compilados permanecen locales e ignorados. `.env.example` contiene secretos vacíos. MySQL de desarrollo usa `espacio_u` en `127.0.0.1:3308`; 14 tablas académicas están materializadas (seis de seguridad, siete de espacios y una política estructural); las otras 17 siguen pendientes. `espacio_u_testing` tiene credenciales exclusivas en `.env.testing` local.
+`.tools/`, `.local/`, `.env`, `vendor/`, `node_modules/`, logs y compilados permanecen locales e ignorados. `.env.example` contiene secretos vacíos. MySQL de desarrollo usa `espacio_u` en `127.0.0.1:3308`; 15 tablas académicas están materializadas (seis de seguridad, siete de espacios, una política estructural y reservas); las otras 16 siguen pendientes. `espacio_u_testing` tiene credenciales exclusivas en `.env.testing` local.
 
 ## Continuidad
 
@@ -88,4 +88,4 @@ Fases 0 y 0.5 conservan su cierre documental y sus 17 expedientes. D-15 queda at
 
 D-04 y D-07 están implementadas para el núcleo web: RBAC sin bypass, historia de asignaciones y control de sesiones por hash. [Detalles y límites](docs/SECURITY_IMPLEMENTATION.md). El ámbito fino por recurso, móvil/API, almacenamiento distribuido y CU30 permanecen diferidos.
 
-La revisión automática y manual de Fase 3 está completada; su evidencia y límites están en [SPACES_IMPLEMENTATION.md](docs/SPACES_IMPLEMENTATION.md). La petición de Fase 3 autoriza RBAC por módulo/acción y mantiene el ámbito fino diferido. Fase 3.5 cerró documentalmente D-05: [contrato de reservas y preparación de Fase 4](docs/DECISIONS.md#readiness-for-phase-4). No quedan bloqueadores documentales para CU07–CU10. Fase 4 requiere nueva instrucción para implementar el ciclo e integrar reservas APROBADAS en el servicio de disponibilidad. No se inició Fase 4.
+La Fase 4 aplica el contrato cerrado en Fase 3.5: solicitudes, consultas, resolución, cancelación y disponibilidad con APROBADA. D-05 permanece resuelta. [Evidencia de Fase 4](docs/RESERVATIONS_IMPLEMENTATION.md). La continuidad recomendada es Fase 5 (CU12–CU19), previa nueva instrucción y revisión de D-02/D-04/D-05/D-11; no se inició ese alcance.

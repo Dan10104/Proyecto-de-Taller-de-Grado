@@ -2,7 +2,7 @@
 
 Cobertura: 30/30 casos de uso del cap. V, tablas 38–67; prioridad según tabla 37. Cada ficha reúne iniciador, actores, precondición, flujo, alternativas, excepciones, resultado, RF, entidades/tablas, paquete/fase y pruebas. La asignación RF→CU→tabla→fase es trazabilidad analítica basada en los flujos y diagramas; no crea nuevas funciones.
 
-**Alcance web:** las menciones a aplicación móvil en el texto fuente describen el sistema global. En estas fases se implementará la variante web y el soporte de servidor aplicable, sin Flutter/Android. “Activo”, “finalizado”, “vencido” o “cancelado” en la prosa del préstamo no se traducen automáticamente a un enum; aplicar la reconciliación D-02 resuelta en DOMAIN_MODEL. Todas las pruebas indicadas están pendientes de implementación. Fase 1.5 cierra D-04/D-07 documentalmente y delimita el próximo núcleo de seguridad; véase el contrato al final.
+**Alcance web:** las menciones a aplicación móvil en el texto fuente describen el sistema global. En estas fases se implementará la variante web y el soporte de servidor aplicable, sin Flutter/Android. “Activo”, “finalizado”, “vencido” o “cancelado” en la prosa del préstamo no se traducen automáticamente a un enum; aplicar la reconciliación D-02 resuelta en DOMAIN_MODEL. Las fichas conservan criterios del diseño completo; los estados y evidencias de implementación se precisan por fase. Fase 1.5 cierra D-04/D-07 documentalmente y delimita el próximo núcleo de seguridad; véase el contrato al final.
 
 ## Índice
 
@@ -149,7 +149,7 @@ Fuente: tabla 42; p. 180 (PDF 181); figura 33; análisis figura 79.
 
 ## CU06 — Consultar disponibilidad de espacios académicos
 
-**Estado: IMPLEMENTACIÓN PARCIAL — FASE 3.** Filtros, ubicación, tipos, capacidad, características, estados y bloqueos implementados. Reservas activas: Fase 4; dato complementario IoT: Fase 7. Las relaciones y pruebas futuras de esta ficha describen el CU final y no implican tablas ya creadas. [Evidencia](SPACES_IMPLEMENTATION.md).
+**Estado: FUNCIONALMENTE COMPLETO PARA DISPONIBILIDAD OPERATIVA; ENRIQUECIMIENTO IoT DIFERIDO A FASE 7.** Filtros, estado, bloqueos y reservas APROBADAS integrados. [Código, autorización y pruebas](RESERVATIONS_IMPLEMENTATION.md#trazabilidad-de-implementación).
 
 Fuente: tabla 43; p. 182 (PDF 183); figura 34; análisis figura 80.
 
@@ -171,6 +171,8 @@ Fuente: tabla 43; p. 182 (PDF 183); figura 34; análisis figura 80.
 
 ## CU07 — Registrar solicitud de reserva
 
+**Estado: núcleo autorizado implementado y probado en Fase 4.** Las integraciones futuras de la ficha siguen diferidas. [Implementación y pruebas](RESERVATIONS_IMPLEMENTATION.md).
+
 Fuente: tabla 44; p. 183 (PDF 184); figura 35; análisis figura 81.
 
 | Campo | Especificación |
@@ -190,6 +192,8 @@ Fuente: tabla 44; p. 183 (PDF 184); figura 35; análisis figura 81.
 | Pruebas necesarias | T-CU07: Dos PENDIENTE del mismo espacio/periodo coexisten; revalidación final bajo locks frente a bloqueo/APROBADA; permiso; rollback; <=3 s. T-R01/06/07/11/14/15. |
 
 ## CU08 — Consultar estado de reservas
+
+**Estado: núcleo autorizado implementado y probado en Fase 4.** Las integraciones futuras de la ficha siguen diferidas. [Implementación y pruebas](RESERVATIONS_IMPLEMENTATION.md).
 
 Fuente: tabla 45; p. 185 (PDF 186); figura 36; análisis figura 82.
 
@@ -211,6 +215,8 @@ Fuente: tabla 45; p. 185 (PDF 186); figura 36; análisis figura 82.
 
 ## CU09 — Resolver solicitud de reserva
 
+**Estado: núcleo autorizado implementado y probado en Fase 4.** Las integraciones futuras de la ficha siguen diferidas. [Implementación y pruebas](RESERVATIONS_IMPLEMENTATION.md).
+
 Fuente: tabla 46; p. 186 (PDF 187); figura 37; análisis figura 83.
 
 | Campo | Especificación |
@@ -230,6 +236,8 @@ Fuente: tabla 46; p. 186 (PDF 187); figura 37; análisis figura 83.
 | Pruebas necesarias | T-CU09: Dos procesos reales, una sola aprobación solapada; perdedora PENDIENTE; contiguas aprobables; doble resolución; permiso; rechazo; <=3 s. T-R02–08/10/11/13/14. |
 
 ## CU10 — Cancelar reserva
+
+**Estado: núcleo autorizado implementado y probado en Fase 4.** Las integraciones futuras de la ficha siguen diferidas. [Implementación y pruebas](RESERVATIONS_IMPLEMENTATION.md).
 
 Fuente: tabla 47; p. 188 (PDF 189); figura 38; análisis figura 84.
 
