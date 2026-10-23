@@ -1,6 +1,6 @@
 # Plan de implementación web
 
-Estado: **Fase 4 implementada y validada; Fase 4.5 documental cerrada; Fases 5–14 no iniciadas**. Fases 0 y 0.5 conservaron su alcance documental; la nueva instrucción de Fase 1 autorizó la fundación técnica descrita en [DEVELOPMENT_SETUP.md](DEVELOPMENT_SETUP.md). No existe Flutter, Android ni cliente nativo en el plan de ejecución.
+Estado: **Fase 5 implementada y validada; cierres intermedios conservados; Fases 6–14 no iniciadas**. Fases 0 y 0.5 conservaron su alcance documental; la nueva instrucción de Fase 1 autorizó la fundación técnica descrita en [DEVELOPMENT_SETUP.md](DEVELOPMENT_SETUP.md). No existe Flutter, Android ni cliente nativo en el plan de ejecución.
 
 ## Inventario histórico anterior a Fase 1 — 2026-10-23
 
@@ -104,6 +104,8 @@ Ese inventario corresponde a Fases 0/0.5, cuando no se instalaron dependencias n
 Completada documentalmente: D-02/D-11 resueltas para Fase 5; D-04/D-05 aplicadas sin reabrirlas. Estados, receptor, rechazo motivado, devolución/revisión, incidencias, BAJA, recuperación, doce permisos previstos y orden de locks congelados. [Readiness for Phase 5](DECISIONS.md#readiness-for-phase-5): **0 bloqueantes documentales**. Solo documentación; ninguna migración, modelo, permiso en BD, servicio, interfaz ni cambio funcional de disponibilidad.
 
 ### Fase 5 — Equipamiento, préstamos, entrega, devolución e incidencias
+
+**Completada el 2026-10-23 en el núcleo autorizado sin QR.** [Implementación, 262 pruebas / 3318 aserciones y evidencia manual](EQUIPMENT_LOANS_IMPLEMENTATION.md). La tabla conserva el contrato planificado y satisfecho para ese núcleo.
 
 | Campo | Plan |
 | --- | --- |
@@ -283,3 +285,9 @@ Validación documental de Fase 3.5: diez archivos Markdown, ningún archivo func
 Siguiente alcance: Fase 5/CU12–CU19, únicamente tras nueva instrucción. El cierre documental de Fase 4.5 satisface sus decisiones: D-02/D-11 resueltas y D-04/D-05 aplicadas. La revisión de decisiones que recomendaba el informe de Fase 4 ya está atendida aquí; ese informe conserva su contexto histórico. [Cierre funcional de reservas](RESERVATIONS_IMPLEMENTATION.md). No se inicia Fase 5 ni se ejecutan pruebas funcionales nuevas en Fase 4.5.
 
 Validación del cierre documental: nueve Markdown afectados; RF/CU, diagramas y seis tablas SQL reconsultados; modelos físicos sin alteraciones. Se verificaron consistencia y trazabilidad, 99 enlaces locales incluidos sus anchors, doce permisos previstos y dieciocho criterios futuros; diff sin errores de espacios. El escaneo privado de 201 archivos públicos, índice, diferencias e historial no encontró secretos; .env/.env.testing siguen ignorados y .env.example no contiene credenciales. T-P01–18 son obligaciones futuras y no resultados de este cierre. Los originales Word/PDF permanecen intactos.
+
+## Cierre vigente de Fase 5 y puerta de Fase 6
+
+Completado el núcleo CU12–CU19 y RF9–RF15 conforme a Fase 4.5, con ampliación de CU06/CU07/CU09. Seis migraciones incrementales, 12 permisos nuevos, 65 pruebas añadidas, total 262 / 3318 aserciones sin fallos/errores/omitidas. QA manual de 28 pasos, cuatro tamaños, teclado y consola completada; build/Pint/auditorías correctos. [Informe y trazabilidad](EQUIPMENT_LOANS_IMPLEMENTATION.md).
+
+Siguiente alcance recomendado, sujeto a nueva instrucción: Fase 6 — Códigos QR y validaciones. Antes de implementación cerrar D-09; después CU11/CU20 y extensiones de CU17/CU18 conforme al plan, preservando transacciones, RBAC y constraints. No se inició CU20 ni ningún componente QR. Fases 6–14 siguen pendientes.

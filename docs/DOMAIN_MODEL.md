@@ -1,6 +1,6 @@
 # Modelo del dominio
 
-**Estado vigente de reservas: Fase 4 implementada.** Los cierres de Fases 2/3/3.5 conservan su contexto histórico. [Implementación y evidencia actual](RESERVATIONS_IMPLEMENTATION.md).
+**Estado vigente: Fase 5 implementada y validada (CU12–CU19), con incidencias integradas en CU06/CU07/CU09.** Los cierres anteriores conservan su contexto histórico. [Implementación, pruebas y límites actuales](EQUIPMENT_LOANS_IMPLEMENTATION.md). Fase 6 no iniciada.
 
 Fuentes: figura 19 (p. 109 / PDF 110), figuras 108–109 (p. 248–249 / PDF 249–250), mapeo, volúmenes y SQL del cap. VII. El diagrama conceptual simplifica relaciones; las diferencias con el diseño de clases y datos están registradas en D-06. Estado: contrato congelado en Fase 0.5; materialización incremental hasta Fase 4 descrita al final. Las entidades de fases posteriores siguen siendo documentales.
 
@@ -164,3 +164,7 @@ Las únicas transiciones de Prestamo en Fase 5 serán PENDIENTE→APROBADO, PEND
 | Recuperación del espacio | Considerar otras ABIERTA, bloqueos activos por periodo y estado administrativo. Cierre no reconstruye causa previa: habilitación explícita con permiso y validación; mantener restricción si falta esa confirmación. |
 
 D-04 aplica permiso por módulo/acción y propiedad del solicitante; no relación fina responsable–recurso inventada. D-05 conserva [inicio, fin), fin>inicio y lecturas actuales tras lock; la prioridad de revisión sobre PRESTADO distingue custodia pendiente de cierre y condición física recibida. BAJA es decisión administrativa explícita, no efecto automático del daño. Los permisos específicos y el protocolo único se encuentran en DECISIONS. QR/Blockchain/notificaciones/bitácora mantienen sus fases posteriores.
+
+## Materialización de Fase 5
+
+Los seis modelos y enums de equipamiento/préstamos/hitos/incidencias están implementados conforme al contrato anterior. Equipamiento comparte recurso_id con RecursoInstitucional y deriva piso por espacio base. Receptor de entrega es el solicitante; recepción física y confirmación de devolución permanecen separadas sobre una sola fila. NO_DETERMINABLE conserva ENTREGADO y revisión pendiente; VENCIDO solo se calcula. BAJA no se retira al devolver o cerrar incidencias. [Estados, relaciones y transiciones implementadas](EQUIPMENT_LOANS_IMPLEMENTATION.md#persistencia-y-dominio). No se materializan conceptos de Fase 6.

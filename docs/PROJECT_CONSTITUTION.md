@@ -1,6 +1,6 @@
 # Constitución del proyecto ESPACIO-U
 
-Estado vigente: Fases 0, 0.5, 1, 1.5, 2 y alcance autorizado de Fase 3 completados, 2026-10-23. Seguridad web y CU05 funcionales; CU06 parcial por estado/bloqueos. Políticas solo estructurales. Fase 4 y las integraciones posteriores no iniciadas; las secciones históricas conservan las decisiones de su momento.
+Estado vigente: Fases 0–5 y cierres intermedios completados en su alcance autorizado, 2026-10-23. Seguridad, espacios, reservas y equipamiento/préstamos/incidencias funcionales; CU06 integra reservas e incidencias. Políticas solo estructurales. Fase 6 no iniciada; las secciones históricas conservan las decisiones de su momento.
 
 ## Identidad y autoridad
 
@@ -99,3 +99,7 @@ La petición Fase 1.5 §15 limita la siguiente Fase 2 a usuarios, roles, permiso
 ## Alcance posterior autorizado — Fase 3
 
 La petición Fase 3 autoriza siete tablas operativas de espacios y politicas_liberacion solo como FK estructural. CU05 núcleo funcional; CU06 IMPLEMENTACIÓN PARCIAL — FASE 3, con reservas Fase 4 e IoT Fase 7 pendientes. §35 concreta RBAC por módulo/acción, manteniendo ámbito fino diferido sin nuevas tablas. No se autorizan reservas, política funcional, CU30 ni otros módulos. Workspace y remoto originales se mantienen. [Implementación y validación](SPACES_IMPLEMENTATION.md).
+
+## Estado vigente al cierre de Fase 5
+
+La nueva instrucción autorizó CU12–CU19 y RF9–RF15: inventario, disponibilidad, solicitud/resolución de préstamos, entrega, devolución/revisión e incidencias de ambos subtipos. CU06 integra incidencias y conserva la disponibilidad operativa con reservas; IoT sigue diferido. Se aplican D-02/D-11 y D-04/D-05 sin reapertura ni cambio del SQL final. Evidencia: [262 pruebas / 3318 aserciones y revisión visual](EQUIPMENT_LOANS_IMPLEMENTATION.md). Fase 6 y CU30 no iniciados. Este estado sustituye las referencias temporales anteriores sin alterar las fuentes ni el alcance final institucional.

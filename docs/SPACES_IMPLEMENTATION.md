@@ -1,6 +1,6 @@
 # Espacios académicos y disponibilidad base — Fase 3
 
-**Estado vigente de reservas: Fase 4 implementada.** Los cierres de Fases 2/3/3.5 conservan su contexto histórico. [Implementación y evidencia actual](RESERVATIONS_IMPLEMENTATION.md).
+**Estado vigente: Fase 5 implementada y validada (CU12–CU19), con incidencias integradas en CU06/CU07/CU09.** Los cierres anteriores conservan su contexto histórico. [Implementación, pruebas y límites actuales](EQUIPMENT_LOANS_IMPLEMENTATION.md). Fase 6 no iniciada.
 
 Estado: **alcance de Fase 3 implementado y validado el 2026-10-23**. CU05 tiene su núcleo funcional; la integración de bitácora CU30 continúa diferida. CU06: **IMPLEMENTACIÓN PARCIAL — FASE 3**. No se inició Fase 4.
 
@@ -103,3 +103,7 @@ El cierre de Fase 3.5 no modifica el servicio ni los escritores de CU05. La disp
 ## Actualización vigente de Fase 4
 
 La evidencia anterior describe el cierre histórico de Fase 3. CU06 ahora está **FUNCIONALMENTE COMPLETO PARA DISPONIBILIDAD OPERATIVA; ENRIQUECIMIENTO IoT DIFERIDO A FASE 7**: `SpaceAvailabilityService` incluye reservas APROBADAS y es compartido por CU06/CU07/CU09. La interfaz permite solicitar desde un resultado autorizado. Se conserva la regresión previa; las aserciones de ausencia de reservas se actualizan al alcance nuevo. [Evidencia de reservas, concurrencia y ensayo con 500 filas](RESERVATIONS_IMPLEMENTATION.md).
+
+## Ampliación vigente de Fase 5
+
+CU19 ahora usa incidencias_mantenimiento para espacios y equipos mediante recurso_id. SpaceAvailabilityService añade ABIERTA al predicado existente de estado/bloqueos/reservas; CU06/CU07/CU09 comparten esa regla. SpaceManagementService impide habilitar con incidencia o bloqueo vigente. El cierre explícito no elimina bloqueos, reservas ni otras incidencias, ni levanta mantenimiento administrativo sin aptitud/permisos. [Integración y pruebas](EQUIPMENT_LOANS_IMPLEMENTATION.md#cu19-y-espacios). Se comprobó en navegador la exclusión del espacio y su recuperación tras cierre autorizado; la regresión completa pasa. IoT sigue pendiente.

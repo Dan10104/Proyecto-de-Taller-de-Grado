@@ -1,6 +1,6 @@
 # Implementación de seguridad — Fase 2
 
-**Estado vigente de reservas: Fase 4 implementada.** Los cierres de Fases 2/3/3.5 conservan su contexto histórico. [Implementación y evidencia actual](RESERVATIONS_IMPLEMENTATION.md).
+**Estado vigente: Fase 5 implementada y validada (CU12–CU19), con incidencias integradas en CU06/CU07/CU09.** Los cierres anteriores conservan su contexto histórico. [Implementación, pruebas y límites actuales](EQUIPMENT_LOANS_IMPLEMENTATION.md). Fase 6 no iniciada.
 
 Catálogo derivado antes de seeders/Policies. Cada código representa exclusivamente una acción de CU03/CU04. El iniciador elegible es Administrador con asignación vigente y permiso aportado por ese mismo rol.
 
@@ -111,3 +111,7 @@ Los 65 tests anteriores siguen pasando dentro de 127 tests / 1395 aserciones. Se
 ## Extensión de permisos en Fase 4
 
 El catálogo total ahora contiene 21 permisos. La [matriz de reservas](RESERVATIONS_IMPLEMENTATION.md#permisos-y-alcance) agrega seis sin cambiar los once de seguridad ni los cuatro de espacios. Administrador tiene 20 permisos elegibles, no 21: solicitar requiere Docente/Estudiante. El seeder conserva revocaciones. Las pruebas anteriores se conservan con expectativas actualizadas por rol; una prueba concurrente verifica revocación mientras se espera el lock RBAC. Las cuentas sintéticas de revisión se deshabilitaron y sus sesiones se revocaron; no se publican credenciales.
+
+## Ampliación RBAC de Fase 5
+
+El catálogo vigente tiene 33 códigos: los 21 existentes y los 12 documentados en [matriz exacta de equipamiento/préstamos/incidencias](EQUIPMENT_LOANS_IMPLEMENTATION.md#permisos-y-alcance). Concesiones iniciales completas: Administrador 30, Encargado de Laboratorio 19, Docente 7, Estudiante 7. SecuritySeeder añade únicamente permisos nuevos y conserva revocaciones; probado idempotente. Policies de EquipamientoTecnologico, Prestamo e IncidenciaMantenimiento aplican permisos y propiedad. Pruebas de 403, CSRF, manipulación de actores/alcances, sesión y revocación durante espera preservan el núcleo anterior; CU30 permanece diferido.

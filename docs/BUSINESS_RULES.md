@@ -1,6 +1,6 @@
 # Reglas de negocio y controles verificables
 
-**Estado vigente de reservas: Fase 4 implementada.** Los cierres de Fases 2/3/3.5 conservan su contexto histórico. [Implementación y evidencia actual](RESERVATIONS_IMPLEMENTATION.md).
+**Estado vigente: Fase 5 implementada y validada (CU12–CU19), con incidencias integradas en CU06/CU07/CU09.** Los cierres anteriores conservan su contexto histórico. [Implementación, pruebas y límites actuales](EQUIPMENT_LOANS_IMPLEMENTATION.md). Fase 6 no iniciada.
 
 Estas reglas sintetizan el informe. Los identificadores BR son internos para organizar pruebas; no sustituyen los RF/CU. Los estados exactos están en [DOMAIN_MODEL.md](DOMAIN_MODEL.md). Las decisiones D clasificadas y sus detalles diferidos están en [DECISIONS.md](DECISIONS.md).
 
@@ -173,3 +173,7 @@ La tabla T-R01–17 anterior era aceptación futura en el cierre 3.5; ahora cuen
 La estrategia requiere transacciones con locks reales sobre el recurso antes de consultar ausencia de conflictos; UNIQUE por préstamo complementa la aplicación, no sustituye las guardas. [Orden único y atomicidad](DECISIONS.md#transacciones-y-orden-único-de-locks). Fin previsto de incidencia no cierra ABIERTA; no hay disponibilidad automática por cron. Todos los registros abiertos de CU19 se tratan como incompatibles hasta cierre explícito, incluyendo mantenimiento previsto a futuro: convención conservadora visible, sin bandera adicional.
 
 Motivo de rechazo de préstamo obligatorio según RF12 y precisión autorizada en Fase 4.5; el de reservas sigue opcional. El alcance funcional de Fase 5 comprende el núcleo sin QR, sin Blockchain, RF21 ni CU30: sus pruebas de integración pertenecen a sus fases, no se marcan aprobadas aquí.
+
+## Evidencia de aceptación de Fase 5
+
+T-P01–18 dejaron de ser pruebas futuras al ejecutar el núcleo autorizado: [matriz de criterios y pruebas](EQUIPMENT_LOANS_IMPLEMENTATION.md#aceptación-t-p0118). Suite completa 262 aprobadas / 3318 aserciones, 14 escenarios concurrentes nuevos sobre MySQL real y 28 pasos manuales. Se preservan los criterios normativos anteriores y sus obligaciones de integraciones diferidas; esta ejecución no acredita QR, Blockchain, RF21 ni CU30. Rendimiento con 1.000 registros: catálogo 0,0075 s (4 consultas), préstamos 0,0059 s; medición local de servicios, no certificación integral de carga.

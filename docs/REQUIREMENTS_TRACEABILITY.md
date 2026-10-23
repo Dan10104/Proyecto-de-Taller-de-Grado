@@ -400,3 +400,7 @@ No cambia el inventario de 217 requisitos ni su texto normativo. Las referencias
 | DB-07/09/12/18/21; R-PR-01; R-TR-03 | Integridad, historia de hitos, atomicidad/concurrencia y límites de consulta | SQL exacto, sin estructuras auxiliares | T-P01/05/07/09/12/14/17/18 |
 
 Las fuentes se ubican en PDF 123–132, 192–203, 235–239, 249–250, 279–287 y 303; Word contiene las mismas tablas/figuras. La coincidencia SQL de las seis tablas se comprobó por extracción normalizada. Las pruebas T-P01–18 están especificadas en BUSINESS_RULES y siguen pendientes de ejecución en Fase 5. No se incorporaron migraciones, permisos, interfaces ni servicios; no se alteró CU06 funcionalmente. QR, Blockchain, RF21 y CU30 no son bloqueantes del núcleo delimitado, pero sus requisitos no se declaran cumplidos.
+
+## Evidencia vigente de RF9–RF15 — Fase 5
+
+RF9/CU12, RF10/CU13, RF11/CU14–15, RF12/CU16, RF13/CU17, RF14/CU18 y RF15/CU19 cuentan con implementación del núcleo autorizado. [Matriz completa requisito/CU → tablas/modelos → servicios → Policy → vistas → pruebas](EQUIPMENT_LOANS_IMPLEMENTATION.md#trazabilidad-de-implementación). RF5/CU06 y revalidaciones RF6–7/CU07/CU09 incorporan incidencias abiertas mediante el servicio existente. T-P01–18 ejecutados, con 262 pruebas / 3318 aserciones y revisión manual. El inventario de 217 requisitos no cambia: los requisitos compuestos conservan pendientes sus partes QR, IoT, Blockchain, RF21 y CU30; Fase 6 no iniciada.
