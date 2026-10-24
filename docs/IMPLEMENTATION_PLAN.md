@@ -1,6 +1,6 @@
 # Plan de implementación web
 
-Estado: **Fase 6.5 documental completada; D-10 RESUELTA PARA FASE 7; Fases 7–14 no iniciadas**. Fase 6 mantiene su implementación, suite y aceptación del usuario. Fases 0 y 0.5 conservaron su alcance documental; la nueva instrucción de Fase 1 autorizó la fundación técnica descrita en [DEVELOPMENT_SETUP.md](DEVELOPMENT_SETUP.md). No existe Flutter, Android ni cliente nativo en el plan de ejecución.
+Estado: **Fase 7 implementada conforme a D-10; Fases 8–14 no iniciadas**. [Evidencia funcional IoT](IOT_IMPLEMENTATION.md). Fase 6 mantiene su implementación, suite y aceptación del usuario. Fases 0 y 0.5 conservaron su alcance documental; la nueva instrucción de Fase 1 autorizó la fundación técnica descrita en [DEVELOPMENT_SETUP.md](DEVELOPMENT_SETUP.md). No existe Flutter, Android ni cliente nativo en el plan de ejecución.
 
 ## Inventario histórico anterior a Fase 1 — 2026-10-23
 
@@ -137,6 +137,8 @@ Implementación disponible, 325 pruebas/4984 aserciones aprobadas. [Evidencia y 
 
 ### Fase 7 — Sensores IoT, eventos y monitoreo
 
+**Implementada y validada:** 371 tests / 5.862 aserciones, revisión manual y ensayo local de carga/reflejo. La tabla conserva el plan de referencia; [resultados finales y límites](IOT_IMPLEMENTATION.md#cierre-de-verificación).
+
 | Campo | Plan |
 | --- | --- |
 | Módulos afectados | Monitoreo IoT y Disponibilidad |
@@ -262,7 +264,7 @@ Esta propuesta corresponde al cierre de Fase 2. Fase 3 fue posteriormente autori
 | D-07, móvil/API y almacenamiento distribuido; sesión web cerrada | Móvil/API cuando se autorice; despliegue distribuido antes de Fase 14 |
 | D-05, reservas resueltas y aplicación a préstamos confirmada en Fase 4.5 | [inicio, fin), exclusividad APROBADO/ENTREGADO, locks/lecturas actuales; sin reapertura. FINALIZADA automática de reservas sigue diferida |
 | D-09, resuelta en Fase 5.5 | Implementar el contrato cerrado en Fase 6; parametrización global de obligatoriedad fuera de ese alcance |
-| D-10, RESUELTA PARA FASE 7 en 6.5 | Implementar/verificar contrato REST cuando se autorice; cero bloqueantes documentales |
+| D-10, RESUELTA PARA FASE 7 en 6.5 | Contrato REST implementado y verificado en Fase 7; T-I01–T-I32 cubiertos, con límites de entorno documentados |
 | D-08, disparador, combinación QR/IoT y versión histórica de política | Antes de Fase 8 |
 | D-12, canonicalización exacta, algoritmo, proveedor, operaciones críticas y recuperación | Antes de Fase 9 |
 | D-16, protocolo de medición y retención operativa | Piloto sin purga automática según 6.5; retención productiva antes de operación en 14; medición antes de aceptación en 13; zona operativa ya fijada |
@@ -313,3 +315,8 @@ La instrucción posterior autorizó la implementación sobre feature/phase-6-qr 
 Plan futuro CU21/CU22: implementar las dos tablas del SQL sin cambios, administración con tres permisos previstos, acción controlada de provisionamiento, ingestión única por dispositivo y consulta paginada. Conservar bitácora general/CU30 en su alcance diferido; logs técnicos no acreditan esa parte de RF16. CU06 solo informativo; no implementar CU23, liberación o cambios de estado operativos. Fase 8 mantiene max_antiguedad_lectura_min y D-08.
 
 Antes de aceptar Fase 7 ejecutar T-I01–T-I32 con MySQL de testing aislado, incluyendo dos procesos sincronizados y regresión del núcleo; ensayos de rendimiento/continuidad sin adjudicarlos ahora. Los resultados 325/4984 pertenecen a Fase 6 y no se volvieron a ejecutar en esta entrega documental. Control actual: revisión de documentos, enlaces, diff, alcance y secretos, conservando hashes originales.
+
+
+## Implementación de Fase 7
+
+La nueva instrucción autorizó CU21/CU22 y el complemento IoT de CU06. Dos migraciones exactas, tres permisos, REST/HMAC RAW, provisión controlada, deduplicación serializada por sensor y monitoreo conservador están implementados. Se preservan 325 tests previos y se añaden 46; los resultados y el cierre operativo están en [IOT_IMPLEMENTATION.md](IOT_IMPLEMENTATION.md). Fase 8 no iniciada: requiere nueva instrucción y revisión de D-08/contrato de liberación; no hay scheduler ni tablas de evaluación.

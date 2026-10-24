@@ -1,8 +1,8 @@
 # Modelo de datos documentado
 
-**Actualización documental Fase 6.5: D-10 RESUELTA PARA FASE 7, cero bloqueantes documentales.** [Contrato IoT y puerta de Fase 7](DECISIONS.md#readiness-for-phase-7). CU21/CU22 no implementados. La evidencia funcional anterior sigue correspondiendo a Fase 6 y conserva sus límites.
+**Estado vigente: Fase 7 implementada conforme a D-10.** CU21/CU22 y evidencia informativa en CU06; dos tablas IoT y tres permisos nuevos. [Implementación, seguridad, pruebas y límites](IOT_IMPLEMENTATION.md). CU23 y Fase 8 no iniciados.
 
-**Estado vigente: Fase 6 implementada y aceptada; suite automatizada aprobada. La prueba física se acepta por confirmación del usuario, sin nueva evidencia válida corroborada independientemente.** CU11/CU20 y extensión opcional CU17/CU18 incorporados. [Arquitectura, 325 pruebas, trazabilidad y límites de aceptación](QR_IMPLEMENTATION.md). Los cierres anteriores se conservan como evidencia histórica; Fase 7 no iniciada.
+La Fase 6 conserva su aceptación y su límite de corroboración física descritos en [QR_IMPLEMENTATION.md](QR_IMPLEMENTATION.md). Los cierres documentales de Fase 6.5 y anteriores se conservan como evidencia histórica; sus criterios futuros se verifican ahora en Fase 7.
 
 Estado: contrato documental congelado en Fase 0.5; **no es una migración ni un SQL para ejecutar**. Fuentes: figura 108 (clases), figura 109 (BD lógica), tablas 68–98 (mapeo), 99–129 (volúmenes/diccionario) y script del cap. VII, pp. 269–299 (PDF 270–300).
 
@@ -982,3 +982,8 @@ Las tablas codigos_qr y validaciones_qr están materializadas: 23 tablas académ
 No columnas de secreto, flag de provisionamiento, nonce, fecha adicional, tabla de credenciales ni UNIQUE nuevo. Credencial derivada en memoria; identificador inmutable por regla de aplicación. Eventos conservan índices sensor/fecha y espacio/fecha, DECIMAL(10,2) NULL y DATETIME de segundos; fecha_recepcion mantiene DEFAULT CURRENT_TIMESTAMP. Deduplicación de sensor_id/espacio_historico_id/tipo/valor NULL-safe/fecha_evento mediante transacción y lock del sensor, no garantía inexistente del SQL.
 
 Espacio histórico se fija desde asociación validada al aceptar, no se recalcula al reasignar; eventos inmutables y sin purga automática en piloto. max_antiguedad_lectura_min conserva nulabilidad, unidad y CHECK de política; no sustituir por ventana UI. Las 23 tablas académicas/156 columnas/45 FK y 36 permisos materializados permanecen sin cambios; sensores/eventos todavía no se materializan, politicas_liberacion sigue únicamente estructural.
+
+
+## Actualización de Fase 7
+
+Dos migraciones IoT exactas materializan sensores_iot/eventos_ocupacion. Total instalado: 25 tablas académicas, 169 columnas y 48 FK, más migrations. Sin alteración del SQL final de 31/211/63 ni de migraciones anteriores. Las tres FK nuevas conservan CASCADE/RESTRICT; no se añaden tablas de evaluación. [Implementación y verificación](IOT_IMPLEMENTATION.md).

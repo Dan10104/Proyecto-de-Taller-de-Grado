@@ -1,8 +1,8 @@
 # Reglas de negocio y controles verificables
 
-**Actualización documental Fase 6.5: D-10 RESUELTA PARA FASE 7, cero bloqueantes documentales.** [Contrato IoT y puerta de Fase 7](DECISIONS.md#readiness-for-phase-7). CU21/CU22 no implementados. La evidencia funcional anterior sigue correspondiendo a Fase 6 y conserva sus límites.
+**Estado vigente: Fase 7 implementada conforme a D-10.** CU21/CU22 y evidencia informativa en CU06; dos tablas IoT y tres permisos nuevos. [Implementación, seguridad, pruebas y límites](IOT_IMPLEMENTATION.md). CU23 y Fase 8 no iniciados.
 
-**Estado vigente: Fase 6 implementada y aceptada; suite automatizada aprobada. La prueba física se acepta por confirmación del usuario, sin nueva evidencia válida corroborada independientemente.** CU11/CU20 y extensión opcional CU17/CU18 incorporados. [Arquitectura, 325 pruebas, trazabilidad y límites de aceptación](QR_IMPLEMENTATION.md). Los cierres anteriores se conservan como evidencia histórica; Fase 7 no iniciada.
+La Fase 6 conserva su aceptación y su límite de corroboración física descritos en [QR_IMPLEMENTATION.md](QR_IMPLEMENTATION.md). Los cierres documentales de Fase 6.5 y anteriores se conservan como evidencia histórica; sus criterios futuros se verifican ahora en Fase 7.
 
 Estas reglas sintetizan el informe. Los identificadores BR son internos para organizar pruebas; no sustituyen los RF/CU. Los estados exactos están en [DOMAIN_MODEL.md](DOMAIN_MODEL.md). Las decisiones D clasificadas y sus detalles diferidos están en [DECISIONS.md](DECISIONS.md).
 
@@ -257,3 +257,8 @@ T-Q01–24 mantienen su contenido normativo; la matriz ejecutada y sus límites 
 | T-I32 | >=120 eventos válidos/min agregados, historial y consulta bajo carga | Sin pérdida aceptada, reflejo <=5 s desde recepción servidor; documentar entorno, cuotas/carga y límites del ensayo. |
 
 La retención piloto conserva eventos, sin purga automática. Probar que todos los escritores comparten el lock del sensor y que la consulta de deduplicación establece su snapshot después de esperarlo. No basta simular carreras secuencialmente. No instalar MQTT para acreditar REST; cualquier adaptación futura deberá pasar las mismas reglas de aplicación.
+
+
+## Actualización de Fase 7
+
+Los escenarios T-I01–T-I32 previstos en 6.5 se ejecutan en las suites IoT de Fase 7. BR-12/13/22 se aplican: historial con espacio validado, doble frescura y no determinable, sin mutación de disponibilidad/reservas. El mapa y la evidencia detallada están en el informe. BR-14/CU23 no se ejecuta. [Implementación y verificación](IOT_IMPLEMENTATION.md).

@@ -113,3 +113,8 @@ CU19 ahora usa incidencias_mantenimiento para espacios y equipos mediante recurs
 [D-10 y puerta de Fase 7](DECISIONS.md#readiness-for-phase-7) cerradas documentalmente; no se cambia CU05/CU06 ni SpaceAvailabilityService. Fase 7 puede aportar tipo/valor/hora y lectura reciente/NO_DETERMINABLE a lectores autorizados de CU06, sin credenciales, identificador de sensor, administración o historial técnico. Deben ser recientes tanto medición como recepción; silencio nunca significa libre.
 
 IoT no cambia estado operativo, reserva, bloqueo o incidencia, ni aprueba/cancela/libera. Cambio de código del recurso exige actualizar configuración del dispositivo; persistencia usa asociación actual validada, histórico inmutable. Locks compartidos de espacio/recurso de ingestión son compatibles entre sensores; CU05 no debe adquirir sensor después del espacio. CU23 sigue exclusivamente en Fase 8.
+
+
+## Actualización de Fase 7
+
+CU06 incorpora lecturas ambientales mínimas. El conjunto de candidatos y las reglas de estados, bloqueos, reservas e incidencias permanecen intactos; ausencia o falla IoT produce NO_DETERMINABLE. La evidencia histórica de Fase 3 conserva su alcance. [Implementación y verificación](IOT_IMPLEMENTATION.md).
