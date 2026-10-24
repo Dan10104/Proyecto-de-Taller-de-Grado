@@ -1,8 +1,8 @@
 # Arquitectura web de ESPACIO-U
 
-**Actualización documental Fase 6.5: D-10 RESUELTA PARA FASE 7, cero bloqueantes documentales.** [Contrato IoT y puerta de Fase 7](DECISIONS.md#readiness-for-phase-7). CU21/CU22 no implementados. La evidencia funcional anterior sigue correspondiendo a Fase 6 y conserva sus límites.
+**Estado vigente: Fase 7 implementada conforme a D-10.** CU21/CU22 y evidencia informativa en CU06; dos tablas IoT y tres permisos nuevos. [Implementación, seguridad, pruebas y límites](IOT_IMPLEMENTATION.md). CU23 y Fase 8 no iniciados.
 
-**Estado vigente: Fase 6 implementada y aceptada; suite automatizada aprobada. La prueba física se acepta por confirmación del usuario, sin nueva evidencia válida corroborada independientemente.** CU11/CU20 y extensión opcional CU17/CU18 incorporados. [Arquitectura, 325 pruebas, trazabilidad y límites de aceptación](QR_IMPLEMENTATION.md). Los cierres anteriores se conservan como evidencia histórica; Fase 7 no iniciada.
+La Fase 6 conserva su aceptación y su límite de corroboración física descritos en [QR_IMPLEMENTATION.md](QR_IMPLEMENTATION.md). Los cierres documentales de Fase 6.5 y anteriores se conservan como evidencia histórica; sus criterios futuros se verifican ahora en Fase 7.
 
 Fuentes: cap. II, apartados Laravel/API, Vue/Inertia, IoT, QR, Blockchain y despliegue; cap. VI, figuras 60–105; cap. VII, figuras 106–114; IS, IC y RD. Las figuras 106 y 107 corresponden a las páginas impresas 246–247 (PDF 247–248). Estado: arquitectura contractual congelada en Fase 0.5; implementadas fundación, seguridad web, espacios y reservas hasta Fase 4. El diagrama representa también integraciones futuras que siguen pendientes.
 
@@ -160,3 +160,8 @@ QrTokenService → QrContextService → QrManagementService/QrValidationService;
 Ingestión: sensor exclusivo → espacio/subtipo y recurso compartidos → primera lectura consistente para duplicado → evento → ultima_comunicacion → commit. Sin lock global Administrador ni RBAC de dispositivos. Gestión humana CU21 conserva RBAC→sensor→espacio/recurso; CU05 no adquiere sensor después de espacio. No locks durante red/UI, ni llamadas desde ingestión a servicios operativos con orden inverso. Sensores distintos, incluso del mismo espacio, tienen locks compatibles. Límites, snapshot y carreras se especifican en D-10.
 
 La lectura actual considera fecha_evento y fecha_recepcion; UI deriva NO_DETERMINABLE y salud de comunicación, sin enums persistidos nuevos. CU06 recibe DTO informativo mínimo; SpaceAvailabilityService no usa IoT para adjudicar o liberar. CU23/Fase 8 conserva política propia; 6.5 no crea clases, rutas, colas ni configuraciones.
+
+
+## Actualización de Fase 7
+
+Entrada IoT por RawIotRequest/IotBoundary → IotEventController → IotIngestionService, con IotCredentials, IotPayload y IotRateLimiter. Gestión usa el coordinador RBAC existente y el mutex del sensor. IotMonitoringService consulta ventanas SQL e integra evidencia mínima en CU06; SpaceAvailabilityService no cambia. Vue/Inertia conserva el stack; no nuevas dependencias. [Implementación y verificación](IOT_IMPLEMENTATION.md).

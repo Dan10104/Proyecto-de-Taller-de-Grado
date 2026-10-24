@@ -241,3 +241,8 @@ npm audit
 ```
 
 Desarrollo recibió solo seis migraciones incrementales, sin limpiar espacio_u. La suite usa exclusivamente espacio_u_testing en 3308 con credenciales privadas en .env.testing y TestingDatabaseGuard. No usar --parallel ni migrate:fresh sobre desarrollo; las pruebas de concurrencia ya coordinan sus propios procesos. No se cambian MySQL80/MySQL97. Resultado final: 262 pruebas / 3318 aserciones, 178,23 s, cero fallos/errores/omitidas; Pint/build/auditorías correctos. [Procedimiento, QA sintética y límites](EQUIPMENT_LOANS_IMPLEMENTATION.md). Las cuentas temporales de QA están inactivas y sus credenciales retiradas; se conservan los hitos sintéticos y servicios locales.
+
+
+## Actualización de Fase 7
+
+Fase 7 agrega dos migraciones incrementales y tres permisos al seed idempotente. Inicializar un maestro distinto por entorno con scripts/iot/initialize-secret.php, que escribe directamente sin mostrar secretos. Usar .env/.env.testing ignorados; no config:cache local. Servidor local en 8000 y MySQL aislado 3308 conservados; no cambios en los servicios 3306/3307. [Implementación y verificación](IOT_IMPLEMENTATION.md).

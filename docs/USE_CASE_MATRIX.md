@@ -482,7 +482,7 @@ Fuente: tabla 58; p. 204 (PDF 205); figura 49; análisis figura 95.
 | RF relacionado | RF16 |
 | Entidades / clases principales | SensorIoT, RegistroActividad |
 | Tablas directamente relacionadas | `sensores_iot`, `registros_actividad` |
-| Módulo futuro y fase | Monitoreo IoT y Disponibilidad; contrato D-10 cerrado en 6.5, implementación Fase 7 pendiente. |
+| Módulo futuro y fase | Monitoreo IoT y Disponibilidad implementado en Fase 7 según D-10; [evidencia](IOT_IMPLEMENTATION.md). Bitácora general/CU30 diferida. |
 | Pruebas necesarias | T-I01–T-I32 y T-CU21: Identificador duplicado; espacio inexistente; habilitar/deshabilitar; reasignación no altera historia. |
 
 ## CU22 — Monitorear ocupación de espacios académicos
@@ -502,7 +502,7 @@ Fuente: tabla 59; p. 206 (PDF 207); figura 50; análisis figura 96.
 | RF relacionado | RF17 |
 | Entidades / clases principales | EspacioAcademico, SensorIoT, EventoOcupacion |
 | Tablas directamente relacionadas | `espacios_academicos`, `sensores_iot`, `eventos_ocupacion` |
-| Módulo futuro y fase | Monitoreo IoT y Disponibilidad; contrato D-10 cerrado en 6.5, implementación Fase 7 pendiente. |
+| Módulo futuro y fase | Monitoreo IoT y Disponibilidad implementado en Fase 7 según D-10; [evidencia](IOT_IMPLEMENTATION.md). Bitácora general/CU30 diferida. |
 | Pruebas necesarias | T-I01–T-I32 y T-CU22: Sensor inválido/deshabilitado; dato malformado rechazado/antiguo válido histórico; no determinable; >=120 eventos/min; reflejo <=5 s. |
 
 ## CU23 — Aplicar política de liberación de reserva
@@ -810,3 +810,8 @@ Implementados CU11 y CU20 con identidad, RBAC/contexto actual, token opaco/hash 
 [D-10 RESUELTA PARA FASE 7](DECISIONS.md#readiness-for-phase-7), cero bloqueantes documentales; casos todavía no funcionales. CU21 incluye alta/consulta/asociación/reasociación/habilitación/deshabilitación/última comunicación/provisión segura, sin eliminación. CU22 usa REST/HMAC separado de identidad humana, histórico inmutable, filtros paginados y lectura reciente/NO_DETERMINABLE. No sustituir bitácora prevista en RF16 con logs técnicos; registros_actividad/CU30 conservan su fase diferida.
 
 A/E con permisos específicos iot.sensores.ver, iot.sensores.gestionar e iot.monitoreo.ver; D/S sin módulo administrativo/historial. CU06 podrá mostrar solo evidencia mínima autorizada, sin alterar SpaceAvailabilityService. CU23 mantiene ficha original como obligación futura de Fase 8; no se activa por eventos en Fase 7. [Matriz de aceptación T-I01–T-I32](BUSINESS_RULES.md#aceptación-iot-prevista-para-fase-7), no ejecutada en este cierre.
+
+
+## Evidencia funcional CU21/CU22 — Fase 7
+
+CU21 implementa gestión/provisión y CU22 recepción/historia/monitoreo; [trazabilidad T-I01–T-I32](IOT_IMPLEMENTATION.md#verificación-y-trazabilidad-de-aceptación). CU06 añade evidencia ambiental mínima sin alterar filtros de disponibilidad. CU23 permanece pendiente de Fase 8 y la bitácora general de RF16 permanece pendiente de CU30.

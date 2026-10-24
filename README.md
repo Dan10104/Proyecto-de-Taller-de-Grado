@@ -2,9 +2,7 @@
 
 Sistema de información para la gestión y control de reservas de espacios académicos y préstamos de equipamiento tecnológico en la FICCT, con monitoreo de ocupación mediante IoT y trazabilidad de operaciones mediante Blockchain.
 
-**Estado: Fase 6 implementada y aceptada por el usuario; suite automatizada aprobada. La lectura física queda aceptada por su confirmación, sin evidencia válida independiente nueva.** Seguridad, espacios, reservas, equipamiento/préstamos/incidencias y QR contextual CU11/CU20 sobre Laravel, Vue 3, Inertia y MySQL. Entrega/devolución funcionan con o sin QR. [Implementación, 325 pruebas, trazabilidad y límites de aceptación](docs/QR_IMPLEMENTATION.md). IoT, liberación, Blockchain, notificaciones y CU30 siguen diferidos. Fase 7 no iniciada.
-
-**Fase 6.5 documental completada: D-10 RESUELTA PARA FASE 7; 0 bloqueantes documentales.** [Contrato IoT y Readiness for Phase 7](docs/DECISIONS.md#readiness-for-phase-7). Fase 7 no iniciada; requiere nueva instrucción.
+**Estado: Fase 7 implementada — sensores IoT, recepción REST/HMAC, monitoreo e información complementaria en CU06.** Se conserva seguridad, espacios, reservas, equipamiento/préstamos/incidencias y QR. [Informe de Fase 7, pruebas, seguridad y trazabilidad](docs/IOT_IMPLEMENTATION.md). IoT no modifica disponibilidad base ni libera reservas. CU23/Fase 8, Blockchain, notificaciones y CU30 siguen diferidos. La aceptación física de QR conserva el límite descrito en su informe.
 
 ## Fuente de verdad
 
@@ -37,7 +35,7 @@ composer audit
 npm audit
 ```
 
-La suite usa exclusivamente `espacio_u_testing` en MySQL real, con cuenta separada y guarda previa a migraciones/limpieza. La suite de Fase 6 registra 325 pruebas / 4984 aserciones, 267,29 s, sin fallos ni omitidas: conserva los 262 casos previos y añade 63 QR, incluidos 16 escenarios de concurrencia real MySQL. La aceptación física confirmada por el usuario se distingue de las lecturas sintéticas del navegador en QR_IMPLEMENTATION.md. No certifica CU30, módulos posteriores, carga ni despliegue.
+La suite usa exclusivamente `espacio_u_testing` en MySQL real, con cuenta separada y guarda previa a migraciones/limpieza. La suite de Fase 7 conserva los 325 casos previos y añade 46 IoT, incluidos 13 escenarios con procesos/conexiones concurrentes: 371 pruebas / 5862 aserciones. El informe IoT registra duración y evidencia final. Los 63 casos QR de Fase 6 se conservan. La aceptación física confirmada por el usuario se distingue de las lecturas sintéticas del navegador en QR_IMPLEMENTATION.md. No certifica CU30, módulos posteriores, carga ni despliegue.
 
 ## Documentación
 
@@ -50,6 +48,7 @@ La suite usa exclusivamente `espacio_u_testing` en MySQL real, con cuenta separa
 | [Reglas de negocio](docs/BUSINESS_RULES.md) | Invariantes y comprobaciones futuras |
 | [Casos de uso](docs/USE_CASE_MATRIX.md) | Fichas completas CU01–CU30 y pruebas necesarias |
 | [Trazabilidad](docs/REQUIREMENTS_TRACEABILITY.md) | Los 217 requisitos, incluidos 26 RF, con criterios y fases |
+| [Sensores IoT y monitoreo](docs/IOT_IMPLEMENTATION.md) | CU21/CU22, REST/HMAC, provisionamiento, historia, frescura, concurrencia y CU06 informativo |
 | [Códigos QR y validaciones](docs/QR_IMPLEMENTATION.md) | Token/hash, esquema, CU11/CU20, cámara, concurrencia, pruebas y límite de corroboración física |
 | [Equipamiento y préstamos](docs/EQUIPMENT_LOANS_IMPLEMENTATION.md) | Esquema, permisos, transiciones, concurrencia y evidencia de Fase 5 |
 | [Reservas](docs/RESERVATIONS_IMPLEMENTATION.md) | Ciclo y evidencia de Fase 4 |
@@ -67,7 +66,7 @@ ESPACIO-U/
 ├── app/                 # Modelos, servicios, solicitudes validadas, Gates y middleware
 ├── bootstrap/           # Arranque Laravel
 ├── config/              # Configuración sin secretos
-├── database/            # Veintitrés migraciones, catálogo RBAC y factories sintéticas
+├── database/            # Veinticinco migraciones, catálogo RBAC y factories sintéticas
 ├── docs/                # Contratos y procedimiento de desarrollo
 ├── public/              # Punto de entrada; build generado e ignorado
 ├── resources/

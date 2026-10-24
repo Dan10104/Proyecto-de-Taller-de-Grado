@@ -1,8 +1,8 @@
 # Política de seguridad
 
-**Actualización documental Fase 6.5: D-10 RESUELTA PARA FASE 7, cero bloqueantes documentales.** [Contrato IoT y puerta de Fase 7](DECISIONS.md#readiness-for-phase-7). CU21/CU22 no implementados. La evidencia funcional anterior sigue correspondiendo a Fase 6 y conserva sus límites.
+**Estado vigente: Fase 7 implementada conforme a D-10.** CU21/CU22 y evidencia informativa en CU06; dos tablas IoT y tres permisos nuevos. [Implementación, seguridad, pruebas y límites](IOT_IMPLEMENTATION.md). CU23 y Fase 8 no iniciados.
 
-**Estado vigente: Fase 6 implementada y aceptada; suite automatizada aprobada. La prueba física se acepta por confirmación del usuario, sin nueva evidencia válida corroborada independientemente.** CU11/CU20 y extensión opcional CU17/CU18 incorporados. [Arquitectura, 325 pruebas, trazabilidad y límites de aceptación](QR_IMPLEMENTATION.md). Los cierres anteriores se conservan como evidencia histórica; Fase 7 no iniciada.
+La Fase 6 conserva su aceptación y su límite de corroboración física descritos en [QR_IMPLEMENTATION.md](QR_IMPLEMENTATION.md). Los cierres documentales de Fase 6.5 y anteriores se conservan como evidencia histórica; sus criterios futuros se verifican ahora en Fase 7.
 
 Repositorio público. Esta política aplica a documentación, código, pruebas, historial Git, imágenes, logs, issues y artefactos. Fuentes: instrucciones de Fases 0, 0.5, 1 y 1.5; RNF-10–17, IS-14, IC-02/04/05/08/11, RD-19/20/23/43/44 y DB-21–24.
 
@@ -43,7 +43,7 @@ En fases futuras, las comprobaciones automatizadas podrán incorporarse en la ub
 | Web | Sesión segura y protección CSRF donde corresponda; validación del lado servidor; salida escapada; probar entradas no confiables |
 | Persistencia | Consultas parametrizadas/ORM, FK/UNIQUE/CHECK y transacciones; no permitir borrado de historia necesaria |
 | QR | Token vigente y objetivo/contexto correctos; no usar conocimiento del código como autorización; no registrar token sin hash |
-| IoT | Identificación/autenticación del dispositivo, validación del esquema y estado habilitado; HMAC RAW, repetidos y frescura cerrados por D-10 en Fase 6.5, implementación pendiente |
+| IoT | Identificación/autenticación del dispositivo, validación del esquema y estado habilitado; HMAC RAW, repetidos y frescura de D-10 implementados y verificados en Fase 7; [evidencia](IOT_IMPLEMENTATION.md) |
 | Blockchain | Minimización y privacidad antes del envío; referencia técnica; hash/versión consistente; pendiente durable ante fallo |
 | Chatbot | Contexto limitado por permisos, proveedor solo desde backend, ausencia de herramientas que ejecuten operaciones protegidas |
 | Archivos/reportes | Generación y descarga autorizadas, ubicación privada/controlada, sin acceso por adivinar un identificador |
@@ -122,3 +122,8 @@ Maestro CSPRNG de 256 bits solo servidor, valor futuro vacío en .env.example; c
 Tres permisos previstos: iot.sensores.ver, iot.sensores.gestionar, iot.monitoreo.ver, A/E elegibles sin bypass. D/S sin administración/historial; CU06 puede mostrar solo evidencia ambiental mínima con su permiso existente. Cuota independiente por sensor autenticado y cuerpo máximo configurable, sin permitir agotar cuota ajena con identificador falsificado. Desactivar/reasociar y recibir comparten lock de sensor; estado BD vigente prevalece.
 
 Solo ambiente: ningún dato personal, imagen/audio, biometría, cámara, tracking Bluetooth/MAC personal/identificador móvil. Campos extra se rechazan sin registrar body. Logs limitados a IDs internos autorizados, resultado, HTTP status y razón segura; no firma completa ni cabeceras secretas. Histórico inmutable conservado, sin eliminación física de sensor ni purga del piloto. CU30 continúa diferido, no sustituido por logs.
+
+
+## Actualización de Fase 7
+
+Maestros separados en .env/.env.testing, claves derivadas solo en memoria, provisión explícita no-store con sesión/CSRF y permiso elegible. API autentica RAW antes de JSON, sin identidad humana, con anti-replay, cuota atómica y fallos cerrados. Logs y errores excluyen cuerpos/cabeceras/firma/credenciales. Proxy/TLS/NTP y privacidad de APM deben conservar el contrato al desplegar. [Implementación y verificación](IOT_IMPLEMENTATION.md).
