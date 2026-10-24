@@ -1,5 +1,7 @@
 # Arquitectura web de ESPACIO-U
 
+**Fase 7.5 documental:** [D-08 resuelta para Fase 8](DECISIONS.md#readiness-for-phase-8), sin implementación nueva. El proceso futuro será Scheduler→comando→servicio CU23→transacción MySQL, con reserva coordinadora, espacio/política/sensores NOWAIT y evidencia persistida. No requiere actor humano, llegada de un evento ni consulta a un dispositivo. Los apartados anteriores/futuros se interpretan con su fecha de cierre.
+
 **Estado vigente: Fase 7 implementada conforme a D-10.** CU21/CU22 y evidencia informativa en CU06; dos tablas IoT y tres permisos nuevos. [Implementación, seguridad, pruebas y límites](IOT_IMPLEMENTATION.md). CU23 y Fase 8 no iniciados.
 
 La Fase 6 conserva su aceptación y su límite de corroboración física descritos en [QR_IMPLEMENTATION.md](QR_IMPLEMENTATION.md). Los cierres documentales de Fase 6.5 y anteriores se conservan como evidencia histórica; sus criterios futuros se verifican ahora en Fase 7.
@@ -61,7 +63,7 @@ Una vez confirmada la operación, generar los efectos complementarios sin deshac
 
 | Integración | Contrato mínimo oficial | Decisiones pendientes |
 | --- | --- | --- |
-| IoT | D-10 cerrada en Fase 6.5: REST/HMAC, evento ambiental, historia, frescura y deduplicación por sensor | Implementación Fase 7 pendiente; MQTT opcional mediante mismo servicio. Sin semántica universal de valor |
+| IoT | D-10 cerrada en Fase 6.5 e implementada en 7: REST/HMAC, evento ambiental, historia, frescura y deduplicación por sensor | MQTT opcional futuro. CU22 genérico; interpretación exclusiva de CU23 cerrada documentalmente por D-08 en 7.5 |
 | QR | D-09 cerrada: token/hash, ciclo, contexto y correlación atómica definidos en Fase 5.5 | Implementación Fase 6 y pruebas automatizadas disponibles; aceptación física por confirmación del usuario (sin corroboración independiente nueva); obligatoriedad global diferida |
 | Blockchain | Hash local con algoritmo/versión canónica, operación de origen y referencia externa; privacidad previa al envío | Proveedor/red, conjunto exacto de operaciones críticas, formato canónico, reintentos y verificación |
 | Chatbot | Backend con credenciales privadas, alcance por usuario y respuesta/error comprensible | Proveedor/modelo, contenido de orientación autorizado y límites de contexto; sin persistencia adicional asumida |
@@ -165,3 +167,9 @@ La lectura actual considera fecha_evento y fecha_recepcion; UI deriva NO_DETERMI
 ## Actualización de Fase 7
 
 Entrada IoT por RawIotRequest/IotBoundary → IotEventController → IotIngestionService, con IotCredentials, IotPayload y IotRateLimiter. Gestión usa el coordinador RBAC existente y el mutex del sensor. IotMonitoringService consulta ventanas SQL e integra evidencia mínima en CU06; SpaceAvailabilityService no cambia. Vue/Inertia conserva el stack; no nuevas dependencias. [Implementación y verificación](IOT_IMPLEMENTATION.md).
+
+## Contrato de ejecución de CU23 — Fase 7.5
+
+Scheduler futuro cada minuto (frecuencia técnica configurable), candidatos APROBADA/inicio<=ahora/fin>ahora/política asignada, lotes por clave y servicio interno. No se evalúa dentro de la ingestión ni se espera una lectura. La reserva coordina idempotencia/estado; el protocolo [NOWAIT y snapshot posterior](DECISIONS.md#transacción-cu23-y-compatibilidad-de-locks) evita esperar espacio/sensor en orden contrario a servicios existentes. No toma el coordinador RBAC humano. Conflictos reintentan fuera de locks y fallos de lectura cierran sin liberar.
+
+Una transacción confirma evaluación, evidencia M:N y eventual LIBERADA. La disponibilidad central interpreta el estado resultante; CU22 conserva su propia ventana y valor genérico. Las UI futuras de políticas/evaluaciones no ejecutan CU23 manualmente; Scheduler no necesita usuario Sistema. Notificaciones/Blockchain futuros ocurren fuera y después del commit cuando se autoricen. No se creó todavía comando, scheduler, clase, endpoint, cola, tabla ni configuración.

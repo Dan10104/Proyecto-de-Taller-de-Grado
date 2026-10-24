@@ -75,7 +75,7 @@ Convención temporal del alcance institucional único: `America/La_Paz` para cap
 
 **IoT (D-10).** Detecta presencia/ocupación, nunca identidad. Sensor registrado, habilitado y asociado a espacio; preservar espacio histórico y fechas de evento/recepción. Falta de lectura reciente produce NO_DETERMINABLE calculado, sin agregar enum de espacio. D-10 quedó RESUELTA PARA FASE 7 en 6.5: REST/HMAC, payload, ventana y deduplicación exactos; valor sin interpretación física universal. [Contrato normativo](DECISIONS.md#contrato-iot--cierre-d-10-de-fase-65).
 
-**Liberación (D-08).** Evaluar reserva y política aplicables, tolerancia, validaciones QR, eventos IoT y condiciones configuradas; registrar evaluación y enlaces existentes. Información ausente, insuficiente o contradictoria no libera automáticamente; solo una política e informe que permitan inequívocamente la decisión pueden habilitarla. Evidencia de uso mantiene; ALERTA no libera; AUTOMATICA requiere todas las condiciones aplicables. No interpretar silencio del sensor como ausencia de personas. Combinaciones exactas, disparador y conservación de versión de política se cierran antes de Fase 8.
+**Liberación (D-08).** [Contrato cerrado en Fase 7.5](DECISIONS.md#contrato-de-liberación-de-reservas--cierre-d-08-de-fase-75). Solo APROBADA desde inicio+tolerancia y antes de fin, con política asignada activa/válida. Uso positivo veta; insuficiencia requerida o contradicción mantiene; inactividad suficientemente demostrada produce ALERTAR en ALERTA o LIBERAR en AUTOMATICA. La matriz exacta, ventanas, versiones, evidencia M:N, scheduler, idempotencia y locks están congelados. CU23 todavía no está implementado; silencio no equivale a ausencia.
 
 **Blockchain (D-12).** Secuencia: operación crítica → registro principal confirmado en MySQL → selección de datos mínimos → representación canónica consistente → hash → evidencia local → envío externo → referencia externa. Fallo externo conserva la operación y evidencia PENDIENTE cuando corresponda; no rollback de la transacción principal. Nunca enviar nombres, correos, contraseñas, información personal completa ni datos operativos completos. La canonicalización deberá ser determinista, con orden de campos y formato de fechas estables, UTF-8, sin campos personales no permitidos y versionada por `version_canonica`. Su especificación exacta, algoritmo y proveedor se cierran antes de Fase 9; aquí no se elige silenciosamente JSON, una norma de canonicalización o un algoritmo hash concreto.
 
@@ -262,3 +262,55 @@ La retención piloto conserva eventos, sin purga automática. Probar que todos l
 ## Actualización de Fase 7
 
 Los escenarios T-I01–T-I32 previstos en 6.5 se ejecutan en las suites IoT de Fase 7. BR-12/13/22 se aplican: historial con espacio validado, doble frescura y no determinable, sin mutación de disponibilidad/reservas. El mapa y la evidencia detallada están en el informe. BR-14/CU23 no se ejecuta. [Implementación y verificación](IOT_IMPLEMENTATION.md).
+
+## Liberación de reservas — contrato documental de Fase 7.5
+
+BR-14 se concreta en la [matriz completa D-08](DECISIONS.md#matriz-completa-de-decisión-de-d-08). Las reglas siguientes son futuras de CU23; no cambian CU22 genérico ni la aplicación de Fase 7.
+
+- Política solo QR: falta de VALIDA tras tolerancia satisface su criterio administrativo, salvo veto/contradicción. INVALIDA no prueba no uso. Política IoT exige ceros explícitos suficientes de todos los sensores habilitados actuales; una fuente opcional positiva también veta.
+- PRESENCIA acredita uso por el tipo; OCUPACION>0 acredita uso, =0 permite evidencia negativa y NULL/negativo es insuficiente. Considerar toda la ventana; no borrar un positivo reciente mediante un cero posterior. QR válido contra IoT negativo completo o contradicción interna → NO_DETERMINABLE. QR válido con IoT insuficiente/positivo no contradictorio → MANTENER_POR_USO.
+- Inactividad suficiente + ALERTA → ALERTAR, conserva APROBADA. Inactividad suficiente + AUTOMATICA → evaluación/pivotes/APROBADA→LIBERADA atómicos. Sin modificar estado operativo ni ignorar bloqueos/incidencias.
+- Versiones inmutables; desactivar conserva historia; asignar/retirar política o reactivar sobre compromisos futuros/activos respeta las guardas D-08. Terminales de evaluación por reserva/política no se repiten; NO_DETERMINABLE exige evidencia nueva relevante.
+
+## Aceptación de liberación prevista para Fase 8
+
+Estos **36 criterios son especificaciones de pruebas futuras**, no tests ejecutados en 7.5. MySQL aislado real, procesos/conexiones independientes para carreras y regresión de las 371 pruebas previas. No sustituir por SQLite ni reconstruir desarrollo.
+
+| ID | Escenario | Aceptación requerida |
+| --- | --- | --- |
+| T-L01 | SQL y dominio | Tres tablas, 10 columnas, seis FK/acciones, PK compuestas, índices, enum y motivo nullable físico exactos; sin cambiar políticas ni migraciones anteriores |
+| T-L02 | Configuración | Nombre vacío/largo, version no positiva/no entera, límites INT, modo/booleanos inválidos, fuentes ambas falsas, antigüedad ausente/negativa o valor con usa_iot=false rechazados; cero válido |
+| T-L03 | Versionado | Nombre/version UNIQUE con collation vigente; colisión concurrente controlada; reglas/identidad inmutables; nueva versión no cambia asignaciones ni historia; sin borrado |
+| T-L04 | Asignación | NULL→ID, ID→otro y ID→NULL prohibidos con APROBADA fin>T; mismo ID sin cambio; vencidas/no aprobadas no impiden; carrera con aprobación revalida bajo espacio |
+| T-L05 | activa y diagnóstico | Desactivar conserva historia; inactiva/inválida no libera y diagnóstico NO_DETERMINABLE controlado; reactivar rechaza compromisos vigentes; sin incidencias de mantenimiento inventadas |
+| T-L06 | Elegibilidad y tolerancia | Seis estados, T antes/igual al umbral, T antes/igual a fin, tolerancia cero/igual o mayor al periodo y overflow; solo ventana útil APROBADA |
+| T-L07 | Sin política y fallos | NULL omite sin error crítico; FK/contexto no resoluble o fallo de consulta aborta seguro; no convierte error en ausencia de QR/IoT |
+| T-L08 | Contexto QR | Misma reserva/recurso/USO_ESPACIO, inicio inclusivo y T inclusivo; otros contextos/fechas fuera excluidos; INVALIDA solo contexto; rotar código no invalida historia VALIDA |
+| T-L09 | QR y veto | Un QR VALIDA basta, requerido u opcional; ausencia opcional no aporta negativo; IoT positivo veta aunque falte QR requerido |
+| T-L10 | Ventana IoT | max(inicio,T−minutos), ambas fronteras, recepción<=T, futuro excluido, antigüedad cero; independiente de configuración CU22 y ventana auxiliar fija de 300 s cuando no se exige IoT |
+| T-L11 | Interpretación exclusiva | PRESENCIA con NULL/0/negativo sigue positiva por tipo; OCUPACION positivo/cero/NULL/negativo; CU22 conserva valor genérico y visualización sin reinterpretación |
+| T-L12 | Varios sensores | Todos los habilitados asociados, sin selección por tipo; ninguno, uno sin lectura, solo presencia silenciosa, ambiguo y ceros completos; sin unanimidad fabricada |
+| T-L13 | Contradicciones | QR válido/negativo completo, positivo/cero entre sensores y tiempos, valores distintos/NULL del mismo instante; NO_DETERMINABLE y evidencia completa |
+| T-L14 | Matriz completa | Las 24 filas × 2 modos producen exactamente sus 48 resultados; fuentes ambas falsas rechazadas; ninguna combinación positiva/contradictoria libera |
+| T-L15 | Acciones de resultado | Cuatro enums, motivo obligatorio seguro <=500; solo LIBERAR cambia APROBADA; ALERTAR no notifica ni libera; sin campos de cancelación/resolución falsos |
+| T-L16 | Disponibilidad | LIBERADA deja de bloquear intervalo; mantenimiento, bloqueo, incidencia y estado incompatible siguen excluyendo; servicio central y demás reservas conservados |
+| T-L17 | Historia exacta | Pivotes Q/E exactos, incluidos ambiguos/INVALIDA relevantes; sin historia ajena/futura/fuera de ventana; inmutabilidad; ningún JSON/copia de fuentes ni recálculo retrospectivo |
+| T-L18 | Terminales | MANTENER_POR_USO/ALERTAR/LIBERAR de misma pareja omiten repeticiones aunque llegue evidencia; no reapertura por reloj o edición de modo |
+| T-L19 | Reevaluar NO_DETERMINABLE | Solo Q/E nuevo relevante no enlazado antes y posterior según contrato; cambio de conectividad/inventario o envejecimiento sin novedad no crea filas |
+| T-L20 | Empate DATETIME | Evento/QR distinto confirmado dentro del mismo segundo habilita una sola reevaluación por ID no enlazado; no asumir orden de commit por MAX(id) |
+| T-L21 | Retransmisiones e historia tardía | Duplicado IoT no es novedad; recepción nueva fuera de W no reevalúa; futuro antes excluido solo participa al volverse temporalmente válido |
+| T-L22 | Reloj y contexto | Reloj atrasado respecto de evaluación difiere; nueva versión no evade guarda de asignación; política inválida no produce un diagnóstico idéntico cada minuto |
+| T-L23 | Dos primeras evaluaciones | Workers simultáneos misma reserva: una evaluación/una transición como máximo; segundo ve commit e idempotencia; rollback no consume evidencia |
+| T-L24 | Dos reevaluaciones | Misma novedad tras NO_DETERMINABLE: una evaluación, pivotes confirmados impiden otra; novedad real posterior sí admite otra no terminal |
+| T-L25 | Cancelación y frontera | Cancelación legal previa gana u operación CU23 gana dentro de su ventana; espera que cruza inicio invalida cancelación; D-05 intacta y nunca doble transición |
+| T-L26 | QR concurrente | Ambos órdenes: VALIDA previa veta; CU23 que encuentra espacio retenido retrocede; LIBERADA previa impide VALIDA posterior; sin snapshot viejo |
+| T-L27 | IoT concurrente | Ingestión, alta, habilitación/deshabilitación, reasignación entrante/saliente en ambos órdenes; conjunto completo, espacio histórico conservado y evento posterior no reescribe historia |
+| T-L28 | Política concurrente | Asignación/aprobación, desactivación/evaluación y reactivación/compromiso: reglas revalidadas bajo locks, sin usar versiones inactivas por lectura obsoleta |
+| T-L29 | Snapshot y consistencia | Prohibir transacción anidada/snapshot previo; primera lectura después de todos los locks incluye commits previos bajo RR; refrescar T antes de decidir/escribir |
+| T-L30 | Atomicidad ante fallo | Fallos tras evaluación, durante cada pivot y antes/después de UPDATE revierten todo; actualización de cero filas nunca deja LIBERAR; fin vencido durante trabajo aborta |
+| T-L31 | Locks y recuperación | NOWAIT no omite sensores, sin SKIP LOCKED; hasta tres intentos completos y pausa sin locks; sin coordinador RBAC humano ni llamadas externas; agotamiento difiere sin éxito parcial |
+| T-L32 | Scheduler y carga | Candidatos/paginación por clave/lotes sin cargar todos; frecuencia independiente de tolerancia; errores por reserva aislados; dos workers seguros y EXPLAIN con índices oficiales |
+| T-L33 | RBAC de políticas | Matriz de cuatro permisos, elegibilidad y permiso del mismo rol, revocación mientras espera, sesión/CSRF y URLs directas; sin bypass de Administrador |
+| T-L34 | Evaluaciones propias | Titular solo sus reservas; proyección segura sin PII ajena, secretos QR, identificadores/historia técnica de sensores; administrativo con permiso vigente |
+| T-L35 | Límites de fase | Sin notificaciones funcionales, Blockchain, CU30, usuario/rol Sistema, API de liberación manual ni scheduler de FINALIZADA |
+| T-L36 | Revisión manual | Crear versión, asignar bajo guardas, desactivar, consultar uso/historia y cuatro resultados; móvil/tablet/escritorio, teclado, etiquetas, foco, errores y consola; sin botón Liberar ahora |

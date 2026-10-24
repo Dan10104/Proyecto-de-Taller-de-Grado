@@ -1,5 +1,7 @@
 # Matriz CU01–CU30
 
+**Fase 7.5 documental:** [D-08 cerrada, 0 bloqueantes para Fase 8](DECISIONS.md#readiness-for-phase-8). CU23 permanece sin implementación; su contrato futuro incluye matriz completa, fuentes opcionales con veto, scheduler, idempotencia, versiones y concurrencia. No declara cumplidas las notificaciones ni CU30 del flujo completo.
+
 Cobertura: 30/30 casos de uso del cap. V, tablas 38–67; prioridad según tabla 37. Cada ficha reúne iniciador, actores, precondición, flujo, alternativas, excepciones, resultado, RF, entidades/tablas, paquete/fase y pruebas. La asignación RF→CU→tabla→fase es trazabilidad analítica basada en los flujos y diagramas; no crea nuevas funciones.
 
 **Alcance web:** las menciones a aplicación móvil en el texto fuente describen el sistema global. En estas fases se implementará la variante web y el soporte de servidor aplicable, sin Flutter/Android. “Activo”, “finalizado”, “vencido” o “cancelado” en la prosa del préstamo no se traducen automáticamente a un enum; aplicar la reconciliación D-02 resuelta en DOMAIN_MODEL. Las fichas conservan criterios del diseño completo; los estados y evidencias de implementación se precisan por fase. Fase 1.5 cierra D-04/D-07 documentalmente y delimita el próximo núcleo de seguridad; véase el contrato al final.
@@ -523,7 +525,7 @@ Fuente: tabla 60; p. 207 (PDF 208); figura 51; análisis figura 97.
 | Entidades / clases principales | PoliticaLiberacion, EspacioAcademico, Reserva, ValidacionQR, SensorIoT, EventoOcupacion, EvaluacionLiberacion, Asociación Evaluación–Evento, Asociación Evaluación–Validación, RegistroActividad |
 | Tablas directamente relacionadas | `politicas_liberacion`, `espacios_academicos`, `reservas`, `validaciones_qr`, `sensores_iot`, `eventos_ocupacion`, `evaluaciones_liberacion`, `evaluaciones_eventos_ocupacion`, `evaluaciones_validaciones_qr`, `registros_actividad` |
 | Módulo futuro y fase | Monitoreo IoT y Disponibilidad; Fase 8 |
-| Pruebas necesarias | T-CU23: Tolerancia no vencida; evidencia de uso; ausencia/contradicción; ALERTA frente a AUTOMATICA; reserva ya modificada. |
+| Pruebas necesarias | T-CU23 concretado en T-L01–T-L36 de BUSINESS_RULES; futuras, no ejecutadas en 7.5. |
 
 ## CU24 — Generar evidencia de trazabilidad mediante Blockchain
 

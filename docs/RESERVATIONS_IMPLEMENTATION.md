@@ -1,5 +1,7 @@
 # Reservas de espacios académicos — Fase 4
 
+**Continuidad documental de Fase 7.5:** [D-08 cerrada para Fase 8](DECISIONS.md#readiness-for-phase-8). CU23 futuro solo evaluará APROBADA desde inicio+tolerancia y antes de fin. LIBERAR confirmará evaluación/pivotes/transición en un commit. D-05 conserva cancelación estrictamente antes de inicio y la finalización natural diferida; los órdenes de lock actuales se conservan mediante el protocolo CU23 con NOWAIT. Sin cambios funcionales ahora.
+
 Fecha: 2026-10-23. Implementación del núcleo autorizado de CU07–CU10 y ampliación de CU06. D-05 permanece **RESUELTA PARA FASE 4**; no se reinterpreta. Este informe conserva la evidencia histórica de Fase 4; [Fase 5 ya implementada](EQUIPMENT_LOANS_IMPLEMENTATION.md).
 
 CU06: **FUNCIONALMENTE COMPLETO PARA DISPONIBILIDAD OPERATIVA; ENRIQUECIMIENTO IoT DIFERIDO A FASE 7.**

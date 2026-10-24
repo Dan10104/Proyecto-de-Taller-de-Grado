@@ -1,5 +1,7 @@
 # Política de seguridad
 
+**Fase 7.5 documental:** [D-08 y permisos futuros](DECISIONS.md#scheduler-consultas-y-permisos-previstos). Ninguna reserva se libera con evidencia requerida insuficiente/desactualizada/no interpretable o con contradicción. Positivo fiable opcional también veta. Los cuatro permisos liberacion.* están previstos, todavía ausentes de DB; ejecución interna independiente de RBAC humano, sin rol Sistema ni endpoint de liberación manual.
+
 **Estado vigente: Fase 7 implementada conforme a D-10.** CU21/CU22 y evidencia informativa en CU06; dos tablas IoT y tres permisos nuevos. [Implementación, seguridad, pruebas y límites](IOT_IMPLEMENTATION.md). CU23 y Fase 8 no iniciados.
 
 La Fase 6 conserva su aceptación y su límite de corroboración física descritos en [QR_IMPLEMENTATION.md](QR_IMPLEMENTATION.md). Los cierres documentales de Fase 6.5 y anteriores se conservan como evidencia histórica; sus criterios futuros se verifican ahora en Fase 7.
@@ -127,3 +129,9 @@ Solo ambiente: ningún dato personal, imagen/audio, biometría, cámara, trackin
 ## Actualización de Fase 7
 
 Maestros separados en .env/.env.testing, claves derivadas solo en memoria, provisión explícita no-store con sesión/CSRF y permiso elegible. API autentica RAW antes de JSON, sin identidad humana, con anti-replay, cuota atómica y fallos cerrados. Logs y errores excluyen cuerpos/cabeceras/firma/credenciales. Proxy/TLS/NTP y privacidad de APM deben conservar el contrato al desplegar. [Implementación y verificación](IOT_IMPLEMENTATION.md).
+
+## Seguridad de CU23 prevista — Fase 7.5
+
+Fuente positiva fiable opcional veta liberación; incertidumbre requerida y contradicción conservan APROBADA. La consulta del veto es obligatoria: un error de BD no equivale a ausencia. El servicio interno usa hora confiable y revalida estado/configuración/evidencia tras locks; ningún payload, parámetro UI o resultado CU22 puede ordenar LIBERAR. NOWAIT ocupado aborta/reintenta, sin saltar sensores ni inventar unanimidad.
+
+Gestión futura mantiene sesión/CSRF/permiso elegible y reautorización; evaluaciones propias se filtran por solicitante_id y proyectan solo resultado/contexto seguro. Motivo <=500 sin PII, token/hash QR, clave/firma IoT ni JSON de cuerpos. Sin edición/borrado histórico, rol Sistema ni botón/API manual. No cambiar secretos, configuración, roles ni permisos persistidos en 7.5. [Matriz y límites](DECISIONS.md#scheduler-consultas-y-permisos-previstos).
