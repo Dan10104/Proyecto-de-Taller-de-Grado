@@ -123,3 +123,7 @@ El contenido anterior es el cierre histórico de Fase 4. Fase 5 ya implementó C
 ## Extensión documental CU11 — Fase 5.5
 
 D-09 está resuelta para Fase 6; [contrato CU11](DECISIONS.md#cu11-y-autorización-contextual). Solo reserva APROBADA dentro de [inicio,fin), titular D/S autorizado o A/E con permiso administrativo además del QR. El recurso esperado deriva de la reserva y el QR debe identificar ese espacio o esa reserva exacta. Se reutilizará la guarda de disponibilidad central con excepción de la propia reserva, sin ignorar bloqueos/incidencias. Registrar validación no cambia reserva/espacio ni crea un estado de uso. Tolerancias/liberación siguen Fase 8. No hubo cambio funcional, migración ni ejecución QR en Fase 5.5; la evidencia de pruebas anterior mantiene su fecha y alcance.
+
+## Integración posterior QR — Fase 6
+
+La Fase 6 posterior implementa CU11/CU20 y las extensiones opcionales de CU17/CU18; preserva estados, disponibilidad central, núcleo sin QR y la historia descrita en este cierre. [Implementación, pruebas actuales y aceptación física por confirmación del usuario (sin corroboración independiente nueva)](QR_IMPLEMENTATION.md). Las referencias a QR pendiente en el cierre histórico de este documento no describen el avance actual. IoT, liberación, Blockchain, notificaciones y CU30 siguen diferidos.

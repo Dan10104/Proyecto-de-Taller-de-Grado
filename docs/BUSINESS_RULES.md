@@ -1,6 +1,6 @@
 # Reglas de negocio y controles verificables
 
-**Estado vigente: Fase 5 implementada y validada (CU12–CU19), con incidencias integradas en CU06/CU07/CU09.** Los cierres anteriores conservan su contexto histórico. [Implementación, pruebas y límites actuales](EQUIPMENT_LOANS_IMPLEMENTATION.md). Fase 6 no iniciada.
+**Estado vigente: Fase 6 implementada y aceptada; suite automatizada aprobada. La prueba física se acepta por confirmación del usuario, sin nueva evidencia válida corroborada independientemente.** CU11/CU20 y extensión opcional CU17/CU18 incorporados. [Arquitectura, 325 pruebas, trazabilidad y límites de aceptación](QR_IMPLEMENTATION.md). Los cierres anteriores se conservan como evidencia histórica; Fase 7 no iniciada.
 
 Estas reglas sintetizan el informe. Los identificadores BR son internos para organizar pruebas; no sustituyen los RF/CU. Los estados exactos están en [DOMAIN_MODEL.md](DOMAIN_MODEL.md). Las decisiones D clasificadas y sus detalles diferidos están en [DECISIONS.md](DECISIONS.md).
 
@@ -69,7 +69,7 @@ Convención temporal del alcance institucional único: `America/La_Paz` para cap
 
 ## Contratos congelados de integraciones
 
-**QR (D-09, RESUELTA PARA FASE 6).** El código identifica recurso u operación, no autentica ni autoriza por sí solo. El servidor comprueba usuario autenticado/ACTIVO, permisos, código, recurso esperado, operación/contexto, estado y fecha/horario. Objetivo único y exclusividad reserva/préstamo por tipo; enlaces a entrega/devolución según CHECK/UNIQUE. Código inválido no confirma uso/entrega/devolución. Emisión, vigencia y correlación quedan fijadas en el [contrato documental de Fase 5.5](DECISIONS.md#contrato-qr-y-validaciones--cierre-d-09-de-fase-55); no uso único ni obligación global. Fase 6 no implementada.
+**QR (D-09, RESUELTA PARA FASE 6).** El código identifica recurso u operación, no autentica ni autoriza por sí solo. El servidor comprueba usuario autenticado/ACTIVO, permisos, código, recurso esperado, operación/contexto, estado y fecha/horario. Objetivo único y exclusividad reserva/préstamo por tipo; enlaces a entrega/devolución según CHECK/UNIQUE. Código inválido no confirma uso/entrega/devolución. Emisión, vigencia y correlación quedan fijadas en el [contrato documental de Fase 5.5](DECISIONS.md#contrato-qr-y-validaciones--cierre-d-09-de-fase-55); no uso único ni obligación global. Fase 6 implementada y verificada automáticamente; aceptación física confirmada por el usuario en QR_IMPLEMENTATION.md.
 
 **IoT (D-10).** Detecta presencia/ocupación, nunca identidad. Sensor registrado, habilitado y asociado a espacio; preservar espacio histórico y fechas de evento/recepción. Falta de lectura reciente produce NO_DETERMINABLE calculado, sin agregar enum de espacio. El formato, unidades, transporte, autenticación y ventana concreta se cierran antes de Fase 7.
 
@@ -180,7 +180,7 @@ T-P01–18 dejaron de ser pruebas futuras al ejecutar el núcleo autorizado: [ma
 
 ## Aceptación futura de QR — Fase 6
 
-Fase 5.5 especifica estas pruebas; **ninguna fue ejecutada ni se declara aprobada aquí**. Aplicar [D-09 y Readiness](DECISIONS.md#readiness-for-phase-6) conservando T-R/T-P y la regresión previa. El QR nunca sustituye identidad, permisos, estado ni comprobación física. Las referencias T-Q son criterios internos, no requisitos nuevos ni estados de BD.
+Fase 5.5 especificó estos criterios sin ejecutarlos entonces. Fase 6 los vincula ahora con pruebas y evidencia en [QR_IMPLEMENTATION](QR_IMPLEMENTATION.md#pruebas-y-aceptación-t-q0124); T-Q23 conserva la aceptación física por confirmación del usuario (sin corroboración independiente nueva). Aplicar [D-09 y Readiness](DECISIONS.md#readiness-for-phase-6) conservando T-R/T-P y la regresión previa. El QR nunca sustituye identidad, permisos, estado ni comprobación física. Las referencias T-Q son criterios internos, no requisitos nuevos ni estados de BD.
 
 | Criterio | Fuente / regla | Prueba obligatoria y resultado esperado |
 | --- | --- | --- |
@@ -210,3 +210,7 @@ Fase 5.5 especifica estas pruebas; **ninguna fue ejecutada ni se declara aprobad
 | T-Q24 | R-TR-04 / R-CC-04 / RD-08 | Medir <=3 s desde lectura correcta hasta resultado mostrado (incluye red/backend/UI; captura y confirmaciones humanas ocurren antes de la lectura final) y >=30 validaciones/min con resultados coherentes. Verificar ninguna transacción abierta durante captura; librerías mínimas/mantenidas/locales, build/auditorías y regresión completa. |
 
 Las carreras requieren dos procesos reales, barreras y comprobación de estado confirmado, no mocks ni solo secuencias. Usar únicamente MySQL testing aislado con guarda. La coordinación RBAC global es una limitación existente: incluir espera del recurso/QR y lecturas actuales para no atribuir toda la garantía a esa serialización. Estos ensayos pertenecen a Fase 6; su documentación no constituye ejecución ni cumplimiento de la aceptación integral de Fase 13.
+
+## Evidencia QR de Fase 6
+
+T-Q01–24 mantienen su contenido normativo; la matriz ejecutada y sus límites están en QR_IMPLEMENTATION.md. Suite 325/4984, 63 casos nuevos, 16 escenarios concurrentes y revisión interactiva diferenciada de cámara física. No se convierten lecturas sintéticas ni la declaración del usuario sin fila concordante en prueba física corroborada. Se conserva la regresión T-R/T-P.

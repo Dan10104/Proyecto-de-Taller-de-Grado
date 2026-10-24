@@ -1,6 +1,6 @@
 # Modelo del dominio
 
-**Estado vigente: Fase 5 implementada y validada (CU12–CU19), con incidencias integradas en CU06/CU07/CU09.** Los cierres anteriores conservan su contexto histórico. [Implementación, pruebas y límites actuales](EQUIPMENT_LOANS_IMPLEMENTATION.md). Fase 6 no iniciada.
+**Estado vigente: Fase 6 implementada y aceptada; suite automatizada aprobada. La prueba física se acepta por confirmación del usuario, sin nueva evidencia válida corroborada independientemente.** CU11/CU20 y extensión opcional CU17/CU18 incorporados. [Arquitectura, 325 pruebas, trazabilidad y límites de aceptación](QR_IMPLEMENTATION.md). Los cierres anteriores se conservan como evidencia histórica; Fase 7 no iniciada.
 
 Fuentes: figura 19 (p. 109 / PDF 110), figuras 108–109 (p. 248–249 / PDF 249–250), mapeo, volúmenes y SQL del cap. VII. El diagrama conceptual simplifica relaciones; las diferencias con el diseño de clases y datos están registradas en D-06. Estado: contrato congelado en Fase 0.5; materialización incremental hasta Fase 4 descrita al final. Las entidades de fases posteriores siguen siendo documentales.
 
@@ -174,3 +174,7 @@ Los seis modelos y enums de equipamiento/préstamos/hitos/incidencias están imp
 D-09 está [RESUELTA PARA FASE 6](DECISIONS.md#readiness-for-phase-6), sin modelos ni enums PHP implementados. CodigoQR identifica exactamente un recurso (espacio/equipo), reserva o préstamo; no hay tipo_qr. Activo y ventana [generada_en,vence_en), con NULL permitido, determinan vigencia; máximo un activo por objetivo exacto por regla transaccional, sin consumo al escanear. Revocar conserva historia y rotar crea otra identidad/token.
 
 ValidacionQR registra VALIDA/INVALIDA y USO_ESPACIO/ENTREGA/DEVOLUCION, hash leído, actor/reloj/contexto y QR reconocido opcional. El recurso esperado se deriva de reserva/préstamo. CU11 exige APROBADA en [inicio,fin), propia o administrativa autorizada, y no cambia estados. CU20 amplía opcionalmente CU17/CU18; retorno con restricción es posible y NO_DETERMINABLE conserva su semántica. La validación nueva se enlaza al hito de la misma petición/transacción; una revisión posterior conserva ese enlace. Invalidar no modifica entidades operativas. [Ciclo, correspondencia y correlación exactos](DECISIONS.md#contextos-y-correspondencia-exactos).
+
+## Materialización QR de Fase 6
+
+CodigoQr/ValidacionQr, relaciones belongsTo/hasMany y enums ResultadoValidacionQr/TipoOperacionQr implementados. Sin estados extra ni timestamps automáticos. Hashes ocultos, fechas inmutables, factories sintéticas. CU11 solo evidencia; CU20 conserva estados y servicios CU17/CU18. [Ciclo, relaciones, pruebas y límite de aceptación](QR_IMPLEMENTATION.md). Las declaraciones de ausencia de modelos en Fases 5/5.5 son históricas.

@@ -1,6 +1,6 @@
 # Plan de implementación web
 
-Estado: **Fase 5 implementada y validada; Fase 5.5 documental cerrada; Fases 6–14 no iniciadas**. Fases 0 y 0.5 conservaron su alcance documental; la nueva instrucción de Fase 1 autorizó la fundación técnica descrita en [DEVELOPMENT_SETUP.md](DEVELOPMENT_SETUP.md). No existe Flutter, Android ni cliente nativo en el plan de ejecución.
+Estado: **Fase 6 implementada y aceptada por el usuario; suite automatizada aprobada; Fases 7–14 no iniciadas**. Fases 0 y 0.5 conservaron su alcance documental; la nueva instrucción de Fase 1 autorizó la fundación técnica descrita en [DEVELOPMENT_SETUP.md](DEVELOPMENT_SETUP.md). No existe Flutter, Android ni cliente nativo en el plan de ejecución.
 
 ## Inventario histórico anterior a Fase 1 — 2026-10-23
 
@@ -120,6 +120,8 @@ Completada documentalmente: D-02/D-11 resueltas para Fase 5; D-04/D-05 aplicadas
 | Commit esperado | `feat: add equipment loans returns and maintenance` |
 
 ### Fase 6 — Códigos QR y validaciones
+
+Implementación disponible, 325 pruebas/4984 aserciones aprobadas. [Evidencia y aceptación física y su límite de evidencia](QR_IMPLEMENTATION.md). El plan siguiente conserva los criterios exigidos.
 
 | Campo | Plan |
 | --- | --- |
@@ -299,3 +301,7 @@ D-09 **RESUELTA PARA FASE 6**, cero bloqueantes documentales para CU11/CU20 y la
 La próxima instrucción podrá autorizar Fase 6. Implementará únicamente las dos tablas oficiales, modelos/enums correspondientes, tres permisos previstos, gestión de QR y validación contextual con cámara local, integración atómica y T-Q01–24 más regresión. Seleccionar/auditar librería mínima compatible durante esa fase; nunca enviar tokens/frames a proveedores. Sin fuente de política global, la obligatoriedad configurable sigue diferida y CU20 es extensión explícita. No se han creado tablas/permisos/rutas/UI ni instalado dependencias; Fases 6–14 permanecen no iniciadas.
 
 Verificación de Fase 5.5: doce Markdown afectados, 166 enlaces locales incluidos anchors válidos y 24 criterios T-Q futuros; git diff --check correcto. Diccionario de ambas tablas QR sin cambios y SQL Word/PDF equivalente; huellas originales intactas. Escaneo privado de 272 archivos públicos, índice, diferencias e historial sin hallazgos; plantillas/exclusiones correctas. Lectura de metadatos de desarrollo: 21 tablas académicas más migrations, 33 permisos, cero tablas/permisos QR. Ninguna migración, seed, suite funcional o captura de cámara ejecutada en este cierre; 262 pruebas/3318 aserciones siguen siendo evidencia histórica de Fase 5. Rama documental docs/phase-5.5-qr-decisions desde main/origin/main af80471, con publicación e integración sin force push.
+
+## Avance vigente de Fase 6
+
+La instrucción posterior autorizó la implementación sobre feature/phase-6-qr desde 08baa06. Dos tablas QR, tres permisos, lifecycle, CU11/CU20, extensiones CU17/CU18 y cámara local realizados; regresión sin QR conservada. Excepción de siete FK aprobada. Suite 325/4984 y revisión interactiva documentadas; el usuario resolvió el cierre manual aceptando expresamente la lectura física sin una nueva fila válida independiente. Se permite la integración final, conservando ese límite de evidencia. Fase 7 no iniciada; siguiente paso recomendado: cierre documental D-10 antes de cualquier ingestión IoT. Las secciones Fase 5/5.5 anteriores reflejan su momento histórico.

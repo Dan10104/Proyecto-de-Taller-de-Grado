@@ -1,6 +1,6 @@
 # Política de seguridad
 
-**Estado vigente: Fase 5 implementada y validada (CU12–CU19), con incidencias integradas en CU06/CU07/CU09.** Los cierres anteriores conservan su contexto histórico. [Implementación, pruebas y límites actuales](EQUIPMENT_LOANS_IMPLEMENTATION.md). Fase 6 no iniciada.
+**Estado vigente: Fase 6 implementada y aceptada; suite automatizada aprobada. La prueba física se acepta por confirmación del usuario, sin nueva evidencia válida corroborada independientemente.** CU11/CU20 y extensión opcional CU17/CU18 incorporados. [Arquitectura, 325 pruebas, trazabilidad y límites de aceptación](QR_IMPLEMENTATION.md). Los cierres anteriores se conservan como evidencia histórica; Fase 7 no iniciada.
 
 Repositorio público. Esta política aplica a documentación, código, pruebas, historial Git, imágenes, logs, issues y artefactos. Fuentes: instrucciones de Fases 0, 0.5, 1 y 1.5; RNF-10–17, IS-14, IC-02/04/05/08/11, RD-19/20/23/43/44 y DB-21–24.
 
@@ -106,3 +106,7 @@ Doce permisos exactos del contrato Fase 4.5, sin bypass de Administrador ni alca
 Sesión vigente, ACTIVO, CSRF, permiso de un rol elegible, contexto/propiedad, código/vigencia, recurso/operación y estado/reloj servidor son obligatorios. Solo A/E gestionan QR y validan equipamiento con sus permisos correspondientes; CU11 exige autorización propia/administrativa. Token solo en memoria de generación/lectura y cuerpo POST al backend propio; nunca URL, logs, analytics, consola, flash de errores, sesión, props persistibles/historial Inertia, caché o almacenamiento del navegador. Respuestas con representación QR privadas no-store; descartar buffers y detener cámara al abandonar. La impresión física prevista no autoriza archivar imágenes digitales con token.
 
 No frames/fotos guardados ni enviados al servidor/terceros; decodificación local, HTTPS en producción, librería compatible/mantenida/mínima sin servicio remoto. Sin entrada manual. Pruebas futuras con tokens sintéticos generados en testing; documentación/capturas con QR ficticio o revocado. Nada real utilizable en Git. Logs técnicos solo ID de validación/resultado/tipo. No instalar ni configurar librerías/cámara en esta fase. La misma petición y transacción liga validación nueva e hito; ningún ID de validación vieja, token revocado o cambio concurrente puede autorizar por sí solo una operación.
+
+## Aplicación QR de Fase 6
+
+Tres permisos implementados (36 totales), auth/ACTIVO/CSRF/sesión y contexto actual tras espera. Token exacto solo en memoria y POST; exclusión de trim/flash, no persistencia Inertia, errores QR sin debug/payload, no-store y cámara local. Ningún frame/imagen va al backend o terceros. [Controles, matriz y pruebas](QR_IMPLEMENTATION.md). Prohibido activar logs/APM de cuerpos QR. El arnés es fuente de tests separada, sus assets se eliminan con build normal; no permite bypass ni es una función del producto.
