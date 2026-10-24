@@ -1,4 +1,6 @@
 <script setup>
+import {ref,onMounted,watch} from 'vue';
+import QrHistory from '../../Components/QrHistory.vue';
 import {Link} from '@inertiajs/vue3';
 import AppLayout from '../../Layouts/AppLayout.vue';
 import OperationalState from '../../Components/OperationalState.vue';
@@ -6,12 +8,15 @@ import LoanActions from '../../Components/LoanActions.vue';
 import {person,labels} from '../../equipment';
 import {reservationDate} from '../../reservations';
 import {useAccess} from '../../security';
-defineProps({prestamo:Object});
+const props=defineProps({prestamo:Object});
+const qrMessage=ref(''),qrHistory=ref(null);
+async function loadHistory(page=1){if(!can('qr.validar_operacion')||!can('prestamos.ver_administrativos'))return;try{const r=await fetch(`/prestamos/${props.prestamo.id}/qr/validaciones?page=${page}`,{headers:{Accept:'application/json'},cache:'no-store'});if(r.ok)qrHistory.value=(await r.json()).validaciones;}catch{qrHistory.value=null;}}
+onMounted(()=>loadHistory());watch(()=>props.prestamo,()=>loadHistory());
 const {can}=useAccess();
 </script>
 <template>
  <AppLayout title="Detalle de préstamo" section="Préstamos">
-  <div class="page-heading"><div><span class="eyebrow">PRÉSTAMO DE EQUIPAMIENTO</span><h1>{{prestamo.equipamiento.nombre}}</h1><p class="reservation-code">{{prestamo.codigo}}</p></div><div class="button-group"><OperationalState :value="prestamo.estado"/><Link href="/prestamos" class="btn btn-secondary">Volver a préstamos</Link></div></div>
+  <div class="page-heading"><div><span class="eyebrow">PRÉSTAMO DE EQUIPAMIENTO</span><h1>{{prestamo.equipamiento.nombre}}</h1><p class="reservation-code">{{prestamo.codigo}}</p></div><div class="button-group"><Link v-if="can('qr.gestionar') && can('prestamos.ver_administrativos')" :href="'/qr/prestamo/'+prestamo.id" class="btn btn-secondary">Gestionar QR</Link><OperationalState :value="prestamo.estado"/><Link href="/prestamos" class="btn btn-secondary">Volver a préstamos</Link></div></div>
   <p v-if="prestamo.vencido" class="alert">{{prestamo.revision_pendiente?'El fin previsto ya pasó. La recepción está registrada y falta confirmar su revisión.':'El préstamo está vencido y continúa pendiente de devolución.'}}</p>
   <section class="panel detail-panel"><h2>Solicitud y equipo</h2><dl class="detail-grid">
    <div><dt>Equipo</dt><dd>{{prestamo.equipamiento.codigo}} · {{prestamo.equipamiento.nombre}}</dd></div><div><dt>Tipo y ubicación base</dt><dd>{{prestamo.equipamiento.tipo}} · {{prestamo.equipamiento.ubicacion}}</dd></div>
@@ -19,7 +24,8 @@ const {can}=useAccess();
   </dl><p v-if="prestamo.estado==='PENDIENTE'" class="alert">Solicitud pendiente: el equipo aún no está comprometido.</p><p class="hint">Fechas y horas de Bolivia.</p>
    <div class="button-group"><Link v-if="can('equipamientos.ver')" :href="'/equipamientos/'+prestamo.equipamiento.id" class="text-link">Ver equipo</Link><Link v-if="can('incidencias.ver')" :href="'/incidencias?recurso_id='+prestamo.equipamiento.id" class="text-link">Ver incidencias del equipo</Link></div>
   </section>
-  <LoanActions :key="prestamo.estado+'-'+prestamo.devolucion?.estado" :prestamo="prestamo"/>
+  <p v-if="qrMessage" class="alert" role="status">{{qrMessage}}</p>
+  <LoanActions @qr-result="qrMessage=$event" :key="prestamo.estado+'-'+prestamo.devolucion?.estado" :prestamo="prestamo"/>
   <section class="panel detail-panel"><h2>Seguimiento del préstamo</h2><ol class="reservation-history">
    <li><strong>Solicitud registrada</strong><time>{{reservationDate(prestamo.solicitado_en)}}</time></li>
    <li v-if="prestamo.resuelto_en"><strong>{{prestamo.estado==='RECHAZADO'?'Solicitud rechazada':'Préstamo aprobado'}}</strong><time>{{reservationDate(prestamo.resuelto_en)}}</time><span>{{person(prestamo.resuelto_por)}}</span><p v-if="prestamo.motivo_rechazo" class="operational-text">{{prestamo.motivo_rechazo}}</p></li>
@@ -27,5 +33,6 @@ const {can}=useAccess();
    <li v-if="prestamo.devolucion"><strong>Recepción de devolución</strong><time>{{reservationDate(prestamo.devolucion.registrada_en)}}</time><span>Recibió: {{person(prestamo.devolucion.recibido_por)}}</span><div class="operational-badges"><OperationalState :value="prestamo.devolucion.estado"/><OperationalState :value="prestamo.devolucion.condicion"/></div><p class="operational-text">{{prestamo.devolucion.descripcion_condicion}}</p><p v-if="prestamo.devolucion.observacion" class="operational-text">{{prestamo.devolucion.observacion}}</p></li>
    <li v-if="prestamo.devolucion?.confirmada_en"><strong>Devolución confirmada</strong><time>{{reservationDate(prestamo.devolucion.confirmada_en)}}</time><span>Confirmó: {{person(prestamo.devolucion.confirmado_por)}}</span></li>
   </ol></section>
+  <QrHistory v-if="qrHistory" :validaciones="qrHistory" async-pages @page="loadHistory"/>
  </AppLayout>
 </template>

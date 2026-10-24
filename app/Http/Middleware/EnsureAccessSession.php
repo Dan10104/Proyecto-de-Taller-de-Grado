@@ -14,7 +14,8 @@ class EnsureAccessSession
         if (! $request->user() || ! $control->validateAndRenew($request)) {
             $control->clear($request);
 
-            return redirect()->route('login')->with('notice', 'La sesión finalizó. Inicie sesión nuevamente.');
+            return $request->expectsJson() ? response()->json(['message' => 'La sesión finalizó. Inicie sesión nuevamente.'], 401)
+                : redirect()->route('login')->with('notice', 'La sesión finalizó. Inicie sesión nuevamente.');
         }
 
         return $next($request);

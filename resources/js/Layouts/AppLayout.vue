@@ -66,6 +66,7 @@ onUnmounted(() => document.removeEventListener('keydown', keydown));
         <Link v-if="can('equipamientos.ver')" href="/equipamientos" :class="{active:page.url.startsWith('/equipamientos')}" @click="drawer=false"><Icon name="building"/>Equipamiento</Link>
         <Link v-if="can('prestamos.ver_propios') || can('prestamos.ver_administrativos')" href="/prestamos" :class="{active:page.url.startsWith('/prestamos')}" @click="drawer=false"><Icon name="users"/>Préstamos</Link>
         <Link v-if="can('incidencias.ver')" href="/incidencias" :class="{active:page.url.startsWith('/incidencias')}" @click="drawer=false"><Icon name="shield"/>Incidencias</Link>
+        <Link v-if="can('qr.gestionar')" href="/qr" :class="{active:page.url.startsWith('/qr')}" @click="drawer=false"><Icon name="shield"/>Códigos QR</Link>
         <Link v-if="can('usuarios.ver')" href="/usuarios" :class="{active:page.url.startsWith('/usuarios')}" @click="drawer=false">
           <Icon name="users"/>
           Usuarios

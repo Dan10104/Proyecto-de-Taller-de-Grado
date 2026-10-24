@@ -4,6 +4,8 @@ import AppLayout from '../../Layouts/AppLayout.vue';
 import ReservationState from '../../Components/ReservationState.vue';
 import ReservationActions from '../../Components/ReservationActions.vue';
 import { reservationDate } from '../../reservations';
+import {useAccess} from '../../security';
+const {can}=useAccess();
 const props = defineProps({ reserva: Object });
 function person(value) { return value ? `${value.nombres} ${value.apellidos}` : ''; }
 </script>
@@ -11,7 +13,7 @@ function person(value) { return value ? `${value.nombres} ${value.apellidos}` : 
   <AppLayout title="Detalle de reserva" section="Reservas">
     <div class="page-heading">
       <div><span class="eyebrow">RESERVA DE ESPACIO</span><h1 tabindex="-1">{{ reserva.espacio.nombre }}</h1><p class="reservation-code">{{ reserva.codigo }}</p></div>
-      <div class="button-group"><ReservationState :value="reserva.estado"/><Link href="/reservas" class="btn btn-secondary">Volver a reservas</Link></div>
+      <div class="button-group"><Link v-if="can('qr.gestionar') && can('reservas.ver_administrativas')" :href="'/qr/reserva/'+reserva.id" class="btn btn-secondary">Gestionar QR</Link><Link v-if="can('qr.validar_uso_espacio')" :href="'/reservas/'+reserva.id+'/qr'" class="btn btn-primary">Validar uso mediante QR</Link><ReservationState :value="reserva.estado"/><Link href="/reservas" class="btn btn-secondary">Volver a reservas</Link></div>
     </div>
     <section class="panel detail-panel">
       <h2>Datos de la reserva</h2>
