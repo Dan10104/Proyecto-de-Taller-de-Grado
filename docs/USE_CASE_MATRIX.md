@@ -1,6 +1,8 @@
 # Matriz CU01–CU30
 
-**Fase 7.5 documental:** [D-08 cerrada, 0 bloqueantes para Fase 8](DECISIONS.md#readiness-for-phase-8). CU23 permanece sin implementación; su contrato futuro incluye matriz completa, fuentes opcionales con veto, scheduler, idempotencia, versiones y concurrencia. No declara cumplidas las notificaciones ni CU30 del flujo completo.
+**Estado vigente — Fase 8 implementada (2026-10-24).** CU23 implementado como proceso interno programado, extensión temporal de CU22 sobre evidencia persistida; no requiere actor humano ni evento entrante. Versiones, ventanas, pivotes, matriz, idempotencia y concurrencia comprobados. RegistroActividad de la ficha original y notificaciones continúan pendientes de sus fases. [Informe de implementación, verificaciones y límites](RELEASE_POLICY_IMPLEMENTATION.md). Las declaraciones de fases anteriores que siguen a continuación se conservan como historia de esos cierres.
+
+**Cierre histórico de Fase 7.5:** [D-08 cerrada, 0 bloqueantes para Fase 8](DECISIONS.md#readiness-for-phase-8). CU23 permanece sin implementación; su contrato futuro incluye matriz completa, fuentes opcionales con veto, scheduler, idempotencia, versiones y concurrencia. No declara cumplidas las notificaciones ni CU30 del flujo completo.
 
 Cobertura: 30/30 casos de uso del cap. V, tablas 38–67; prioridad según tabla 37. Cada ficha reúne iniciador, actores, precondición, flujo, alternativas, excepciones, resultado, RF, entidades/tablas, paquete/fase y pruebas. La asignación RF→CU→tabla→fase es trazabilidad analítica basada en los flujos y diagramas; no crea nuevas funciones.
 
@@ -524,8 +526,8 @@ Fuente: tabla 60; p. 207 (PDF 208); figura 51; análisis figura 97.
 | RF relacionado | RF18 |
 | Entidades / clases principales | PoliticaLiberacion, EspacioAcademico, Reserva, ValidacionQR, SensorIoT, EventoOcupacion, EvaluacionLiberacion, Asociación Evaluación–Evento, Asociación Evaluación–Validación, RegistroActividad |
 | Tablas directamente relacionadas | `politicas_liberacion`, `espacios_academicos`, `reservas`, `validaciones_qr`, `sensores_iot`, `eventos_ocupacion`, `evaluaciones_liberacion`, `evaluaciones_eventos_ocupacion`, `evaluaciones_validaciones_qr`, `registros_actividad` |
-| Módulo futuro y fase | Monitoreo IoT y Disponibilidad; Fase 8 |
-| Pruebas necesarias | T-CU23 concretado en T-L01–T-L36 de BUSINESS_RULES; futuras, no ejecutadas en 7.5. |
+| Módulo y estado actual | Monitoreo IoT y Disponibilidad; núcleo CU23 implementado en Fase 8. CU30/notificaciones diferidos. |
+| Pruebas necesarias | T-CU23 concretado en T-L01–T-L36; ejecutados en Fase 8, con evidencia en RELEASE_POLICY_IMPLEMENTATION. En 7.5 eran especificaciones futuras. |
 
 ## CU24 — Generar evidencia de trazabilidad mediante Blockchain
 

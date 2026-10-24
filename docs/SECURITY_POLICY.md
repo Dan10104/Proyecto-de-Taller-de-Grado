@@ -1,8 +1,10 @@
 # Política de seguridad
 
-**Fase 7.5 documental:** [D-08 y permisos futuros](DECISIONS.md#scheduler-consultas-y-permisos-previstos). Ninguna reserva se libera con evidencia requerida insuficiente/desactualizada/no interpretable o con contradicción. Positivo fiable opcional también veta. Los cuatro permisos liberacion.* están previstos, todavía ausentes de DB; ejecución interna independiente de RBAC humano, sin rol Sistema ni endpoint de liberación manual.
+**Estado vigente — Fase 8 implementada (2026-10-24).** Se añaden exactamente cuatro permisos liberacion.*, sin bypass ni usuario Sistema. Autorización humana coordina/revalida RBAC; CU23 interno no toma ese lock. Scope propio obligatorio en servidor y DTO sin actores ni identificadores IoT. QR/HMAC/tokens/credenciales no aparecen en motivos, logs, respuestas ni documentación pública. [Informe de implementación, verificaciones y límites](RELEASE_POLICY_IMPLEMENTATION.md). Las declaraciones de fases anteriores que siguen a continuación se conservan como historia de esos cierres.
 
-**Estado vigente: Fase 7 implementada conforme a D-10.** CU21/CU22 y evidencia informativa en CU06; dos tablas IoT y tres permisos nuevos. [Implementación, seguridad, pruebas y límites](IOT_IMPLEMENTATION.md). CU23 y Fase 8 no iniciados.
+**Cierre histórico de Fase 7.5:** [D-08 y permisos futuros](DECISIONS.md#scheduler-consultas-y-permisos-previstos). Ninguna reserva se libera con evidencia requerida insuficiente/desactualizada/no interpretable o con contradicción. Positivo fiable opcional también veta. Los cuatro permisos liberacion.* están previstos, todavía ausentes de DB; ejecución interna independiente de RBAC humano, sin rol Sistema ni endpoint de liberación manual.
+
+**Estado histórico: Fase 7 implementada conforme a D-10.** CU21/CU22 y evidencia informativa en CU06; dos tablas IoT y tres permisos nuevos. [Implementación, seguridad, pruebas y límites](IOT_IMPLEMENTATION.md). CU23 y Fase 8 no iniciados.
 
 La Fase 6 conserva su aceptación y su límite de corroboración física descritos en [QR_IMPLEMENTATION.md](QR_IMPLEMENTATION.md). Los cierres documentales de Fase 6.5 y anteriores se conservan como evidencia histórica; sus criterios futuros se verifican ahora en Fase 7.
 

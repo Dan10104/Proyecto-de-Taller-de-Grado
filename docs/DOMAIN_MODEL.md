@@ -1,6 +1,8 @@
 # Modelo del dominio
 
-**Estado vigente: Fase 7 implementada conforme a D-10.** CU21/CU22 y evidencia informativa en CU06; dos tablas IoT y tres permisos nuevos. [Implementación, seguridad, pruebas y límites](IOT_IMPLEMENTATION.md). CU23 y Fase 8 no iniciados.
+**Estado vigente — Fase 8 implementada (2026-10-24).** Los enums de modo/resultado y EvaluacionLiberacion materializan el dominio congelado. Una evaluación relaciona reserva/política y Q/E mediante M:N histórica. Solo LIBERAR cambia APROBADA→LIBERADA; no cambia estado del espacio ni crea FINALIZADA. [Informe de implementación, verificaciones y límites](RELEASE_POLICY_IMPLEMENTATION.md). Las declaraciones de fases anteriores que siguen a continuación se conservan como historia de esos cierres.
+
+**Estado histórico: Fase 7 implementada conforme a D-10.** CU21/CU22 y evidencia informativa en CU06; dos tablas IoT y tres permisos nuevos. [Implementación, seguridad, pruebas y límites](IOT_IMPLEMENTATION.md). CU23 y Fase 8 no iniciados.
 
 La Fase 6 conserva su aceptación y su límite de corroboración física descritos en [QR_IMPLEMENTATION.md](QR_IMPLEMENTATION.md). Los cierres documentales de Fase 6.5 y anteriores se conservan como evidencia histórica; sus criterios futuros se verifican ahora en Fase 7.
 

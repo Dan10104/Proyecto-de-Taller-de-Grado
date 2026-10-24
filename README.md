@@ -2,9 +2,9 @@
 
 Sistema de información para la gestión y control de reservas de espacios académicos y préstamos de equipamiento tecnológico en la FICCT, con monitoreo de ocupación mediante IoT y trazabilidad de operaciones mediante Blockchain.
 
-**Estado: Fase 7 implementada — sensores IoT, recepción REST/HMAC, monitoreo e información complementaria en CU06.** Se conserva seguridad, espacios, reservas, equipamiento/préstamos/incidencias y QR. [Informe de Fase 7, pruebas, seguridad y trazabilidad](docs/IOT_IMPLEMENTATION.md). IoT no modifica disponibilidad base ni libera reservas. CU23/Fase 8, Blockchain, notificaciones y CU30 siguen diferidos. La aceptación física de QR conserva el límite descrito en su informe.
+**Estado: Fase 8 implementada — políticas de liberación, CU23, evidencia QR/IoT y scheduler.** Se conserva el núcleo anterior; D-08 se aplica sin cambiar su contrato. [Informe de Fase 8, pruebas, seguridad y trazabilidad](docs/RELEASE_POLICY_IMPLEMENTATION.md). Blockchain, notificaciones, CU30 y Fase 9 siguen pendientes. La aceptación física QR conserva el límite de su propio informe.
 
-**Fase 7.5 documental cerrada: D-08 RESUELTA PARA FASE 8, 0 bloqueantes documentales.** [Contrato, matriz QR/IoT y Readiness for Phase 8](docs/DECISIONS.md#readiness-for-phase-8). Versiones, tolerancia, veto de uso, evidencia M:N, scheduler, idempotencia, locks y permisos futuros congelados. Solo se actualizó documentación; CU23 y Fase 8 requieren una nueva instrucción y no están implementados. [36 criterios de aceptación futuros](docs/BUSINESS_RULES.md#aceptación-de-liberación-prevista-para-fase-8).
+Fase 7.5 cerró D-08 con cero bloqueantes documentales; la instrucción oficial posterior autorizó la implementación actual. [Contrato congelado](docs/DECISIONS.md#readiness-for-phase-8) y [mapa de los 36 criterios ejecutados](docs/RELEASE_POLICY_IMPLEMENTATION.md#verificación-y-trazabilidad-de-aceptación).
 
 ## Fuente de verdad
 
@@ -37,7 +37,7 @@ composer audit
 npm audit
 ```
 
-La suite usa exclusivamente `espacio_u_testing` en MySQL real, con cuenta separada y guarda previa a migraciones/limpieza. La suite de Fase 7 conserva los 325 casos previos y añade 46 IoT, incluidos 13 escenarios con procesos/conexiones concurrentes: 371 pruebas / 5862 aserciones. El informe IoT registra duración y evidencia final. Los 63 casos QR de Fase 6 se conservan. La aceptación física confirmada por el usuario se distingue de las lecturas sintéticas del navegador en QR_IMPLEMENTATION.md. No certifica CU30, módulos posteriores, carga ni despliegue.
+La suite usa exclusivamente `espacio_u_testing` en MySQL real, con cuenta separada y guarda previa a migraciones/limpieza. La suite de Fase 8 conserva las 371 pruebas previas y añade 166 casos de liberación: 537 pruebas. El informe de liberación registra aserciones, duración y evidencia final, incluidas carreras con procesos/conexiones MySQL independientes. Los 63 casos QR de Fase 6 se conservan. La aceptación física confirmada por el usuario se distingue de las lecturas sintéticas del navegador en QR_IMPLEMENTATION.md. No certifica CU30, módulos posteriores, carga ni despliegue.
 
 ## Documentación
 
@@ -50,6 +50,7 @@ La suite usa exclusivamente `espacio_u_testing` en MySQL real, con cuenta separa
 | [Reglas de negocio](docs/BUSINESS_RULES.md) | Invariantes y comprobaciones futuras |
 | [Casos de uso](docs/USE_CASE_MATRIX.md) | Fichas completas CU01–CU30 y pruebas necesarias |
 | [Trazabilidad](docs/REQUIREMENTS_TRACEABILITY.md) | Los 217 requisitos, incluidos 26 RF, con criterios y fases |
+| [Políticas de liberación](docs/RELEASE_POLICY_IMPLEMENTATION.md) | RF18/CU23, versiones, matriz, evidencia M:N, scheduler, idempotencia, concurrencia y pruebas |
 | [Sensores IoT y monitoreo](docs/IOT_IMPLEMENTATION.md) | CU21/CU22, REST/HMAC, provisionamiento, historia, frescura, concurrencia y CU06 informativo |
 | [Códigos QR y validaciones](docs/QR_IMPLEMENTATION.md) | Token/hash, esquema, CU11/CU20, cámara, concurrencia, pruebas y límite de corroboración física |
 | [Equipamiento y préstamos](docs/EQUIPMENT_LOANS_IMPLEMENTATION.md) | Esquema, permisos, transiciones, concurrencia y evidencia de Fase 5 |
@@ -68,16 +69,16 @@ ESPACIO-U/
 ├── app/                 # Modelos, servicios, solicitudes validadas, Gates y middleware
 ├── bootstrap/           # Arranque Laravel
 ├── config/              # Configuración sin secretos
-├── database/            # Veinticinco migraciones, catálogo RBAC y factories sintéticas
+├── database/            # Veintiocho migraciones, catálogo RBAC y factories sintéticas
 ├── docs/                # Contratos y procedimiento de desarrollo
 ├── public/              # Punto de entrada; build generado e ignorado
 ├── resources/
 │   ├── css/app.css
 │   ├── js/app.js
-│   ├── js/Pages/{Auth,Users,Roles,Spaces,Reservations,Equipment,Loans,Incidents,Qr}/
+│   ├── js/Pages/{Auth,Users,Roles,Spaces,Reservations,Equipment,Loans,Incidents,Qr,Iot,Release}/
 │   └── views/app.blade.php
-├── routes/              # Seguridad, espacios, reservas, equipamiento, préstamos, incidencias, QR y /up
-├── scripts/             # Entorno de terminal y ciclo de MySQL local
+├── routes/              # Seguridad, espacios, reservas, equipamiento, préstamos, incidencias, QR, IoT, liberación y /up
+├── scripts/             # Entorno de terminal, MySQL local y scheduler
 ├── storage/             # Datos generados privados
 ├── tests/Feature/
 ├── artisan
@@ -86,7 +87,7 @@ ESPACIO-U/
 └── vite.config.js
 ```
 
-`.tools/`, `.local/`, `.env`, `vendor/`, `node_modules/`, logs y compilados permanecen locales e ignorados. `.env.example` contiene secretos vacíos. MySQL de desarrollo usa `espacio_u` en `127.0.0.1:3308`; 23 tablas académicas están materializadas (21 previas y dos QR); las otras ocho siguen pendientes. Las siete excepciones QR ON UPDATE RESTRICT fueron autorizadas y están documentadas; CHECK y demás SQL permanecen preservados. `espacio_u_testing` tiene credenciales exclusivas en `.env.testing` local.
+`.tools/`, `.local/`, `.env`, `vendor/`, `node_modules/`, logs y compilados permanecen locales e ignorados. `.env.example` contiene secretos vacíos. MySQL de desarrollo usa `espacio_u` en `127.0.0.1:3308`; 28 tablas académicas están materializadas (25 previas y tres de liberación); las otras tres siguen pendientes. Las siete excepciones QR ON UPDATE RESTRICT fueron autorizadas y están documentadas; CHECK y demás SQL permanecen preservados. `espacio_u_testing` tiene credenciales exclusivas en `.env.testing` local.
 
 ## Continuidad
 
@@ -115,3 +116,17 @@ Piloto previsto: POST /api/iot/events, HTTPS (HTTP solo localhost), HMAC-SHA-256
 Reloj servidor; tolerancia de request/futuro y frescura de monitoreo con valores iniciales independientes de 300 s. Ambas fechas deben ser recientes; histórico tardío no implica ocupación actual. Duplicados NULL-safe bajo lock de sensor no insertan ni renuevan comunicación. Identificador inmutable, reasociación preserva historia y sensor deshabilitado rechaza eventos. Sin datos personales ni inferencias de identidad.
 
 CU06 será solo informativo: ninguna lectura libera/cancela/aprueba reservas ni altera disponibilidad base. CU23 y su parámetro de política son de Fase 8. Tres permisos IoT A/E previstos; catálogo actual de 36 intacto. [Aceptación futura T-I01–T-I32](docs/BUSINESS_RULES.md#aceptación-iot-prevista-para-fase-7). Esta entrega cambia únicamente documentación; no ejecuta migraciones, pruebas funcionales, provisión o ingestión IoT.
+
+## Ejecutar políticas de liberación
+
+Con MySQL y el entorno local activos:
+
+```powershell
+php artisan reservas:evaluar-liberacion
+.\scripts\release-scheduler.ps1 -Action start
+.\scripts\release-scheduler.ps1 -Action status
+```
+
+El scheduler ejecuta CU23 cada minuto mientras su proceso permanece activo; reiniciarlo después de apagar el equipo. `-Action stop` detiene solo ese proceso. Frecuencia configurable mediante `RELEASE_SCHEDULE` y lote mediante `RELEASE_BATCH_SIZE`; ninguna equivale a tolerancia. No requiere login ni usuario Sistema. Administrador/Encargado con permisos gestionan versiones y asignaciones; Docente/Estudiante consultan sus evaluaciones. Las reglas de una versión no se editan. [Operación y límites](docs/RELEASE_POLICY_IMPLEMENTATION.md#comando-y-scheduler).
+
+Siguiente fase: cerrar D-12 mediante nueva instrucción antes de implementar Fase 9. No hay Blockchain, notificaciones funcionales, CU30 ni finalización automática por tiempo.
