@@ -70,7 +70,7 @@ class RoleManagementTest extends SecurityTestCase
         $teacher = Rol::where('nombre', 'Docente')->first();
         $this->put('/roles/'.$admin->id.'/permisos', ['permisos' => [999999]])->assertSessionHasErrors('permisos.0');
         $this->put('/roles/'.$teacher->id.'/permisos', ['permisos' => [Permiso::where('codigo', 'usuarios.ver')->sole()->id]])->assertSessionHasErrors('permisos');
-        $this->assertEqualsCanonicalizing(['equipamientos.ver', 'prestamos.ver_propios', 'prestamos.solicitar', 'espacios.ver', 'reservas.ver_propias', 'reservas.solicitar', 'reservas.cancelar_propias'], $teacher->permisos()->pluck('codigo')->all());
+        $this->assertEqualsCanonicalizing(['qr.validar_uso_espacio', 'equipamientos.ver', 'prestamos.ver_propios', 'prestamos.solicitar', 'espacios.ver', 'reservas.ver_propias', 'reservas.solicitar', 'reservas.cancelar_propias'], $teacher->permisos()->pluck('codigo')->all());
     }
 
     public function test_assignment_retirement_and_reassignment_preserve_history(): void

@@ -35,7 +35,8 @@ class ReservationSchemaTest extends ReservationTestCase
             $this->assertSame('RESTRICT', $fk->d);
         }
         $this->assertSame(['PENDIENTE', 'APROBADA', 'RECHAZADA', 'CANCELADA', 'LIBERADA', 'FINALIZADA'], array_column(EstadoReserva::cases(), 'value'));
-        foreach (['codigos_qr', 'notificaciones', 'registros_actividad', 'lecturas_iot'] as $table) {
+        $this->assertTrue(Schema::hasTable('codigos_qr'));
+        foreach (['notificaciones', 'registros_actividad', 'lecturas_iot'] as $table) {
             $this->assertFalse(Schema::hasTable($table));
         }
     }
