@@ -26,6 +26,11 @@ class EventoOcupacion extends Model
         return $this->belongsTo(SensorIot::class, 'sensor_id');
     }
 
+    public function evaluaciones()
+    {
+        return $this->belongsToMany(EvaluacionLiberacion::class, 'evaluaciones_eventos_ocupacion', 'evento_id', 'evaluacion_id');
+    }
+
     public function espacioHistorico()
     {
         return $this->belongsTo(EspacioAcademico::class, 'espacio_historico_id', 'recurso_id');

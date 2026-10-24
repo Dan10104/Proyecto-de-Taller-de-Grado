@@ -7,6 +7,10 @@ use App\Enums\RolInstitucional;
 class PermissionCatalog
 {
     public const DEFINITIONS = [
+        'liberacion.politicas.ver' => ['nombre' => 'Consultar políticas de liberación', 'fuente' => 'RF18 / CU23 / D-08'],
+        'liberacion.politicas.gestionar' => ['nombre' => 'Gestionar versiones y asignación de políticas', 'fuente' => 'RF18 / CU23 / D-08'],
+        'liberacion.evaluaciones.ver_administrativas' => ['nombre' => 'Consultar evaluaciones administrativas', 'fuente' => 'RF18 / CU23 / D-08'],
+        'liberacion.evaluaciones.ver_propias' => ['nombre' => 'Consultar evaluaciones de reservas propias', 'fuente' => 'RF18 / CU23 / D-08'],
         'iot.sensores.ver' => ['nombre' => 'Consultar sensores IoT', 'fuente' => 'RF16 / CU21 / D-10'],
         'iot.sensores.gestionar' => ['nombre' => 'Gestionar y provisionar sensores IoT', 'fuente' => 'RF16 / CU21 / D-10'],
         'iot.monitoreo.ver' => ['nombre' => 'Consultar monitoreo e historial IoT', 'fuente' => 'RF17 / CU22 / D-10'],
@@ -56,10 +60,10 @@ class PermissionCatalog
         if (in_array($code, ['qr.validar_uso_espacio', 'reservas.ver_propias', 'reservas.cancelar_propias', 'espacios.ver', 'equipamientos.ver'], true)) {
             return array_column(RolInstitucional::cases(), 'value');
         }
-        if (in_array($code, ['reservas.solicitar', 'prestamos.solicitar', 'prestamos.ver_propios'], true)) {
+        if (in_array($code, ['liberacion.evaluaciones.ver_propias', 'reservas.solicitar', 'prestamos.solicitar', 'prestamos.ver_propios'], true)) {
             return ['Docente', 'Estudiante'];
         }
-        if (str_starts_with($code, 'iot.') || str_starts_with($code, 'qr.') || str_starts_with($code, 'espacios.') || str_starts_with($code, 'reservas.') || str_starts_with($code, 'equipamientos.') || str_starts_with($code, 'prestamos.') || str_starts_with($code, 'incidencias.')) {
+        if (str_starts_with($code, 'liberacion.') || str_starts_with($code, 'iot.') || str_starts_with($code, 'qr.') || str_starts_with($code, 'espacios.') || str_starts_with($code, 'reservas.') || str_starts_with($code, 'equipamientos.') || str_starts_with($code, 'prestamos.') || str_starts_with($code, 'incidencias.')) {
             return ['Administrador', 'Encargado de Laboratorio'];
         }
 

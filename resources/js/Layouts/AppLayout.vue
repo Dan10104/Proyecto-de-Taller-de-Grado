@@ -69,6 +69,8 @@ onUnmounted(() => document.removeEventListener('keydown', keydown));
         <Link v-if="can('qr.gestionar')" href="/qr" :class="{active:page.url.startsWith('/qr')}" @click="drawer=false"><Icon name="shield"/>Códigos QR</Link>
         <Link v-if="can('iot.sensores.ver')" href="/iot/sensores" :class="{active:page.url.startsWith('/iot/sensores')}" @click="drawer=false"><Icon name="shield"/>Sensores IoT</Link>
         <Link v-if="can('iot.monitoreo.ver')" href="/iot/monitoreo" :class="{active:page.url.startsWith('/iot/monitoreo')}" @click="drawer=false"><Icon name="search"/>Monitoreo de ocupación</Link>
+        <Link v-if="can('liberacion.politicas.ver') || can('liberacion.politicas.gestionar')" :href="can('liberacion.politicas.ver') ? '/liberacion/politicas' : '/liberacion/asignaciones'" :class="{active:page.url.startsWith('/liberacion/politicas') || page.url.startsWith('/liberacion/asignaciones')}" @click="drawer=false"><Icon name="shield"/>Políticas de liberación</Link>
+        <Link v-if="can('liberacion.evaluaciones.ver_administrativas') || can('liberacion.evaluaciones.ver_propias')" href="/liberacion/evaluaciones" :class="{active:page.url.startsWith('/liberacion/evaluaciones')}" @click="drawer=false"><Icon name="search"/>Evaluaciones de reservas</Link>
         <Link v-if="can('usuarios.ver')" href="/usuarios" :class="{active:page.url.startsWith('/usuarios')}" @click="drawer=false">
           <Icon name="users"/>
           Usuarios

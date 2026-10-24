@@ -30,6 +30,11 @@ class ValidacionQr extends Model
         return $this->belongsTo(CodigoQr::class, 'codigo_qr_id');
     }
 
+    public function evaluaciones()
+    {
+        return $this->belongsToMany(EvaluacionLiberacion::class, 'evaluaciones_validaciones_qr', 'validacion_id', 'evaluacion_id');
+    }
+
     public function recursoEsperado(): BelongsTo
     {
         return $this->belongsTo(RecursoInstitucional::class, 'recurso_esperado_id');
