@@ -949,3 +949,22 @@ El contrato completo de campos/guardas y la jerarquía de locks están en [DECIS
 ## Materialización física de Fase 5
 
 Aplicadas seis migraciones 000016–000021, únicamente tipos_equipamiento, equipamientos_tecnologicos, prestamos, entregas_prestamo, devoluciones_prestamo e incidencias_mantenimiento. Añaden 54 columnas y completan 21 tablas académicas / 135 columnas / 35 FK; migrations es técnica. Las quince migraciones anteriores no cambian. PK/FK compartida, índices oficiales, acciones referenciales, tipos, nulabilidad, defaults, enums, UNIQUE y CHECK contrastados contra el SQL final en EquipmentLoanSchemaTest, sobre MySQL real. No hay timestamps añadidos ni estructuras auxiliares. El diccionario final de 31 tablas / 211 columnas / 63 FK permanece intacto. [Esquema y evidencia](EQUIPMENT_LOANS_IMPLEMENTATION.md#persistencia-y-dominio).
+
+## Contrato físico QR para Fase 6 — cierre documental 5.5
+
+No se materializa ninguna tabla: permanecen 21 académicas y migrations técnica. El SQL final de codigos_qr (8 columnas/3 FK) y validaciones_qr (13 columnas/7 FK) fue recontrastado con Word/PDF, sin alteraciones. No se cambian VARCHAR(255), defaults, NULL, enum, índices ni acciones ON UPDATE CASCADE/ON DELETE RESTRICT de las diez FK. No se agregan timestamps, tipo_qr, requiere_qr, nonce, consumido_en ni expiración de correlación.
+
+| Campo o constraint existente | Guarda funcional cerrada para Fase 6 |
+| --- | --- |
+| token_hash UNIQUE; hash_leido obligatorio | SHA-256 hexadecimal minúsculo del string UTF-8 exacto; payload canónico base64url de 32 bytes/43 ASCII; solo hashes persistidos |
+| chk_qr_objetivo | Exactamente recurso_id, reserva_id o prestamo_id; recurso común de ambos subtipos |
+| chk_qr_vigencia >= | SQL intacto; aplicación exige > al emitir fecha opcional, uso [generada_en,vence_en); igualdad tiene ventana vacía |
+| activo | Máximo uno verdadero por objetivo exacto mediante lock estable y transacción; no UNIQUE adicional; anteriores conservados inactivos |
+| codigo_qr_id nullable | NULL cuando no reconocido/no canónico; FK cuando localizado por hash incluso si resulta inválido; no código ficticio |
+| recurso_esperado_id / validado_por_id / fecha_hora | Contexto autorizado, sesión y reloj servidor; nunca valores libres del cliente |
+| chk_validacion_contexto | USO_ESPACIO exige reserva y excluye préstamo; ENTREGA/DEVOLUCION exigen préstamo y excluyen reserva |
+| chk_validacion_entrega_devolucion | USO_ESPACIO sin hitos; ENTREGA sin devolución; DEVOLUCION sin entrega |
+| UNIQUE(entrega_id), UNIQUE(devolucion_id) | NULL durante evaluación; una VALIDA nueva enlaza el hito creado dentro de la misma transacción; inválidas quedan NULL; no segunda fila para correlacionar |
+| resultado / motivo_rechazo | Solo VALIDA/INVALIDA; inválida requiere motivo seguro <=500, válida NULL; no EXPIRADA/REVOCADA/DESCONOCIDA como estados |
+
+El SQL permite varios NULL y varios intentos por codigo_qr_id. Las guardas de aplicación relacionan todos los IDs con el mismo recurso/operación y no presentan un ID como autorización. [Contrato completo de D-09](DECISIONS.md#contrato-qr-y-validaciones--cierre-d-09-de-fase-55). Al implementar solo estas dos tablas, el inventario previsto será 23 tablas académicas / 156 columnas / 45 FK; hoy esos dos CREATE TABLE siguen pendientes y el modelo final 31/211/63 no cambia.

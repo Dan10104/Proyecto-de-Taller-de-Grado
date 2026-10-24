@@ -1,6 +1,6 @@
 # Plan de implementación web
 
-Estado: **Fase 5 implementada y validada; cierres intermedios conservados; Fases 6–14 no iniciadas**. Fases 0 y 0.5 conservaron su alcance documental; la nueva instrucción de Fase 1 autorizó la fundación técnica descrita en [DEVELOPMENT_SETUP.md](DEVELOPMENT_SETUP.md). No existe Flutter, Android ni cliente nativo en el plan de ejecución.
+Estado: **Fase 5 implementada y validada; Fase 5.5 documental cerrada; Fases 6–14 no iniciadas**. Fases 0 y 0.5 conservaron su alcance documental; la nueva instrucción de Fase 1 autorizó la fundación técnica descrita en [DEVELOPMENT_SETUP.md](DEVELOPMENT_SETUP.md). No existe Flutter, Android ni cliente nativo en el plan de ejecución.
 
 ## Inventario histórico anterior a Fase 1 — 2026-10-23
 
@@ -127,7 +127,7 @@ Completada documentalmente: D-02/D-11 resueltas para Fase 5; D-04/D-05 aplicadas
 | Carpetas principales futuras | app/Services/; app/Http/; app/Policies/; app/Models/; database/; routes/; resources/js/Pages/ y Components/; tests/ |
 | Requisitos relacionados | RF8/13/14; IH-02/03; RD-08; R-TR-04; R-CC-04 |
 | Casos de uso | CU11/CU20; extensiones de CU17/CU18 |
-| Trabajo previsto | Cerrar detalles diferidos D-09 manteniendo el contrato QR congelado; generación/identificación según alcance; lectura web; validación servidor; hash, objetivo, contexto y vigencia; correlación con entrega/devolución. |
+| Trabajo previsto | Aplicar D-09 resuelta en Fase 5.5: token/hash y ciclo exactos, gestión/rotación, lectura web local, validación contextual servidor y correlación atómica en el mismo request; extensión explícita de entrega/devolución, sin obligación global. |
 | Pruebas requeridas | Cámara ausente/denegada; código falso/caducado/ajeno; permiso insuficiente; reintentos; inválido no muta; <=3 s y >=30/min. |
 | Riesgos / puertas | Tratar QR como permiso; cambios silenciosos a UNIQUE/CHECK; exponer tokens; sustituir web por Flutter. |
 | Condición de finalización | CU11/CU20 y ramas QR de entrega/devolución aceptados; contexto y persistencia consistentes. |
@@ -259,7 +259,7 @@ Esta propuesta corresponde al cierre de Fase 2. Fase 3 fue posteriormente autori
 | D-04, alcance fino por recurso DIFERIDO EN PARTE; RBAC cerrado | Fase 3 autoriza CU05/CU06 por módulo/acción; Fase 3.5 precisa CU07–CU10 y Fase 4.5 aplica el mismo criterio a CU12–CU19 por módulo/acción y propiedad. Las asignaciones finas siguen diferidas, sin nuevas tablas inferidas |
 | D-07, móvil/API y almacenamiento distribuido; sesión web cerrada | Móvil/API cuando se autorice; despliegue distribuido antes de Fase 14 |
 | D-05, reservas resueltas y aplicación a préstamos confirmada en Fase 4.5 | [inicio, fin), exclusividad APROBADO/ENTREGADO, locks/lecturas actuales; sin reapertura. FINALIZADA automática de reservas sigue diferida |
-| D-09, emisión, vigencia y correlación QR | Antes de Fase 6 |
+| D-09, resuelta en Fase 5.5 | Implementar el contrato cerrado en Fase 6; parametrización global de obligatoriedad fuera de ese alcance |
 | D-10, transporte/payload/unidades/reintentos/frescura IoT | Antes de Fase 7 |
 | D-08, disparador, combinación QR/IoT y versión histórica de política | Antes de Fase 8 |
 | D-12, canonicalización exacta, algoritmo, proveedor, operaciones críticas y recuperación | Antes de Fase 9 |
@@ -290,4 +290,12 @@ Validación del cierre documental: nueve Markdown afectados; RF/CU, diagramas y 
 
 Completado el núcleo CU12–CU19 y RF9–RF15 conforme a Fase 4.5, con ampliación de CU06/CU07/CU09. Seis migraciones incrementales, 12 permisos nuevos, 65 pruebas añadidas, total 262 / 3318 aserciones sin fallos/errores/omitidas. QA manual de 28 pasos, cuatro tamaños, teclado y consola completada; build/Pint/auditorías correctos. [Informe y trazabilidad](EQUIPMENT_LOANS_IMPLEMENTATION.md).
 
-Siguiente alcance recomendado, sujeto a nueva instrucción: Fase 6 — Códigos QR y validaciones. Antes de implementación cerrar D-09; después CU11/CU20 y extensiones de CU17/CU18 conforme al plan, preservando transacciones, RBAC y constraints. No se inició CU20 ni ningún componente QR. Fases 6–14 siguen pendientes.
+Siguiente alcance recomendado, sujeto a nueva instrucción: Fase 6 — Códigos QR y validaciones. La necesidad de cerrar D-09 quedó atendida en Fase 5.5; la implementación futura comprende CU11/CU20 y extensiones de CU17/CU18 conforme al plan, preservando transacciones, RBAC y constraints. No se inició CU20 ni ningún componente QR. Fases 6–14 siguen pendientes.
+
+## Cierre documental de Fase 5.5 y Readiness for Phase 6
+
+D-09 **RESUELTA PARA FASE 6**, cero bloqueantes documentales para CU11/CU20 y las extensiones explícitas de CU17/CU18. [Formato/hash, ciclo, permisos, correlación, privacidad y concurrencia cerrados](DECISIONS.md#readiness-for-phase-6). Se revisaron Word/PDF, RF8, CU y diagramas; SQL intacto. Fase 5.5 solo modifica documentación.
+
+La próxima instrucción podrá autorizar Fase 6. Implementará únicamente las dos tablas oficiales, modelos/enums correspondientes, tres permisos previstos, gestión de QR y validación contextual con cámara local, integración atómica y T-Q01–24 más regresión. Seleccionar/auditar librería mínima compatible durante esa fase; nunca enviar tokens/frames a proveedores. Sin fuente de política global, la obligatoriedad configurable sigue diferida y CU20 es extensión explícita. No se han creado tablas/permisos/rutas/UI ni instalado dependencias; Fases 6–14 permanecen no iniciadas.
+
+Verificación de Fase 5.5: doce Markdown afectados, 166 enlaces locales incluidos anchors válidos y 24 criterios T-Q futuros; git diff --check correcto. Diccionario de ambas tablas QR sin cambios y SQL Word/PDF equivalente; huellas originales intactas. Escaneo privado de 272 archivos públicos, índice, diferencias e historial sin hallazgos; plantillas/exclusiones correctas. Lectura de metadatos de desarrollo: 21 tablas académicas más migrations, 33 permisos, cero tablas/permisos QR. Ninguna migración, seed, suite funcional o captura de cámara ejecutada en este cierre; 262 pruebas/3318 aserciones siguen siendo evidencia histórica de Fase 5. Rama documental docs/phase-5.5-qr-decisions desde main/origin/main af80471, con publicación e integración sin force push.

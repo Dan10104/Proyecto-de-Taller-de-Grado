@@ -60,7 +60,7 @@ Una vez confirmada la operación, generar los efectos complementarios sin deshac
 | Integración | Contrato mínimo oficial | Decisiones pendientes |
 | --- | --- | --- |
 | IoT | Sensor registrado/habilitado, espacio, tipo de evento, valor cuando proceda y fechas; HTTP/MQTT; historial y frescura | Autenticación del dispositivo, payload, unidades, deduplicación, desfase temporal, selección de transporte y puente MQTT |
-| QR | Token con hash, vigencia y objetivo; usuario y contexto de reserva/préstamo/operación; resultado con motivo | Emisión/renovación, política de uso por operación, reintentos y correlación con entrega/devolución |
+| QR | D-09 cerrada: token/hash, ciclo, contexto y correlación atómica definidos en Fase 5.5 | Implementación Fase 6 pendiente; solo parametrización global de obligatoriedad queda fuera de ese alcance |
 | Blockchain | Hash local con algoritmo/versión canónica, operación de origen y referencia externa; privacidad previa al envío | Proveedor/red, conjunto exacto de operaciones críticas, formato canónico, reintentos y verificación |
 | Chatbot | Backend con credenciales privadas, alcance por usuario y respuesta/error comprensible | Proveedor/modelo, contenido de orientación autorizado y límites de contexto; sin persistencia adicional asumida |
 
@@ -138,3 +138,11 @@ No agregar infraestructura de eventos vacíos, tablas de bloqueo o historial alt
 EquipmentController, LoanController e IncidentController reciben FormRequests; Policies/Gates autorizan y los servicios ejecutan las invariantes. EquipmentService crea padre/subtipo atómicamente. EquipmentAvailabilityService concentra catálogo y revalidación; LoanService maneja decisiones/hitos; LoanQueryService aplica alcance antes de filtros y presenta DTO limitados; IncidentMaintenanceService comparte recurso entre espacios y equipos. ResourceOperationService coordina transacciones, lecturas actuales y recuperación segura.
 
 Orden común: RBAC → subtipo → préstamo objetivo → demás préstamos pertinentes → entregas → devoluciones → incidencias, por id dentro de cada grupo. Espacios conservan bloqueos/reservas antes de incidencias. La coordinación RBAC global conserva la limitación de serialización de escrituras; las pruebas incluyen espera directa del recurso para acreditar lecturas actuales. No hay llamadas externas dentro de locks. [Arquitectura aplicada, concurrencia y límites](EQUIPMENT_LOANS_IMPLEMENTATION.md#coordinación-transaccional).
+
+## Arquitectura prevista QR — cierre de Fase 5.5
+
+Contrato [D-09](DECISIONS.md#contrato-qr-y-validaciones--cierre-d-09-de-fase-55) resuelto, sin componentes funcionales nuevos. Cámara y decodificación local quedan en la presentación; backend propio concentra contexto, autorización, hash, vigencia y resultado. Generación/renderizado sin persistencia del token/imagen; respuesta no-store fuera de historia Inertia. No API externa ni frames subidos.
+
+El futuro servicio de gestión QR emite/rota/desactiva con transacción sobre objetivo estable; QRValidationService comprueba y registra. CU11 solo guarda evidencia. Para CU20, un coordinador comparte la transacción y contexto bloqueado de LoanService: valida QR, ejecuta el servicio principal y enlaza la misma validación al hito; no duplica transiciones ni crea un ticket reutilizable. La pantalla reúne confirmaciones antes de leer y envía automáticamente el request al completar esa lectura explícita. No espera humana/cámara bajo lock.
+
+Se extiende el orden existente con codigos_qr y luego validaciones_qr después de incidencias, con IDs ordenados y lecturas actuales. La integración futura deberá reutilizar el contexto ya bloqueado para no invertir el orden al volver a LoanService. INVALIDA admitida se confirma sola; VALIDA/hito/enlace/estados confirman juntos o revierten todos ante fallo técnico. Las carreras y la limitación RBAC global están documentadas en [el protocolo](DECISIONS.md#orden-de-locks-y-concurrencia-futura). No se añade almacenamiento de correlación, temporizador de negocio, cola, outbox ni tablas auxiliares.

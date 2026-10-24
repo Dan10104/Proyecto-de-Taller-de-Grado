@@ -119,3 +119,7 @@ Siguiente fase recomendada, únicamente tras nueva instrucción: **Fase 5 — Eq
 ## Integración posterior de Fase 5
 
 El contenido anterior es el cierre histórico de Fase 4. Fase 5 ya implementó CU12–CU19; SpaceAvailabilityService agrega incidencias abiertas a CU06 y a las revalidaciones de CU07/CU09. No se modifica el ciclo de reservas, el carácter opcional de su rechazo, sus migraciones ni sus periodos. Se preservan las reservas y bloqueos al cerrar incidencias. La suite vigente suma 262 pruebas / 3318 aserciones, incluida la regresión de Fase 4. [Evidencia y siguiente fase pendiente](EQUIPMENT_LOANS_IMPLEMENTATION.md).
+
+## Extensión documental CU11 — Fase 5.5
+
+D-09 está resuelta para Fase 6; [contrato CU11](DECISIONS.md#cu11-y-autorización-contextual). Solo reserva APROBADA dentro de [inicio,fin), titular D/S autorizado o A/E con permiso administrativo además del QR. El recurso esperado deriva de la reserva y el QR debe identificar ese espacio o esa reserva exacta. Se reutilizará la guarda de disponibilidad central con excepción de la propia reserva, sin ignorar bloqueos/incidencias. Registrar validación no cambia reserva/espacio ni crea un estado de uso. Tolerancias/liberación siguen Fase 8. No hubo cambio funcional, migración ni ejecución QR en Fase 5.5; la evidencia de pruebas anterior mantiene su fecha y alcance.
