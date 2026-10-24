@@ -20,7 +20,7 @@ Fuentes: figura 19 (p. 109 / PDF 110), figuras 108–109 (p. 248–249 / PDF 249
 | RecursoInstitucional (abstracto) | `recursos_institucionales` | Código único compartido por espacios y equipamiento; superclase abstracta del diseño. |
 | TipoEspacio | `tipos_espacio` | Código único; catálogo, sin crear una entidad general Aula. |
 | CaracteristicaEspacio | `caracteristicas_espacio` | Nombre único; características M:N con los espacios. |
-| PoliticaLiberacion | `politicas_liberacion` | Nombre/version únicos; tolerancia y antigüedad no negativas; versión histórica pendiente de precisar. |
+| PoliticaLiberacion | `politicas_liberacion` | Nombre/version únicos; reglas inmutables por versión; tolerancia y antigüedad no negativas según D-08 de Fase 7.5. |
 | EspacioAcademico | `espacios_academicos` | PK compartida con recurso; capacidad positiva; piso y tipo obligatorios; política opcional. |
 | Asociación Espacio–Característica | `espacios_caracteristicas` | Una fila por par espacio/característica; no duplicar valores. |
 | BloqueoEspacio | `bloqueos_espacio` | Intervalo estricto fin>inicio; responsable y motivo; considerar solo bloqueos aplicables. |
@@ -88,7 +88,7 @@ Contrato D-02 resuelto: los 19 campos ENUM del SQL final se conservan completos 
 | Entidad / campo | Representación oficial | Interpretación congelada |
 | --- | --- | --- |
 | CodigoQR | activo booleano; generacion/expiración según fechas del modelo | Revocado/inactivo se representa con activo=false; vigente exige comprobar fechas. Caducado no crea un estado ni implica cambiar la bandera automáticamente. |
-| PoliticaLiberacion | activa, requiere_qr, usa_iot booleanos; modo separado | Habilitación y selección de evidencias no son nuevos enums. La antigüedad máxima admite NULL; su semántica precisa es D-08. |
+| PoliticaLiberacion | activa, requiere_qr, usa_iot booleanos; modo separado | Antigüedad obligatoria no negativa si usa_iot, NULL en otro caso; al menos una fuente obligatoria. D-08 resuelta en 7.5. |
 | BloqueoEspacio | activo y periodo | Un bloqueo aplicable debe estar activo y solaparse con la consulta; no crear enum de bloqueo. |
 | SesionAcceso | fechas de creación, expiración y revocación | Vigente exige revocada_en IS NULL y ahora < expira_en, junto a sesión Laravel y cuenta ACTIVO. Control por hash, sin enum adicional (D-07/Fase 1.5). |
 | AsignacionRol | fechas de asignación/retiro | Activa = fecha_retiro IS NULL; retirada = fecha_retiro informada. Conservar historia y responsables, sin enum adicional (D-04/Fase 1.5). |
@@ -188,6 +188,12 @@ CodigoQr/ValidacionQr, relaciones belongsTo/hasMany y enums ResultadoValidacionQ
 EventoOcupacion describe ambiente, nunca identidad/asistencia: PRESENCIA/OCUPACION, valor DECIMAL(10,2) nullable sin interpretación universal, fecha_evento declarada normalizada y recepción servidor. Espacio histórico se toma de asociación validada al aceptar. Histórico inmutable, sin edición UI; tupla sensor/espacio/tipo/valor NULL-safe/fecha_evento identifica duplicados exactos.
 
 Ultima_comunicacion cambia solo con evento nuevo aceptado; una retransmisión no renueva este campo. Ambas edades de evento/recepción deben cumplir ventana de monitoreo, sensor habilitado y contexto espacial vigente para lectura actual. Datos insuficientes/antiguos/contradictorios → NO_DETERMINABLE; no equivale a LIBRE. Conectividad y lectura reciente son cálculos; nunca ONLINE/OFFLINE/ERROR persistidos. CU23 y su evaluación siguen en Fase 8, sin alterar reserva/espacio por eventos en Fase 7.
+
+## Contrato documental de liberación — Fase 7.5
+
+[D-08 resuelta para Fase 8](DECISIONS.md#readiness-for-phase-8). PoliticaLiberacion contiene modo; EvaluacionLiberacion contiene resultado y referencia a la versión exacta. Reserva no recibe FK de política ni snapshot. Espacio conserva asociación opcional; cambiarla se prohíbe con APROBADA fin>T. Cada evaluación tiene una reserva y una política obligatorias, y cero o más eventos/validaciones mediante los dos pivotes oficiales.
+
+MANTENER_POR_USO, NO_DETERMINABLE y ALERTAR conservan APROBADA; solo LIBERAR en AUTOMATICA permite APROBADA→LIBERADA, sin mutar estado operativo. Terminal de evaluación no significa estado terminal de reserva. Versiones y evidencia evaluada permanecen inmutables; desactivar afecta decisiones futuras. CU23 interpreta PRESENCIA/OCUPACION exclusivamente bajo D-08, sin cambiar CU22 genérico ni crear identidades de ocupantes. No hay nuevas clases implementadas en 7.5.
 
 
 ## Actualización de Fase 7

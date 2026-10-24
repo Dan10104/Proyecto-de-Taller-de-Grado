@@ -1,5 +1,7 @@
 # Fase 7 — Sensores IoT y monitoreo de ocupación
 
+**Continuidad documental de Fase 7.5:** [D-08 resuelta](DECISIONS.md#evidencia-iot-de-cu23), implementación de CU23 todavía pendiente. Su interpretación exclusiva de PRESENCIA/OCUPACION, ventana de política, todos los sensores relevantes, veto/contradicción e historia enlazada no alteran la semántica genérica de CU22 ni IOT_MONITORING_FRESHNESS_SECONDS. Las pruebas y mediciones siguientes pertenecen a Fase 7; no se vuelven a declarar ejecutadas por el cierre documental.
+
 Implementación de CU21/CU22, RF16/RF17 e información complementaria de CU06, conforme al [contrato D-10 congelado](DECISIONS.md#contrato-iot--cierre-d-10-de-fase-65). Workspace único `C:\Users\BlackMaster69\Desktop\ESPACIO-U`; rama `feature/phase-7-iot`, desde `89090ae`. La instrucción oficial de Fase 7 autoriza código, pruebas, revisión manual y publicación. La evidencia de fases anteriores conserva su contexto histórico.
 
 No hay CU23, liberación automática, scheduler, evaluaciones de liberación, Blockchain, notificaciones funcionales, dashboard final, CU30, aplicación móvil ni broker MQTT. La parte de bitácora general de RF16 permanece diferida; los logs técnicos no sustituyen registros_actividad.

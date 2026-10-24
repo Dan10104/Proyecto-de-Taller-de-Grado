@@ -1,5 +1,7 @@
 # Registro de decisiones y auditoría documental
 
+**Estado vigente: Fase 7.5 documental cerrada. D-08 RESUELTA PARA FASE 8; [Readiness for Phase 8](#readiness-for-phase-8), 0 bloqueantes documentales.** La Fase 7 permanece implementada; CU23 y Fase 8 no se han implementado. Las fotografías de cierres anteriores conservan su fecha y alcance.
+
 Fecha: 2026-10-23. Fase 0.5: contratos de implementación congelados según la instrucción del usuario. Se conservan los 17 expedientes D-01–D-17 y su conflicto original; Git conserva la redacción inicial de Fase 0. No se cambian el Word/PDF, el alcance funcional ni el stack. Fase 1 técnica completada por instrucción posterior; D-15 y la configuración de D-16 tienen evidencia en [DEVELOPMENT_SETUP.md](DEVELOPMENT_SETUP.md). Fase 1.5 cerró D-04/D-07; el núcleo web de Fase 2 y los espacios de Fase 3 están implementados. Fase 3.5 cerró D-05 para reservas; Fase 4 aplica ese contrato con implementación y pruebas. Fase 4.5 cierra documentalmente CU12–CU19: D-02/D-11 resueltas para Fase 5 y D-04/D-05 aplicadas sin reabrirlas. Fase 5 implementada y validada; Fase 5.5 resolvió D-09 y Fase 6 fue implementada y aceptada con los límites de evidencia de QR_IMPLEMENTATION. Fase 6.5 cierra D-10 exclusivamente en documentación: [Readiness for Phase 7](#readiness-for-phase-7), cero bloqueantes documentales. La instrucción posterior de Fase 7 autorizó la implementación de D-10; [evidencia y límites](IOT_IMPLEMENTATION.md). Fase 8 no iniciada.
 
 ## Fuentes verificadas
@@ -53,7 +55,7 @@ SQL es contrato principal de tablas, columnas, tipos, PK/FK, nulabilidad, enums,
 
 ## Clasificación de las 17 decisiones originales (cierre de Fase 0.5)
 
-Esta clasificación conserva la fotografía histórica de Fase 0.5, con **un único estado por expediente en ese cierre**. Los estados vigentes se actualizan en sus fichas y en Readiness for Phase 2/4/5/6/7; no se reescribe el recuento histórico. La clasificación cuenta expedientes de Fase 0, no cada parámetro interno. Una convención puede dejar parámetros posteriores expresamente enumerados; eso no los declara resueltos ni bloquea la fundación.
+Esta clasificación conserva la fotografía histórica de Fase 0.5, con **un único estado por expediente en ese cierre**. Los estados vigentes se actualizan en sus fichas y en Readiness for Phase 2/4/5/6/7/8; no se reescribe el recuento histórico. La clasificación cuenta expedientes de Fase 0, no cada parámetro interno. Una convención puede dejar parámetros posteriores expresamente enumerados; eso no los declara resueltos ni bloquea la fundación.
 
 | Estado | Cantidad |
 | --- | --- |
@@ -282,11 +284,13 @@ Sustento técnico: [autenticación Laravel 13](https://laravel.com/docs/13.x/aut
 | Conflicto original de Fase 0 | RF18 parte del horario; CU23 se dispara desde monitoreo. La política puede tener usa_iot=false. Faltan disparador temporal sin eventos, tratamiento de antigüedad NULL, tabla de combinación QR/IoT/conflicto y conservación de versiones. |
 | Tratamiento registrado en Fase 0 (histórico) | Definir evaluación temporal, tolerancias y evidencia suficiente con criterio conservador. No asumir ausencia como libre. Preservar política/version aplicada; no inventar columnas snapshot sin decisión. ALERTA no libera. |
 | Impacto | Disparador temporal y matriz de evidencia no están completamente especificados. |
-| Decisión vigente de Fase 0.5 | Congelar reserva aprobada aplicable, política, tolerancia y evidencias; uso confirmado mantiene; datos insuficientes/contradictorios o falta de IoT necesario no liberan automáticamente. Guardar evaluación con resultado exacto; ALERTAR no cambia reserva a LIBERADA; solo AUTOMATICA y condiciones inequívocas permiten LIBERAR. No mutar reglas históricas usadas sin preservar versión aplicable. |
+| Decisión de Fase 0.5 (histórica) | Congelar reserva aprobada aplicable, política, tolerancia y evidencias; uso confirmado mantiene; datos insuficientes/contradictorios o falta de IoT necesario no liberan automáticamente. Guardar evaluación con resultado exacto; ALERTAR no cambia reserva a LIBERADA; solo AUTOMATICA y condiciones inequívocas permiten LIBERAR. No mutar reglas históricas usadas sin preservar versión aplicable. |
 | Justificación | El CU23 exige suficiente evidencia y la política limita la automatización; falla de sensor no prueba desocupación. No se añade una relación de persistencia. |
-| Estado | DIFERIDA A UNA FASE POSTERIOR |
-| Fase afectada | 8; contrato con monitoreo en 7. |
-| Detalle diferido / límite de la resolución | Cerrar disparador desde monitoreo incluso sin nuevo evento, umbral de frescura NULL y combinación QR/IoT; garantizar referencia histórica de política versionada usando el modelo. No bloquea Fase 1. |
+| Estado vigente | RESUELTA PARA FASE 8 |
+| Fase afectada | 7.5 documental; implementación de CU23 en 8, todavía no iniciada. |
+| Decisión vigente | Contrato de Fase 7.5 inferior: elegibilidad, versiones inmutables, matriz completa QR/IoT, veto, ventanas, scheduler, idempotencia, evidencia exacta, permisos y transacción compatible con los servicios existentes. |
+| Detalle diferido / límite de la resolución | Ningún bloqueante documental para el alcance de Fase 8. Implementación y pruebas futuras; notificaciones Fase 10, Blockchain Fase 9, CU30 y finalización natural mantienen su alcance diferido. |
+| Autoridad de actualización | Instrucción oficial Fase 7.5 §§1–84; cierre documental posterior a la implementación de Fase 7. |
 | Bloquea iniciar Fase 1 | No |
 | Fecha de adopción | 2026-10-23; instrucción Fase 0.5 |
 
@@ -1202,3 +1206,216 @@ Rama de trabajo docs/phase-6.5-iot-decisions desde main/origin/main limpio en ce
 ## Aplicación de D-10 en Fase 7
 
 Contrato aplicado sin cambiar tablas, enums, derivación, formato RAW, tolerancias, identidad semántica, orden de locks ni permisos. La implementación seleccionada sigue siendo REST y provisión administrativa explícita. RawIotRequest evita el parseo anticipado del framework; el limitador usa file cache coordinado por mutex en este host. Configuración y procedimiento privado, ensayos MySQL, revisión visual y límites de despliegue se documentan en [IOT_IMPLEMENTATION.md](IOT_IMPLEMENTATION.md). Los criterios T-I01–T-I32 dejaron de ser solo futuros; los apartados de cierre 6.5 conservan su fecha y evidencia documental. No se reabre ni implementa D-08/CU23.
+
+## Contrato de liberación de reservas — cierre D-08 de Fase 7.5
+
+Autoridad: instrucción oficial de Fase 7.5, §§1–84, posterior a ffdebb9. Es una decisión documental de implementación; los detalles técnicos añadidos aquí son convenciones explícitas para resolver los vacíos, no texto atribuido al informe. No modifica D-05, D-09, D-10 ni la aplicación vigente. RF18/CU23 queda preparado, no acreditado como implementado.
+
+### Fuentes contrastadas para D-08
+
+Word final y PDF final conservados, con las huellas SHA-256 registradas al inicio de este documento. Se releyeron las tablas Word RF18/CU06/CU11/CU22/CU23 y sus equivalentes PDF, los cuatro CREATE TABLE completos y las figuras de dominio, arquitectura y clases (incluida ampliación de política/evaluación/sensores).
+
+| Fuente | Página impresa / PDF y alcance |
+| --- | --- |
+| RF18, tabla 27 | 135 / 136: tolerancia, uso, alerta/liberación y fallo IoT conservador |
+| CU06, tabla 43 | 182–183 / 183–184: disponibilidad operativa y complemento IoT |
+| CU11, tabla 48 | 190 / 191: validación contextual de uso |
+| CU22, tabla 59 | 206–207 / 207–208: eventos ambientales y extensión condicional |
+| CU23, tabla 60 | 207–208 / 208–209: decisión, evidencia insuficiente y configuración |
+| Dominio / arquitectura / clases | Figuras 19, 107 y 108; 109/247/248 impresas, 110/248/249 PDF |
+| SQL políticas / evaluaciones / pivotes | 274–275 / 275–276; 293–295 / 294–296 |
+| Contratos vigentes | BUSINESS_RULES, DATA_MODEL, DOMAIN_MODEL, USE_CASE_MATRIX, REQUIREMENTS_TRACEABILITY, ARCHITECTURE y SECURITY_POLICY; cierres RESERVATIONS_IMPLEMENTATION, QR_IMPLEMENTATION e IOT_IMPLEMENTATION |
+
+Se contrastó además el código existente de cancelación, QR, gestión/ingestión IoT y coordinación de espacios, solo en lectura. La narrativa «actualizar disponibilidad» no autoriza asignar DISPONIBLE al espacio; el enum de reserva y el servicio central concretan el efecto. «Incidencia de configuración» no crea una incidencia de mantenimiento. «Sistema» es proceso, no usuario ni rol.
+
+### Elegibilidad y reloj de evaluación
+
+**Ninguna reserva puede liberarse automáticamente cuando la evidencia es insuficiente, desactualizada, contradictoria o técnicamente no interpretable. Ante duda se mantiene la reserva. Sin datos no significa espacio libre.** La suficiencia se refiere a las fuentes exigidas por la política y a los vetos fiables; no exige datos de una fuente opcional ausente en una política solo QR.
+
+Sea T la hora confiable del servidor, normalizada a America/La_Paz y segundos enteros, coherente con MySQL y obtenida después de los locks. Es también evaluaciones_liberacion.fecha_hora, no una fecha enviada por el cliente. Reserva evaluable: estado APROBADA, política asignada y `inicio + tolerancia_min <= T < fin`. El instante inicial es inclusivo; fin es exclusivo. PENDIENTE, RECHAZADA, CANCELADA, LIBERADA y FINALIZADA no entran. No evaluar antes del umbral ni después del fin; tampoco crear filas de evaluación para esos descartes normales.
+
+Si `inicio + tolerancia_min >= fin`, no hay ventana útil: política no aplicable a esa reserva, omitir evaluación y mantener estado. Comparar duraciones de forma segura para evitar overflow al sumar minutos grandes. Sin política (`espacios_academicos.politica_liberacion_id IS NULL`): omisión normal, sin evaluación, sustituto global ni error crítico.
+
+Política inactiva o inválida: no ejecutar decisión normal ni liberar. Si existen reserva APROBADA dentro de su periodo y FK de política resoluble, permitir una evaluación técnica NO_DETERMINABLE con motivo de configuración y sin sustituir política. Para tolerancia no negativa legible se respeta su umbral; si la configuración impide calcularlo, el diagnóstico solo ocurre desde inicio y antes de fin. Tolerancia válida fuera del periodo sigue siendo omisión. Un fallo de BD/lectura no equivale a ausencia de evidencia: rollback y error técnico seguro, nunca liberar ni registrar un éxito ficticio.
+
+### Configuración, versiones y asignación
+
+Se conservan los nueve campos oficiales de politicas_liberacion, UNIQUE(nombre,version), defaults y CHECK exactos. Validación de aplicación futura: nombre recortado no vacío, hasta 120 caracteres; version entero positivo 1..2147483647; tolerancia_min entero 0..2147483647; booleanos reales; modo ALERTA/AUTOMATICA; requiere_qr o usa_iot verdadero. Con usa_iot=true, max_antiguedad_lectura_min entero no negativo dentro de INT; con usa_iot=false, almacenar NULL y rechazar un valor contradictorio, sin reutilizarlo ocultamente. Cero es válido: la ventana IoT se limita al segundo T, por lo que la falta de evidencia produce NO_DETERMINABLE.
+
+Convención de versionado: la UI crea versiones, no edita reglas de una versión existente, incluso antes de su primera evaluación. Nombre/version y los cinco campos de decisión quedan inmutables desde creación; esto satisface y refuerza la inmutabilidad obligatoria después de uso. Un cambio de reglas exige otra fila/version. No añadir columna snapshot a reservas ni JSON de configuración a evaluaciones. Validar la pareja mediante el UNIQUE de MySQL y su collation vigente; una colisión concurrente solicita otra versión, sin sobrescribir. No borrar físicamente versiones, usadas o no; retirarlas con activa=false.
+
+Asignación o retiro mediante la FK existente del espacio, únicamente hacia una versión activa/válida o NULL. **Prohibido cambiar esa FK, incluido NULL→política o política→NULL, si existe una reserva APROBADA de ese espacio con fin>T.** Aplica a futuras y activas. Reasignar al mismo ID es operación sin cambio. Consultar bajo lock de espacio, compatible con la aprobación existente; no confiar en un chequeo previo de UI.
+
+Desactivar siempre puede detener decisiones futuras, incluso con reservas aprobadas; no altera historia ni LIBERADA. Para reactivar una versión, exigir configuración válida y ausencia de APROBADA con fin>T en todos los espacios que la referencian: evita volver a habilitar silenciosamente una regla durante compromisos existentes. Crear una nueva versión no la asigna automáticamente. En cada evaluación se guarda el politica_id exacto; nunca reconstruir la política histórica desde la FK actual del espacio. Una nueva versión sería otro contexto, pero la prohibición de reasignación impide usarla para reabrir una reserva APROBADA todavía vigente.
+
+### Evidencia QR de CU23
+
+Conjunto Q: todas las validaciones persistidas de la misma reserva, `recurso_esperado_id = reserva.espacio_id`, tipo_operacion=USO_ESPACIO y `inicio <= fecha_hora <= T < fin`. VALIDA acredita uso; basta una, también cuando requiere_qr=false. No pedir un segundo QR ni invalidar retroactivamente una validación por rotación/vencimiento actual de su código. La validez ya fue determinada por CU11 en el momento registrado. Otro recurso, reserva u operación queda excluido.
+
+INVALIDA es contexto de intento fallido: se enlaza si pertenece a Q, pero nunca acredita no uso. Si requiere_qr=true y no hay VALIDA, falta el criterio QR obligatorio; en política solo QR eso basta para la condición administrativa de inactividad tras tolerancia, salvo veto/contradicción. No se presenta como medición física de espacio vacío. Si también usa_iot=true, se exige además evidencia negativa IoT suficiente. Si requiere_qr=false, la falta de QR no aporta evidencia negativa.
+
+### Evidencia IoT de CU23
+
+Con usa_iot=true, `W = max(inicio, T - max_antiguedad_lectura_min minutos)`. Esta ventana es independiente de IOT_MONITORING_FRESHNESS_SECONDS. Sensores relevantes: **todos** los HABILITADO asociados actualmente al espacio al adquirir los locks, sin filtrar por el texto libre tipo ni seleccionar solo el sensor favorable. Debe haber al menos uno para concluir no utilización.
+
+Conjunto E: eventos de esos sensores con espacio_historico_id correcto, `W <= fecha_evento <= T` y `fecha_recepcion <= T`, ya confirmados y visibles al corte transaccional. No exigir la doble antigüedad de CU22: el contrato CU23 limita medición y prohíbe recepción futura. No usar eventos futuros tolerados por ingestión, eventos de otro espacio ni historia fuera de W. No borrar esa historia. ultima_comunicacion no sustituye una lectura. Una reasignación no cambia espacio_historico_id; sensores deshabilitados o actualmente en otro espacio no forman el conjunto relevante. Si el inventario requerido queda vacío o incompleto, no liberar.
+
+Cuando usa_iot=false, max_antiguedad_lectura_min sigue NULL. Para concretar el veto de fuente opcional se congela una **ventana auxiliar de 300 segundos**, con W=max(inicio,T−300 s) y los mismos filtros de sensor/espacio/recepción. Es convención D-08 exclusiva del veto/contradicción, independiente de la configuración de CU22 y sin columna nueva. Sus ceros no demuestran inactividad: solo la falta de QR obligatorio puede hacerlo en esa política. Datos opcionales ausentes/ambiguos sin señal fiable ni contradicción no añaden un requisito IoT oculto. Una falla técnica al consultar el veto obliga a abortar, no equivale a conjunto vacío.
+
+Interpretación exclusiva de CU23; no cambia el valor genérico ni las vistas de CU22:
+
+| Evento relevante | Significado para CU23 |
+| --- | --- |
+| PRESENCIA, cualquiera sea su valor permitido por D-10, incluido NULL/0/negativo | Evidencia positiva por el tipo; no interpretar su silencio como ausencia |
+| OCUPACION con valor>0 | Evidencia positiva, sin afirmar un conteo de personas |
+| OCUPACION con valor=0 | Evidencia explícita compatible con no ocupación |
+| OCUPACION NULL, negativo o no interpretable | Insuficiente; nunca evidencia negativa |
+
+Se consideran **todos** los eventos de E, no solo el último por sensor. Un cero posterior no borra una presencia anterior todavía en ventana. Clasificación derivada en memoria (no enums/estados/tablas nuevos):
+
+| Clase IoT para la matriz | Condición exacta, en orden de prioridad |
+| --- | --- |
+| Contradictoria | Coexisten evidencia positiva y cero explícito en E, incluso entre sensores/instantes distintos; o valores no equivalentes del mismo sensor/tipo/fecha_evento, incluidos NULL frente a valor. No elegir arbitrariamente uno. |
+| Positiva | Al menos una PRESENCIA u OCUPACION>0, sin contradicción anterior; domina la carencia/ambigüedad de otros sensores. |
+| Negativa completa | Inventario no vacío; cada sensor relevante aporta al menos una OCUPACION=0; todos sus eventos considerados son OCUPACION=0, sin positivos ni valores ambiguos. Solo sirve para demostrar inactividad si usa_iot=true. |
+| Insuficiente | Cualquier otro caso: ningún sensor, falta de lectura en alguno, solo silencio, antigüedad, NULL/negativos o ambigüedad sin positivo fiable. |
+
+No exigir muestras de PRESENCIA a un sensor que solo aporta OCUPACION; tampoco inventar capacidades desde tipo. Un sensor que solo emite presencia y calla impide la conclusión negativa de una política IoT. Las contradicciones internas dominan incluso cuando existe QR válido. QR válido frente a IoT negativa completa también es contradicción y produce NO_DETERMINABLE; un cero parcial con sensores faltantes es insuficiencia, no prueba negativa del espacio.
+
+### Matriz completa de decisión de D-08
+
+Aplicar solo tras elegibilidad, política activa/válida e idempotencia. Q indica existencia de VALIDA en Q; «sin QR» incluye únicamente INVALIDA. I usa las cuatro clases anteriores. «Según modo» se expande en ambas columnas; no es un quinto resultado. Para usa_iot=false, I corresponde únicamente a la ventana auxiliar del veto. Configuración requiere_qr=false/usa_iot=false es inválida y produce diagnóstico NO_DETERMINABLE, no una fila normal de esta matriz.
+
+| requiere_qr | usa_iot | Q | I | modo ALERTA | modo AUTOMATICA |
+| --- | --- | --- | --- | --- | --- |
+| TRUE | TRUE | Válido | Positiva | MANTENER_POR_USO | MANTENER_POR_USO |
+| TRUE | TRUE | Válido | Negativa completa | NO_DETERMINABLE | NO_DETERMINABLE |
+| TRUE | TRUE | Válido | Insuficiente | MANTENER_POR_USO | MANTENER_POR_USO |
+| TRUE | TRUE | Válido | Contradictoria | NO_DETERMINABLE | NO_DETERMINABLE |
+| TRUE | TRUE | Sin QR | Positiva | MANTENER_POR_USO | MANTENER_POR_USO |
+| TRUE | TRUE | Sin QR | Negativa completa | ALERTAR | LIBERAR |
+| TRUE | TRUE | Sin QR | Insuficiente | NO_DETERMINABLE | NO_DETERMINABLE |
+| TRUE | TRUE | Sin QR | Contradictoria | NO_DETERMINABLE | NO_DETERMINABLE |
+| FALSE | TRUE | Válido | Positiva | MANTENER_POR_USO | MANTENER_POR_USO |
+| FALSE | TRUE | Válido | Negativa completa | NO_DETERMINABLE | NO_DETERMINABLE |
+| FALSE | TRUE | Válido | Insuficiente | MANTENER_POR_USO | MANTENER_POR_USO |
+| FALSE | TRUE | Válido | Contradictoria | NO_DETERMINABLE | NO_DETERMINABLE |
+| FALSE | TRUE | Sin QR | Positiva | MANTENER_POR_USO | MANTENER_POR_USO |
+| FALSE | TRUE | Sin QR | Negativa completa | ALERTAR | LIBERAR |
+| FALSE | TRUE | Sin QR | Insuficiente | NO_DETERMINABLE | NO_DETERMINABLE |
+| FALSE | TRUE | Sin QR | Contradictoria | NO_DETERMINABLE | NO_DETERMINABLE |
+| TRUE | FALSE | Válido | Positiva | MANTENER_POR_USO | MANTENER_POR_USO |
+| TRUE | FALSE | Válido | Negativa completa | NO_DETERMINABLE | NO_DETERMINABLE |
+| TRUE | FALSE | Válido | Insuficiente | MANTENER_POR_USO | MANTENER_POR_USO |
+| TRUE | FALSE | Válido | Contradictoria | NO_DETERMINABLE | NO_DETERMINABLE |
+| TRUE | FALSE | Sin QR | Positiva | MANTENER_POR_USO | MANTENER_POR_USO |
+| TRUE | FALSE | Sin QR | Negativa completa | ALERTAR | LIBERAR |
+| TRUE | FALSE | Sin QR | Insuficiente | ALERTAR | LIBERAR |
+| TRUE | FALSE | Sin QR | Contradictoria | NO_DETERMINABLE | NO_DETERMINABLE |
+
+**Veto:** ninguna celda con uso positivo fiable o contradicción permite LIBERAR, aunque la fuente sea opcional. La prioridad de contradicción explica por qué un QR válido puede dar NO_DETERMINABLE en vez de MANTENER_POR_USO. Ambos mantienen APROBADA.
+
+### Resultados, persistencia y disponibilidad
+
+Solo resultados SQL MANTENER_POR_USO, NO_DETERMINABLE, ALERTAR y LIBERAR. Modo pertenece a política; resultado a evaluación. Los cuatro crean evaluación y enlazan evidencia considerada. Los tres primeros mantienen APROBADA. ALERTAR registra la situación para supervisión autorizada, sin liberar ni enviar notificación en Fase 8. LIBERAR requiere modo AUTOMATICA y la celda correspondiente de la matriz; cambia exclusivamente APROBADA→LIBERADA dentro del mismo commit que evaluación y pivotes.
+
+Fase 8 incorporará exactamente evaluaciones_liberacion (6 columnas), evaluaciones_eventos_ocupacion (2) y evaluaciones_validaciones_qr (2), con seis FK, PK simples/compuestas e índices del SQL; ON UPDATE CASCADE en todas, ON DELETE CASCADE solo desde pivotes hacia evaluación y RESTRICT en las otras cuatro. No hay UNIQUE(reserva,politica), soft delete, timestamps extra, tabla de ejecución ni columna de snapshot. Politicas_liberacion ya existe y no se remigra. Conservar motivo físicamente nullable, pero exigir en aplicación texto humano seguro no vacío <=500 caracteres en toda evaluación, incluidas configuración/contradicción. Identificar regla, fuentes y causa; para inventario incompleto indicar cantidades relevantes/con lectura suficiente, sin PII, códigos QR, hashes, firmas, secretos ni cuerpos JSON.
+
+Enlazar exactamente Q y E que participaron, incluidos intentos QR INVALIDA y eventos ambiguos/contradictorios usados para explicar la decisión. No enlazar otras reservas, espacios, operaciones, futuro o historia fuera de ventana. Si el diagnóstico se limita a política inválida antes de consultar evidencia, los conjuntos usados son vacíos y el motivo lo explicita. No copiar eventos ni snapshots JSON. Política, resultados, motivos y pivotes históricos son inmutables por la aplicación: sin editar, borrar ni recalcular al llegar nuevos eventos. Las FK CASCADE no habilitan borrado funcional. Las asociaciones reconstruyen las lecturas originales; no prometen reconstruir un inventario de sensores o el flag activa pasado, que el esquema no versiona. El motivo conserva la conclusión/contexto seguro y no se reejecuta historia sobre el inventario actual.
+
+LIBERADA deja de comprometer el intervalo según SpaceAvailabilityService. No cambia espacios_academicos.estado, bloqueos, incidencias ni mantenimiento; cualquier otro impedimento conserva la indisponibilidad. CU06 y las revalidaciones usan el mismo servicio central. No finalizar naturalmente reservas ni cambiar datos de resolución/cancelación para aparentar una liberación; el instante y motivo están en la evaluación.
+
+### Idempotencia y reevaluación sin columnas nuevas
+
+Unidad: pareja (reserva_id,politica_id) y su evaluación de inicio, no vigilancia continua de abandono. Antes de decidir, con lock de reserva, consultar historia propia. Si existe MANTENER_POR_USO, ALERTAR o LIBERAR para esa pareja, omitir automáticamente nuevas evaluaciones, incluso si llega otra lectura. Son terminales **del ciclo de evaluación**, no nuevos estados de reserva. Tras ALERTAR no se convierte en LIBERAR por silencio, por otra ejecución o por cambiar modo: esa versión no puede editarse. LIBERADA queda además fuera de elegibilidad.
+
+Sin evaluación previa, evaluar una vez. Si la última es NO_DETERMINABLE (orden fecha_hora DESC, id DESC), solo reevaluar con nueva evidencia relevante. Si T retrocede respecto de la última fecha_hora, diferir hasta recuperar reloj coherente. No reintentar simplemente porque pasó un minuto, vencieron lecturas, cambió conectividad o se habilitó/deshabilitó un sensor. Un diagnóstico de política inactiva tampoco se repite sin nueva evidencia; reactivación por sí sola no evade la regla.
+
+Guarda específica de configuración: si la política actual sigue inactiva/inválida y la pareja ya tiene alguna evaluación, omitir otro diagnóstico automático, aun si llega telemetría. Solo una pareja sin historia crea el diagnóstico inicial con Q/E vacíos. Esto evita que registros no consultados/no enlazados se presenten repetidamente como novedad, especialmente dentro del mismo segundo. La administración puede mostrar el problema vigente; no requiere insertar evaluaciones idénticas. Al corregir reglas se exige nueva versión y las guardas de asignación siguen vigentes.
+
+Evidencia nueva para esa pareja significa un registro de Q/E actual **no enlazado a ninguna evaluación anterior de la pareja**, y una de estas condiciones:
+
+1. QR: fecha_hora posterior a la última evaluación.
+2. IoT: fecha_recepcion o fecha_evento posterior a la última evaluación y ambos <=T, dentro de la ventana actual. Un evento antiguo recibido ahora pero fuera de W no habilita reevaluación.
+3. Empate de segundos: si fecha QR o recepción/medición IoT coincide con la última fecha_hora, un ID persistido aún no enlazado se trata como nueva evidencia visible. Es el desempate conservador para DATETIME sin fracciones; no se deduce orden de commit por un ID mayor, ni se pierde un evento distinto confirmado en el mismo segundo.
+
+No admitir registros con ambas fechas estrictamente anteriores solo porque ahora se reasignó un sensor. Un evento futuro antes excluido puede volverse relevante cuando llega su fecha_evento (>fecha de la evaluación anterior), pero nunca se usa antes de ese instante. Una retransmisión IoT conserva ID/fechas, por lo que no dispara reevaluación. La nueva evaluación enlaza todo Q/E usado, no solo la novedad. Los IDs ya considerados no vuelven a habilitar un ciclo por desaparecer/reaparecer en una consulta. Pivotes e índices existentes bastan; sin hash de decisión, watermark ni tabla auxiliar.
+
+Dos workers con la misma novedad compiten por el lock de reserva: solo el primero crea la evaluación; el siguiente ve los pivotes confirmados o el resultado terminal y omite. Si aparece otra novedad real, otra NO_DETERMINABLE puede producir una evaluación posterior. Un fallo antes del commit no consume evidencia ni deja una transición parcial; reintentar el trabajo completo.
+
+### Transacción CU23 y compatibilidad de locks
+
+La reserva es coordinador principal de CU23. El código actual de reservas/QR toma espacio antes de reserva y el de IoT toma sensor antes de espacio. Por ello **no se permite añadir una espera bloqueante reserva→espacio/sensor**, que invertiría ese orden. Convención de Fase 8: transacción nueva, reserva primero y adquisiciones posteriores NOWAIT; cualquier conflicto revierte todo y difiere/reintenta fuera de la transacción. No modificar el orden vigente de CU09/CU10/CU11/CU21/CU22 para esta integración ni adquirir el lock global de RBAC en el proceso interno.
+
+Protocolo implementable:
+
+1. Localizar ID candidato fuera de transacción; sus datos son orientativos. Abrir transacción nueva sin lectura consistente/snapshot previo, en MySQL InnoDB; no anidar en otra transacción.
+2. Reserva por PK `FOR UPDATE NOWAIT`. Releer estado y espacio_id; si no es APROBADA, omitir sin evaluación. Dos CU23 nunca deciden simultáneamente sobre la misma reserva.
+3. Espacio por PK `FOR UPDATE NOWAIT`, luego política por PK `FOR SHARE NOWAIT`. Releer FK, activa y reglas. Sin FK: omitir. El lock X del espacio estabiliza asignación y bloquea commits QR/ingestión entrantes que necesitan ese espacio.
+4. Adquirir sensores relevantes actuales por espacio, orden id ascendente, `FOR SHARE NOWAIT`, usando el índice de asociación. No usar SKIP LOCKED: saltar un sensor podría fabricar unanimidad negativa. Un sensor retenido por ingestión/gestión provoca rollback, no silencio ni NO_DETERMINABLE por ese mero conflicto. Los locks de sensor impiden también reasignación saliente; el espacio bloquea altas/entradas/habilitaciones hacia él. No tomar locks de rango en eventos.
+5. Leer T del servidor tras adquirir todos los locks y validar elegibilidad/configuración. Establecer la primera lectura consistente **después** de los locks; así incluye los commits previos de QR/IoT incluso bajo REPEATABLE READ. Leer evaluaciones/pivotes de la pareja e idempotencia, y Q/E. No reusar relaciones Eloquent cargadas antes de esperar.
+6. Decidir con la matriz sobre ese corte completo. El lock del espacio y de los sensores mantiene estable la evidencia entrante relevante hasta commit. Si la hora avanzó mientras se procesaba, refrescar T y volver a comprobar fin, ventanas e idempotencia con ese mismo conjunto persistido; si ya no hay ventana útil, omitir. Nunca truncar silenciosamente eventos para concluir ausencia; si un límite técnico impide una lectura completa, abortar con error seguro.
+7. INSERT evaluación con T y motivo, INSERT de ambos conjuntos M:N y, solo para LIBERAR, UPDATE condicionado a `id` y `estado=APROBADA`; exigir exactamente una fila afectada. Revalidar tiempo inmediatamente antes de esa escritura. Si falla cualquier operación o guarda final, rollback íntegro, sin evaluación que afirme una liberación inexistente.
+8. Commit; efectos externos futuros únicamente después. Conflictos NOWAIT/deadlock/timeout: máximo tres intentos completos con espera breve fuera de transacción; agotamiento difiere al siguiente barrido y emite diagnóstico técnico sanitizado. Ninguna llamada a sensores, APIs, Blockchain o red dentro de locks; tampoco esperar nueva evidencia ni hacer sleep reteniendo locks.
+
+NOWAIT impide esperar por un lock de fila ocupado; el snapshot RR nace en la primera lectura consistente. Su aplicación aquí es una convención de coordinación, no una garantía ya probada de CU23. Se fundamenta en el [manual MySQL sobre locking reads](https://dev.mysql.com/doc/refman/8.4/en/innodb-locking-reads.html) y [lecturas consistentes](https://dev.mysql.com/doc/refman/8.4/en/innodb-consistent-read.html); Fase 8 debe probar los intercalados reales y fallos descritos en T-L.
+
+Operaciones humanas de políticas: conservar auth/sesión/CSRF y coordinación RBAC existente. Asignación: RBAC→espacio X→política S, reautorización y consulta actual de APROBADA con fin>T bajo espacio. Reactivación: RBAC→espacios referenciantes X por id→política X, revalidación actual de referencias y compromisos. Desactivación: RBAC→política X; CU23 ve el estado confirmado o termina antes de la desactivación, nunca usa una lectura previa al lock. Crear versión no altera otra. Ningún camino humano intenta lock de reserva después de retener política si ello invierte otro camino.
+
+### Cancelación, QR e IoT concurrentes
+
+CU10 conserva D-05: cancelación únicamente T<inicio; CU23 exige T>=inicio+tolerancia>=inicio. No abrir cancelación tardía para fabricar una carrera. Cerca de inicio, una cancelación legal puede haber tomado sus locks antes y confirmar primero: CU23 omite al releer CANCELADA. Si CU23 decide primero ya dentro de su ventana, la cancelación posterior falla estado/tiempo. Si una cancelación empezó antes pero esperó hasta inicio, debe fallar su propia guarda temporal. Resultado posible CANCELADA o LIBERADA según el orden **y las guardas**, nunca dos transiciones confirmadas ni una evaluación LIBERAR para una reserva ya inelegible.
+
+QR confirmado antes de los locks CU23 entra en Q y puede vetar; si está esperando reserva mientras retiene espacio, NOWAIT hace retroceder CU23 y permite su finalización. Si CU23 confirma LIBERADA primero, CU11 relee la reserva y no registra una VALIDA posterior como si siguiera APROBADA. IoT que ya tenga sensor/espacio provoca el mismo retroceso o confirma antes del corte; si CU23 obtuvo los locks primero, el evento se acepta después y no reescribe la evaluación pasada. No prometer conocimiento de mensajes todavía en red ni de actividad física sin evidencia persistida. Reasignación/deshabilitación y nuevas asociaciones se resuelven por el mismo orden y relectura, sin usar inventario parcialmente bloqueado.
+
+### Scheduler, consultas y permisos previstos
+
+Laravel Scheduler invocará un comando/servicio interno de CU23 cada minuto por defecto, con frecuencia técnica configurable; no es tolerancia_min. No depende de un nuevo evento ni de que alguien abra CU22, lo que permite política solo QR. Es la ejecución temporal de la extensión condicional de CU22 sobre su evidencia persistida; el endpoint IoT no libera dentro de su transacción.
+
+Consulta de candidatos en BD: APROBADA, inicio<=hora de barrido, fin>hora de barrido y política asignada. Paginación por clave en lotes acotados (100 por defecto); nunca hidratar todo el sistema. Filtrar tolerancia/activa cuando sea posible, sin perder el diagnóstico controlado de configuración inválida. La hora de barrido no sustituye T tras locks. Revalidar cada candidato y aislar errores por reserva; un conflicto no detiene todas. Sin nuevo índice/tabla por anticipación; verificar planes con índices oficiales y carga representativa en Fase 8. Evitar solapamiento del comando como optimización, sin convertir el mutex de scheduler en garantía de integridad: la transacción e idempotencia cubren dos workers/hosts.
+
+| Permiso futuro | Administrador | Encargado de Laboratorio | Docente | Estudiante |
+| --- | --- | --- | --- | --- |
+| liberacion.politicas.ver | Sí | Sí | No | No |
+| liberacion.politicas.gestionar | Sí | Sí | No | No |
+| liberacion.evaluaciones.ver_administrativas | Sí | Sí | No | No |
+| liberacion.evaluaciones.ver_propias | No | No | Sí | Sí |
+
+Aplicar elegibilidad y permiso del mismo rol activo, sin bypass. El titular D/S consulta únicamente evaluaciones de reservas con solicitante_id propio; A/E puede inspeccionar contexto administrativo autorizado. Proyección propia: reserva, política/version, fecha, resultado y motivo seguro; no entregar validado_por, tokens/hashes QR, identificadores de sensores ni historial técnico completo. Mutaciones reautorizan bajo coordinación existente y no exponen endpoints de ejecución manual. No botón «Liberar ahora», rol/usuario ficticio Sistema ni permiso humano para que el scheduler actúe. Estos cuatro permisos no se crean en DB en 7.5.
+
+### Límites de Fase 8 y aceptación futura
+
+Notificación funcional de ALERTAR/LIBERAR: Fase 10; Fase 8 solo persiste resultado y lo expone en UI autorizada, sin tabla notificaciones ni aviso temporal. Blockchain: Fase 9 tras commit si D-12 define LIBERADA como operación crítica; no se presume ese alcance ni se llama red dentro de CU23. CU30 sigue diferido; evaluaciones son evidencia funcional propia. FINALIZADA natural continúa sin scheduler ni transición manual autorizada. MQTT, móviles y dashboard final quedan fuera.
+
+Antes de aceptar Fase 8 deben pasar los [criterios T-L01–T-L36](BUSINESS_RULES.md#aceptación-de-liberación-prevista-para-fase-8), las 371 pruebas de regresión actuales y la revisión manual de permisos/historia. La cifra 371/5.862 pertenece a Fase 7; no se reejecuta ni se atribuye a esta fase documental. Las pruebas de CU23 aún no existen ni se declaran superadas.
+
+## Readiness for Phase 8
+
+**D-08: RESUELTA PARA FASE 8. Bloqueantes documentales restantes: 0.**
+
+| Aspecto | Contrato congelado |
+| --- | --- |
+| Elegibilidad y tolerancia | APROBADA; inicio+tolerancia<=T<fin; sin ventana útil, omitir |
+| Política aplicable | FK del espacio; sin política no evaluar; inactiva/inválida nunca libera |
+| Configuración y versión | Fuente obligatoria al menos una; antigüedad IoT no negativa; versiones inmutables y FK histórica exacta |
+| Cambio de política | Prohibido asignar/retirar mientras exista APROBADA con fin>T; desactivar conserva historia |
+| QR y veto | VALIDA contextual desde inicio; INVALIDA nunca es no uso; positivo opcional también impide liberación |
+| IoT y fuentes requeridas | Ventana de política independiente de CU22, todos los habilitados actuales; PRESENCIA/OCUPACION>0 positivos; cero explícito por todos para negativo |
+| Contradicción / NO_DETERMINABLE | Matriz de 24 combinaciones × 2 modos; conserva APROBADA |
+| ALERTA / AUTOMATICA | Inactividad suficiente produce ALERTAR / LIBERAR; solo el segundo cambia reserva |
+| LIBERADA y disponibilidad | Transición atómica; estado operativo y otros impedimentos intactos |
+| Evidencia M:N | Q/E exactos, motivo seguro obligatorio y tres tablas oficiales, sin snapshots adicionales |
+| Scheduler | Proceso interno, minuto configurable y lotes; sin actor humano ni petición a sensor |
+| Idempotencia | Terminales por reserva/política; NO_DETERMINABLE requiere novedad relevante, incluido desempate de segundos mediante pivotes |
+| Locking / concurrencia | Reserva X primero; espacio/política/sensores NOWAIT, snapshot posterior, rollback/reintento; cancelación conserva D-05 |
+| Permisos | Cuatro códigos previstos, matriz A/E y D/S propia; sin cambios DB en 7.5 |
+| Integraciones diferidas | Notificaciones 10, Blockchain 9, CU30 y FINALIZADA fuera |
+| Continuación | **Fase 8 puede comenzar con una nueva instrucción expresa. No comienza en esta entrega.** |
+
+### Verificación documental de Fase 7.5
+
+Revisión de fuentes, matriz completa, invariantes, enlaces y alcance exclusivamente Markdown; comparación del SQL de las cuatro tablas Word/PDF y conservación del diccionario físico y de los 217 textos de requisitos. Se comprueban las huellas originales, archivos funcionales sin diferencias, secreto/índice/historial y ausencia de nuevas tablas/permisos. Ninguna migración, seed, evaluación ni scheduler se ejecuta. Las extracciones/controles locales permanecen ignorados dentro del workspace oficial.
+
+Resultados del control documental: **14 Markdown modificados, 0 archivos funcionales**, cuatro SQL Word/PDF equivalentes y cuatro secciones físicas del diccionario intactas; 217 textos de requisitos preservados; 48 resultados de matriz coherentes, 36 criterios futuros y 248 enlaces locales sin errores. SHA-256 originales sin cambios. Escaneo de 347 archivos públicos y 105 artefactos locales (95 anteriores y 10 de esta revisión), sin secretos detectados. Metadatos de solo lectura: 25 tablas académicas, 169 columnas, 48 FK, 39 permisos; cero tablas evaluaciones_* y cero permisos liberacion.*.
+
+Rama docs/phase-7.5-release-policy-decisions desde main/origin/main limpio ffdebb9; commit documental, push e integración fast-forward autorizados, sin force push. El informe final confirma el SHA, igualdad remota y árbol limpio después de las operaciones. El cierre documental no equivale a implementación, calibración de hardware ni certificación de comportamiento concurrente: son condiciones de aceptación de Fase 8.

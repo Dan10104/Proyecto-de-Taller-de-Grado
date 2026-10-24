@@ -1,5 +1,7 @@
 # Espacios académicos y disponibilidad base — Fase 3
 
+**Continuidad documental de Fase 7.5:** [D-08 cerrada](DECISIONS.md#configuración-versiones-y-asignación). Fase 8 usará la FK politica_liberacion_id existente; no se podrá cambiar/asignar/retirar con APROBADA cuyo fin>T. LIBERADA dejará de bloquear el intervalo mediante SpaceAvailabilityService, sin cambiar estado operativo ni ignorar incidencias/mantenimiento/bloqueos. No se modifica código en esta entrega.
+
 **Estado vigente: Fase 5 implementada y validada (CU12–CU19), con incidencias integradas en CU06/CU07/CU09.** Los cierres anteriores conservan su contexto histórico. [Implementación, pruebas y límites actuales](EQUIPMENT_LOANS_IMPLEMENTATION.md). Fase 6 no iniciada.
 
 Estado: **alcance de Fase 3 implementado y validado el 2026-10-23**. CU05 tiene su núcleo funcional; la integración de bitácora CU30 continúa diferida. CU06: **IMPLEMENTACIÓN PARCIAL — FASE 3**. No se inició Fase 4.

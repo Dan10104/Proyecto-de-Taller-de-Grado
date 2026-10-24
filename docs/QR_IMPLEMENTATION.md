@@ -1,5 +1,7 @@
 # Códigos QR y validaciones — Fase 6
 
+**Continuidad documental de Fase 7.5:** [Semántica QR para D-08](DECISIONS.md#evidencia-qr-de-cu23). CU23 futuro consultará USO_ESPACIO de la misma reserva/recurso, desde inicio hasta evaluación; una VALIDA basta y puede vetar aunque el QR sea opcional. INVALIDA solo explica contexto, nunca no uso. Rotación posterior no cambia validez histórica. D-09, CU11 y su aceptación conservan su alcance; no hay código ni nuevos escaneos en esta entrega.
+
 Fecha: 2026-10-23, America/La_Paz. Base Git `08baa06`; rama `feature/phase-6-qr`. D-09 sigue **RESUELTA PARA FASE 6**. Implementación y suite automatizada terminadas: **325 pruebas aprobadas, 4.984 aserciones, 267,29 s**. El usuario aceptó expresamente la lectura física sin exigir una nueva prueba independiente. Ese límite se conserva en este informe; no se atribuye éxito físico a las simulaciones. Fase 7 no iniciada.
 
 ## Alcance y arquitectura

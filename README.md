@@ -4,6 +4,8 @@ Sistema de información para la gestión y control de reservas de espacios acad�
 
 **Estado: Fase 7 implementada — sensores IoT, recepción REST/HMAC, monitoreo e información complementaria en CU06.** Se conserva seguridad, espacios, reservas, equipamiento/préstamos/incidencias y QR. [Informe de Fase 7, pruebas, seguridad y trazabilidad](docs/IOT_IMPLEMENTATION.md). IoT no modifica disponibilidad base ni libera reservas. CU23/Fase 8, Blockchain, notificaciones y CU30 siguen diferidos. La aceptación física de QR conserva el límite descrito en su informe.
 
+**Fase 7.5 documental cerrada: D-08 RESUELTA PARA FASE 8, 0 bloqueantes documentales.** [Contrato, matriz QR/IoT y Readiness for Phase 8](docs/DECISIONS.md#readiness-for-phase-8). Versiones, tolerancia, veto de uso, evidencia M:N, scheduler, idempotencia, locks y permisos futuros congelados. Solo se actualizó documentación; CU23 y Fase 8 requieren una nueva instrucción y no están implementados. [36 criterios de aceptación futuros](docs/BUSINESS_RULES.md#aceptación-de-liberación-prevista-para-fase-8).
+
 ## Fuente de verdad
 
 El informe final Word/PDF y las decisiones congeladas de Fase 0.5 gobiernan el diseño. Las fuentes, auditoría y decisiones están en [DECISIONS.md](docs/DECISIONS.md). Los originales y sus datos personales no se publican. Los detalles diferidos se resolverán en su fase correspondiente.

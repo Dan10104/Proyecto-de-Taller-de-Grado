@@ -153,14 +153,16 @@ Implementación disponible, 325 pruebas/4984 aserciones aprobadas. [Evidencia y 
 
 ### Fase 8 — Políticas de liberación
 
+**Preparada documentalmente en Fase 7.5, no iniciada.** [Readiness for Phase 8](DECISIONS.md#readiness-for-phase-8): D-08 resuelta, 0 bloqueantes; requiere nueva instrucción de implementación.
+
 | Campo | Plan |
 | --- | --- |
 | Módulos afectados | Monitoreo IoT y Disponibilidad |
 | Carpetas principales futuras | app/Services/; app/Models/; app/Http/; database/; config/; rutas/tareas convencionales Laravel según versión; resources/js/Pages/; tests/ |
 | Requisitos relacionados | RF18; DB-08; RNF-26; R-PR-01 |
 | Casos de uso | CU23; extensión de CU22 |
-| Trabajo previsto | Cerrar detalles diferidos D-08 con criterio conservador; política/version/tolerancia; ejecución temporal; combinar QR/IoT; guardar evaluación y evidencias; modos ALERTA/AUTOMATICA. |
-| Pruebas requeridas | Uso confirmado; QR/IoT contradictorios; datos insuficientes/antiguos; usa_iot=false; tolerancia; reserva ya modificada; concurrencia. |
+| Trabajo previsto | Implementar D-08 cerrada en 7.5: tres tablas exactas, gestión de versiones/asignación, cuatro permisos, servicio interno/scheduler y consulta autorizada de evaluaciones; matriz QR/IoT, veto, evidencia e idempotencia. |
+| Pruebas requeridas | T-L01–T-L36, 48 resultados de matriz, MySQL multiproceso con NOWAIT/snapshot/empate de segundos, regresión de 371 casos y revisión manual. |
 | Riesgos / puertas | Liberación indebida; política mutable que cambia historia; ausencia de eventos impide disparador. |
 | Condición de finalización | Cada resultado del enum probado; ALERTA no libera; AUTOMATICA solo con condiciones suficientes; historia de evaluación íntegra. |
 | Commit esperado | `feat: add evidence based reservation release policies` |
@@ -265,7 +267,7 @@ Esta propuesta corresponde al cierre de Fase 2. Fase 3 fue posteriormente autori
 | D-05, reservas resueltas y aplicación a préstamos confirmada en Fase 4.5 | [inicio, fin), exclusividad APROBADO/ENTREGADO, locks/lecturas actuales; sin reapertura. FINALIZADA automática de reservas sigue diferida |
 | D-09, resuelta en Fase 5.5 | Implementar el contrato cerrado en Fase 6; parametrización global de obligatoriedad fuera de ese alcance |
 | D-10, RESUELTA PARA FASE 7 en 6.5 | Contrato REST implementado y verificado en Fase 7; T-I01–T-I32 cubiertos, con límites de entorno documentados |
-| D-08, disparador, combinación QR/IoT y versión histórica de política | Antes de Fase 8 |
+| D-08, RESUELTA PARA FASE 8 en 7.5 | Disparador, matriz, versiones, evidencia, idempotencia, locks y permisos cerrados; cero bloqueantes documentales |
 | D-12, canonicalización exacta, algoritmo, proveedor, operaciones críticas y recuperación | Antes de Fase 9 |
 | D-16, protocolo de medición y retención operativa | Piloto sin purga automática según 6.5; retención productiva antes de operación en 14; medición antes de aceptación en 13; zona operativa ya fijada |
 | D-17, mecanismos transaccionales y guardas de servidor | Al implementar el componente de Fases 2–10; sin modificar constraints |
@@ -320,3 +322,9 @@ Antes de aceptar Fase 7 ejecutar T-I01–T-I32 con MySQL de testing aislado, inc
 ## Implementación de Fase 7
 
 La nueva instrucción autorizó CU21/CU22 y el complemento IoT de CU06. Dos migraciones exactas, tres permisos, REST/HMAC RAW, provisión controlada, deduplicación serializada por sensor y monitoreo conservador están implementados. Se preservan 325 tests previos y se añaden 46; los resultados y el cierre operativo están en [IOT_IMPLEMENTATION.md](IOT_IMPLEMENTATION.md). Fase 8 no iniciada: requiere nueva instrucción y revisión de D-08/contrato de liberación; no hay scheduler ni tablas de evaluación.
+
+## Cierre documental de Fase 7.5 y puerta de Fase 8
+
+La nueva instrucción cerró D-08, sin implementar CU23. [Readiness for Phase 8](DECISIONS.md#readiness-for-phase-8): **0 bloqueantes documentales**. Plan futuro: tres migraciones exactas de evaluación, gestión de versiones/asignación y cuatro permisos, consulta administrativa/propia, servicio transaccional y scheduler interno por lotes. La matriz, ventanas, veto, idempotencia y protocolo NOWAIT están congelados; T-L01–T-L36 especifican aceptación pendiente con regresión de Fase 7.
+
+No se adelantó ningún archivo funcional, interfaz, configuración, permiso DB ni cambio de datos. Fase 8 puede comenzar con otra instrucción expresa. No incluir FINALIZADA natural, liberación manual, notificaciones, Blockchain ni CU30. Esta conclusión sustituye los pendientes D-08 del cierre histórico de Fase 7, sin reescribir su evidencia.
