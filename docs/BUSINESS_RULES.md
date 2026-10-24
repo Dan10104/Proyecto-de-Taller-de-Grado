@@ -1,5 +1,7 @@
 # Reglas de negocio y controles verificables
 
+**Actualización documental Fase 6.5: D-10 RESUELTA PARA FASE 7, cero bloqueantes documentales.** [Contrato IoT y puerta de Fase 7](DECISIONS.md#readiness-for-phase-7). CU21/CU22 no implementados. La evidencia funcional anterior sigue correspondiendo a Fase 6 y conserva sus límites.
+
 **Estado vigente: Fase 6 implementada y aceptada; suite automatizada aprobada. La prueba física se acepta por confirmación del usuario, sin nueva evidencia válida corroborada independientemente.** CU11/CU20 y extensión opcional CU17/CU18 incorporados. [Arquitectura, 325 pruebas, trazabilidad y límites de aceptación](QR_IMPLEMENTATION.md). Los cierres anteriores se conservan como evidencia histórica; Fase 7 no iniciada.
 
 Estas reglas sintetizan el informe. Los identificadores BR son internos para organizar pruebas; no sustituyen los RF/CU. Los estados exactos están en [DOMAIN_MODEL.md](DOMAIN_MODEL.md). Las decisiones D clasificadas y sus detalles diferidos están en [DECISIONS.md](DECISIONS.md).
@@ -17,7 +19,7 @@ Estas reglas sintetizan el informe. Los identificadores BR son internos para org
 | BR-09 | Incidencia y mantenimiento | RF15; CU19; DB-21 | Asociar recurso, motivo, responsable y periodo; conservar historia; restituir disponibilidad solo sin otras restricciones incompatibles. | Otra incidencia abierta impide restaurar disponibilidad al cerrar una anterior. |
 | BR-10 | Objetivo QR | RF8/13/14; CU11/20; SQL | Cada código identifica exactamente un recurso, reserva o préstamo; token con hash, vigencia y bandera activo. | Cero/dos objetivos rechazados; expirado/revocado; token desconocido. |
 | BR-11 | Validación QR contextual | CU11/20; figuras 111/121 | Verificar usuario, permisos, objetivo, recurso esperado, contexto, horario/estado y tipo de operación; inválido no confirma uso/entrega/devolución. D-09. | QR de otro equipo/reserva; usuario ajeno; horario incompatible; cámara denegada; reintento. |
-| BR-12 | Recepción IoT | RF16–17; CU21–22; DB-23 | Aceptar evento solo de sensor registrado y habilitado; guardar fechas y espacio histórico; actualizar comunicación válida. No identificar personas. D-10. | Sensor desconocido/deshabilitado; payload inválido; reasignación conserva eventos previos. |
+| BR-12 | Recepción IoT | RF16–17; CU21–22; DB-23 | Aceptar evento solo de sensor registrado y habilitado; guardar fechas y espacio histórico validado al aceptar; actualizar comunicación solo por evento nuevo aceptado, nunca duplicado/rechazado. No identificar personas. D-10. | Sensor desconocido/deshabilitado; payload inválido; reasignación conserva eventos previos. |
 | BR-13 | Frescura y ocupación | RF17–18; CU22–23 | Ausencia o antigüedad de lecturas no demuestra desocupación; mostrar ocupación no determinable; mantener gestión principal ante caída IoT. | Sin eventos, eventos antiguos y caída de sensor no se muestran automáticamente como libre. |
 | BR-14 | Evaluación de liberación | RF18; CU23; evaluaciones_liberacion | Evaluar reserva aprobada aplicable, tolerancia y evidencias. Resultado MANTENER_POR_USO, NO_DETERMINABLE, ALERTAR o LIBERAR. Solo modo AUTOMATICA y condiciones suficientes permiten liberar. D-08. | Evidencia de uso mantiene; insuficiente/contradictoria no libera; ALERTA no cambia reserva a LIBERADA. |
 | BR-15 | Transacción principal | DB-15/17/20; R-PR-01 | Confirmar consistentemente estados, datos obligatorios y relaciones; fallos previos a confirmación no dejan operación parcial. | Fallo intermedio revierte todos los cambios relacionados; concurrencia no duplica confirmaciones. |
@@ -71,7 +73,7 @@ Convención temporal del alcance institucional único: `America/La_Paz` para cap
 
 **QR (D-09, RESUELTA PARA FASE 6).** El código identifica recurso u operación, no autentica ni autoriza por sí solo. El servidor comprueba usuario autenticado/ACTIVO, permisos, código, recurso esperado, operación/contexto, estado y fecha/horario. Objetivo único y exclusividad reserva/préstamo por tipo; enlaces a entrega/devolución según CHECK/UNIQUE. Código inválido no confirma uso/entrega/devolución. Emisión, vigencia y correlación quedan fijadas en el [contrato documental de Fase 5.5](DECISIONS.md#contrato-qr-y-validaciones--cierre-d-09-de-fase-55); no uso único ni obligación global. Fase 6 implementada y verificada automáticamente; aceptación física confirmada por el usuario en QR_IMPLEMENTATION.md.
 
-**IoT (D-10).** Detecta presencia/ocupación, nunca identidad. Sensor registrado, habilitado y asociado a espacio; preservar espacio histórico y fechas de evento/recepción. Falta de lectura reciente produce NO_DETERMINABLE calculado, sin agregar enum de espacio. El formato, unidades, transporte, autenticación y ventana concreta se cierran antes de Fase 7.
+**IoT (D-10).** Detecta presencia/ocupación, nunca identidad. Sensor registrado, habilitado y asociado a espacio; preservar espacio histórico y fechas de evento/recepción. Falta de lectura reciente produce NO_DETERMINABLE calculado, sin agregar enum de espacio. D-10 quedó RESUELTA PARA FASE 7 en 6.5: REST/HMAC, payload, ventana y deduplicación exactos; valor sin interpretación física universal. [Contrato normativo](DECISIONS.md#contrato-iot--cierre-d-10-de-fase-65).
 
 **Liberación (D-08).** Evaluar reserva y política aplicables, tolerancia, validaciones QR, eventos IoT y condiciones configuradas; registrar evaluación y enlaces existentes. Información ausente, insuficiente o contradictoria no libera automáticamente; solo una política e informe que permitan inequívocamente la decisión pueden habilitarla. Evidencia de uso mantiene; ALERTA no libera; AUTOMATICA requiere todas las condiciones aplicables. No interpretar silencio del sensor como ausencia de personas. Combinaciones exactas, disparador y conservación de versión de política se cierran antes de Fase 8.
 
@@ -79,7 +81,7 @@ Convención temporal del alcance institucional único: `America/La_Paz` para cap
 
 ## Límites diferidos y pruebas futuras
 
-D-04/D-07 cerradas en Fase 1.5: Laravel Session web y expiración desde configuración; RBAC y convención de permisos oficiales. El catálogo administrativo está implementado en Fase 2; Fases 3/3.5 precisan autorización por módulo/acción y propiedad para CU05–CU10, manteniendo diferido el alcance fino. Autenticación móvil/API diferida. Reservas: D-05 resuelta para Fase 4 mediante Fase 3.5; cancelación antes del inicio y finalización automática diferida a una fase posterior autorizada. Emisión/correlación QR: antes de Fase 6. Payload, transporte y frescura IoT: antes de Fase 7. Combinación de evidencias, disparador y versión de política: antes de Fase 8. Canonicalización exacta, proveedor y recuperación Blockchain: antes de Fase 9. Protocolos de medición/retención: fases de integración/operación según D-16. Las versiones de herramientas ya se seleccionaron y verificaron en Fase 1 (D-15).
+D-04/D-07 cerradas en Fase 1.5: Laravel Session web y expiración desde configuración; RBAC y convención de permisos oficiales. El catálogo administrativo está implementado en Fase 2; Fases 3/3.5 precisan autorización por módulo/acción y propiedad para CU05–CU10, manteniendo diferido el alcance fino. Autenticación móvil/API diferida. Reservas: D-05 resuelta para Fase 4 mediante Fase 3.5; cancelación antes del inicio y finalización automática diferida a una fase posterior autorizada. Emisión/correlación QR: antes de Fase 6. Payload, transporte y frescura IoT: cerrados en Fase 6.5; implementación pendiente de Fase 7. Combinación de evidencias, disparador y versión de política: antes de Fase 8. Canonicalización exacta, proveedor y recuperación Blockchain: antes de Fase 9. Protocolos de medición/retención: fases de integración/operación según D-16. Las versiones de herramientas ya se seleccionaron y verificaron en Fase 1 (D-15).
 
 Estos detalles no bloquean inicializar la base técnica, pero sí el punto de implementación que depende de ellos. Las pruebas de este documento son obligaciones futuras, no resultados ejecutados. El cierre de Fase 0.5 valida contratos documentales y no certifica comportamiento de software.
 
@@ -214,3 +216,44 @@ Las carreras requieren dos procesos reales, barreras y comprobación de estado c
 ## Evidencia QR de Fase 6
 
 T-Q01–24 mantienen su contenido normativo; la matriz ejecutada y sus límites están en QR_IMPLEMENTATION.md. Suite 325/4984, 63 casos nuevos, 16 escenarios concurrentes y revisión interactiva diferenciada de cámara física. No se convierten lecturas sintéticas ni la declaración del usuario sin fila concordante en prueba física corroborada. Se conserva la regresión T-R/T-P.
+
+## Aceptación IoT prevista para Fase 7
+
+[D-10 RESUELTA PARA FASE 7](DECISIONS.md#readiness-for-phase-7); BR-12/13/22 concretadas. **T-I01–T-I32 son obligaciones futuras, ninguna ejecutada en Fase 6.5.** Usar datos/secretos sintéticos de testing, MySQL aislado y procesos concurrentes reales donde se indica; no pruebas sobre desarrollo ni dispositivos reales sin su fase. La suite previa pertenece a Fase 6.
+
+| ID | Escenario | Resultado exigido |
+| --- | --- | --- |
+| T-I01 | Alta/consulta CU21; duplicado de identificador, espacio inexistente, edición de identificador | UNIQUE y FK oficiales; inmutabilidad desde alta, no nuevas columnas; sin eliminación física. |
+| T-I02 | Provisionar con/sin permiso, revocación concurrente y volver a provisionar | Solo sesión/CSRF/permiso de rol A/E; clave solicitada en memoria/no-store, no fuga; misma derivación no es rotación. |
+| T-I03 | Maestro ausente/malformado, claves de dos sensores/entornos, cambio explícito | Rechazo cerrado; derivación exacta de bytes por sensor/entorno, clave individual no autentica otro; cambio exige reprovisionar. |
+| T-I04 | Firma válida y alteración de método, path, sensor, timestamp, body/espacios/orden | Solo cadena exacta verifica; hash RAW antes de parseo; firma hex minúscula y comparación constant-time. |
+| T-I05 | Firma inválida/desconocido; sensor válido deshabilitado | 401 uniforme sin enumeración; 403 solo autenticado/deshabilitado; cero eventos/cambios de comunicación. |
+| T-I06 | Timestamp request en −301, −300, +300, +301 s; inválido, duplicado u overflow | Límites ±300 inclusivos, demás rechazo; cabeceras únicas y enteros seguros; ventana revalidada tras espera. |
+| T-I07 | HMAC válido con JSON roto, faltantes, extra, PII, claves duplicadas, array | Parseo después de firma; 400/422 seguros, sin eco/log de cuerpo ni actualización. |
+| T-I08 | Header sensor distinto del body, space_code de otro espacio o ID arbitrario | 422 por identidad contradictoria, 409 por contexto; FK siempre asociación BD validada. |
+| T-I09 | Tipos PRESENCIA/OCUPACION y tipo desconocido | Dos enums exactos; sensores_iot.tipo no redefine tipo de evento; desconocido rechazado. |
+| T-I10 | value omitido/null/cero, negativos, límites, booleano/string/exponente/exceso de escala | NULL-safe, rango/escala exactos sin redondear; sin interpretación universal ni identidad. |
+| T-I11 | Z y offsets equivalentes; sin zona, fracción, calendario falso, -00:00, rango SQL | Conservar instante en America/La_Paz; perfil estricto; mismo instante → misma fecha_evento. |
+| T-I12 | Evento futuro +300/+301 s y recepción cliente falsificada | Límite técnico inclusive, exceso rechazado; recepción solo DEFAULT servidor; futuro tolerado no actual hasta su instante. |
+| T-I13 | Evento antiguo con request recién firmado | Histórico aceptado si contexto válido; recepción distinta, comunicación renovada solo si nuevo; lectura actual NO_DETERMINABLE. |
+| T-I14 | Mismo evento retransmitido, nueva firma/serialización, 1/1.0/1.00 y null/omisión | 200 duplicate, mismo ID, una fila y sin renovar comunicación; NULL distinto de cero. |
+| T-I15 | Dos eventos distintos del mismo sensor, dos procesos | Serialización breve por sensor; ambas filas completas, última comunicación servidor coherente. |
+| T-I16 | Duplicado simultáneo, dos procesos sobre tabla inicialmente vacía y con historia | Una fila/una actualización; otro duplicate tras espera; snapshot no anterior al mutex. |
+| T-I17 | Sensores diferentes, dos procesos, mismo y diferente espacio | Sin lock global/RBAC; lecturas compartidas compatibles; ambos avanzan y persisten. |
+| T-I18 | Deshabilitar mientras llega evento, ambos órdenes de commit | Gestión primero rechaza; ingestión primero conserva evento histórico válido; sin actualizaciones por rechazado. |
+| T-I19 | Reasignar A→B mientras llega evento, ambos órdenes | Estado BD al obtener lock decide; A histórico intacto, nuevos B, antiguo payload A rechazado. |
+| T-I20 | Cambiar asociación entre firma/persistencia; cambiar código CU05 concurrentemente | Revalidar después de espera; no FK arbitraria ni inversión de locks; el código actual decide. |
+| T-I21 | Fallo entre INSERT y ultima_comunicacion; deadlock/reintento; respuesta perdida | Rollback completo o commit único; hasta tres intentos; reenvío idempotente si contexto válido. |
+| T-I22 | Frescura: edades de evento/recepción 0/300/301 s y futuras | Ambas dentro de 0..300; antigua recibida hoy no actual, futuro tampoco hasta su instante. |
+| T-I23 | Llegadas desordenadas, tipos múltiples, valores contradictorios, múltiples sensores | Orden por medición; tipos separados; contradicción/semántica insuficiente → NO_DETERMINABLE, sin sumar ocupantes. |
+| T-I24 | Sin eventos, sensor caído/deshabilitado/reasignado o ultima_comunicacion NULL | NO_DETERMINABLE; historia conservada, comunicación calculada sin enums ONLINE/OFFLINE/ERROR. |
+| T-I25 | Permisos A/E retirados, D/S, acceso directo a sensores/eventos/provisión | Gates/Policies centrales, elegibilidad y permiso del mismo rol; sin bypass o historial público. |
+| T-I26 | Consulta con filtros sensor/espacio/tipo/rango y paginación | Fechas normalizadas, intervalo [desde,hasta), 15/página, orden estable; eventos no editables. |
+| T-I27 | 120/121 requests por sensor/min, dos workers, identificador falsificado, limitador caído | Cuota atómica y separada; 429/Retry-After, firma inválida no agota víctima, 503 si limitador no seguro. |
+| T-I28 | Cuerpo 4096/4097 bytes, streaming sin longitud, content type/encoding inesperados | Máximo inclusive, 413/415, memoria acotada; no cuerpo grande ni descompresión previa. |
+| T-I29 | Logs, APM, proxy, errores, UI/historial, Git/env.example | Ningún maestro, clave, firma completa, cabecera secreta o PII; solo campos técnicos permitidos. |
+| T-I30 | CU06, reserva/QR y núcleo ante lectura sin presencia, silencio o caída IoT | Solo información mínima; no cambio de estados ni disponibilidad base; sin ejecución CU23. |
+| T-I31 | Cambiar ventana UI y política de Fase 8; dispositivo atrasado/NTP | Configuraciones distintas, reloj servidor; no sustituir max_antiguedad_lectura_min ni inventar política. |
+| T-I32 | >=120 eventos válidos/min agregados, historial y consulta bajo carga | Sin pérdida aceptada, reflejo <=5 s desde recepción servidor; documentar entorno, cuotas/carga y límites del ensayo. |
+
+La retención piloto conserva eventos, sin purga automática. Probar que todos los escritores comparten el lock del sensor y que la consulta de deduplicación establece su snapshot después de esperarlo. No basta simular carreras secuencialmente. No instalar MQTT para acreditar REST; cualquier adaptación futura deberá pasar las mismas reglas de aplicación.

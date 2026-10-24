@@ -4,6 +4,8 @@ Sistema de información para la gestión y control de reservas de espacios acad�
 
 **Estado: Fase 6 implementada y aceptada por el usuario; suite automatizada aprobada. La lectura física queda aceptada por su confirmación, sin evidencia válida independiente nueva.** Seguridad, espacios, reservas, equipamiento/préstamos/incidencias y QR contextual CU11/CU20 sobre Laravel, Vue 3, Inertia y MySQL. Entrega/devolución funcionan con o sin QR. [Implementación, 325 pruebas, trazabilidad y límites de aceptación](docs/QR_IMPLEMENTATION.md). IoT, liberación, Blockchain, notificaciones y CU30 siguen diferidos. Fase 7 no iniciada.
 
+**Fase 6.5 documental completada: D-10 RESUELTA PARA FASE 7; 0 bloqueantes documentales.** [Contrato IoT y Readiness for Phase 7](docs/DECISIONS.md#readiness-for-phase-7). Fase 7 no iniciada; requiere nueva instrucción.
+
 ## Fuente de verdad
 
 El informe final Word/PDF y las decisiones congeladas de Fase 0.5 gobiernan el diseño. Las fuentes, auditoría y decisiones están en [DECISIONS.md](docs/DECISIONS.md). Los originales y sus datos personales no se publican. Los detalles diferidos se resolverán en su fase correspondiente.
@@ -91,7 +93,7 @@ Fases 0 y 0.5 conservan su cierre documental y sus 17 expedientes. D-15 queda at
 
 D-04 y D-07 están implementadas para el núcleo web: RBAC sin bypass, historia de asignaciones y control de sesiones por hash. [Detalles y límites](docs/SECURITY_IMPLEMENTATION.md). El ámbito fino por recurso, móvil/API, almacenamiento distribuido y CU30 permanecen diferidos.
 
-La Fase 4 aplica el contrato cerrado en Fase 3.5: solicitudes, consultas, resolución, cancelación y disponibilidad con APROBADA. D-05 permanece resuelta. [Evidencia de Fase 4](docs/RESERVATIONS_IMPLEMENTATION.md). Fase 4.5 atendió la revisión previa de Fase 5: D-02/D-11 cerradas, D-04/D-05 aplicadas sin reapertura. Quedan definidos receptor, entrega, devolución/revisión, incidencias, recuperación, permisos previstos y concurrencia. [Contrato y fuentes](docs/DECISIONS.md#contrato-de-equipamiento-y-préstamos--fase-45). Fase 5 implementó el núcleo CU12–CU19 bajo la nueva instrucción, sin alterar esas decisiones. D-09 quedó **RESUELTA PARA FASE 6** en el cierre documental de Fase 5.5. [Readiness for Phase 6: 0 bloqueantes documentales](docs/DECISIONS.md#readiness-for-phase-6). La nueva instrucción de Fase 6 autorizó su implementación; el estado de verificación vigente está en QR_IMPLEMENTATION.md. La integración final fue autorizada tras la aceptación manual expresa del usuario. La próxima fase será 7 después del cierre correspondiente, sin comenzarla aquí.
+La Fase 4 aplica el contrato cerrado en Fase 3.5: solicitudes, consultas, resolución, cancelación y disponibilidad con APROBADA. D-05 permanece resuelta. [Evidencia de Fase 4](docs/RESERVATIONS_IMPLEMENTATION.md). Fase 4.5 atendió la revisión previa de Fase 5: D-02/D-11 cerradas, D-04/D-05 aplicadas sin reapertura. Quedan definidos receptor, entrega, devolución/revisión, incidencias, recuperación, permisos previstos y concurrencia. [Contrato y fuentes](docs/DECISIONS.md#contrato-de-equipamiento-y-préstamos--fase-45). Fase 5 implementó el núcleo CU12–CU19 bajo la nueva instrucción, sin alterar esas decisiones. D-09 quedó **RESUELTA PARA FASE 6** en el cierre documental de Fase 5.5. [Readiness for Phase 6: 0 bloqueantes documentales](docs/DECISIONS.md#readiness-for-phase-6). La nueva instrucción de Fase 6 autorizó su implementación; el estado de verificación vigente está en QR_IMPLEMENTATION.md. La integración final fue autorizada tras la aceptación manual expresa del usuario. Fase 6.5 completó ahora ese cierre documental; Fase 7 puede comenzar con nueva instrucción, sin iniciarla aquí.
 
 ## Cierre documental QR — Fase 5.5
 
@@ -104,3 +106,11 @@ Históricamente, Fase 5.5 modificó solo documentación y no implementó QR. La 
 Administrador/Encargado autorizado: Códigos QR → elegir recurso/reserva/préstamo → generar y, si procede, imprimir en ese flujo. Al perder la representación debe rotarse; no existe recuperación del token desde su hash. El QR físico anterior deja de servir tras rotación/desactivación.
 
 CU11 se abre desde una reserva propia/administrativa autorizada. Entrega/devolución permiten elegir «Validar mediante QR», confirmar primero datos físicos y luego escanear. Un inválido registra evidencia y detiene esa rama. Cámara local, sin frames subidos ni campo manual; HTTPS en producción o localhost en desarrollo. El arnés de tests no se publica con el build normal.
+
+## Contrato IoT cerrado en Fase 6.5
+
+Piloto previsto: POST /api/iot/events, HTTPS (HTTP solo localhost), HMAC-SHA-256 por sensor derivado de maestro privado, evento ambiental con sensor/espacio/tipo/valor nullable/fecha con zona. Maestro y claves todavía no generados. MQTT opcional futuro sobre el mismo servicio, sin broker obligatorio.
+
+Reloj servidor; tolerancia de request/futuro y frescura de monitoreo con valores iniciales independientes de 300 s. Ambas fechas deben ser recientes; histórico tardío no implica ocupación actual. Duplicados NULL-safe bajo lock de sensor no insertan ni renuevan comunicación. Identificador inmutable, reasociación preserva historia y sensor deshabilitado rechaza eventos. Sin datos personales ni inferencias de identidad.
+
+CU06 será solo informativo: ninguna lectura libera/cancela/aprueba reservas ni altera disponibilidad base. CU23 y su parámetro de política son de Fase 8. Tres permisos IoT A/E previstos; catálogo actual de 36 intacto. [Aceptación futura T-I01–T-I32](docs/BUSINESS_RULES.md#aceptación-iot-prevista-para-fase-7). Esta entrega cambia únicamente documentación; no ejecuta migraciones, pruebas funcionales, provisión o ingestión IoT.

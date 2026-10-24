@@ -191,7 +191,7 @@ Los nombres abreviados de tests corresponden a `tests/Feature/Qr*Test.php`.
 
 ## Integraciones diferidas y publicación
 
-Fase 7 requiere cerrar D-10: identidad/autenticación de sensores, payload, transporte, frescura, duplicados, reloj y piloto. No se inicia aquí. Fase 8 decidirá uso de QR/IoT sin tratar silencio como ausencia. Blockchain Fase 9, notificaciones Fase 10 y CU30 continúan diferidos; sin infraestructura vacía anticipada.
+Al cierre de Fase 6 quedaba pendiente D-10. La posterior Fase 6.5 la resuelve documentalmente: [contrato y Readiness for Phase 7](DECISIONS.md#readiness-for-phase-7), cero bloqueantes documentales. Fase 7 no se inicia aquí. Fase 8 decidirá uso de QR/IoT sin tratar silencio como ausencia. Blockchain Fase 9, notificaciones Fase 10 y CU30 continúan diferidos; sin infraestructura vacía anticipada.
 
 El usuario autorizó cerrar el pendiente físico mediante su aceptación expresa. La rama se publica e integra a main tras los controles técnicos, sin certificar una lectura física válida que no se observó independientemente. Credenciales/datos sintéticos locales fuera de Git; historiales conservados como pruebas, nunca como uso real.
 
@@ -204,3 +204,7 @@ QA: cuentas sintéticas inactivas, roles retirados, sesiones revocadas y credenc
 ## Git y entrega
 
 Rama feature/phase-6-qr desde main/origin/main 08baa06. Commits de implementación 24b8712 y pruebas 2f35b46, más el cierre documental. Publicación de feature y posterior integración fast-forward a main, sin force push. El informe final confirma los SHA remotos y el árbol limpio después de ejecutar estas operaciones. No se crean copias, worktrees ni repositorios paralelos.
+
+## Continuidad documental IoT — Fase 6.5
+
+D-09 y la aceptación de Fase 6 se conservan, incluido su límite de corroboración física. D-10 cierra REST/HMAC, fechas/frescura y deduplicación ambiental sin modificar QR ni crear sensores/eventos. Un QR contextual y un evento ambiental no prueban identidad de ocupantes ni asistencia individual. Fase 7 no libera reservas; Fase 8 combinará QR, IoT, reserva y política según D-08, conservando max_antiguedad_lectura_min independiente de la ventana de monitoreo.
