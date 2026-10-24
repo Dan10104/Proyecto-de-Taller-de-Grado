@@ -1,6 +1,6 @@
 # Constitución del proyecto ESPACIO-U
 
-Estado vigente: Fases 0–5 y cierres intermedios completados en su alcance autorizado, 2026-10-23. Seguridad, espacios, reservas y equipamiento/préstamos/incidencias funcionales; CU06 integra reservas e incidencias. Políticas solo estructurales. Fase 6 no iniciada; las secciones históricas conservan las decisiones de su momento.
+**Estado vigente: Fase 6 implementada y aceptada; suite automatizada aprobada. La prueba física se acepta por confirmación del usuario, sin nueva evidencia válida corroborada independientemente.** CU11/CU20 y extensión opcional CU17/CU18 incorporados. [Arquitectura, 325 pruebas, trazabilidad y límites de aceptación](QR_IMPLEMENTATION.md). Los cierres anteriores se conservan como evidencia histórica; Fase 7 no iniciada.
 
 ## Identidad y autoridad
 
@@ -103,3 +103,7 @@ La petición Fase 3 autoriza siete tablas operativas de espacios y politicas_lib
 ## Estado vigente al cierre de Fase 5
 
 La nueva instrucción autorizó CU12–CU19 y RF9–RF15: inventario, disponibilidad, solicitud/resolución de préstamos, entrega, devolución/revisión e incidencias de ambos subtipos. CU06 integra incidencias y conserva la disponibilidad operativa con reservas; IoT sigue diferido. Se aplican D-02/D-11 y D-04/D-05 sin reapertura ni cambio del SQL final. Evidencia: [262 pruebas / 3318 aserciones y revisión visual](EQUIPMENT_LOANS_IMPLEMENTATION.md). Fase 6 y CU30 no iniciados. Este estado sustituye las referencias temporales anteriores sin alterar las fuentes ni el alcance final institucional.
+
+## Aplicación vigente de Fase 6
+
+La petición Fase 6 autorizó CU11/CU20 y extensión opcional CU17/CU18. Se conservan workspace único, originales, stack, historia y límites; la excepción SQL de siete ON UPDATE RESTRICT fue autorizada expresamente. [Implementación y aceptación y límite físico documentado](QR_IMPLEMENTATION.md). No se inicia Fase 7 ni se anticipan CU23/CU24/CU26/CU30.

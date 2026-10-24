@@ -1,6 +1,6 @@
 # Arquitectura web de ESPACIO-U
 
-**Estado vigente: Fase 5 implementada y validada (CU12–CU19), con incidencias integradas en CU06/CU07/CU09.** Los cierres anteriores conservan su contexto histórico. [Implementación, pruebas y límites actuales](EQUIPMENT_LOANS_IMPLEMENTATION.md). Fase 6 no iniciada.
+**Estado vigente: Fase 6 implementada y aceptada; suite automatizada aprobada. La prueba física se acepta por confirmación del usuario, sin nueva evidencia válida corroborada independientemente.** CU11/CU20 y extensión opcional CU17/CU18 incorporados. [Arquitectura, 325 pruebas, trazabilidad y límites de aceptación](QR_IMPLEMENTATION.md). Los cierres anteriores se conservan como evidencia histórica; Fase 7 no iniciada.
 
 Fuentes: cap. II, apartados Laravel/API, Vue/Inertia, IoT, QR, Blockchain y despliegue; cap. VI, figuras 60–105; cap. VII, figuras 106–114; IS, IC y RD. Las figuras 106 y 107 corresponden a las páginas impresas 246–247 (PDF 247–248). Estado: arquitectura contractual congelada en Fase 0.5; implementadas fundación, seguridad web, espacios y reservas hasta Fase 4. El diagrama representa también integraciones futuras que siguen pendientes.
 
@@ -60,7 +60,7 @@ Una vez confirmada la operación, generar los efectos complementarios sin deshac
 | Integración | Contrato mínimo oficial | Decisiones pendientes |
 | --- | --- | --- |
 | IoT | Sensor registrado/habilitado, espacio, tipo de evento, valor cuando proceda y fechas; HTTP/MQTT; historial y frescura | Autenticación del dispositivo, payload, unidades, deduplicación, desfase temporal, selección de transporte y puente MQTT |
-| QR | D-09 cerrada: token/hash, ciclo, contexto y correlación atómica definidos en Fase 5.5 | Implementación Fase 6 pendiente; solo parametrización global de obligatoriedad queda fuera de ese alcance |
+| QR | D-09 cerrada: token/hash, ciclo, contexto y correlación atómica definidos en Fase 5.5 | Implementación Fase 6 y pruebas automatizadas disponibles; aceptación física por confirmación del usuario (sin corroboración independiente nueva); obligatoriedad global diferida |
 | Blockchain | Hash local con algoritmo/versión canónica, operación de origen y referencia externa; privacidad previa al envío | Proveedor/red, conjunto exacto de operaciones críticas, formato canónico, reintentos y verificación |
 | Chatbot | Backend con credenciales privadas, alcance por usuario y respuesta/error comprensible | Proveedor/modelo, contenido de orientación autorizado y límites de contexto; sin persistencia adicional asumida |
 
@@ -146,3 +146,7 @@ Contrato [D-09](DECISIONS.md#contrato-qr-y-validaciones--cierre-d-09-de-fase-55)
 El futuro servicio de gestión QR emite/rota/desactiva con transacción sobre objetivo estable; QRValidationService comprueba y registra. CU11 solo guarda evidencia. Para CU20, un coordinador comparte la transacción y contexto bloqueado de LoanService: valida QR, ejecuta el servicio principal y enlaza la misma validación al hito; no duplica transiciones ni crea un ticket reutilizable. La pantalla reúne confirmaciones antes de leer y envía automáticamente el request al completar esa lectura explícita. No espera humana/cámara bajo lock.
 
 Se extiende el orden existente con codigos_qr y luego validaciones_qr después de incidencias, con IDs ordenados y lecturas actuales. La integración futura deberá reutilizar el contexto ya bloqueado para no invertir el orden al volver a LoanService. INVALIDA admitida se confirma sola; VALIDA/hito/enlace/estados confirman juntos o revierten todos ante fallo técnico. Las carreras y la limitación RBAC global están documentadas en [el protocolo](DECISIONS.md#orden-de-locks-y-concurrencia-futura). No se añade almacenamiento de correlación, temporizador de negocio, cola, outbox ni tablas auxiliares.
+
+## Implementación QR de Fase 6
+
+QrTokenService → QrContextService → QrManagementService/QrValidationService; controladores con DTO privados, CodigoQrPolicy para CU11 y Gates de contexto. LoanService expone los mismos métodos de operación bajo transacción para ambas ramas. Locks y relecturas se extienden con QR/evidencia después de dependencias operativas. Vue usa fetch JSON efímero, Blob URL y QrScanner local; sin token en props o historial Inertia. [Arquitectura, librerías y concurrencia comprobadas](QR_IMPLEMENTATION.md). Los apartados Fase 5.5 anteriores son el contrato histórico, no el estado de implementación actual.

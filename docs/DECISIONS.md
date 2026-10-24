@@ -991,3 +991,16 @@ Fase 8: consumo de evidencia QR para liberación, tolerancias y politicas_libera
 | Bloqueantes documentales restantes | **0** para el alcance definido; no equivale a implementación ni a pruebas funcionales QR aprobadas |
 
 **Fase 6 puede comenzar con una nueva instrucción del usuario. No se inició en Fase 5.5.** La elección de librería compatible es una tarea técnica de esa fase, no una decisión de negocio pendiente. La evidencia funcional vigente sigue siendo la de Fase 5 (262 pruebas / 3318 aserciones); no se atribuye a QR ni se repite por este cierre documental.
+
+## Excepción técnica autorizada durante Fase 6 — MySQL 3823
+
+La ejecución del SQL literal en MySQL real detectó incompatibilidad entre CHECK y ON UPDATE CASCADE en las mismas columnas. El usuario autorizó expresamente usar ON UPDATE RESTRICT solo en siete FK nuevas (tres de codigos_qr y cuatro de validaciones_qr). [Lista exacta, evidencia e impacto](QR_IMPLEMENTATION.md#esquema-y-excepción-autorizada). Esta excepción sustituye únicamente la exigencia de CASCADE en esas siete actualizaciones del contrato D-09; conserva todos los CHECK, ON DELETE RESTRICT, tipos, columnas, índices, UNIQUE y demás FK. No se modifican Word/PDF ni migraciones anteriores. Los IDs padres con historial QR no se renumeran. El resto de D-09 continúa vinculante; Fase 7 no autorizada.
+
+## Aplicación de D-09 en Fase 6
+
+La nueva instrucción autorizó las dos tablas/modelos/enums, tres permisos, lifecycle, CU11/CU20, extensiones CU17/CU18 y cámara local. D-09 no se reabre. Se mantiene la excepción de siete ON UPDATE RESTRICT autorizada arriba, con constraints/metadatos reales probados y originales intactos. [Implementación, trazabilidad y resultados](QR_IMPLEMENTATION.md): 325 pruebas/4984 aserciones, 16 escenarios concurrentes nuevos. El usuario aceptó la lectura física sin exigir nueva corroboración independiente, habilitando cierre/integración final; Fase 7 no iniciada. Las afirmaciones de cero implementación del apartado Fase 5.5 describen solo esa entrega documental.
+
+
+## Aceptación manual final de Fase 6
+
+El usuario autorizó cerrar la comprobación física por su confirmación («funciona yo se que funciona dalo por hecho aunque no haya la prueba»). Se conserva la distinción entre pruebas automatizadas/sintéticas, intento físico inválido por recurso equivocado y ausencia de una nueva evidencia física válida corroborada. Esta instrucción resuelve la puerta de aceptación para publicar/integrar sin inventar un resultado técnico. Fase 7 no iniciada.

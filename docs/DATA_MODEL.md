@@ -1,6 +1,6 @@
 # Modelo de datos documentado
 
-**Estado vigente: Fase 5 implementada y validada (CU12–CU19), con incidencias integradas en CU06/CU07/CU09.** Los cierres anteriores conservan su contexto histórico. [Implementación, pruebas y límites actuales](EQUIPMENT_LOANS_IMPLEMENTATION.md). Fase 6 no iniciada.
+**Estado vigente: Fase 6 implementada y aceptada; suite automatizada aprobada. La prueba física se acepta por confirmación del usuario, sin nueva evidencia válida corroborada independientemente.** CU11/CU20 y extensión opcional CU17/CU18 incorporados. [Arquitectura, 325 pruebas, trazabilidad y límites de aceptación](QR_IMPLEMENTATION.md). Los cierres anteriores se conservan como evidencia histórica; Fase 7 no iniciada.
 
 Estado: contrato documental congelado en Fase 0.5; **no es una migración ni un SQL para ejecutar**. Fuentes: figura 108 (clases), figura 109 (BD lógica), tablas 68–98 (mapeo), 99–129 (volúmenes/diccionario) y script del cap. VII, pp. 269–299 (PDF 270–300).
 
@@ -968,3 +968,7 @@ No se materializa ninguna tabla: permanecen 21 académicas y migrations técnica
 | resultado / motivo_rechazo | Solo VALIDA/INVALIDA; inválida requiere motivo seguro <=500, válida NULL; no EXPIRADA/REVOCADA/DESCONOCIDA como estados |
 
 El SQL permite varios NULL y varios intentos por codigo_qr_id. Las guardas de aplicación relacionan todos los IDs con el mismo recurso/operación y no presentan un ID como autorización. [Contrato completo de D-09](DECISIONS.md#contrato-qr-y-validaciones--cierre-d-09-de-fase-55). Al implementar solo estas dos tablas, el inventario previsto será 23 tablas académicas / 156 columnas / 45 FK; hoy esos dos CREATE TABLE siguen pendientes y el modelo final 31/211/63 no cambia.
+
+## Materialización QR y excepción autorizada de Fase 6
+
+Las tablas codigos_qr y validaciones_qr están materializadas: 23 tablas académicas, 156 columnas, 45 FK, más migrations. Las definiciones del diccionario anterior conservan el SQL documental original. **Diferencia física autorizada:** ON UPDATE RESTRICT en fk_qr_recurso/reserva/prestamo y fk_validacion_reserva/prestamo/entrega/devolucion por incompatibilidad MySQL CHECK+CASCADE (error 3823). Las otras tres FK QR conservan CASCADE y todos los DELETE son RESTRICT. Columnas, CHECK, UNIQUE, índices y nulabilidad intactos. Las 21 migraciones previas no cambian. [Autorización, consecuencias y pruebas de metadatos/restricciones](QR_IMPLEMENTATION.md#esquema-y-excepción-autorizada). No describir la implementación como SQL idéntico sin mencionar esta excepción.
