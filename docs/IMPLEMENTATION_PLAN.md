@@ -1,6 +1,8 @@
 # Plan de implementación web
 
-Estado: **Fase 7 implementada conforme a D-10; Fases 8–14 no iniciadas**. [Evidencia funcional IoT](IOT_IMPLEMENTATION.md). Fase 6 mantiene su implementación, suite y aceptación del usuario. Fases 0 y 0.5 conservaron su alcance documental; la nueva instrucción de Fase 1 autorizó la fundación técnica descrita en [DEVELOPMENT_SETUP.md](DEVELOPMENT_SETUP.md). No existe Flutter, Android ni cliente nativo en el plan de ejecución.
+**Estado vigente — Fase 8 implementada (2026-10-24).** Fase 8 implementa RF18/CU23. Fases 9–14 no iniciadas. Siguiente paso: instrucción explícita para cerrar D-12 (operaciones críticas, canonicalización, privacidad, proveedor y recuperación) antes de programar Fase 9. [Informe de implementación, verificaciones y límites](RELEASE_POLICY_IMPLEMENTATION.md). Las declaraciones de fases anteriores que siguen a continuación se conservan como historia de esos cierres.
+
+Estado histórico: **Fase 7 implementada conforme a D-10; Fases 8–14 no iniciadas**. [Evidencia funcional IoT](IOT_IMPLEMENTATION.md). Fase 6 mantiene su implementación, suite y aceptación del usuario. Fases 0 y 0.5 conservaron su alcance documental; la nueva instrucción de Fase 1 autorizó la fundación técnica descrita en [DEVELOPMENT_SETUP.md](DEVELOPMENT_SETUP.md). No existe Flutter, Android ni cliente nativo en el plan de ejecución.
 
 ## Inventario histórico anterior a Fase 1 — 2026-10-23
 

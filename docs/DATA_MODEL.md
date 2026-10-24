@@ -1,6 +1,8 @@
 # Modelo de datos documentado
 
-**Estado vigente: Fase 7 implementada conforme a D-10.** CU21/CU22 y evidencia informativa en CU06; dos tablas IoT y tres permisos nuevos. [Implementación, seguridad, pruebas y límites](IOT_IMPLEMENTATION.md). CU23 y Fase 8 no iniciados.
+**Estado vigente — Fase 8 implementada (2026-10-24).** Tres migraciones 000026–000028 materializan evaluaciones_liberacion, evaluaciones_eventos_ocupacion y evaluaciones_validaciones_qr. Totales instalados: 28 tablas académicas / 179 columnas / 54 FK, más migrations técnica. Las 25 migraciones anteriores y los diccionarios físicos se conservan. El modelo completo previsto sigue siendo 31 tablas / 211 columnas / 63 FK. [Informe de implementación, verificaciones y límites](RELEASE_POLICY_IMPLEMENTATION.md). Las declaraciones de fases anteriores que siguen a continuación se conservan como historia de esos cierres.
+
+**Estado histórico: Fase 7 implementada conforme a D-10.** CU21/CU22 y evidencia informativa en CU06; dos tablas IoT y tres permisos nuevos. [Implementación, seguridad, pruebas y límites](IOT_IMPLEMENTATION.md). CU23 y Fase 8 no iniciados.
 
 La Fase 6 conserva su aceptación y su límite de corroboración física descritos en [QR_IMPLEMENTATION.md](QR_IMPLEMENTATION.md). Los cierres documentales de Fase 6.5 y anteriores se conservan como evidencia histórica; sus criterios futuros se verifican ahora en Fase 7.
 

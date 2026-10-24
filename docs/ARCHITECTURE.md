@@ -1,8 +1,10 @@
 # Arquitectura web de ESPACIO-U
 
-**Fase 7.5 documental:** [D-08 resuelta para Fase 8](DECISIONS.md#readiness-for-phase-8), sin implementación nueva. El proceso futuro será Scheduler→comando→servicio CU23→transacción MySQL, con reserva coordinadora, espacio/política/sensores NOWAIT y evidencia persistida. No requiere actor humano, llegada de un evento ni consulta a un dispositivo. Los apartados anteriores/futuros se interpretan con su fecha de cierre.
+**Estado vigente — Fase 8 implementada (2026-10-24).** ReleasePolicyManagementService administra versiones/asignación; ReleaseEvaluationService ejecuta la transacción CU23; ReleaseDecision aplica la matriz; ReleaseScanService y Artisan/Scheduler coordinan lotes. HTTP/Inertia tiene proyecciones propias/administrativas. La ingestión IoT y las consultas CU22 no disparan liberación. [Informe de implementación, verificaciones y límites](RELEASE_POLICY_IMPLEMENTATION.md). Las declaraciones de fases anteriores que siguen a continuación se conservan como historia de esos cierres.
 
-**Estado vigente: Fase 7 implementada conforme a D-10.** CU21/CU22 y evidencia informativa en CU06; dos tablas IoT y tres permisos nuevos. [Implementación, seguridad, pruebas y límites](IOT_IMPLEMENTATION.md). CU23 y Fase 8 no iniciados.
+**Cierre histórico de Fase 7.5:** [D-08 resuelta para Fase 8](DECISIONS.md#readiness-for-phase-8), sin implementación nueva. El proceso futuro será Scheduler→comando→servicio CU23→transacción MySQL, con reserva coordinadora, espacio/política/sensores NOWAIT y evidencia persistida. No requiere actor humano, llegada de un evento ni consulta a un dispositivo. Los apartados anteriores/futuros se interpretan con su fecha de cierre.
+
+**Estado histórico: Fase 7 implementada conforme a D-10.** CU21/CU22 y evidencia informativa en CU06; dos tablas IoT y tres permisos nuevos. [Implementación, seguridad, pruebas y límites](IOT_IMPLEMENTATION.md). CU23 y Fase 8 no iniciados.
 
 La Fase 6 conserva su aceptación y su límite de corroboración física descritos en [QR_IMPLEMENTATION.md](QR_IMPLEMENTATION.md). Los cierres documentales de Fase 6.5 y anteriores se conservan como evidencia histórica; sus criterios futuros se verifican ahora en Fase 7.
 

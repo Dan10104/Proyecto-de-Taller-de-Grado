@@ -1,6 +1,8 @@
 # Constitución del proyecto ESPACIO-U
 
-**Estado vigente: Fase 7 implementada conforme a D-10.** CU21/CU22 y evidencia informativa en CU06; [implementación y verificación](IOT_IMPLEMENTATION.md). CU23 y Fase 8 no iniciados.
+**Estado vigente — Fase 8 implementada (2026-10-24).** Se ejecuta la instrucción oficial de Fase 8 en el workspace único. RF18/CU23 materializado sin ampliar alcance ni iniciar Fase 9. [Informe de implementación, verificaciones y límites](RELEASE_POLICY_IMPLEMENTATION.md). Las declaraciones de fases anteriores que siguen a continuación se conservan como historia de esos cierres.
+
+**Estado histórico: Fase 7 implementada conforme a D-10.** CU21/CU22 y evidencia informativa en CU06; [implementación y verificación](IOT_IMPLEMENTATION.md). CU23 y Fase 8 no iniciados.
 
 La Fase 6 conserva su aceptación y su límite de corroboración física descritos en [QR_IMPLEMENTATION.md](QR_IMPLEMENTATION.md). Los cierres documentales de Fase 6.5 y anteriores se conservan como evidencia histórica; sus criterios futuros se verifican ahora en Fase 7.
 

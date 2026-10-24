@@ -1,5 +1,7 @@
 # Reservas de espacios académicos — Fase 4
 
+**Estado vigente — Fase 8 implementada (2026-10-24).** CU23 incorpora APROBADA→LIBERADA atómica con evaluación y pivotes. Reserva es lock coordinador; D-05 y ReservationService no cambian. Cancelación conserva inicio exclusivo y las carreras MySQL confirman una sola transición válida. FINALIZADA por tiempo permanece fuera. [Informe de implementación, verificaciones y límites](RELEASE_POLICY_IMPLEMENTATION.md). Las declaraciones de fases anteriores que siguen a continuación se conservan como historia de esos cierres.
+
 **Continuidad documental de Fase 7.5:** [D-08 cerrada para Fase 8](DECISIONS.md#readiness-for-phase-8). CU23 futuro solo evaluará APROBADA desde inicio+tolerancia y antes de fin. LIBERAR confirmará evaluación/pivotes/transición en un commit. D-05 conserva cancelación estrictamente antes de inicio y la finalización natural diferida; los órdenes de lock actuales se conservan mediante el protocolo CU23 con NOWAIT. Sin cambios funcionales ahora.
 
 Fecha: 2026-10-23. Implementación del núcleo autorizado de CU07–CU10 y ampliación de CU06. D-05 permanece **RESUELTA PARA FASE 4**; no se reinterpreta. Este informe conserva la evidencia histórica de Fase 4; [Fase 5 ya implementada](EQUIPMENT_LOANS_IMPLEMENTATION.md).
