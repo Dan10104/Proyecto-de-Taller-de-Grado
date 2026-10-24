@@ -92,7 +92,7 @@ class EquipmentManagementTest extends LoanTestCase
         $this->seed(SecuritySeeder::class);
         $this->seed(SecuritySeeder::class);
         $this->assertFalse($this->user('Administrador')->can('prestamos.registrar_entrega'));
-        $this->assertDatabaseCount('permisos', 33);
+        $this->assertDatabaseCount('permisos', 36);
         $role->permisos()->attach(Permiso::where('codigo', 'prestamos.solicitar')->sole());
         $this->assertFalse($this->user('Administrador')->can('prestamos.solicitar'));
         $this->grantRole($u = $this->user('Administrador'), 'Docente');
@@ -130,6 +130,6 @@ class EquipmentManagementTest extends LoanTestCase
         $this->get('/incidencias')->assertForbidden();
         $u->forceFill(['estado' => 'INACTIVO'])->save();
         $this->expectException(AuthorizationException::class);
-        $this->loans()->create($u,$this->loanData(EquipamientoTecnologico::factory()->create()));
+        $this->loans()->create($u, $this->loanData(EquipamientoTecnologico::factory()->create()));
     }
 }

@@ -49,7 +49,10 @@ JSON, true, flags: JSON_THROW_ON_ERROR);
                 $this->assertSame([$e['col'], $e['table'], $e['key'], $e['update'], $e['delete']], [$fk->c, $fk->t, $fk->k, $fk->u, $fk->d]);
             }
         }
-        foreach (['codigos_qr', 'validaciones_qr', 'notificaciones', 'registros_actividad', 'lecturas_iot', 'evidencias_blockchain'] as $table) {
+        foreach (['codigos_qr', 'validaciones_qr'] as $table) {
+            $this->assertTrue(Schema::hasTable($table)); // Materialized by the authorized Phase 6.
+        }
+        foreach (['notificaciones', 'registros_actividad', 'lecturas_iot', 'evidencias_blockchain'] as $table) {
             $this->assertFalse(Schema::hasTable($table));
         }
     }
@@ -119,7 +122,7 @@ JSON, true, flags: JSON_THROW_ON_ERROR);
         $other = $this->delivered($a);
         $this->loans()->receive($a, $other, ['condicion' => 'ADECUADA']);
         $other->delete();
-        $this->assertNull(EntregaPrestamo::where('prestamo_id',$other->id)->first());
-        $this->assertNull(DevolucionPrestamo::where('prestamo_id',$other->id)->first());
+        $this->assertNull(EntregaPrestamo::where('prestamo_id', $other->id)->first());
+        $this->assertNull(DevolucionPrestamo::where('prestamo_id', $other->id)->first());
     }
 }

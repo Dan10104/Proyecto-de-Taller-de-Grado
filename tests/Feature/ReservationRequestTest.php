@@ -91,7 +91,7 @@ class ReservationRequestTest extends ReservationTestCase
         $this->seed(SecuritySeeder::class);
         $this->seed(SecuritySeeder::class);
         $this->assertFalse($this->user('Docente')->can('reservas.solicitar'));
-        $this->assertDatabaseCount('permisos', 33);
+        $this->assertDatabaseCount('permisos', 36);
     }
 
     public function test_ownership_filters_and_direct_access_cannot_be_expanded(): void
