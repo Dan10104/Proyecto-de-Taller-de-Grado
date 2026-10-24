@@ -190,7 +190,7 @@ class SpaceManagementTest extends SpaceTestCase
 
     public function test_seed_addition_preserves_existing_revocations_and_only_grants_eligible_actions(): void
     {
-        foreach (['Administrador' => 36, 'Encargado de Laboratorio' => 25, 'Docente' => 8, 'Estudiante' => 8] as $name => $count) {
+        foreach (['Administrador' => 39, 'Encargado de Laboratorio' => 28, 'Docente' => 9, 'Estudiante' => 9] as $name => $count) {
             $this->assertSame($count, Rol::where('nombre', $name)->sole()->permisos()->count());
         }
         $permission = Permiso::where('codigo', 'espacios.gestionar')->sole();

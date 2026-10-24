@@ -92,7 +92,7 @@ class EquipmentManagementTest extends LoanTestCase
         $this->seed(SecuritySeeder::class);
         $this->seed(SecuritySeeder::class);
         $this->assertFalse($this->user('Administrador')->can('prestamos.registrar_entrega'));
-        $this->assertDatabaseCount('permisos', 39);
+        $this->assertDatabaseCount('permisos', 43);
         $role->permisos()->attach(Permiso::where('codigo', 'prestamos.solicitar')->sole());
         $this->assertFalse($this->user('Administrador')->can('prestamos.solicitar'));
         $this->grantRole($u = $this->user('Administrador'), 'Docente');
