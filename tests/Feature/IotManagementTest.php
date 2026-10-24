@@ -20,8 +20,8 @@ class IotManagementTest extends SecurityTestCase
     {
         $permissions = ['iot.sensores.ver', 'iot.sensores.gestionar', 'iot.monitoreo.ver'];
         $this->assertEqualsCanonicalizing($permissions, Permiso::where('codigo', 'like', 'iot.%')->pluck('codigo')->all());
-        $this->assertSame(39, Permiso::count());
-        foreach (['Administrador' => 36, 'Encargado de Laboratorio' => 25, 'Docente' => 8, 'Estudiante' => 8] as $role => $count) {
+        $this->assertSame(43, Permiso::count());
+        foreach (['Administrador' => 39, 'Encargado de Laboratorio' => 28, 'Docente' => 9, 'Estudiante' => 9] as $role => $count) {
             $user = $this->user($role);
             $this->assertSame($count, Rol::where('nombre', $role)->sole()->permisos()->count());
             foreach ($permissions as $permission) {
