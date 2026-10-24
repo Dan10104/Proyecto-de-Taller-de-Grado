@@ -7,6 +7,9 @@ use App\Enums\RolInstitucional;
 class PermissionCatalog
 {
     public const DEFINITIONS = [
+        'iot.sensores.ver' => ['nombre' => 'Consultar sensores IoT', 'fuente' => 'RF16 / CU21 / D-10'],
+        'iot.sensores.gestionar' => ['nombre' => 'Gestionar y provisionar sensores IoT', 'fuente' => 'RF16 / CU21 / D-10'],
+        'iot.monitoreo.ver' => ['nombre' => 'Consultar monitoreo e historial IoT', 'fuente' => 'RF17 / CU22 / D-10'],
         'qr.gestionar' => ['nombre' => 'Gestionar y rotar códigos QR', 'fuente' => 'D-09 / RF8 / CU11–20'],
         'qr.validar_uso_espacio' => ['nombre' => 'Validar uso de espacio mediante QR', 'fuente' => 'RF8 / CU11'],
         'qr.validar_operacion' => ['nombre' => 'Validar entrega o devolución mediante QR', 'fuente' => 'RF13–14 / CU17–18 / CU20'],
@@ -56,7 +59,7 @@ class PermissionCatalog
         if (in_array($code, ['reservas.solicitar', 'prestamos.solicitar', 'prestamos.ver_propios'], true)) {
             return ['Docente', 'Estudiante'];
         }
-        if (str_starts_with($code, 'qr.') || str_starts_with($code, 'espacios.') || str_starts_with($code, 'reservas.') || str_starts_with($code, 'equipamientos.') || str_starts_with($code, 'prestamos.') || str_starts_with($code, 'incidencias.')) {
+        if (str_starts_with($code, 'iot.') || str_starts_with($code, 'qr.') || str_starts_with($code, 'espacios.') || str_starts_with($code, 'reservas.') || str_starts_with($code, 'equipamientos.') || str_starts_with($code, 'prestamos.') || str_starts_with($code, 'incidencias.')) {
             return ['Administrador', 'Encargado de Laboratorio'];
         }
 

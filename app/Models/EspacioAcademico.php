@@ -70,4 +70,14 @@ class EspacioAcademico extends Model
     {
         return $this->hasMany(IncidenciaMantenimiento::class, 'recurso_id', 'recurso_id');
     }
+
+    public function sensoresActuales(): HasMany
+    {
+        return $this->hasMany(SensorIot::class, 'espacio_actual_id', 'recurso_id');
+    }
+
+    public function eventosHistoricos(): HasMany
+    {
+        return $this->hasMany(EventoOcupacion::class, 'espacio_historico_id', 'recurso_id');
+    }
 }
