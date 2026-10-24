@@ -1,10 +1,12 @@
 <?php
 
 use App\Exceptions\EquipmentConflictException;
+use App\Exceptions\IotException;
 use App\Exceptions\ReservationConflictException;
 use App\Exceptions\SessionStorageException;
 use App\Http\Middleware\EnsureAccessSession;
 use App\Http\Middleware\HandleInertiaRequests;
+use App\Http\Middleware\IotBoundary;
 use App\Http\Middleware\PrivateResponse;
 use App\Http\Middleware\QrPrivacy;
 use App\Services\AccessSessionService;
@@ -17,9 +19,12 @@ use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Log;
 
 return Application::configure(basePath: dirname(__DIR__))
-    ->withRouting(web: __DIR__.'/../routes/web.php', commands: __DIR__.'/../routes/console.php', health: '/up')
+    ->withRouting(web: __DIR__.'/../routes/web.php', api: __DIR__.'/../routes/api.php', commands: __DIR__.'/../routes/console.php', health: '/up')
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->prepend(QrPrivacy::class);
+        $middleware->prepend(IotBoundary::class);
+        $middleware->trimStrings(except: [fn (Request $request) => $request->is('api/iot', 'api/iot/*'), 'identificador']);
+        $middleware->convertEmptyStringsToNull(except: [fn (Request $request) => $request->is('api/iot', 'api/iot/*')]);
         $middleware->trimStrings(except: ['qr_token']);
         $middleware->web(prepend: [PrivateResponse::class], append: [HandleInertiaRequests::class]);
         $middleware->alias(['access.session' => EnsureAccessSession::class]);
@@ -28,6 +33,19 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->dontFlash(['qr_token']);
+        $exceptions->report(function (Throwable $error) {
+            if (request()->is('api/iot', 'api/iot/*', 'iot', 'iot/*')) {
+                return false;
+            }
+        });
+        $exceptions->render(function (Throwable $error, Request $request) {
+            if ($request->is('api/iot', 'api/iot/*')) {
+                return ($error instanceof IotException ? $error : new IotException(503, 'temporarily_unavailable'))->response();
+            }
+            if ($error instanceof IotException) {
+                return $error->response();
+            }
+        });
         $exceptions->report(function (Throwable $error) {
             if (request()->is('qr', 'qr/*', 'reservas/*/qr', 'prestamos/*/qr/*')) {
                 Log::error('Operación QR no disponible.', ['exception_class' => $error::class]);
@@ -64,7 +82,7 @@ return Application::configure(basePath: dirname(__DIR__))
         });
         $exceptions->shouldRenderJsonWhen(fn (Request $request) => $request->expectsJson());
         $exceptions->respond(function ($response) {
-            if (in_array($response->getStatusCode(), [403, 404, 419, 429], true) && ! request()->expectsJson()) {
+            if (in_array($response->getStatusCode(), [403, 404, 419, 429], true) && ! request()->expectsJson() && ! request()->is('api/iot', 'api/iot/*')) {
                 return Inertia\Inertia::render('Error', ['status' => $response->getStatusCode()])->toResponse(request())->setStatusCode($response->getStatusCode());
             }
 

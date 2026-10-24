@@ -5,9 +5,10 @@ import SpaceFilters from '../../Components/SpaceFilters.vue';
 import SpaceState from '../../Components/SpaceState.vue';
 import Pagination from '../../Components/Pagination.vue';
 import Icon from '../../Components/Icon.vue';
+import IotEvidence from '../../Components/IotEvidence.vue';
 import { useAccess } from '../../security';
 const { can } = useAccess();
-const props = defineProps({ espacios: Object, periodo: Object, filtros: Object, opciones: Object, fechaActual: String });
+const props = defineProps({ espacios: Object, periodo: Object, filtros: Object, opciones: Object, fechaActual: String, iot: Object });
 function requestUrl(space) {
   return '/reservas/crear?' + new URLSearchParams({ espacio_id: space.recurso_id, inicio: `${props.periodo.fecha}T${props.periodo.inicio}`, fin: `${props.periodo.fecha}T${props.periodo.fin}` });
 }
@@ -54,6 +55,7 @@ function requestUrl(space) {
             <span v-for="feature in space.caracteristicas" :key="feature.id">{{ feature.nombre }}</span>
             <span v-if="!space.caracteristicas.length">Sin características registradas</span>
           </div>
+          <IotEvidence :readings="iot?.[space.recurso_id]?.lecturas || []" compact/>
           <div class="space-card-bottom">
             <span>Disponible en este horario</span>
             <Link :href="`/espacios/${space.recurso_id}`" class="text-link">

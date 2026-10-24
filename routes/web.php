@@ -3,6 +3,8 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\EquipmentController;
 use App\Http\Controllers\IncidentController;
+use App\Http\Controllers\IotMonitoringController;
+use App\Http\Controllers\IotSensorController;
 use App\Http\Controllers\LoanController;
 use App\Http\Controllers\QrManagementController;
 use App\Http\Controllers\QrValidationController;
@@ -25,6 +27,15 @@ Route::get('/login', [AuthController::class, 'create'])->name('login');
 Route::post('/login', [AuthController::class, 'store'])->name('login.store');
 Route::post('/logout', [AuthController::class, 'destroy'])->name('logout');
 Route::middleware(['auth', 'access.session'])->group(function () {
+    Route::get('/iot/monitoreo', IotMonitoringController::class)->middleware('can:iot.monitoreo.ver')->name('iot.monitoring');
+    Route::get('/iot/sensores', [IotSensorController::class, 'index'])->middleware('can:iot.sensores.ver')->name('iot.sensors.index');
+    Route::get('/iot/sensores/crear', [IotSensorController::class, 'create'])->middleware('can:iot.sensores.gestionar')->name('iot.sensors.create');
+    Route::post('/iot/sensores', [IotSensorController::class, 'store'])->middleware('can:iot.sensores.gestionar')->name('iot.sensors.store');
+    Route::get('/iot/sensores/{sensor}', [IotSensorController::class, 'show'])->middleware('can:iot.sensores.ver')->name('iot.sensors.show');
+    Route::get('/iot/sensores/{sensor}/editar', [IotSensorController::class, 'edit'])->middleware('can:iot.sensores.gestionar')->name('iot.sensors.edit');
+    Route::put('/iot/sensores/{sensor}', [IotSensorController::class, 'update'])->middleware('can:iot.sensores.gestionar')->name('iot.sensors.update');
+    Route::patch('/iot/sensores/{sensor}/estado', [IotSensorController::class, 'state'])->middleware('can:iot.sensores.gestionar')->name('iot.sensors.state');
+    Route::post('/iot/sensores/{sensor}/credencial', [IotSensorController::class, 'provision'])->middleware('can:iot.sensores.gestionar')->name('iot.sensors.provision');
     Route::get('/qr', [QrManagementController::class, 'index'])->name('qr.index');
     Route::get('/qr/{objetivoTipo}/{objetivo}', [QrManagementController::class, 'show'])->whereIn('objetivoTipo', ['recurso', 'reserva', 'prestamo'])->whereNumber('objetivo')->name('qr.show');
     Route::post('/qr/{objetivoTipo}/{objetivo}', [QrManagementController::class, 'issue'])->whereIn('objetivoTipo', ['recurso', 'reserva', 'prestamo'])->whereNumber('objetivo')->name('qr.issue');
