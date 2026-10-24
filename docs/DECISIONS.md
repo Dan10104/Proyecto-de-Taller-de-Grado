@@ -1,6 +1,6 @@
 # Registro de decisiones y auditoría documental
 
-Fecha: 2026-10-23. Fase 0.5: contratos de implementación congelados según la instrucción del usuario. Se conservan los 17 expedientes D-01–D-17 y su conflicto original; Git conserva la redacción inicial de Fase 0. No se cambian el Word/PDF, el alcance funcional ni el stack. Fase 1 técnica completada por instrucción posterior; D-15 y la configuración de D-16 tienen evidencia en [DEVELOPMENT_SETUP.md](DEVELOPMENT_SETUP.md). Fase 1.5 cerró D-04/D-07; el núcleo web de Fase 2 y los espacios de Fase 3 están implementados. Fase 3.5 cerró D-05 para reservas; Fase 4 aplica ese contrato con implementación y pruebas. Fase 4.5 cierra documentalmente CU12–CU19: D-02/D-11 resueltas para Fase 5 y D-04/D-05 aplicadas sin reabrirlas. Fase 5 no iniciada.
+Fecha: 2026-10-23. Fase 0.5: contratos de implementación congelados según la instrucción del usuario. Se conservan los 17 expedientes D-01–D-17 y su conflicto original; Git conserva la redacción inicial de Fase 0. No se cambian el Word/PDF, el alcance funcional ni el stack. Fase 1 técnica completada por instrucción posterior; D-15 y la configuración de D-16 tienen evidencia en [DEVELOPMENT_SETUP.md](DEVELOPMENT_SETUP.md). Fase 1.5 cerró D-04/D-07; el núcleo web de Fase 2 y los espacios de Fase 3 están implementados. Fase 3.5 cerró D-05 para reservas; Fase 4 aplica ese contrato con implementación y pruebas. Fase 4.5 cierra documentalmente CU12–CU19: D-02/D-11 resueltas para Fase 5 y D-04/D-05 aplicadas sin reabrirlas. Fase 5 implementada y validada; Fase 5.5 resuelve D-09 para Fase 6. Fase 6 no iniciada.
 
 ## Fuentes verificadas
 
@@ -53,7 +53,7 @@ SQL es contrato principal de tablas, columnas, tipos, PK/FK, nulabilidad, enums,
 
 ## Clasificación de las 17 decisiones originales (cierre de Fase 0.5)
 
-Esta clasificación conserva la fotografía histórica de Fase 0.5, con **un único estado por expediente en ese cierre**. Los estados vigentes se actualizan en sus fichas y en Readiness for Phase 2/4/5; no se reescribe el recuento histórico. La clasificación cuenta expedientes de Fase 0, no cada parámetro interno. Una convención puede dejar parámetros posteriores expresamente enumerados; eso no los declara resueltos ni bloquea la fundación.
+Esta clasificación conserva la fotografía histórica de Fase 0.5, con **un único estado por expediente en ese cierre**. Los estados vigentes se actualizan en sus fichas y en Readiness for Phase 2/4/5/6; no se reescribe el recuento histórico. La clasificación cuenta expedientes de Fase 0, no cada parámetro interno. Una convención puede dejar parámetros posteriores expresamente enumerados; eso no los declara resueltos ni bloquea la fundación.
 
 | Estado | Cantidad |
 | --- | --- |
@@ -300,14 +300,15 @@ Sustento técnico: [autenticación Laravel 13](https://laravel.com/docs/13.x/aut
 | Fuente B | codigos_qr, validaciones_qr y sus CHECK/UNIQUE; Fase 0.5 §11. |
 | Conflicto original de Fase 0 | No hay CU independiente de emisión/renovación ni política completa de QR obligatorio. Recurso esperado/contexto son obligatorios; código reconocido puede ser NULL. Enlace a entrega/devolución es UNIQUE, aunque puede haber varios intentos. |
 | Tratamiento registrado en Fase 0 (histórico) | Acordar emisión/vigencia, contexto y registro de rechazo, reintento/replay y enlace de validación confirmada. No crear CRUD extra ni relajar CHECK/UNIQUE por comodidad. |
-| Impacto | Emisión, vigencia concreta y correlación de intentos requieren detalle, pero el propósito y exclusividad ya están definidos. |
-| Decisión vigente de Fase 0.5 | QR identifica recurso/operación y no autentica ni autoriza. Servidor valida usuario, permiso, código, recurso esperado, operación, estado y tiempo aplicable. Código con exactamente un objetivo recurso/reserva/préstamo. USO_ESPACIO exige reserva y excluye préstamo/entrega/devolución; ENTREGA o DEVOLUCION exige préstamo y excluye reserva y el enlace del tipo contrario. Entrega/devolución enlazadas son opcionales y únicas; no relajar esos constraints. |
+| Impacto original | Emisión, vigencia concreta y correlación de intentos requerían detalle; el contrato de Fase 5.5 siguiente resuelve esos puntos conservando el propósito y la exclusividad. |
+| Decisión de Fase 0.5 (base conservada) | QR identifica recurso/operación y no autentica ni autoriza. Servidor valida usuario, permiso, código, recurso esperado, operación, estado y tiempo aplicable. Código con exactamente un objetivo recurso/reserva/préstamo. USO_ESPACIO exige reserva y excluye préstamo/entrega/devolución; ENTREGA o DEVOLUCION exige préstamo y excluye reserva y el enlace del tipo contrario. Entrega/devolución enlazadas son opcionales y únicas; no relajar esos constraints. |
 | Justificación | Aplicación directa de CU y SQL; tener una cámara o conocer el token nunca habilita una operación protegida. Un intento sin contexto válido no se fuerza a una fila que viole el modelo. |
-| Estado | DIFERIDA A UNA FASE POSTERIOR |
-| Fase afectada | 6; prever contratos de entrega/devolución en 5. |
-| Detalle diferido / límite de la resolución | Cerrar emisión/renovación, vencimiento, política de QR requerido y manejo de reescaneos/correlación. No añadir un CRUD ni uso único por suposición. No bloquea Fase 1. |
+| Decisión vigente de Fase 5.5 | Token CSPRNG de 256 bits/base64url, SHA-256, objetivo exclusivo, un activo por objetivo, revocación histórica, CU11 contextual y CU20 como extensión explícita con correlación atómica en el mismo request; [contrato completo](#contrato-qr-y-validaciones--cierre-d-09-de-fase-55). |
+| Estado | RESUELTA PARA FASE 6 |
+| Fase afectada | 5.5 cierre documental; 6 implementación futura CU11/CU20 y extensiones CU17/CU18. |
+| Detalle diferido / límite de la resolución | Ningún bloqueante para la extensión explícita de Fase 6. Parametrización global de obligatoriedad, liberación, Blockchain y CU30 conservan alcance posterior; no se crea un CRUD genérico ni uso único. |
 | Bloquea iniciar Fase 1 | No |
-| Fecha de adopción | 2026-10-23; instrucción Fase 0.5 |
+| Fecha de adopción | 2026-10-23; base Fase 0.5 y cierre autorizado de D-09 en Fase 5.5 |
 
 ### D-10 — Vacío de contrato IoT
 
@@ -473,7 +474,7 @@ Estos puntos no se implementaron ni se presentan como especificaciones completas
 | D-05 | Reservas resueltas para Fase 4; aplicación a préstamos cerrada en Fase 4.5. Solo FINALIZADA automática de reservas sigue diferida | Finalización solo en una fase posterior autorizada. Sin bloqueo documental para CU12–CU19 |
 | D-07 | Autenticación móvil/API y almacenamiento distribuido; web ya resuelta | Cuando se autorice el cliente/API; despliegue antes de Fase 14 |
 | D-08 | Ejecución temporal de monitoreo/liberación, umbrales y combinación de evidencia, conservación de versiones aplicadas | Fase 8, con contrato de datos preparado en 7 |
-| D-09 | Ciclo de emisión/vigencia, obligatoriedad QR por operación y correlación de intentos | Fase 6; ninguna relajación de CHECK/UNIQUE |
+| D-09 | Detalles resueltos documentalmente en Fase 5.5; [contrato y puerta de Fase 6](#readiness-for-phase-6) | Implementación en Fase 6; ninguna relajación de CHECK/UNIQUE |
 | D-10 | Transporte y contrato del piloto, autenticación, unidades, repetidos y frescura | Fase 7 antes de ingestión funcional |
 | D-12 | Canonicalización exacta, campos permitidos, algoritmo, proveedor y recuperación | Antes de Fase 9 funcional; determinismo/orden/fechas/UTF-8/version_canonica ya obligatorios |
 | D-15 | Versiones/instancia local atendidas en Fase 1; solo operatividad Docker pendiente | Docker antes de ensayos de 14 |
@@ -813,7 +814,7 @@ Operaciones atómicas obligatorias: padre+equipo; edición/estado administrativo
 
 ### Integraciones diferidas y límites de aceptación
 
-CU20: extensión QR en Fase 6; entrega/devolución de Fase 5 funcionan sin QR, tablas/códigos/validaciones ni obligación simulada. D-09 sigue pendiente solo para esa integración. CU24: evidencia de operaciones críticas después del commit principal, Fase 9; no generar hashes/evidencias ni prometer auditoría Blockchain ahora. RF21/CU26: Fase 10, sin notificaciones temporales; solo confirmación/error de la petición en la interfaz. CU30: fase posterior autorizada, sin registros_actividad ni tabla alternativa en Fase 5. Campos de responsabilidad/fechas y conservación de filas no equivalen a bitácora completa.
+CU20: extensión QR en Fase 6; entrega/devolución de Fase 5 funcionan sin QR, tablas/códigos/validaciones ni obligación simulada. En este cierre de Fase 4.5, D-09 permanecía pendiente para esa integración; el contrato de Fase 5.5 siguiente la resuelve documentalmente. CU24: evidencia de operaciones críticas después del commit principal, Fase 9; no generar hashes/evidencias ni prometer auditoría Blockchain ahora. RF21/CU26: Fase 10, sin notificaciones temporales; solo confirmación/error de la petición en la interfaz. CU30: fase posterior autorizada, sin registros_actividad ni tabla alternativa en Fase 5. Campos de responsabilidad/fechas y conservación de filas no equivalen a bitácora completa.
 
 Pruebas futuras obligatorias, con IDs T-P01–T-P18, están en [BUSINESS_RULES.md](BUSINESS_RULES.md#aceptación-futura-de-equipamiento-y-préstamos--fase-5). Deben ejecutarse en MySQL real aislado al implementar Fase 5; no se presentan como ejecutadas en este cierre. La regresión de reservas deberá comprobar además la integración CU19 sin reabrir D-05.
 
@@ -840,4 +841,153 @@ Fase 5 puede comenzar cuando el usuario la instruya. Este cierre no la inicia ni
 
 ## Aplicación de decisiones en Fase 5
 
-D-02 y D-11 se implementaron conforme al cierre de Fase 4.5; D-04 por módulo/acción/propiedad y D-05 por intervalos, exclusividad y lecturas actuales se aplicaron sin reabrirse. [Evidencia de implementación, T-P01–18 y concurrencia](EQUIPMENT_LOANS_IMPLEMENTATION.md). Se conservan el SQL final y las resoluciones documentales. D-09 continúa pendiente para Fase 6, que no se inició; ámbito fino, D-12 y demás detalles posteriores mantienen su límite original.
+D-02 y D-11 se implementaron conforme al cierre de Fase 4.5; D-04 por módulo/acción/propiedad y D-05 por intervalos, exclusividad y lecturas actuales se aplicaron sin reabrirse. [Evidencia de implementación, T-P01–18 y concurrencia](EQUIPMENT_LOANS_IMPLEMENTATION.md). Se conservan el SQL final y las resoluciones documentales. Al cerrar Fase 5, D-09 permanecía pendiente; el cierre documental de Fase 5.5 siguiente la resuelve para Fase 6, todavía no iniciada. Ámbito fino, D-12 y demás detalles posteriores mantienen su límite original.
+
+## Contrato QR y validaciones — cierre D-09 de Fase 5.5
+
+**D-09: RESUELTA PARA FASE 6.** Fecha: 2026-10-23. Alcance exclusivamente documental autorizado por la petición de Fase 5.5. No se crean migraciones, modelos, enums PHP, permisos en BD, dependencias, endpoints, cámara ni integración funcional. La matriz, algoritmo y pruebas siguientes son el contrato obligatorio de la futura Fase 6; no resultados de software ejecutado.
+
+### Fuentes recontrastadas y precedencia
+
+| Fuente Word/PDF | Referencia comprobada | Consecuencia para el contrato |
+| --- | --- | --- |
+| RF8 | Tabla 17, p. 121 / PDF 122 | Identidad, permiso, recurso y reserva; cámara denegada no valida |
+| CU11 | Tabla 48, p. 190 / PDF 191; análisis figura 85, PDF 234 | Validación contextual del uso, responsable y fecha/hora |
+| CU17 | Tabla 54, p. 198 / PDF 199; análisis figura 91, PDF 237 | QR condicional; entrega sigue en su servicio principal |
+| CU18 | Tabla 55, pp. 199–200 / PDF 200–201; análisis figura 92, PDF 238 | Identificación, condición física y revisión; QR inválido no confirma la rama QR |
+| CU20 | Tabla 57, p. 203 / PDF 204; análisis figura 94, PDF 239 | Compara recurso/préstamo/operación; devuelve resultado al flujo principal |
+| Clases y BD lógica | Figuras 108–109, PDF 249–250 | CodigoQR y ValidacionQR separados; recurso común y vínculos de contexto |
+| SQL final | codigos_qr y validaciones_qr, PDF 288–292 | Objetivo exclusivo, contexto obligatorio, código reconocido nullable y enlaces a hitos UNIQUE |
+| Secuencia CU11 | Figura 111, p. 301 / PDF 302 | Cámara fuera de transacción, comprobación servidor y persistencia del resultado |
+
+Se revisaron texto y diagramas relevantes; ambos CREATE TABLE son equivalentes entre Word/PDF al retirar encabezados, comentarios y espacios. No se modifican originales ni SQL. La frase narrativa «actualiza el estado operativo» de RF8/CU11/figura 111 no permite inventar estados de reserva: conforme a la petición §21 y a los enums oficiales, CU11 registra evidencia, sin transición de reserva/espacio. La frontera móvil dibujada no introduce una aplicación móvil en Fase 6 web. Las precisiones de token, ciclo, correlación y permisos que siguen son convenciones de implementación autorizadas, no números o mecanismos atribuidos al informe.
+
+### Identidad, payload y hash
+
+**Un código QR NO autentica al usuario y NO autoriza por sí solo una operación.** Identifica recurso u operación y correlaciona el contexto físico con el lógico. Una imagen copiada tampoco prueba presencia física por sí sola; se conservan identidad, permisos y comprobaciones humanas del CU.
+
+Convención exacta: generar 32 bytes con CSPRNG (`random_bytes(32)`), codificarlos en base64url sin padding. El token tiene **43 caracteres ASCII**, distingue mayúsculas/minúsculas y es el payload completo. No URI, JSON, prefijo, ID de BD, código RES-/PRE-, serie ni datos personales. El token no tiene significado institucional. No se crean tokens reales en esta fase documental.
+
+Normalización única N(s): conservar exactamente el string UTF-8 recibido; no recortar espacios, convertir mayúsculas, normalizar Unicode, quitar padding, interpretar URLs ni decodificar porcentajes. Un token canónico debe cumplir 43 caracteres `[A-Za-z0-9_-]`, decodificar estrictamente a 32 bytes y recodificar exactamente al mismo string. Esto rechaza representaciones base64 no canónicas con bits sobrantes. Excluir el campo del trimming/normalización automática de formularios en la implementación futura.
+
+H(s) = **SHA-256 de los bytes UTF-8 exactos de N(s), representado como 64 caracteres hexadecimales minúsculos**. Para el token canónico esos bytes son ASCII. `token_hash = H(token)` al emitir; `hash_leido = H(payload)` en cada intento registrado. Se utiliza el mismo procedimiento al buscar token_hash, sin sal ni algoritmo de contraseña: la entrada ya tiene 256 bits aleatorios. Los VARCHAR(255) originales se conservan.
+
+Solo el hash se persiste. Token e imagen existen transitoriamente en memoria durante generación/presentación y lectura/request. No guardar originales en archivos, BD, sesión, caché, localStorage/sessionStorage/IndexedDB, historial Inertia, logs, excepciones ni analytics. Generación/renderizado local, respuesta privada `no-store`, fuera de props persistibles de Inertia, y eliminación de buffers/URLs de objeto al cerrar o navegar. La etiqueta física autorizada es el soporte de instalación previsto en IH-03; no implica que el servidor conserve una imagen o un token recuperable. Sin el original en memoria no se puede volver a mostrar el mismo QR a partir del hash: debe rotarse. No ofrecer descarga digital persistente automática ni reconstrucción ficticia.
+
+### Objetivos, emisión y ciclo de vida
+
+Cada fila de codigos_qr tiene exactamente uno de recurso_id/reserva_id/prestamo_id no NULL. El tipo conceptual se deriva de esa FK; no se añade tipo_qr. Recurso es RecursoInstitucional con subtipo espacio o equipo, sin FKs paralelas. El QR de recurso es el mecanismo físico principal. Los QR de reserva/préstamo se emiten explícitamente cuando se necesitan, sin generación automática al solicitar/aprobar.
+
+Gestión prevista: consultar metadatos autorizados, emitir, desactivar y rotar; no CRUD genérico ni edición de objetivo/hash/historia. Administrador/Encargado con qr.gestionar y acceso de consulta al objetivo pueden operar sobre los tres tipos. Recurso exige espacios.ver o equipamientos.ver; reserva exige reservas.ver_administrativas; préstamo exige prestamos.ver_administrativos. Ningún solicitante adquiere emisión por ser propietario. La emisión requiere objetivo existente/coherente, pero no habilita su uso: incluso un código emitido preparatoriamente para una operación no apta falla en validación hasta cumplir el CU.
+
+Vigencia: activo=true **y** generada_en <= ahora_servidor **y** (vence_en IS NULL **o** ahora_servidor < vence_en), zona America/La_Paz. Intervalo `[generada_en, vence_en)`; a igualdad de vencimiento es inválido. Default de emisión: sin vencimiento (NULL), particularmente apropiado para etiqueta física; fecha opcional explícita del gestor, sin duración implícita ni derivación automática del fin del préstamo/reserva. Si se indica, la aplicación exige vence_en > generada_en; SQL conserva su CHECK >=. Una fila con igualdad permitida por SQL tiene ventana vacía y nunca es utilizable. NULL no omite activo ni las reglas temporales de CU11.
+
+Emitir/rotar desactiva, dentro de la misma transacción, **todos** los códigos activo=true del mismo objetivo exacto (también expirados) e inserta otro con token nuevo. Puede quedar como máximo un activo por objetivo; recurso y su reserva/préstamo son objetivos diferentes y pueden tener uno cada uno. La fila estable del objetivo/recurso coordina incluso cuando no existe QR anterior. No se agrega UNIQUE parcial ni columna. Conservar códigos y validaciones anteriores; un token revocado no se reactiva ni reutiliza. Desactivar es idempotente y no borra. Cambiar objetivo/vigencia requiere rotación. Una colisión de uq_codigo_qr_token_hash revierte el intento completo y permite hasta tres intentos con token nuevo; otros errores no provocan regeneración indiscriminada.
+
+El QR **no es de un solo uso**. No se desactiva al validar, entregar o devolver; cada intento admitido produce su fila. El estado terminal de la operación impide usos incompatibles aunque el código siga activo. No se crea un cron de vencimiento.
+
+### Admisión, código desconocido y evidencia de rechazo
+
+El escaneo de Fase 6 es contextual: se inicia desde una reserva o desde la entrega/devolución de un préstamo seleccionado mediante consulta autorizada. Sus IDs son localizadores, nunca autoridad. El servidor recupera el contexto, deriva recurso_esperado_id y tipo_operacion del flujo y fija validado_por_id desde sesión y fecha_hora desde su reloj. No toma esos campos, resultado, hash_leido, codigo_qr_id ni los enlaces de hitos libremente del cliente. No existe validación genérica sin reserva/préstamo que luego se pueda aplicar a cualquier operación.
+
+Antes de admitir intento: sesión vigente, usuario ACTIVO, CSRF, rol/permiso y propiedad/acceso al contexto. Fallo de autenticación/autorización, contexto inexistente o cuerpo ilegible se rechaza sin fabricar fila ni revelar existencia ajena. El contexto inexistente no permite satisfacer recurso_esperado_id/FK/CHECK y no se inventa uno. La revocación durante espera se vuelve a evaluar: denegación sin mutación de dominio, sin forzar evidencia QR a través de una autorización fallida. Esto no implementa CU30.
+
+Límite técnico de entrada: string UTF-8 de 1 a 1024 bytes; ausencia, tipo incorrecto o exceso de tamaño se rechaza antes del intento (422/413), sin truncar ni guardar contenido. Un string admitido pero no canónico se registra INVALIDA con H(s), codigo_qr_id=NULL y motivo «Formato de código no admitido». El mismo H se aplica sin transformaciones encubiertas. Si es canónico, buscar por token_hash; coincidencia guarda codigo_qr_id incluso si luego es inactivo/vencido/ajeno; ausencia guarda NULL, INVALIDA y «Código no registrado». No crear CodigoQR ficticio ni aceptar hash/ID aportado por el cliente como token.
+
+Un intento admitido inválido conserva actor, contexto, recurso esperado, reloj, hash y motivo seguro <=500; ambos enlaces entrega_id/devolucion_id quedan NULL. No cambia reserva, préstamo, espacio, equipo, entrega ni devolución. Motivos deterministas según primera comprobación fallida: formato/no registrado, inactivo, fuera de vigencia, objetivo/recurso/contexto incorrecto, estado/periodo/restricción incompatible. No incluir el token, hashes, SQL ni identidad/datos del objetivo ajeno en la respuesta. VALIDA deja motivo_rechazo=NULL. Un fallo de persistencia no permite mostrar éxito ni continuar el flujo QR.
+
+### Contextos y correspondencia exactos
+
+| Operación | Contexto obligatorio del intento | QR aceptable | Enlaces de hitos |
+| --- | --- | --- | --- |
+| USO_ESPACIO / CU11 | reserva_id; recurso_esperado_id=Reserva.espacio_id; prestamo_id=NULL | QR del mismo espacio o de esa reserva exacta; nunca QR de préstamo | entrega_id=NULL, devolucion_id=NULL siempre |
+| ENTREGA / CU20→CU17 | prestamo_id; recurso_esperado_id=Prestamo.equipamiento_id; reserva_id=NULL | QR del mismo equipo o de ese préstamo exacto; nunca QR de reserva | entrega_id inicialmente NULL y se enlaza al hito creado; devolucion_id=NULL |
+| DEVOLUCION / CU20→CU18 | prestamo_id; recurso_esperado_id=Prestamo.equipamiento_id; reserva_id=NULL | QR del mismo equipo o de ese préstamo exacto; nunca QR de reserva | devolucion_id inicialmente NULL y se enlaza al hito creado; entrega_id=NULL |
+
+Una operación distinta sobre el mismo recurso no satisface la igualdad del objetivo de un QR de operación. Comparar también las relaciones actuales al cargar reserva/préstamo/hito; no basta que todos los IDs existan. Mantener exactamente chk_qr_objetivo, chk_qr_vigencia, chk_validacion_contexto, chk_validacion_entrega_devolucion y ambos UNIQUE nullable de hitos.
+
+### CU11 y autorización contextual
+
+Solo reserva **APROBADA** y reloj dentro de `[reserva.inicio, reserva.fin)`. PENDIENTE, RECHAZADA, CANCELADA, LIBERADA y FINALIZADA son incompatibles. No anticipos, tolerancias, estado EN_USO/UTILIZADA/CONFIRMADA ni actualización de reserva/espacio por escaneo. Se registra únicamente ValidacionQR. Puede haber varias válidas del mismo QR y reserva dentro del periodo.
+
+Docente/Estudiante requieren qr.validar_uso_espacio y reserva propia, con acceso por reservas.ver_propias. Administrador/Encargado requieren qr.validar_uso_espacio y reservas.ver_administrativas. El permiso administrativo no se infiere del nombre del rol. Se aplica D-04 por módulo/acción y propiedad, sin asociación fina nueva.
+
+El QR no sustituye controles operativos. Como integración conservadora con Fases 4/5, se reutiliza SpaceAvailabilityService para revalidar el intervalo de la reserva, excluyendo de conflictos **la propia reserva** mediante su ID; siguen aplicándose estado del espacio, bloqueos, otras APROBADAS e incidencias abiertas. No crear otra fórmula de disponibilidad ni eliminar restricciones. El resultado solo acredita validación contextual, no ocupación medida ni activación de una política. Fase 8 podrá consumir esta evidencia mediante las relaciones ya previstas, sin ejecutar liberación en Fase 6.
+
+### CU20, continuidad de CU17/CU18 y revisión
+
+CU20 es una **extensión disponible y explícita**, no requisito global de todas las entregas/devoluciones. No existe configuración universal requiere_qr en préstamos: no se agrega tabla/columna ni se usa politicas_liberacion.requiere_qr (reservas, Fase 8). La futura parametrización institucional de obligatoriedad queda diferida y no bloquea este alcance delimitado.
+
+Invocar la rama QR obliga a obtener VALIDA dentro de ella; un resultado inválido no llama automáticamente a la ruta sin QR ni omite el token para reintentar. El núcleo de Fase 5 sin QR permanece como flujo separado autorizado, sin prometer una política global que no existe. Volver a él es una elección explícita nueva del responsable, nunca fallback silencioso.
+
+ENTREGA: préstamo APROBADO, sin entrega, mismo equipo/receptor solicitante, actor con qr.validar_operacion y prestamos.registrar_entrega, más todas las guardas vigentes de CU17 (estado compatible, disponibilidad, incidencias y confirmación física). Un escaneo no confirma identidad del receptor, condición del equipo ni recepcion_confirmada_en; este último continúa NULL.
+
+DEVOLUCION: préstamo ENTREGADO, entrega válida, ninguna devolución previa, mismo equipo, actor con qr.validar_operacion y prestamos.registrar_devolucion. No exigir equipo DISPONIBLE/PRESTADO como única condición: EN_MANTENIMIENTO/BAJA o incidencia no impiden registrar una devolución física identificada. Se preservan las tres condiciones, permisos adicionales para crear incidencia/recuperar estado y restricciones de Fase 5. NO_DETERMINABLE crea devolución pendiente y puede quedar correlacionada con una validación VALIDA: validez de identidad no es confirmación de condición. La revisión posterior actualiza ese mismo hito con su autorización propia, conserva el enlace previo y no requiere ni agrega otro QR a la recepción ya registrada.
+
+### Correlación y persistencia atómicas
+
+**Contrato elegido para Fase 6: una sola petición de confirmación con token leído en memoria y datos del flujo principal.** La lectura de cámara precede a la petición; «leído» en frontend nunca se presenta como «VALIDA». Para cumplir el tiempo de respuesta sin una pausa humana después de leer, la pantalla recoge primero datos, verificaciones físicas y la intención explícita «escanear y confirmar»; informa que la lectura enviará esa operación. Al decodificar envía inmediatamente el request. La confirmación persistente sigue ocurriendo únicamente después de validar en servidor; no se inicia una entrega/devolución por escanear fuera de ese flujo controlado. No hay endpoint de prevalidación que emita una autorización reutilizable, ticket, nonce persistente ni ventana de 5/10/30 minutos. No se acepta validacion_id histórica enviada por cliente para ejecutar otra operación. La frescura se acredita porque el servidor crea y usa la validación en esa petición, con actor/contexto/estado/reloj revalidados en ese momento.
+
+1. Antes de adquirir locks, comprobar estructura de entrada, condición/motivo y campos requeridos; luego coordinar autorización y filas actuales según el orden siguiente. Si el QR explícito falta, rechazar sin ejecutar el núcleo.
+2. Dentro de transacción breve, derivar contexto, volver a autorizar y comprobar token, vigencia, relaciones y precondiciones actuales. Si hay invalidez de dominio/QR de un intento admitido, insertar INVALIDA con enlaces NULL y **confirmar solo ese resultado**; devolver conflicto/explicación después del commit. No lanzar una excepción que deshaga accidentalmente ese rechazo registrado.
+3. Si todo es compatible, insertar VALIDA con entrega_id/devolucion_id inicialmente NULL. El coordinador continúa el servicio principal CU17/CU18, que es el único dueño de sus transiciones; el servicio QR no entrega, devuelve ni habilita recursos por sí mismo.
+4. Tras crear el hito, actualizar esa misma ValidacionQR con su entrega_id o devolucion_id, verificando mismo actor/préstamo/equipo/tipo y enlace aún NULL. Commit único de validación, hito, relación y estados. No hay segunda validación para asociar el hito ni estado intermedio confirmado separadamente.
+5. Un fallo técnico durante hito/enlace/commit revierte el conjunto completo, incluida la VALIDA tentativa. No mostrar validación/operación confirmada; informar fallo seguro y permitir nueva lectura/reintento explícito. No guardar una falsa INVALIDA por error de infraestructura. Los rechazos anteriores ya confirmados permanecen intactos.
+
+No se identifica al actor por el token: validado_por_id es el mismo usuario autenticado que confirma CU17/CU18. No se transfiere una validación entre responsables o sesiones. CU11 usa una petición corta que confirma únicamente el resultado. Si una futura arquitectura necesitara requests separados y reutilización de una validación persistida, deberá revisar expresamente este contrato; no es una opción abierta para Fase 6.
+
+Reintento tras respuesta perdida: reconsultar primero el estado autorizado; no recrear el hito ni afirmar una nueva confirmación. Si se reenvía la operación ya completada, sus guardas impiden duplicado; un nuevo intento QR admitido incompatible se registra INVALIDA con enlaces NULL. UNIQUE(entrega_id) y UNIQUE(devolucion_id) permiten máximo una asociación por hito y múltiples intentos previos con NULL; codigo_qr_id no es UNIQUE. Una validación enlazada no se reasigna, y una INVALIDA nunca se convierte retrospectivamente en VALIDA.
+
+### Orden de locks y concurrencia futura
+
+Todas las escrituras QR se incorporarán al protocolo existente: coordinación RBAC → subtipo de recurso por recurso_id → padre si es necesario → reserva/préstamo objetivo → bloqueos y otros compromisos pertinentes → entregas → devoluciones → incidencias → codigos_qr → validaciones_qr. Filas de cada grupo en PK ascendente; lecturas actuales FOR UPDATE después de esperar, no snapshots previos. Contextos/IDs localizados antes de bloquear se vuelven a comprobar bajo lock. No se adquiere otro recurso porque el QR sea ajeno: se registra la incompatibilidad del contexto esperado.
+
+Emisión/rotación/desactivación bloquean primero el recurso derivado del objetivo y, para objetivo de operación, su reserva/préstamo; después los QR del objetivo. Esto serializa ausencia, dos rotaciones y validación/desactivación sin índices nuevos. Desactivación por id verifica pertenencia al objetivo. El coordinador de CU20 debe compartir el contexto ya bloqueado con LoanService, sin adquirir dependencias de grupos anteriores después de QR ni duplicar reglas de negocio. La futura refactorización se limita a esa integración y conserva regresión de Fase 5.
+
+Una vez adquiridos los locks, el reloj de decisión se obtiene en servidor y se usa para comprobar vigencia/horario y registrar fecha_hora. Si vence entre lectura física y validación, es INVALIDA. Un commit posterior no reescribe el resultado histórico calculado al instante de decisión. Si desactivación/rotación confirma primero, la lectura actual rechaza el QR anterior; si validación confirma primero, se conserva su evidencia válida y la revocación afecta intentos posteriores. Ningún cambio puede intercalarse entre validación y hito dentro de la transacción común.
+
+Dos confirmaciones sobre la misma entrega/devolución: solo una crea y enlaza el hito; la otra revalida el estado y no duplica ni reemplaza el vínculo. Dos rotaciones pueden confirmar serialmente: queda activo solo el último código y ambas filas conservan historia. Mantener los tres reintentos acotados de deadlock existentes, rollback completo y error seguro si se agotan; no prometer escalabilidad por recurso mientras exista coordinación RBAC global.
+
+Nunca retener transacción/row lock durante permiso de cámara, encuadre, lectura, confirmación humana o llamada externa. El tiempo de captura no forma parte del lock. No cambiar aislamiento global para hacer pasar pruebas.
+
+### Permisos previstos y privacidad de cámara
+
+| Código definitivo previsto | Administrador | Encargado | Docente | Estudiante | Guarda adicional |
+| --- | --- | --- | --- | --- | --- |
+| qr.gestionar | Sí | Sí | No | No | Acceso de consulta al objetivo según el apartado de emisión; no incluye validación automáticamente |
+| qr.validar_uso_espacio | Sí | Sí | Sí | Sí | CU11: permiso de consulta administrativo o propio + propiedad, estado/periodo/restricciones |
+| qr.validar_operacion | Sí | Sí | No | No | CU20: registrar_entrega o registrar_devolucion, según la operación, y demás permisos de Fase 5 |
+
+Son tres códigos planificados, **cero permisos creados ahora**. Fase 5 conserva 33; Fase 6 materializará 36, con concesiones iniciales completas A33/E22/D8/S8 si no existen revocaciones. Mantener concesión por un mismo rol elegible vigente, seeder incremental e idempotente, propiedad y ausencia de bypass. No se crea un permiso administrativo paralelo para CU11: se combina el permiso QR con reservas.ver_administrativas.
+
+Cámara es solo entrada local: lectura/decodificación en navegador compatible, permiso explícito y contexto seguro que permita su API; producción HTTPS. No imagen/frame a servicios externos, backend, analytics o almacenamiento. Al abandonar el flujo se detienen tracks y se descartan buffers/token. Cámara ausente/denegada o imagen ilegible muestra aviso y no crea VALIDA ni intento en BD si no hubo payload admitido. No se añade entrada manual al usuario; las pruebas futuras sí enviarán payloads sintéticos directamente al backend.
+
+La futura librería debe estar mantenida, ser compatible con el stack, mínima y de procesamiento local, sin API/CDN/proveedor que reciba tokens o frames. Se seleccionará y auditará al autorizar Fase 6; no se instala en 5.5. El payload solo viaja por cuerpo POST al backend propio con sesión/CSRF y HTTPS en producción, nunca en URL/query/fragmento, Referer o redirects. Excluir el cuerpo QR del flash de errores/old input, logs HTTP/APM, trazas, consola y capturas. No enviar hash almacenado al navegador para decidir validez.
+
+Logs técnicos permitidos: ID de validación, resultado y tipo, sin token/payload/hash sensible. Repositorio, tests y documentación no incluirán tokens reales ni QR activos: pruebas generan tokens aleatorios sintéticos en la base aislada; capturas usan QR ficticio o previamente revocado. No se publican imágenes utilizables de desarrollo.
+
+### Integraciones que permanecen diferidas
+
+Fase 8: consumo de evidencia QR para liberación, tolerancias y politicas_liberacion.requiere_qr; no función de esa política en Fase 6. Fase 9: evidencia Blockchain de operación confirmada, fuera de locks; QR no genera Blockchain. RF21/notificaciones y CU30/bitácora general siguen sus fases. Las validaciones son historia específica del proceso QR, no sustituyen registros_actividad. Siguen diferidos IoT, móvil/API propio y alcance fino de recursos. La parametrización global de obligatoriedad QR se resolverá cuando exista un alcance/modelo autorizado; la extensión explícita definida aquí es implementable sin ella.
+
+## Readiness for Phase 6
+
+| Punto | Cierre documental |
+| --- | --- |
+| D-09 | RESUELTA PARA FASE 6; contrato anterior obligatorio |
+| Token / payload / hash | 32 bytes CSPRNG → base64url canónico sin padding, 43 ASCII; payload opaco; SHA-256 hexadecimal minúsculo del string exacto |
+| Almacenamiento | Solo token_hash/hash_leido; original y representación únicamente transitorios, sin persistencia ni filtración |
+| Objetivos | Exactamente recurso/reserva/préstamo; QR físico de recurso principal, operaciones opcionales |
+| Vida / vigencia / rotación | activo + [generada_en, vence_en), NULL permitido; máximo un activo por objetivo exacto; revocación histórica, sin uso único |
+| CU11 | Reserva APROBADA propia o administrativa autorizada, dentro de [inicio,fin); contexto exacto y guardas operativas; solo evidencia |
+| CU20 | Extensión explícita de entrega APROBADO y devolución ENTREGADO; permite retorno físico con restricción, conserva revisión y BAJA |
+| Obligatoriedad | No global; invalidez detiene la rama invocada; política de liberación no se reutiliza |
+| Correlación | Un request y transacción compartida; enlaces existentes NULL→hito; no validacion_id antigua ni ventana temporal arbitraria |
+| Permisos | qr.gestionar, qr.validar_uso_espacio, qr.validar_operacion; matriz/contexto cerrados, sin seeds actuales |
+| Seguridad / privacidad | Sesión/ACTIVO/RBAC/CSRF, campos servidor, payload sin datos personales, cámara local, sin frames/logs/tokens persistidos |
+| Concurrencia | Orden de locks compatible con Fases 4/5 y lecturas actuales; rotación, revocación, expiración, estado cambiado y hitos únicos |
+| Aceptación futura | [T-Q01–24](BUSINESS_RULES.md#aceptación-futura-de-qr--fase-6), esquema exacto, MySQL real, navegador y rendimiento |
+| Integraciones diferidas | Liberación, obligatoriedad configurable global, IoT, Blockchain, notificaciones y CU30 no bloquean la extensión delimitada |
+| Bloqueantes documentales restantes | **0** para el alcance definido; no equivale a implementación ni a pruebas funcionales QR aprobadas |
+
+**Fase 6 puede comenzar con una nueva instrucción del usuario. No se inició en Fase 5.5.** La elección de librería compatible es una tarea técnica de esa fase, no una decisión de negocio pendiente. La evidencia funcional vigente sigue siendo la de Fase 5 (262 pruebas / 3318 aserciones); no se atribuye a QR ni se repite por este cierre documental.

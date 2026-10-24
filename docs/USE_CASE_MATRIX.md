@@ -400,7 +400,7 @@ Fuente: tabla 54; p. 198 (PDF 199); figura 45; análisis figura 91.
 | Entidades / clases principales | EquipamientoTecnologico, Prestamo, EntregaPrestamo, IncidenciaMantenimiento, ValidacionQR, RegistroActividad |
 | Tablas directamente relacionadas | `equipamientos_tecnologicos`, `prestamos`, `entregas_prestamo`, `incidencias_mantenimiento`, `validaciones_qr`, `registros_actividad` |
 | Módulo futuro y fase | Gestión de Equipamiento y Préstamos; Fase 5 |
-| Estado y precisión de implementación | Contrato Fase 4.5: receptor=solicitante; recepcion_confirmada_en NULL; entrega única/atómica, sin QR en Fase 5; T-P07/08. Implementación pendiente. |
+| Estado y precisión de implementación | Contrato Fase 4.5: receptor=solicitante; recepcion_confirmada_en NULL; entrega única/atómica, sin QR en Fase 5; T-P07/08. Núcleo implementado en Fase 5; extensión QR cerrada documentalmente en Fase 5.5 y pendiente de implementación en Fase 6. |
 | Pruebas necesarias | T-CU17: Receptor/equipo incorrectos; QR exigido inválido; una única entrega; estados ENTREGADO/PRESTADO atómicos. |
 
 ## CU18 — Registrar devolución de equipamiento tecnológico
@@ -421,7 +421,7 @@ Fuente: tabla 55; p. 199 (PDF 200); figura 46; análisis figura 92.
 | Entidades / clases principales | EquipamientoTecnologico, Prestamo, EntregaPrestamo, DevolucionPrestamo, IncidenciaMantenimiento, ValidacionQR, RegistroActividad |
 | Tablas directamente relacionadas | `equipamientos_tecnologicos`, `prestamos`, `entregas_prestamo`, `devoluciones_prestamo`, `incidencias_mantenimiento`, `validaciones_qr`, `registros_actividad` |
 | Módulo futuro y fase | Gestión de Equipamiento y Préstamos; Fase 5 |
-| Estado y precisión de implementación | Contrato Fase 4.5: devolución única; ADECUADA/CON_INCIDENCIA confirmadas, NO_DETERMINABLE pendiente; continuar misma fila con actor/fecha; T-P09–12. Implementación pendiente. |
+| Estado y precisión de implementación | Contrato Fase 4.5: devolución única; ADECUADA/CON_INCIDENCIA confirmadas, NO_DETERMINABLE pendiente; continuar misma fila con actor/fecha; T-P09–12. Núcleo implementado en Fase 5; extensión QR cerrada documentalmente en Fase 5.5 y pendiente de implementación en Fase 6. |
 | Pruebas necesarias | T-CU18: Retorno adecuado; daño e incidencia; NO_DETERMINABLE/PENDIENTE_REVISION; préstamo no entregado; devolución única. |
 
 ## CU19 — Gestionar incidencias y mantenimiento
@@ -785,3 +785,16 @@ CU19 abarca espacios y equipos. Identifica compromisos afectados sin cancelarlos
 ## Estado vigente de CU12–CU19 y CU06 — Fase 5
 
 El núcleo autorizado de CU12–CU19 está implementado: inventario, disponibilidad, solicitud, consulta propia/administrativa, resolución, entrega, devolución/revisión e incidencias comunes. CU06 integra incidencias ABIERTA; CU07/CU09 revalidan ese mismo predicado. [CU → tablas/modelos → servicios/Policies → vistas → tests](EQUIPMENT_LOANS_IMPLEMENTATION.md#trazabilidad-de-implementación). La verificación manual de 28 pasos y las 262 pruebas cubren ese alcance. Las extensiones CU11/CU20/QR, evidencia Blockchain, RF21 y bitácora CU30 de las fichas normativas mantienen su aceptación pendiente; no se declara cumplimiento de sus postcondiciones diferidas.
+
+## Contrato vigente CU11/CU20 y extensiones — Fase 5.5
+
+**D-09 resuelta documentalmente; Fase 6 NO IMPLEMENTADA.** Las fichas originales conservan su origen; [este contrato](DECISIONS.md#contrato-qr-y-validaciones--cierre-d-09-de-fase-55) fija sus precisiones implementables sin ampliar estados ni inventar obligatoriedad universal.
+
+| CU | Contrato de Fase 6 | Evidencia futura |
+| --- | --- | --- |
+| CU11 / RF8 | Desde reserva autorizada, cámara local y token; APROBADA en [inicio,fin), QR del espacio o de esa reserva; D/S propios, A/E permiso administrativo además del QR; guardas operativas centrales excluyen la propia reserva del conflicto; registra resultado sin transición | T-Q08–11/15–17/23–24 |
+| CU17 + CU20 / RF13 | Extensión explícita; permisos QR+entrega, APROBADO/equipo disponible/receptor solicitante/comprobación física; una petición confirma validación, entrega y enlace atómicamente; recepcion_confirmada_en sigue NULL | T-Q12/18–22 |
+| CU18 + CU20 / RF14 | Extensión explícita; permisos QR+devolución, ENTREGADO/entrega válida/sin retorno; incidencia/BAJA no impiden identificar retorno físico; mantiene tres condiciones; revisión conserva misma devolución y enlace | T-Q13–14/18–22 |
+| CU20 transversal | QR del mismo equipo o préstamo exacto; INVALIDA detiene la rama QR sin fallback automático; servicio QR no ejecuta transiciones; múltiples intentos se conservan y los hitos tienen asociación máxima única | T-Q09/15–22 |
+
+La pantalla completa datos/verificación e intención «escanear y confirmar» antes de la lectura final y envía inmediatamente al decodificar; servidor valida antes de persistir el hito. No existe un resultado frontend que autorice ni una validación antigua transferible. No entrada manual, no locks durante captura, sin frames a terceros. Cámara ausente/denegada no crea VALIDA. Las obligaciones Blockchain, política de liberación, notificaciones y CU30 se conservan para sus fases.

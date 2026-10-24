@@ -2,7 +2,7 @@
 
 Sistema de información para la gestión y control de reservas de espacios académicos y préstamos de equipamiento tecnológico en la FICCT, con monitoreo de ocupación mediante IoT y trazabilidad de operaciones mediante Blockchain.
 
-**Estado: Fase 5 implementada y validada.** Seguridad web, espacios, reservas y núcleo CU12–CU19 de equipamiento, préstamos, entrega, devolución/revisión e incidencias sobre Laravel, Vue 3, Inertia y MySQL. CU06 integra estado, bloqueos, reservas e incidencias. [Implementación, pruebas, trazabilidad y límites](docs/EQUIPMENT_LOANS_IMPLEMENTATION.md). QR, IoT, liberación, Blockchain, notificaciones y CU30 continúan diferidos; Fase 6 no iniciada.
+**Estado: Fase 5 implementada y validada; Fase 5.5 documental cerrada.** Seguridad web, espacios, reservas y núcleo CU12–CU19 de equipamiento, préstamos, entrega, devolución/revisión e incidencias sobre Laravel, Vue 3, Inertia y MySQL. CU06 integra estado, bloqueos, reservas e incidencias. [Implementación, pruebas, trazabilidad y límites](docs/EQUIPMENT_LOANS_IMPLEMENTATION.md). QR, IoT, liberación, Blockchain, notificaciones y CU30 continúan diferidos; Fase 6 no iniciada.
 
 ## Fuente de verdad
 
@@ -90,4 +90,10 @@ Fases 0 y 0.5 conservan su cierre documental y sus 17 expedientes. D-15 queda at
 
 D-04 y D-07 están implementadas para el núcleo web: RBAC sin bypass, historia de asignaciones y control de sesiones por hash. [Detalles y límites](docs/SECURITY_IMPLEMENTATION.md). El ámbito fino por recurso, móvil/API, almacenamiento distribuido y CU30 permanecen diferidos.
 
-La Fase 4 aplica el contrato cerrado en Fase 3.5: solicitudes, consultas, resolución, cancelación y disponibilidad con APROBADA. D-05 permanece resuelta. [Evidencia de Fase 4](docs/RESERVATIONS_IMPLEMENTATION.md). Fase 4.5 atendió la revisión previa de Fase 5: D-02/D-11 cerradas, D-04/D-05 aplicadas sin reapertura. Quedan definidos receptor, entrega, devolución/revisión, incidencias, recuperación, permisos previstos y concurrencia. [Contrato y fuentes](docs/DECISIONS.md#contrato-de-equipamiento-y-préstamos--fase-45). Fase 5 implementó el núcleo CU12–CU19 bajo la nueva instrucción, sin alterar esas decisiones. La siguiente fase recomendada es Fase 6 — Códigos QR y validaciones, empezando por cerrar D-09; requiere nueva instrucción y no se ha iniciado.
+La Fase 4 aplica el contrato cerrado en Fase 3.5: solicitudes, consultas, resolución, cancelación y disponibilidad con APROBADA. D-05 permanece resuelta. [Evidencia de Fase 4](docs/RESERVATIONS_IMPLEMENTATION.md). Fase 4.5 atendió la revisión previa de Fase 5: D-02/D-11 cerradas, D-04/D-05 aplicadas sin reapertura. Quedan definidos receptor, entrega, devolución/revisión, incidencias, recuperación, permisos previstos y concurrencia. [Contrato y fuentes](docs/DECISIONS.md#contrato-de-equipamiento-y-préstamos--fase-45). Fase 5 implementó el núcleo CU12–CU19 bajo la nueva instrucción, sin alterar esas decisiones. D-09 quedó **RESUELTA PARA FASE 6** en el cierre documental de Fase 5.5. [Readiness for Phase 6: 0 bloqueantes documentales](docs/DECISIONS.md#readiness-for-phase-6). La siguiente fase es Códigos QR y validaciones, aplicando el contrato cerrado; requiere nueva instrucción y no se ha iniciado.
+
+## Cierre documental QR — Fase 5.5
+
+[Contrato exacto D-09](docs/DECISIONS.md#contrato-qr-y-validaciones--cierre-d-09-de-fase-55): token opaco de 256 bits/base64url, solo hashes SHA-256 persistidos, objetivo único, un QR activo por objetivo y rotación con historia; CU11 contextual y CU20 como extensión explícita. Validación y correlación con entrega/devolución en la misma petición/transacción, sin autorización por token ni ventanas arbitrarias. Tres permisos previstos, cámara/decodificación local y [24 criterios de aceptación futura](docs/BUSINESS_RULES.md#aceptación-futura-de-qr--fase-6).
+
+Este cierre modifica solo documentación. No hay migraciones/modelos/permisos QR, librerías, cámara, endpoints ni interfaces implementados. La suite de 262 pruebas / 3318 aserciones es evidencia anterior de Fase 5, no una ejecución QR ni una nueva ejecución de Fase 5.5.

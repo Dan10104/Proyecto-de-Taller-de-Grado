@@ -168,3 +168,9 @@ D-04 aplica permiso por módulo/acción y propiedad del solicitante; no relació
 ## Materialización de Fase 5
 
 Los seis modelos y enums de equipamiento/préstamos/hitos/incidencias están implementados conforme al contrato anterior. Equipamiento comparte recurso_id con RecursoInstitucional y deriva piso por espacio base. Receptor de entrega es el solicitante; recepción física y confirmación de devolución permanecen separadas sobre una sola fila. NO_DETERMINABLE conserva ENTREGADO y revisión pendiente; VENCIDO solo se calcula. BAJA no se retira al devolver o cerrar incidencias. [Estados, relaciones y transiciones implementadas](EQUIPMENT_LOANS_IMPLEMENTATION.md#persistencia-y-dominio). No se materializan conceptos de Fase 6.
+
+## Contrato QR cerrado en Fase 5.5
+
+D-09 está [RESUELTA PARA FASE 6](DECISIONS.md#readiness-for-phase-6), sin modelos ni enums PHP implementados. CodigoQR identifica exactamente un recurso (espacio/equipo), reserva o préstamo; no hay tipo_qr. Activo y ventana [generada_en,vence_en), con NULL permitido, determinan vigencia; máximo un activo por objetivo exacto por regla transaccional, sin consumo al escanear. Revocar conserva historia y rotar crea otra identidad/token.
+
+ValidacionQR registra VALIDA/INVALIDA y USO_ESPACIO/ENTREGA/DEVOLUCION, hash leído, actor/reloj/contexto y QR reconocido opcional. El recurso esperado se deriva de reserva/préstamo. CU11 exige APROBADA en [inicio,fin), propia o administrativa autorizada, y no cambia estados. CU20 amplía opcionalmente CU17/CU18; retorno con restricción es posible y NO_DETERMINABLE conserva su semántica. La validación nueva se enlaza al hito de la misma petición/transacción; una revisión posterior conserva ese enlace. Invalidar no modifica entidades operativas. [Ciclo, correspondencia y correlación exactos](DECISIONS.md#contextos-y-correspondencia-exactos).
