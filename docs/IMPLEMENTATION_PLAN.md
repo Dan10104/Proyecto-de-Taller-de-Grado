@@ -1,6 +1,6 @@
 # Plan de implementación web
 
-Estado: **Fase 6 implementada y aceptada por el usuario; suite automatizada aprobada; Fases 7–14 no iniciadas**. Fases 0 y 0.5 conservaron su alcance documental; la nueva instrucción de Fase 1 autorizó la fundación técnica descrita en [DEVELOPMENT_SETUP.md](DEVELOPMENT_SETUP.md). No existe Flutter, Android ni cliente nativo en el plan de ejecución.
+Estado: **Fase 6.5 documental completada; D-10 RESUELTA PARA FASE 7; Fases 7–14 no iniciadas**. Fase 6 mantiene su implementación, suite y aceptación del usuario. Fases 0 y 0.5 conservaron su alcance documental; la nueva instrucción de Fase 1 autorizó la fundación técnica descrita en [DEVELOPMENT_SETUP.md](DEVELOPMENT_SETUP.md). No existe Flutter, Android ni cliente nativo en el plan de ejecución.
 
 ## Inventario histórico anterior a Fase 1 — 2026-10-23
 
@@ -143,9 +143,9 @@ Implementación disponible, 325 pruebas/4984 aserciones aprobadas. [Evidencia y 
 | Carpetas principales futuras | app/Services/; app/Http/; app/Models/; config/; routes/; database/; resources/js/Pages/; tests/ |
 | Requisitos relacionados | RF16–17; IH-04–08; IS-11; IC-06/07; DB-06/10/23/27; RD-16/40; R-CC-05; R-PR-02 |
 | Casos de uso | CU21–CU22 |
-| Trabajo previsto | Cerrar detalles diferidos D-10 manteniendo las invariantes IoT; catálogo y asociación; contrato HTTP o MQTT piloto; recepción validada, historial, última comunicación y vista de ocupación. |
-| Pruebas requeridas | Sensor desconocido/deshabilitado; duplicados/tardíos según contrato; reasignación histórica; ausencia no determinable; >=120 eventos/min sin pérdida aceptada; <=5 s reflejo. |
-| Riesgos / puertas | Inferir libre de silencio; identificar personas; confundir fecha de evento/recepción; transporte/proveedor no definido. |
+| Trabajo previsto | Implementar D-10 cerrado en Fase 6.5: catálogo/asociación/provisión segura; REST/HMAC; recepción validada/deduplicada, historial y monitoreo conservador. MQTT no requerido; CU23 fuera de Fase 7. |
+| Pruebas requeridas | T-I01–T-I32 de BUSINESS_RULES: autenticación, tipos/fechas, historia/frescura, RBAC, secretos y carreras en procesos MySQL reales; >=120 eventos/min sin pérdida aceptada y reflejo <=5 s. |
+| Riesgos / puertas | Inferir libre de silencio; identificar personas; confundir fecha de evento/recepción; replay dentro de ventana, snapshot previo al lock y mezcla entre frescura UI/política. |
 | Condición de finalización | Eventos válidos persistidos y consultables; fallos aislados; monitor distingue frescura y no determinable. |
 | Commit esperado | `feat: add IoT sensors occupancy ingestion and monitoring` |
 
@@ -262,10 +262,10 @@ Esta propuesta corresponde al cierre de Fase 2. Fase 3 fue posteriormente autori
 | D-07, móvil/API y almacenamiento distribuido; sesión web cerrada | Móvil/API cuando se autorice; despliegue distribuido antes de Fase 14 |
 | D-05, reservas resueltas y aplicación a préstamos confirmada en Fase 4.5 | [inicio, fin), exclusividad APROBADO/ENTREGADO, locks/lecturas actuales; sin reapertura. FINALIZADA automática de reservas sigue diferida |
 | D-09, resuelta en Fase 5.5 | Implementar el contrato cerrado en Fase 6; parametrización global de obligatoriedad fuera de ese alcance |
-| D-10, transporte/payload/unidades/reintentos/frescura IoT | Antes de Fase 7 |
+| D-10, RESUELTA PARA FASE 7 en 6.5 | Implementar/verificar contrato REST cuando se autorice; cero bloqueantes documentales |
 | D-08, disparador, combinación QR/IoT y versión histórica de política | Antes de Fase 8 |
 | D-12, canonicalización exacta, algoritmo, proveedor, operaciones críticas y recuperación | Antes de Fase 9 |
-| D-16, protocolo de medición y retención operativa | Retención antes de ingestión en 7 y operación en 14; medición antes de aceptación en 13; zona operativa ya fijada |
+| D-16, protocolo de medición y retención operativa | Piloto sin purga automática según 6.5; retención productiva antes de operación en 14; medición antes de aceptación en 13; zona operativa ya fijada |
 | D-17, mecanismos transaccionales y guardas de servidor | Al implementar el componente de Fases 2–10; sin modificar constraints |
 
 D-13/D-14 no requieren desarrollar las funciones históricas/ilustrativas. Los estados RESUELTA/CONVENCIÓN describen contratos. Las pruebas de fundación de Fase 1 están completadas; el núcleo web de Fase 2 tiene 65 pruebas / 493 aserciones aprobadas. Las pruebas de módulos posteriores y rendimiento siguen pendientes.
@@ -304,4 +304,12 @@ Verificación de Fase 5.5: doce Markdown afectados, 166 enlaces locales incluido
 
 ## Avance vigente de Fase 6
 
-La instrucción posterior autorizó la implementación sobre feature/phase-6-qr desde 08baa06. Dos tablas QR, tres permisos, lifecycle, CU11/CU20, extensiones CU17/CU18 y cámara local realizados; regresión sin QR conservada. Excepción de siete FK aprobada. Suite 325/4984 y revisión interactiva documentadas; el usuario resolvió el cierre manual aceptando expresamente la lectura física sin una nueva fila válida independiente. Se permite la integración final, conservando ese límite de evidencia. Fase 7 no iniciada; siguiente paso recomendado: cierre documental D-10 antes de cualquier ingestión IoT. Las secciones Fase 5/5.5 anteriores reflejan su momento histórico.
+La instrucción posterior autorizó la implementación sobre feature/phase-6-qr desde 08baa06. Dos tablas QR, tres permisos, lifecycle, CU11/CU20, extensiones CU17/CU18 y cámara local realizados; regresión sin QR conservada. Excepción de siete FK aprobada. Suite 325/4984 y revisión interactiva documentadas; el usuario resolvió el cierre manual aceptando expresamente la lectura física sin una nueva fila válida independiente. Se permite la integración final, conservando ese límite de evidencia. En ese cierre, Fase 7 no estaba iniciada y quedaba pendiente D-10, resuelta después en Fase 6.5 según el apartado siguiente. Las secciones Fase 5/5.5 anteriores reflejan su momento histórico.
+
+## Cierre documental de Fase 6.5 y puerta de Fase 7
+
+[Readiness for Phase 7](DECISIONS.md#readiness-for-phase-7): D-10 RESUELTA PARA FASE 7, **0 bloqueantes documentales**. Fase 7 podrá comenzar con nueva instrucción; no se inicia en esta entrega. REST/HMAC, payload, derivación/provisión, firma, reloj, frescura, duplicados, carreras, permisos y privacidad congelados. Sin broker obligatorio ni código/esquema/configuración/permisos DB modificados.
+
+Plan futuro CU21/CU22: implementar las dos tablas del SQL sin cambios, administración con tres permisos previstos, acción controlada de provisionamiento, ingestión única por dispositivo y consulta paginada. Conservar bitácora general/CU30 en su alcance diferido; logs técnicos no acreditan esa parte de RF16. CU06 solo informativo; no implementar CU23, liberación o cambios de estado operativos. Fase 8 mantiene max_antiguedad_lectura_min y D-08.
+
+Antes de aceptar Fase 7 ejecutar T-I01–T-I32 con MySQL de testing aislado, incluyendo dos procesos sincronizados y regresión del núcleo; ensayos de rendimiento/continuidad sin adjudicarlos ahora. Los resultados 325/4984 pertenecen a Fase 6 y no se volvieron a ejecutar en esta entrega documental. Control actual: revisión de documentos, enlaces, diff, alcance y secretos, conservando hashes originales.

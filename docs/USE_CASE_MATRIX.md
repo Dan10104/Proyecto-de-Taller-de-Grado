@@ -475,15 +475,15 @@ Fuente: tabla 58; p. 204 (PDF 205); figura 49; análisis figura 95.
 | Actor iniciador | Administrador o Encargado de Laboratorio autorizado. |
 | Actores | Administrador y Encargado de Laboratorio. |
 | Precondiciones | El actor debe encontrarse autenticado y autorizado. El espacio académico que será monitoreado debe estar registrado. El dispositivo IoT debe disponer de un identificador válido. |
-| Flujo principal (síntesis) | Registrar/consultar sensor; configurar identificador, tipo, espacio y estado; validar unicidad/coherencia; habilitar o deshabilitar conservando historial. |
+| Flujo principal (síntesis) | Registrar/consultar sensor; fijar identificador inmutable al alta, editar tipo/asociación/estado; validar unicidad/coherencia; habilitar/deshabilitar conservando historia y provisionar explícitamente con autorización. |
 | Alternativas / extensiones | Reasignar o deshabilitar sensor no borra eventos históricos; identificador duplicado impide alta. |
 | Excepciones documentadas | Identificador de sensor duplicado. Espacio académico inexistente. Datos obligatorios incompletos. Actor sin permisos para gestionar sensores. |
 | Postcondición documentada | El sensor queda registrado y asociado a un espacio, con un estado que determina si sus eventos serán aceptados. |
 | RF relacionado | RF16 |
 | Entidades / clases principales | SensorIoT, RegistroActividad |
 | Tablas directamente relacionadas | `sensores_iot`, `registros_actividad` |
-| Módulo futuro y fase | Monitoreo IoT y Disponibilidad; Fase 7 |
-| Pruebas necesarias | T-CU21: Identificador duplicado; espacio inexistente; habilitar/deshabilitar; reasignación no altera historia. |
+| Módulo futuro y fase | Monitoreo IoT y Disponibilidad; contrato D-10 cerrado en 6.5, implementación Fase 7 pendiente. |
+| Pruebas necesarias | T-I01–T-I32 y T-CU21: Identificador duplicado; espacio inexistente; habilitar/deshabilitar; reasignación no altera historia. |
 
 ## CU22 — Monitorear ocupación de espacios académicos
 
@@ -495,15 +495,15 @@ Fuente: tabla 59; p. 206 (PDF 207); figura 50; análisis figura 96.
 | Actor iniciador | Dispositivo IoT registrado y habilitado. |
 | Actores | Administrador, Encargado de Laboratorio y Dispositivo IoT. |
 | Precondiciones | El dispositivo debe estar registrado, habilitado y asociado a un espacio académico. Debe existir conectividad y el evento debe utilizar el formato de comunicación definido. |
-| Flujo principal (síntesis) | Recibir evento; verificar sensor y formato; asociar espacio y fechas; persistir evento válido/última comunicación; mostrar ocupación y evidencias a usuarios autorizados. |
-| Alternativas / extensiones | Sensor/estructura inválidos: rechazar evento; datos recientes insuficientes: no determinable; evaluación CU23 solo bajo condiciones aplicables. |
+| Flujo principal (síntesis) | Autenticar HMAC RAW antes de JSON; validar sensor/contexto/payload/tiempos; deduplicar bajo lock del sensor; persistir nuevo evento/última comunicación atómicos; mostrar evidencia reciente o NO_DETERMINABLE a usuarios autorizados. |
+| Alternativas / extensiones | Sensor/estructura inválidos: rechazar evento; datos recientes insuficientes: no determinable; CU23 exclusivamente en Fase 8, sin liberación en Fase 7. |
 | Excepciones documentadas | Sensor no registrado o deshabilitado: se rechaza el evento. Evento con formato inválido o datos obligatorios faltantes. Pérdida de conectividad del dispositivo. Lectura desactualizada o ausencia de eventos recientes: se informa que la ocupación no puede determinarse con información IoT actual. |
 | Postcondición documentada | El evento IoT válido queda registrado y la información de monitoreo del espacio queda actualizada. |
 | RF relacionado | RF17 |
 | Entidades / clases principales | EspacioAcademico, SensorIoT, EventoOcupacion |
 | Tablas directamente relacionadas | `espacios_academicos`, `sensores_iot`, `eventos_ocupacion` |
-| Módulo futuro y fase | Monitoreo IoT y Disponibilidad; Fase 7 |
-| Pruebas necesarias | T-CU22: Sensor inválido/deshabilitado; dato malformado/antiguo; no determinable; >=120 eventos/min; reflejo <=5 s. |
+| Módulo futuro y fase | Monitoreo IoT y Disponibilidad; contrato D-10 cerrado en 6.5, implementación Fase 7 pendiente. |
+| Pruebas necesarias | T-I01–T-I32 y T-CU22: Sensor inválido/deshabilitado; dato malformado rechazado/antiguo válido histórico; no determinable; >=120 eventos/min; reflejo <=5 s. |
 
 ## CU23 — Aplicar política de liberación de reserva
 
@@ -804,3 +804,9 @@ La pantalla completa datos/verificación e intención «escanear y confirmar» a
 Implementados CU11 y CU20 con identidad, RBAC/contexto actual, token opaco/hash y evidencia. CU11 no cambia reserva/espacio. CU20 extiende opcionalmente los servicios principales de entrega/devolución en una misma request/transacción y enlaza la misma validación al hito. INVÁLIDA no muta negocio; los flujos sin QR siguen funcionando. Las postcondiciones Blockchain/notificaciones/CU30 mantienen su diferimiento.
 
 [Trazabilidad completa y aceptación](QR_IMPLEMENTATION.md): suite 325/4984 aprobada, dos procesos MySQL, cámaras simuladas diferenciadas de física. La lectura física se acepta por confirmación expresa del usuario; no se presenta como corroboración técnica independiente. Las frases de implementación futura en contratos Fase 5/5.5 son históricas, no anulan este avance.
+
+## Preparación CU21/CU22 y límites CU06/CU23 — Fase 6.5
+
+[D-10 RESUELTA PARA FASE 7](DECISIONS.md#readiness-for-phase-7), cero bloqueantes documentales; casos todavía no funcionales. CU21 incluye alta/consulta/asociación/reasociación/habilitación/deshabilitación/última comunicación/provisión segura, sin eliminación. CU22 usa REST/HMAC separado de identidad humana, histórico inmutable, filtros paginados y lectura reciente/NO_DETERMINABLE. No sustituir bitácora prevista en RF16 con logs técnicos; registros_actividad/CU30 conservan su fase diferida.
+
+A/E con permisos específicos iot.sensores.ver, iot.sensores.gestionar e iot.monitoreo.ver; D/S sin módulo administrativo/historial. CU06 podrá mostrar solo evidencia mínima autorizada, sin alterar SpaceAvailabilityService. CU23 mantiene ficha original como obligación futura de Fase 8; no se activa por eventos en Fase 7. [Matriz de aceptación T-I01–T-I32](BUSINESS_RULES.md#aceptación-iot-prevista-para-fase-7), no ejecutada en este cierre.

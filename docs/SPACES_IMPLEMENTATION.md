@@ -107,3 +107,9 @@ La evidencia anterior describe el cierre histórico de Fase 3. CU06 ahora está 
 ## Ampliación vigente de Fase 5
 
 CU19 ahora usa incidencias_mantenimiento para espacios y equipos mediante recurso_id. SpaceAvailabilityService añade ABIERTA al predicado existente de estado/bloqueos/reservas; CU06/CU07/CU09 comparten esa regla. SpaceManagementService impide habilitar con incidencia o bloqueo vigente. El cierre explícito no elimina bloqueos, reservas ni otras incidencias, ni levanta mantenimiento administrativo sin aptitud/permisos. [Integración y pruebas](EQUIPMENT_LOANS_IMPLEMENTATION.md#cu19-y-espacios). Se comprobó en navegador la exclusión del espacio y su recuperación tras cierre autorizado; la regresión completa pasa. IoT sigue pendiente.
+
+## Preparación informativa IoT — Fase 6.5
+
+[D-10 y puerta de Fase 7](DECISIONS.md#readiness-for-phase-7) cerradas documentalmente; no se cambia CU05/CU06 ni SpaceAvailabilityService. Fase 7 puede aportar tipo/valor/hora y lectura reciente/NO_DETERMINABLE a lectores autorizados de CU06, sin credenciales, identificador de sensor, administración o historial técnico. Deben ser recientes tanto medición como recepción; silencio nunca significa libre.
+
+IoT no cambia estado operativo, reserva, bloqueo o incidencia, ni aprueba/cancela/libera. Cambio de código del recurso exige actualizar configuración del dispositivo; persistencia usa asociación actual validada, histórico inmutable. Locks compartidos de espacio/recurso de ingestión son compatibles entre sensores; CU05 no debe adquirir sensor después del espacio. CU23 sigue exclusivamente en Fase 8.

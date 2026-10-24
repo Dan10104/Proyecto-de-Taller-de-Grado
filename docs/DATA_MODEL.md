@@ -1,5 +1,7 @@
 # Modelo de datos documentado
 
+**Actualización documental Fase 6.5: D-10 RESUELTA PARA FASE 7, cero bloqueantes documentales.** [Contrato IoT y puerta de Fase 7](DECISIONS.md#readiness-for-phase-7). CU21/CU22 no implementados. La evidencia funcional anterior sigue correspondiendo a Fase 6 y conserva sus límites.
+
 **Estado vigente: Fase 6 implementada y aceptada; suite automatizada aprobada. La prueba física se acepta por confirmación del usuario, sin nueva evidencia válida corroborada independientemente.** CU11/CU20 y extensión opcional CU17/CU18 incorporados. [Arquitectura, 325 pruebas, trazabilidad y límites de aceptación](QR_IMPLEMENTATION.md). Los cierres anteriores se conservan como evidencia histórica; Fase 7 no iniciada.
 
 Estado: contrato documental congelado en Fase 0.5; **no es una migración ni un SQL para ejecutar**. Fuentes: figura 108 (clases), figura 109 (BD lógica), tablas 68–98 (mapeo), 99–129 (volúmenes/diccionario) y script del cap. VII, pp. 269–299 (PDF 270–300).
@@ -972,3 +974,11 @@ El SQL permite varios NULL y varios intentos por codigo_qr_id. Las guardas de ap
 ## Materialización QR y excepción autorizada de Fase 6
 
 Las tablas codigos_qr y validaciones_qr están materializadas: 23 tablas académicas, 156 columnas, 45 FK, más migrations. Las definiciones del diccionario anterior conservan el SQL documental original. **Diferencia física autorizada:** ON UPDATE RESTRICT en fk_qr_recurso/reserva/prestamo y fk_validacion_reserva/prestamo/entrega/devolucion por incompatibilidad MySQL CHECK+CASCADE (error 3823). Las otras tres FK QR conservan CASCADE y todos los DELETE son RESTRICT. Columnas, CHECK, UNIQUE, índices y nulabilidad intactos. Las 21 migraciones previas no cambian. [Autorización, consecuencias y pruebas de metadatos/restricciones](QR_IMPLEMENTATION.md#esquema-y-excepción-autorizada). No describir la implementación como SQL idéntico sin mencionar esta excepción.
+
+## Preservación del contrato SQL IoT — Fase 6.5
+
+[D-10 resuelta documentalmente](DECISIONS.md#readiness-for-phase-7). Se contrastaron CREATE TABLE completos del Word/PDF, equivalentes tras normalización de espacios/encabezados: sensores_iot (6 columnas), eventos_ocupacion (7) y politicas_liberacion (9). El diccionario anterior no cambia. Las tres FK de sensores/eventos mantienen ON UPDATE CASCADE y ON DELETE RESTRICT; no tienen el conflicto CHECK/FK que motivó la excepción QR. No extender aquella excepción a estas tablas.
+
+No columnas de secreto, flag de provisionamiento, nonce, fecha adicional, tabla de credenciales ni UNIQUE nuevo. Credencial derivada en memoria; identificador inmutable por regla de aplicación. Eventos conservan índices sensor/fecha y espacio/fecha, DECIMAL(10,2) NULL y DATETIME de segundos; fecha_recepcion mantiene DEFAULT CURRENT_TIMESTAMP. Deduplicación de sensor_id/espacio_historico_id/tipo/valor NULL-safe/fecha_evento mediante transacción y lock del sensor, no garantía inexistente del SQL.
+
+Espacio histórico se fija desde asociación validada al aceptar, no se recalcula al reasignar; eventos inmutables y sin purga automática en piloto. max_antiguedad_lectura_min conserva nulabilidad, unidad y CHECK de política; no sustituir por ventana UI. Las 23 tablas académicas/156 columnas/45 FK y 36 permisos materializados permanecen sin cambios; sensores/eventos todavía no se materializan, politicas_liberacion sigue únicamente estructural.

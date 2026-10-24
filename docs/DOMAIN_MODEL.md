@@ -1,5 +1,7 @@
 # Modelo del dominio
 
+**Actualización documental Fase 6.5: D-10 RESUELTA PARA FASE 7, cero bloqueantes documentales.** [Contrato IoT y puerta de Fase 7](DECISIONS.md#readiness-for-phase-7). CU21/CU22 no implementados. La evidencia funcional anterior sigue correspondiendo a Fase 6 y conserva sus límites.
+
 **Estado vigente: Fase 6 implementada y aceptada; suite automatizada aprobada. La prueba física se acepta por confirmación del usuario, sin nueva evidencia válida corroborada independientemente.** CU11/CU20 y extensión opcional CU17/CU18 incorporados. [Arquitectura, 325 pruebas, trazabilidad y límites de aceptación](QR_IMPLEMENTATION.md). Los cierres anteriores se conservan como evidencia histórica; Fase 7 no iniciada.
 
 Fuentes: figura 19 (p. 109 / PDF 110), figuras 108–109 (p. 248–249 / PDF 249–250), mapeo, volúmenes y SQL del cap. VII. El diagrama conceptual simplifica relaciones; las diferencias con el diseño de clases y datos están registradas en D-06. Estado: contrato congelado en Fase 0.5; materialización incremental hasta Fase 4 descrita al final. Las entidades de fases posteriores siguen siendo documentales.
@@ -178,3 +180,11 @@ ValidacionQR registra VALIDA/INVALIDA y USO_ESPACIO/ENTREGA/DEVOLUCION, hash le�
 ## Materialización QR de Fase 6
 
 CodigoQr/ValidacionQr, relaciones belongsTo/hasMany y enums ResultadoValidacionQr/TipoOperacionQr implementados. Sin estados extra ni timestamps automáticos. Hashes ocultos, fechas inmutables, factories sintéticas. CU11 solo evidencia; CU20 conserva estados y servicios CU17/CU18. [Ciclo, relaciones, pruebas y límite de aceptación](QR_IMPLEMENTATION.md). Las declaraciones de ausencia de modelos en Fases 5/5.5 son históricas.
+
+## Contrato de dominio IoT — Fase 6.5
+
+[D-10 cerrada, implementación pendiente](DECISIONS.md#readiness-for-phase-7). SensorIoT conserva identificador UNIQUE, inmutable desde alta, tipo descriptivo, espacio_actual obligatorio y HABILITADO/DESHABILITADO. El dispositivo usa HMAC, nunca Usuario/Rol/SesionAcceso. Reasociación cambia solo el presente; no eliminación física.
+
+EventoOcupacion describe ambiente, nunca identidad/asistencia: PRESENCIA/OCUPACION, valor DECIMAL(10,2) nullable sin interpretación universal, fecha_evento declarada normalizada y recepción servidor. Espacio histórico se toma de asociación validada al aceptar. Histórico inmutable, sin edición UI; tupla sensor/espacio/tipo/valor NULL-safe/fecha_evento identifica duplicados exactos.
+
+Ultima_comunicacion cambia solo con evento nuevo aceptado; una retransmisión no renueva este campo. Ambas edades de evento/recepción deben cumplir ventana de monitoreo, sensor habilitado y contexto espacial vigente para lectura actual. Datos insuficientes/antiguos/contradictorios → NO_DETERMINABLE; no equivale a LIBRE. Conectividad y lectura reciente son cálculos; nunca ONLINE/OFFLINE/ERROR persistidos. CU23 y su evaluación siguen en Fase 8, sin alterar reserva/espacio por eventos en Fase 7.

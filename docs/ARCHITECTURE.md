@@ -1,5 +1,7 @@
 # Arquitectura web de ESPACIO-U
 
+**Actualización documental Fase 6.5: D-10 RESUELTA PARA FASE 7, cero bloqueantes documentales.** [Contrato IoT y puerta de Fase 7](DECISIONS.md#readiness-for-phase-7). CU21/CU22 no implementados. La evidencia funcional anterior sigue correspondiendo a Fase 6 y conserva sus límites.
+
 **Estado vigente: Fase 6 implementada y aceptada; suite automatizada aprobada. La prueba física se acepta por confirmación del usuario, sin nueva evidencia válida corroborada independientemente.** CU11/CU20 y extensión opcional CU17/CU18 incorporados. [Arquitectura, 325 pruebas, trazabilidad y límites de aceptación](QR_IMPLEMENTATION.md). Los cierres anteriores se conservan como evidencia histórica; Fase 7 no iniciada.
 
 Fuentes: cap. II, apartados Laravel/API, Vue/Inertia, IoT, QR, Blockchain y despliegue; cap. VI, figuras 60–105; cap. VII, figuras 106–114; IS, IC y RD. Las figuras 106 y 107 corresponden a las páginas impresas 246–247 (PDF 247–248). Estado: arquitectura contractual congelada en Fase 0.5; implementadas fundación, seguridad web, espacios y reservas hasta Fase 4. El diagrama representa también integraciones futuras que siguen pendientes.
@@ -10,7 +12,7 @@ Fuentes: cap. II, apartados Laravel/API, Vue/Inertia, IoT, QR, Blockchain y desp
 flowchart LR
   Web["Navegador: Vue 3 + Inertia + Vite"] -->|HTTPS / rutas web| Laravel["Servidor central PHP / Laravel"]
   API["API REST / JSON: integraciones y futuro cliente"] --> Laravel
-  IoT["Sensores IoT / ESP32"] -->|HTTP o MQTT, según piloto| Entrada["Interfaz IoT"]
+  IoT["Sensores IoT / ESP32"] -->|HTTPS REST piloto| Entrada["Interfaz IoT"]
   Entrada --> Laravel
   Laravel --> MySQL["MySQL: información completa e histórica"]
   Laravel -->|evidencia mínima| BC["Servicio Blockchain externo"]
@@ -59,7 +61,7 @@ Una vez confirmada la operación, generar los efectos complementarios sin deshac
 
 | Integración | Contrato mínimo oficial | Decisiones pendientes |
 | --- | --- | --- |
-| IoT | Sensor registrado/habilitado, espacio, tipo de evento, valor cuando proceda y fechas; HTTP/MQTT; historial y frescura | Autenticación del dispositivo, payload, unidades, deduplicación, desfase temporal, selección de transporte y puente MQTT |
+| IoT | D-10 cerrada en Fase 6.5: REST/HMAC, evento ambiental, historia, frescura y deduplicación por sensor | Implementación Fase 7 pendiente; MQTT opcional mediante mismo servicio. Sin semántica universal de valor |
 | QR | D-09 cerrada: token/hash, ciclo, contexto y correlación atómica definidos en Fase 5.5 | Implementación Fase 6 y pruebas automatizadas disponibles; aceptación física por confirmación del usuario (sin corroboración independiente nueva); obligatoriedad global diferida |
 | Blockchain | Hash local con algoritmo/versión canónica, operación de origen y referencia externa; privacidad previa al envío | Proveedor/red, conjunto exacto de operaciones críticas, formato canónico, reintentos y verificación |
 | Chatbot | Backend con credenciales privadas, alcance por usuario y respuesta/error comprensible | Proveedor/modelo, contenido de orientación autorizado y límites de contexto; sin persistencia adicional asumida |
@@ -150,3 +152,11 @@ Se extiende el orden existente con codigos_qr y luego validaciones_qr después d
 ## Implementación QR de Fase 6
 
 QrTokenService → QrContextService → QrManagementService/QrValidationService; controladores con DTO privados, CodigoQrPolicy para CU11 y Gates de contexto. LoanService expone los mismos métodos de operación bajo transacción para ambas ramas. Locks y relecturas se extienden con QR/evidencia después de dependencias operativas. Vue usa fetch JSON efímero, Blob URL y QrScanner local; sin token en props o historial Inertia. [Arquitectura, librerías y concurrencia comprobadas](QR_IMPLEMENTATION.md). Los apartados Fase 5.5 anteriores son el contrato histórico, no el estado de implementación actual.
+
+## Contrato de arquitectura IoT — Fase 6.5
+
+[Protocolo normativo D-10](DECISIONS.md#contrato-iot--cierre-d-10-de-fase-65). POST /api/iot/events es entrada de dispositivos separada de Session/Inertia/CSRF web. El adaptador REST acota cuerpo y verifica HMAC RAW antes de JSON; un único servicio aplica validación ambiental, contexto, deduplicación y persistencia. MQTT futuro usa TLS/autenticación y el mismo servicio; no broker obligatorio.
+
+Ingestión: sensor exclusivo → espacio/subtipo y recurso compartidos → primera lectura consistente para duplicado → evento → ultima_comunicacion → commit. Sin lock global Administrador ni RBAC de dispositivos. Gestión humana CU21 conserva RBAC→sensor→espacio/recurso; CU05 no adquiere sensor después de espacio. No locks durante red/UI, ni llamadas desde ingestión a servicios operativos con orden inverso. Sensores distintos, incluso del mismo espacio, tienen locks compatibles. Límites, snapshot y carreras se especifican en D-10.
+
+La lectura actual considera fecha_evento y fecha_recepcion; UI deriva NO_DETERMINABLE y salud de comunicación, sin enums persistidos nuevos. CU06 recibe DTO informativo mínimo; SpaceAvailabilityService no usa IoT para adjudicar o liberar. CU23/Fase 8 conserva política propia; 6.5 no crea clases, rutas, colas ni configuraciones.

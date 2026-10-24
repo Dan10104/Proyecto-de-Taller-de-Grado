@@ -1,6 +1,6 @@
 # Registro de decisiones y auditoría documental
 
-Fecha: 2026-10-23. Fase 0.5: contratos de implementación congelados según la instrucción del usuario. Se conservan los 17 expedientes D-01–D-17 y su conflicto original; Git conserva la redacción inicial de Fase 0. No se cambian el Word/PDF, el alcance funcional ni el stack. Fase 1 técnica completada por instrucción posterior; D-15 y la configuración de D-16 tienen evidencia en [DEVELOPMENT_SETUP.md](DEVELOPMENT_SETUP.md). Fase 1.5 cerró D-04/D-07; el núcleo web de Fase 2 y los espacios de Fase 3 están implementados. Fase 3.5 cerró D-05 para reservas; Fase 4 aplica ese contrato con implementación y pruebas. Fase 4.5 cierra documentalmente CU12–CU19: D-02/D-11 resueltas para Fase 5 y D-04/D-05 aplicadas sin reabrirlas. Fase 5 implementada y validada; Fase 5.5 resuelve D-09 para Fase 6. Fase 6 no iniciada.
+Fecha: 2026-10-23. Fase 0.5: contratos de implementación congelados según la instrucción del usuario. Se conservan los 17 expedientes D-01–D-17 y su conflicto original; Git conserva la redacción inicial de Fase 0. No se cambian el Word/PDF, el alcance funcional ni el stack. Fase 1 técnica completada por instrucción posterior; D-15 y la configuración de D-16 tienen evidencia en [DEVELOPMENT_SETUP.md](DEVELOPMENT_SETUP.md). Fase 1.5 cerró D-04/D-07; el núcleo web de Fase 2 y los espacios de Fase 3 están implementados. Fase 3.5 cerró D-05 para reservas; Fase 4 aplica ese contrato con implementación y pruebas. Fase 4.5 cierra documentalmente CU12–CU19: D-02/D-11 resueltas para Fase 5 y D-04/D-05 aplicadas sin reabrirlas. Fase 5 implementada y validada; Fase 5.5 resolvió D-09 y Fase 6 fue implementada y aceptada con los límites de evidencia de QR_IMPLEMENTATION. Fase 6.5 cierra D-10 exclusivamente en documentación: [Readiness for Phase 7](#readiness-for-phase-7), cero bloqueantes documentales. Fase 7 no iniciada.
 
 ## Fuentes verificadas
 
@@ -53,7 +53,7 @@ SQL es contrato principal de tablas, columnas, tipos, PK/FK, nulabilidad, enums,
 
 ## Clasificación de las 17 decisiones originales (cierre de Fase 0.5)
 
-Esta clasificación conserva la fotografía histórica de Fase 0.5, con **un único estado por expediente en ese cierre**. Los estados vigentes se actualizan en sus fichas y en Readiness for Phase 2/4/5/6; no se reescribe el recuento histórico. La clasificación cuenta expedientes de Fase 0, no cada parámetro interno. Una convención puede dejar parámetros posteriores expresamente enumerados; eso no los declara resueltos ni bloquea la fundación.
+Esta clasificación conserva la fotografía histórica de Fase 0.5, con **un único estado por expediente en ese cierre**. Los estados vigentes se actualizan en sus fichas y en Readiness for Phase 2/4/5/6/7; no se reescribe el recuento histórico. La clasificación cuenta expedientes de Fase 0, no cada parámetro interno. Una convención puede dejar parámetros posteriores expresamente enumerados; eso no los declara resueltos ni bloquea la fundación.
 
 | Estado | Cantidad |
 | --- | --- |
@@ -74,7 +74,7 @@ Esta clasificación conserva la fotografía histórica de Fase 0.5, con **un ún
 | D-07 | Decisión técnica pendiente: autenticación y sesión | DIFERIDA A UNA FASE POSTERIOR | 2 antes de CU01–CU02; estudio de compatibilidad permitido en 1 cuando se autorice. |
 | D-08 | Vacío de ejecución de liberación | DIFERIDA A UNA FASE POSTERIOR | 8; contrato con monitoreo en 7. |
 | D-09 | Vacío de contrato QR y correlación | DIFERIDA A UNA FASE POSTERIOR | 6; prever contratos de entrega/devolución en 5. |
-| D-10 | Vacío de contrato IoT | DIFERIDA A UNA FASE POSTERIOR | 7 antes de ingestión; coordinación con 8. |
+| D-10 | Contrato IoT | RESUELTA PARA FASE 7 | Cierre documental 6.5; implementación 7 pendiente; CU23 en 8. |
 | D-11 | Defecto visual confirmado: entrega | RESUELTA | 5 y rama QR de 6. |
 | D-12 | Vacío de contrato y secuencia Blockchain | DIFERIDA A UNA FASE POSTERIOR | 9, antes de generación/verificación funcional. |
 | D-13 | Contenido residual del cronograma | NO AFECTA IMPLEMENTACIÓN | Todas; control de alcance desde 1. |
@@ -310,24 +310,21 @@ Sustento técnico: [autenticación Laravel 13](https://laravel.com/docs/13.x/aut
 | Bloquea iniciar Fase 1 | No |
 | Fecha de adopción | 2026-10-23; base Fase 0.5 y cierre autorizado de D-09 en Fase 5.5 |
 
-### D-10 — Vacío de contrato IoT
+### D-10 — Contrato IoT cerrado para Fase 7
 
 | Campo | Registro |
 | --- | --- |
 | ID | D-10 |
-| Título | Vacío de contrato IoT |
-| Fuente A | RF16–17; CU21–22; IH/IC/RD IoT. |
-| Fuente B | sensores_iot, eventos_ocupacion y Fase 0.5 §12. |
-| Conflicto original de Fase 0 | HTTP/MQTT son alternativas; faltan esquema final, autenticación de dispositivo, unidades/significado de valor, repetidos, eventos tardíos y política de reloj/frescura. |
-| Tratamiento registrado en Fase 0 (histórico) | Fijar contrato del piloto y pruebas. Preservar espacio histórico, distinguir fecha_evento/fecha_recepcion y aceptar solo sensores habilitados. Elegir transporte sin inventar broker. |
-| Impacto | Formato/transporte/seguridad y semántica de lecturas aún dependen del piloto. |
-| Decisión vigente de Fase 0.5 | Congelar sensor registrado, HABILITADO y asociado; mide PRESENCIA/OCUPACION, nunca personas. Conservar espacio histórico y ambas fechas. Sin lectura reciente/suficiente se calcula NO_DETERMINABLE; no crear enum de ocupación en espacios ni inferir LIBRE. |
-| Justificación | El SQL ya distingue estado del sensor, tipo de evento y resultado de evaluación. Salud del enlace/frescura son datos derivados, no estados persistidos adicionales. |
-| Estado | DIFERIDA A UNA FASE POSTERIOR |
-| Fase afectada | 7 antes de ingestión; coordinación con 8. |
-| Detalle diferido / límite de la resolución | Elegir HTTP o MQTT, payload, credenciales privadas, unidades, reintentos/deduplicación y tratamiento de fechas/frescura. No bloquea Fase 1. |
-| Bloquea iniciar Fase 1 | No |
-| Fecha de adopción | 2026-10-23; instrucción Fase 0.5 |
+| Fuentes | RF16–17; CU21–22; CU23 solo futuro; IC-06/07; RD-40; SQL sensores_iot, eventos_ocupacion y politicas_liberacion; instrucción Fase 6.5. |
+| Conflicto original de Fase 0 | HTTP/MQTT sin selección; faltaban autenticación, payload, unidades, duplicados y reloj/frescura. |
+| Tratamiento histórico de Fase 0.5 | Sensor registrado, habilitado y asociado; ambiente, nunca personas; historia y dos fechas; ausencia de lectura no demuestra libre. |
+| Decisión vigente | REST con HMAC derivado por sensor, formato/tiempos, frescura, deduplicación transaccional y RBAC humano según [contrato D-10](#contrato-iot--cierre-d-10-de-fase-65). |
+| Justificación | IC-06 admite HTTP; IC-07 exige dispositivo/espacio. Preservar SQL, historia, privacidad y autonomía de reservas/préstamos. Convenciones técnicas explícitas, no citas literales del informe. |
+| Estado | RESUELTA PARA FASE 7 |
+| Fase afectada | 6.5 documental; CU21/CU22 y CU06 informativo en 7; CU23 en 8. |
+| Límite | Sin implementación, secretos ni permisos nuevos. Unidades del hardware se describirán al incorporarlo sin bloquear registro/visualización genéricos; MQTT opcional. D-08 y despliegue conservan su fase. |
+| Bloqueantes documentales para Fase 7 | 0; no autoriza iniciar Fase 7. |
+| Fecha de adopción | 2026-10-23, instrucción Fase 6.5. |
 
 ### D-11 — Defecto visual confirmado: entrega
 
@@ -441,7 +438,7 @@ Sustento técnico: [autenticación Laravel 13](https://laravel.com/docs/13.x/aut
 | Justificación | Convención explícita coherente con alcance Bolivia y tipos DATETIME existentes; no cambia el modelo ni el algoritmo canónico. El informe fija máximos de operaciones específicas, no de todo endpoint. |
 | Estado | CONVENCIÓN DE IMPLEMENTACIÓN |
 | Fase afectada | 1 para zona; 7/13/14 para parámetros de operación/medición. |
-| Detalle diferido / límite de la resolución | Antes de 13 fijar protocolo de medición y objetivo de login si se requiere; retención de eventos antes de 7/14. Formato canónico de fechas antes de 9. Ninguno bloquea Fase 1. |
+| Detalle diferido / límite de la resolución | Antes de 13 fijar protocolo de medición y objetivo de login si se requiere; Fase 6.5 fija conservación del piloto sin purga automática; retención productiva antes de 14. Formato canónico de fechas antes de 9. Ninguno bloquea Fase 1. |
 | Bloquea iniciar Fase 1 | No |
 | Fecha de adopción | 2026-10-23; instrucción Fase 0.5 |
 
@@ -475,7 +472,7 @@ Estos puntos no se implementaron ni se presentan como especificaciones completas
 | D-07 | Autenticación móvil/API y almacenamiento distribuido; web ya resuelta | Cuando se autorice el cliente/API; despliegue antes de Fase 14 |
 | D-08 | Ejecución temporal de monitoreo/liberación, umbrales y combinación de evidencia, conservación de versiones aplicadas | Fase 8, con contrato de datos preparado en 7 |
 | D-09 | Detalles resueltos documentalmente en Fase 5.5; [contrato y puerta de Fase 6](#readiness-for-phase-6) | Implementación en Fase 6; ninguna relajación de CHECK/UNIQUE |
-| D-10 | Transporte y contrato del piloto, autenticación, unidades, repetidos y frescura | Fase 7 antes de ingestión funcional |
+| D-10 | RESUELTA PARA FASE 7; [contrato congelado](#readiness-for-phase-7) | Implementar/probar cuando se autorice Fase 7; MQTT no obligatorio |
 | D-12 | Canonicalización exacta, campos permitidos, algoritmo, proveedor y recuperación | Antes de Fase 9 funcional; determinismo/orden/fechas/UTF-8/version_canonica ya obligatorios |
 | D-15 | Versiones/instancia local atendidas en Fase 1; solo operatividad Docker pendiente | Docker antes de ensayos de 14 |
 | D-16 | Protocolo de medición, umbral específico de login si se define y retención operativa | Fases 7/13/14 según punto; formato canónico de fechas en 9 |
@@ -1004,3 +1001,199 @@ La nueva instrucción autorizó las dos tablas/modelos/enums, tres permisos, lif
 ## Aceptación manual final de Fase 6
 
 El usuario autorizó cerrar la comprobación física por su confirmación («funciona yo se que funciona dalo por hecho aunque no haya la prueba»). Se conserva la distinción entre pruebas automatizadas/sintéticas, intento físico inválido por recurso equivocado y ausencia de una nueva evidencia física válida corroborada. Esta instrucción resuelve la puerta de aceptación para publicar/integrar sin inventar un resultado técnico. Fase 7 no iniciada.
+
+## Contrato IoT — cierre D-10 de Fase 6.5
+
+**D-10: RESUELTA PARA FASE 7.** Este apartado es la referencia normativa única del protocolo. Cierre exclusivamente documental sobre `ceae7cb`, rama `docs/phase-6.5-iot-decisions`. No se modifican código, SQL, migraciones, configuración real, `.env.example`, permisos DB, vistas ni Word/PDF. No se generan credenciales ni datos IoT. Fase 7 no iniciada; las obligaciones futuras no son pruebas ejecutadas.
+
+### Fuentes y alcance IoT
+
+Revisados RF16/RF17, CU21–22, CU23 solo como integración futura, IC-06/IC-07 y RD-40 en Word/PDF final. Referencias PDF: CU21 pp. 205–206, CU22 pp. 207–208, CU23 pp. 208–209; IC p. 155, RD-40 p. 163. SQL: políticas pp. 275–276; sensores/eventos pp. 292–294. Los tres CREATE TABLE son equivalentes entre Word y PDF tras eliminar encabezados/espacios; sus hashes originales siguen intactos. Se contrastaron arquitectura, dominio, reglas, diccionario, seguridad y plan. Las convenciones técnicas siguientes completan el informe, no se atribuyen literalmente a él.
+
+**IoT detecta presencia u ocupación del espacio. NO identifica personas ni asistencia individual.** No inferir usuario, estudiante, docente, nombre, correo, matrícula o CI. Prohibidos imagen, audio, biometría, cámara, reconocimiento facial, seguimiento personal Bluetooth, MAC Wi-Fi de personas e identificadores móviles. Identificador del sensor y código del espacio son datos técnicos, no identificadores de ocupantes.
+
+### Transporte y configuración prevista
+
+Piloto: **HTTPS/HTTP REST hacia Laravel**, endpoint exacto **`POST /api/iot/events`**, sin query string ni barra final. HTTP únicamente sobre localhost/loopback en desarrollo; un dispositivo fuera del host requiere HTTPS y validación de certificado. No conectar sensores a MySQL. La ruta tendrá autenticación propia, sin Session web, Inertia, CSRF web, cookies, usuario humano ni rol. La administración humana conserva sesión, CSRF y autorización actuales.
+
+MQTT **opcional futuro, no requerido para el piloto**: no instalar broker en Fase 7 salvo necesidad posterior explícita. Su adaptador autenticará dispositivo/broker con TLS y entregará el mismo evento lógico/contexto autenticado al **mismo servicio de ingestión, validación, deduplicación y persistencia**. No copiar reglas por transporte. La envoltura MQTT se especificará solo si se autoriza; no bloquea el piloto REST.
+
+| Configuración futura, solo servidor | Valor inicial y función |
+| --- | --- |
+| `IOT_MASTER_SECRET` | Vacío en plantilla futura; CSPRNG de 32 bytes (256 bits), codificado en 64 caracteres hexadecimales minúsculos; nunca ejemplo utilizable. |
+| `IOT_REQUEST_MAX_SKEW_SECONDS` | `300`; tolerancia de autenticación y límite de evento futuro, única fuente de configuración. |
+| `IOT_MONITORING_FRESHNESS_SECONDS` | `300`; vigencia informativa de lecturas y comunicación, independiente del anterior y de políticas. |
+| `IOT_RATE_LIMIT_PER_MINUTE` | `120` solicitudes autenticadas por sensor por ventana de 60 segundos, configurable según frecuencia real; incluye duplicados y rechazos posteriores a autenticación. |
+| `IOT_MAX_BODY_BYTES` | `4096` bytes RAW, máximo inclusive y configurable; rechazar durante recepción al excederlo. |
+
+Son valores técnicos, no reglas académicas. Se leerán de configuración central, sin constantes dispersas. Configuración inválida, secreto ausente o almacén de limitación indisponible: rechazo cerrado `503`; nunca aceptar sin firma ni usar una sola cuota para todos. No se crean estas variables en Fase 6.5.
+
+### Credencial, identificador y provisionamiento
+
+Convención: `HMAC_SHA256(clave_bytes, mensaje_bytes)` produce 32 bytes. `M = hex_decode(IOT_MASTER_SECRET)` y **`K_sensor = HMAC_SHA256(M, UTF8("sensor:" + identificador))`**. Prefijo literal `sensor:` para separación de dominio, sin espacios/saltos/normalización. Maestro exclusivo por entorno, únicamente en configuración privada del servidor (`.env` local ignorado; gestor seguro al desplegar). No reutilizar APP_KEY, contraseña de BD o credencial humana.
+
+Provisionar `hex_lower(K_sensor)` de 64 caracteres; el dispositivo lo decodifica a **32 bytes** antes de firmar, nunca usa los 64 caracteres ASCII como clave. Recibe únicamente su clave, nunca el maestro. No guardar maestro, clave derivada ni su hash en `sensores_iot`, otra tabla, frontend normal o logs. El servidor deriva cuando necesita. La seguridad depende de CSPRNG, secreto maestro y HMAC-SHA-256: comprometer una credencial permite suplantar ese sensor, pero no debe permitir obtener el maestro ni otras claves.
+
+`identificador` mantiene `VARCHAR(120)` y UNIQUE. Perfil ASCII del alta: `[A-Z0-9][A-Z0-9_-]{0,119}`, sin espacios. Validación/comparación exacta, sin trim, cambio de mayúsculas ni igualdad permisiva por collation en el protocolo. **Inmutable desde el alta**, convención conservadora que garantiza la inmutabilidad tras provisionar sin inventar una columna de provisionamiento. CU21 permite editar tipo, asociación y estado, no renombrar como edición ordinaria.
+
+Mecanismo previsto: **acción administrativa explícita de provisionamiento**, sesión vigente, CSRF y `iot.sensores.gestionar` de un mismo rol elegible A/E; sensor registrado/habilitado. Reautorizar y leer sensor actual bajo protocolo de gestión; derivar en memoria y mostrar solo en respuesta solicitada expresamente, privada `no-store`, después del commit. Pantalla dedicada en memoria hasta salir, sin props persistibles de Inertia, flash, historial, almacenamiento del navegador, descarga automática ni analytics. Ver catálogo no revela claves. No retener locks esperando UI. Repetir provisionamiento con mismo identificador/maestro entrega la misma clave: **no es rotación**.
+
+Clave comprometida: deshabilitar sensor, registrar explícitamente otro identificador y reprovisionar dispositivo; conservar anterior deshabilitado e historia. No rehabilitar el mismo identificador suponiendo una clave nueva. Reasociar espacio no rota credenciales. Cambio/compromiso de maestro: suspender ingestión, deshabilitar sensores, sustituir secreto privado, recargar todos los procesos/configuración, reprovisionar cada dispositivo por canal seguro y habilitar explícitamente tras comprobar nueva credencial. Sin aceptación silenciosa de clave antigua ni rotación automática. Tratar caches/copias de configuración como secretos; nunca claves en argumentos de comandos.
+
+### Payload y validación de tipos
+
+Ejemplo conceptual sin firma ni credenciales reales:
+
+```json
+{
+  "sensor_identifier": "SENSOR-001",
+  "space_code": "ESP-001",
+  "type": "PRESENCIA",
+  "value": 1,
+  "occurred_at": "2026-10-23T20:30:00-04:00"
+}
+```
+
+| Campo exacto | Contrato |
+| --- | --- |
+| `sensor_identifier` | String obligatorio, perfil del alta; idéntico a `X-IoT-Sensor` y al identificador registrado. |
+| `space_code` | String obligatorio, código técnico ASCII de `recursos_institucionales.codigo` del espacio asociado; 1–60 caracteres; comparación exacta, sin normalizar ni aceptar ID arbitrario. |
+| `type` | String obligatorio, exclusivamente `PRESENCIA` o `OCUPACION`; persiste en eventos_ocupacion.tipo. sensores_iot.tipo describe dispositivo, no este enum. |
+| `value` | Opcional; omisión o JSON null → SQL NULL. Si no es nulo, número JSON finito representable exactamente en DECIMAL(10,2). |
+| `occurred_at` | String obligatorio, instante con zona explícita y segundos según perfil temporal inferior. |
+
+`Content-Type: application/json`, con único parámetro opcional `charset=utf-8`. UTF-8 sin BOM, objeto JSON único, sin claves duplicadas (incluso tras decodificar escapes), comentarios, arrays raíz ni campos adicionales. `Content-Encoding` ausente o identity; no cuerpos comprimidos. Rechazar `sensor_id`, `espacio_historico_id`, `fecha_recepcion`, PII o credenciales en JSON. Aplicar máximo incluso sin Content-Length; no confiar solo en esa cabecera.
+
+Perfil decimal: número JSON sin exponente, hasta dos decimales, rango **−99999999.99 a 99999999.99**. Rechazar strings numéricos, booleanos, NaN/Infinity y exceso de escala/rango, sin redondear/truncar. Normalización decimal exacta: `1`, `1.0` y `1.00` equivalentes; `-0` equivale a cero; NULL difiere de cero. Validar token numérico sin pérdida binaria antes de parametrizar persistencia. No imponer positividad ni interpretar universalmente 1 como una persona o 0 como libre. Guardar/mostrar tipo y valor; las unidades/umbrales del hardware se describirán al incorporarlo sin alterar esquema ni reglas genéricas. [Precisión y escala de DECIMAL](https://dev.mysql.com/doc/refman/8.4/en/fixed-point-types.html).
+
+### Firma de la solicitud y anti-replay
+
+Cabeceras: **`X-IoT-Sensor`**, **`X-IoT-Timestamp`**, **`X-IoT-Signature`** (nombres HTTP sin sensibilidad a mayúsculas). Valor único por cabecera, rechazar repetidas/ambiguas. Sensor canónico; timestamp Unix decimal en segundos, entero positivo de 1–12 dígitos, sin signo, fracciones, espacios ni ceros iniciales, validado antes de conversión aritmética; firma de 64 caracteres `[0-9a-f]`, sin prefijo. No transmitir clave ni secretos en URL.
+
+`body_hash = hex_lower(SHA256(raw_body_bytes))`. Cadena canónica de cinco líneas UTF-8 unidas por **LF (0x0A)**, sin CR, BOM, espacios añadidos ni LF final:
+
+```text
+POST
+/api/iot/events
+<sensor_identifier>
+<unix_timestamp>
+<sha256_hex_del_body_RAW_exacto>
+```
+
+Equivalencia: `"POST\n/api/iot/events\n" + header_sensor + "\n" + header_timestamp + "\n" + body_hash`. Sustituir marcadores sin `< >`. Firma: **`hex_lower(HMAC_SHA256(K_sensor, canonical_bytes))`**. No reserializar, ordenar, trimar ni normalizar body antes del hash. Cualquier byte cambiado exige nueva firma aunque el JSON sea equivalente. Comparación constant-time como `hash_equals(expected, received)`, tras validar longitud/formato. Bases técnicas: [RFC 2104](https://www.rfc-editor.org/rfc/rfc2104), [hash_hmac](https://www.php.net/manual/en/function.hash-hmac.php), [hash_equals](https://www.php.net/manual/en/function.hash-equals.php); cadena/codificación propias del piloto.
+
+Orden: limitar envoltura/recepción y validar cabeceras; comprobar timestamp y **autenticar HMAC sobre RAW antes de parsear/validar JSON**. No middleware de transformación/trim previo. Para identificador bien formado puede derivarse/compararse firma antes de consultar existencia; después verificar registro exacto. Desconocido y firma inválida reciben el mismo `401`, sin alta automática ni enumeración de identificadores. Solo firma válida de sensor registrado permite informar deshabilitación. Autenticación no permite indicar otro sensor en JSON.
+
+Aceptar si **`abs(unix_servidor - X-IoT-Timestamp) <= IOT_REQUEST_MAX_SKEW_SECONDS`**, límites inclusivos. Servidor autoridad; dispositivos/servidores sincronizados por NTP o equivalente. Revalidar ventana después de esperar locks; request expirado en espera no se acepta. La ventana acota replay, **no impide por sí sola repetir dentro de 300 s**: deduplicación exacta evita efectos repetidos. No prometer nonce, uso único o exactly-once absoluto. Reintento tardío conserva medición/occurred_at y usa nuevo timestamp de request/firma; nunca rejuvenece la medición.
+
+### Fechas y frescura del monitoreo
+
+Perfil: `YYYY-MM-DDTHH:MM:SSZ` o `YYYY-MM-DDTHH:MM:SS±HH:MM`; T/Z mayúsculas, calendario válido, hora 00–23, segundos 00–59, offset conocido (`-00:00` rechazado). Rechazar zona ausente, epoch, fracciones o segundos intercalares, sin truncar. Es un subconjunto deliberado de [RFC 3339](https://www.rfc-editor.org/rfc/rfc3339), compatible con DATETIME sin fracciones. Convertir conservando instante a **America/La_Paz** y validar rango DATETIME. Z/offsets equivalentes producen misma fecha local y deduplicación.
+
+`fecha_evento` es medición declarada; **`fecha_recepcion` es recepción/aceptación al persistir por el servidor**, nunca input. Conservar `DEFAULT CURRENT_TIMESTAMP`; la inserción lo utiliza y ultima_comunicacion adopta ese mismo instante leído de fila insertada. No columna adicional de llegada HTTP. Aplicación/sesión MySQL con zona coherente y reloj sincronizado según D-16; ventana de request en epoch. [DATETIME y precisión](https://dev.mysql.com/doc/refman/8.4/en/date-and-time-type-syntax.html).
+
+Rechazar si `fecha_evento > ahora_servidor + IOT_REQUEST_MAX_SKEW_SECONDS`; igualdad del límite admisible, revalidar al persistir. Pasados auténticos se aceptan como históricos sin corte arbitrario, si cumplen sensor/estado/contexto/payload/rango SQL. No sustituir evento por recepción. Futuros dentro de tolerancia se guardan, pero no son lectura actual hasta alcanzar su instante (convención conservadora).
+
+Lectura **ACTUAL** exige ambas condiciones a precisión de segundos:
+
+- `0 <= now - fecha_recepcion <= IOT_MONITORING_FRESHNESS_SECONDS`;
+- `0 <= now - fecha_evento <= IOT_MONITORING_FRESHNESS_SECONDS`.
+
+Filtrar por espacio_historico_id del espacio mostrado. Aporte actual requiere sensor HABILITADO y asociado actualmente a ese espacio; deshabilitado/reasignado conserva historia sin informar ocupación actual del espacio anterior. Seleccionar candidatos recientes por sensor/tipo y ordenar **fecha_evento DESC, fecha_recepcion DESC, id DESC**: llegada tardía no desplaza medición más nueva por ordenar solo recepción/ID. Tipos separados, sin sumar valores ni inferir identidad. Valores contradictorios del mismo sensor/instante/tipo se conservan y marcan insuficiencia; no elegir arbitrariamente última inserción como verdad física.
+
+Sin lectura reciente/suficiente: **NO_DETERMINABLE**, jamás LIBRE, DESOCUPADO o SIN_USO. Con lecturas mostrar tipo, valor y fechas como evidencia ambiental. Frescura no determina una interpretación física universal: semántica no documentada o contradicción mantiene ocupación NO_DETERMINABLE aunque haya comunicación reciente. Etiquetas calculadas, sin nuevos enums/columnas.
+
+Salud de comunicación: calcular edad no negativa de ultima_comunicacion con ventana de monitoreo; NULL/vencida implica sin comunicación reciente, no prueba permanente de ONLINE. Evento histórico nuevo puede indicar comunicación reciente sin ocupación actual. Persistir solo **HABILITADO / DESHABILITADO**. Gestión, cambio de asociación o provisionamiento no actualizan ultima_comunicacion.
+
+### Contexto, deduplicación y transacción por sensor
+
+IC-07 exige `space_code`, comparado exactamente con código actual del recurso del espacio en BD. `espacio_historico_id` proviene de **sensor.espacio_actual_id validado al aceptar**, no de ID cliente ni asociación inferida desde occurred_at. Tras A→B, anteriores conservan A y nuevos aceptados usan B. Payload A firmado antes y procesado después se rechaza, incluso histórico/retransmitido. Si CU05 cambia código del espacio, actualizar explícitamente dispositivo; rechazar código anterior sin modificar IDs/historia ni prohibir silenciosamente edición CU05 existente.
+
+Duplicado exacto: **`(sensor_id, espacio_historico_id, tipo, valor NULL-safe, fecha_evento)`** normalizados. Comparar `valor <=> valor_normalizado`: omisión/null equivalentes, NULL distinto de cero. Firma, serialización, timestamp de request y recepción no forman identidad. Dos mediciones iguales en mismo segundo son indistinguibles bajo SQL y se consideran una. No event_id externo, nonce, UNIQUE, columnas ni tabla adicionales.
+
+Protocolo obligatorio para toda ingestión futura:
+
+1. Recibir cuerpo acotado, autenticar HMAC y validar sintaxis fuera de transacción; resolver ID candidato sin confiar en estado/asociación cacheados. Aplicar cuota por sensor autenticado. Sin locks durante transmisión, red o UI.
+2. Abrir **transacción nueva breve sin snapshot consistente previo**. Bloquear fila objetivo de sensores_iot por PK con **SELECT FOR UPDATE**. Releer identificador, estado HABILITADO y asociación; rechazo sin escritura si inválido.
+3. Leer espacio actual por PK **FOR SHARE** en espacios_academicos y luego padre recursos_institucionales; comparar código. Retener locks compartidos hasta commit para evitar cambio entre comprobación/inserción. No exigir DISPONIBLE: monitorear mantenimiento/bloqueo sigue siendo informativo.
+4. Revalidar reloj/request/evento después de espera. Buscar duplicado como **primera lectura consistente de la transacción**, después del lock de sensor, usando índice `(sensor_id, fecha_evento)` y demás predicados. Sin snapshot previo, rango FOR UPDATE ni bloqueo global. En REPEATABLE READ el snapshot se crea entonces y ve al escritor previo ya confirmado. Todo escritor del sensor respeta el mutex; SQL ajeno al servicio no está cubierto.
+5. Si existe: `200 duplicate` y ID original, sin nueva fila ni actualización de **ultima_comunicacion** o fechas. Estado/contexto actuales prevalecen sobre detección de duplicado.
+6. Si no existe: insertar con espacio validado y recepción DEFAULT servidor, actualizar **ultima_comunicacion con esa recepción** en la misma transacción; commit antes de `201`. Fallo intermedio revierte ambas escrituras.
+
+Orden: **sensor exclusivo → espacio/subtipo y recurso compartidos → deduplicación → evento → ultima_comunicacion → commit**. Sensores distintos usan mutex distintos y lecturas compartidas compatibles, incluso en mismo espacio; sin fila Administrador/RBAC, bloqueo de tabla ni cola global para ingestión. Fundamento: [lecturas con locks](https://dev.mysql.com/doc/refman/8.4/en/innodb-locking-reads.html) y [snapshots](https://dev.mysql.com/doc/refman/8.4/en/innodb-consistent-read.html). La garantía requiere probar protocolo completo.
+
+**Gestión humana CU21** conserva coordinación RBAC/reautorización: fila RBAC → sensor objetivo exclusivo → espacio/subtipo y padre compartidos (PK ascendente si varios). Habilitar/deshabilitar/reasociar/provisionar comparte lock del sensor; alta valida espacio y UNIQUE en transacción, sin sensor inexistente como mutex global. CU05 mantiene espacio→recurso sin adquirir después sensor. Prohibir inversión espacio→sensor y llamadas desde ingestión a servicios que adquieren RBAC.
+
+Si gestión obtiene lock y confirma primero, ingestión revalida nuevo estado/contexto. Si ingestión confirma primero, evento permanece válido/histórico y gestión se aplica después. Igual para cambio de código con locks compartidos/exclusivos. Hasta tres intentos por deadlock, rollback total, reloj y comprobaciones renovados; agotados → `503`. Duplicado concurrente: una fila y una actualización de comunicación. Rechazados, desconocidos, deshabilitados y duplicados nunca renuevan ultima_comunicacion.
+
+### Respuestas, límites y registros técnicos
+
+JSON mínimo y `Cache-Control: no-store`, sin stack, clave, firma, eco del cuerpo ni contexto no autorizado. Resultados de API no son enums de BD.
+
+| HTTP | Resultado conceptual | Efecto |
+| --- | --- | --- |
+| 201 | `accepted`, `event_id` confirmado | Una fila y ultima_comunicacion atómicos. |
+| 200 | `duplicate`, `event_id` original | Sin fila nueva ni renovación. |
+| 401 | `authentication_failed`: cabecera/firma/timestamp inválido o desconocido | Ninguno; uniforme sin enumeración. |
+| 403 | `device_not_authorized`: firma válida de registrado deshabilitado | Ninguno. |
+| 400 | `invalid_json`: no interpretable, después de autenticar | Ninguno, sin reflejar entrada. |
+| 422 | `invalid_payload`: campos/tipos/valor/fecha/header-vs-body | Ninguno, razones acotadas. |
+| 409 | `space_context_mismatch` | Ninguno; no revelar espacio esperado ni reasociar. |
+| 413 / 415 | `payload_too_large` / `unsupported_media_type` | Ninguno; se permite verificar antes de autenticar. |
+| 429 | `rate_limited`, Retry-After | Ninguno; esperar antes de reintentar. |
+| 503 | `temporarily_unavailable`: configuración/BD/limitador/reintentos | Sin confirmación parcial; reintento idempotente. |
+
+Método/ruta no admitidos → 405/404 sin detalles. Red/5xx/429 admiten reintento con espera incremental acotada y timestamp/firma nuevos; 201/200 confirman. 401 exige corregir reloj/credencial; 403/409/422, configuración/contexto/datos. No bucle de errores permanentes. Respuesta perdida después de commit se recupera como duplicado mientras sensor/contexto sigan autorizados.
+
+Cuota: contador atómico por **ID interno autenticado**, ventana de 60 s desde primera solicitud, 120 permitidas, siguiente 429 hasta vencer; configurable. Solicitudes sin autenticación no consumen cuota del identificador de una víctima. Protección previa por origen/IP es complementaria, no cuota global de sensores. Backend de contadores coordina procesos; no memoria aislada por worker. Al desplegar varias instancias verificar almacén compartido. Ajustar al piloto y probar >=120 eventos/min válidos agregados sin pérdida y reflejo <=5 s (R-CC-05/R-PR-02); no ejecutado ahora.
+
+Logs permitidos: ID interno sensor conocido, resultado, HTTP status, motivo técnico seguro e ID evento. Excluir firma completa, claves, maestro, cabeceras secretas, cuerpo completo, PII y provisión de logs/APM/analytics/proxy/errores. Payload malicioso extra tampoco se registra. Logs técnicos no sustituyen CU30 ni autorizan anticipar registros_actividad.
+
+### Consulta humana, privacidad e integración futura
+
+| Permiso futuro exacto | Administrador | Encargado | Docente | Estudiante |
+| --- | --- | --- | --- | --- |
+| `iot.sensores.ver` | Sí | Sí | No | No |
+| `iot.sensores.gestionar` | Sí | Sí | No | No |
+| `iot.monitoreo.ver` | Sí | Sí | No | No |
+
+AuthorizationService/Gates/Policies: cuenta/sesión vigentes, permiso de mismo rol elegible, sin bypass de Administrador; revocación en siguiente petición y reautorización de mutaciones tras locks. D-04 mantiene ámbito fino diferido con módulo/acción autorizado A/E para estos CU, sin tabla de asignaciones. Permisos **previstos**, ninguno insertado ahora; catálogo materializado sigue en 36. Dispositivo sin permisos humanos.
+
+CU21: registrar, consultar, asociar/reasociar, habilitar/deshabilitar, ver comunicación y provisionar; **sin eliminación física**. CU22: autenticar, validar, deduplicar, persistir y consultar eventos por sensor, espacio, tipo y rango de fecha_evento normalizado `[desde,hasta)`, paginación de 15, orden fecha_evento/fecha_recepcion/id descendente; no público. Eventos inmutables, sin editar/borrar desde UI; corrección técnica excepcional requiere autorización/contrato específico, no endpoint oculto.
+
+Conservación piloto: **sin purga automática**, sin TTL destructivo. Cierra la puerta D-16 previa a ingestión; capacidad, respaldo y retención productiva se revisarán al desplegar, sin inventar plazo académico.
+
+CU06 puede mostrar a sus lectores autorizados evidencia mínima informativa (reciente/no determinable, tipo/valor y hora), sin identificadores/credenciales de sensores ni historial/admin. Conservar SpaceAvailabilityService y reglas de reservas, bloqueos, incidencias/estado. **Ningún evento IoT cancela, libera, aprueba, invalida reservas ni cambia espacio a DISPONIBLE**, incluso “sin presencia”. Caída IoT no impide reservas/préstamos.
+
+CU23/Fase 8 combina QR, IoT, reserva y política; **no se implementa en Fase 7**. `politicas_liberacion.max_antiguedad_lectura_min` (minutos, nullable según SQL) sigue específico de política; no reemplazar con `IOT_MONITORING_FRESHNESS_SECONDS` (segundos, UI). D-08 resolverá significado de NULL/usa_iot=false antes de Fase 8. Silencio/evidencia insuficiente/contradictoria nunca justifica por sí sola liberar. QR válido tampoco identifica a quien detecta el sensor.
+
+## Readiness for Phase 7
+
+| Punto | Cierre de Fase 6.5 |
+| --- | --- |
+| D-10 | **RESUELTA PARA FASE 7**; contrato precedente normativo. |
+| Transporte / endpoint | REST; HTTPS desplegado, HTTP localhost; POST /api/iot/events. |
+| Autenticación / credencial | HMAC específico sin usuario/sesión/CSRF web; maestro servidor 256 bits, derivación sensor: + identificador. |
+| Firma / canonical string | Clave binaria, HMAC-SHA-256 hex minúsculo; cinco líneas LF: método/path/sensor/timestamp/SHA256 RAW, sin LF final; autenticar antes de JSON. |
+| Timestamps / anti-replay | Unix request ±300 s inclusive; evento con zona/segundos; deduplicación controla repetición dentro de ventana, sin nonce. |
+| Payload / espacio | Cuatro campos obligatorios, value opcional nullable, dos tipos; validar space_code, persistir asociación al aceptar. |
+| Reloj / fechas | Servidor autoridad, NTP/equivalente, America/La_Paz y fechas distintas; futuro máximo 300 s, históricos retrasados aceptables. |
+| Frescura / monitoring state | Ambas edades 0..300 s; insuficiente → NO_DETERMINABLE; comunicación distinta de ocupación. |
+| Duplicados / concurrencia | Tupla NULL-safe, transacción breve con sensor bloqueado, contexto actual/snapshot posterior; sin lock global/RBAC en ingestión. |
+| Reassociation / disabled sensors | A→B conserva historia A; payload A posterior rechazado. Deshabilitado no inserta/renueva; sin delete. |
+| Identificador / provisioning | UNIQUE e inmutable desde alta, acción administrativa explícita/no-store; maestro nuevo exige reprovisionamiento. |
+| Privacy / permisos | Sin identidad/PII/tracking; tres permisos A/E previstos, D/S sin administración; ningún permiso DB creado. |
+| Límites / seguridad | 120/min por sensor y 4096 bytes, configurables; errores acotados, secretos fuera de Git/UI normal/logs. |
+| MQTT status | Opcional futuro, TLS/autenticación y mismo servicio; sin broker obligatorio. |
+| CU06 / Fase 8 integration | Informativo sin alterar disponibilidad/reservas; CU23/parámetro de política en Fase 8. |
+| Verificación futura | [T-I01–T-I32](BUSINESS_RULES.md#aceptación-iot-prevista-para-fase-7), obligatorias, no ejecutadas en 6.5. |
+| Bloqueantes documentales | **0** para REST CU21/CU22; D-08/despliegue conservan fase propia. |
+| Continuación | **Fase 7 puede comenzar con nueva instrucción del usuario. No se inicia en esta entrega.** |
+
+### Verificación documental de Fase 6.5
+
+Revisión de los 12 Markdown autorizados, diff y alcance: sin archivos funcionales/configuración/migraciones modificados. Los textos de los 217 requisitos y los tres apartados SQL del diccionario son idénticos a la base ceae7cb. Los hashes del Word/PDF original se mantienen. Comprobados 206 enlaces locales sin destinos/anclas rotos y 32 escenarios de aceptación futuros, sin ejecutarlos como pruebas funcionales.
+
+Escaneo privado de los 309 archivos públicos y diferencias/historial sin coincidencias de secretos locales ni patrones sensibles; 81 archivos locales revisados para evitar persistencia de payloads QR, sin coincidencias. .env y .env.testing ignorados; plantilla sin valores privados. No se generó IOT_MASTER_SECRET ni claves derivadas. Consulta de metadatos exclusivamente de lectura: 23 tablas académicas, cero tablas sensores_iot/eventos_ocupacion, 36 permisos y cero permisos iot.*. Estos controles no son pruebas de ingestión IoT.
+
+Rama de trabajo docs/phase-6.5-iot-decisions desde main/origin/main limpio en ceae7cb; commit de cierre documental, publicación de rama e integración fast-forward a main según autorización, sin force push. El informe de entrega confirma el hash resultante, igualdad remota y árbol limpio tras ejecutar esas operaciones. No se crean copias del proyecto ni un segundo workspace.
