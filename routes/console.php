@@ -1,3 +1,7 @@
 <?php
 
-// Comandos funcionales se incorporaran en sus fases.
+use Illuminate\Support\Facades\Schedule;
+
+Schedule::command('reservas:evaluar-liberacion')
+    ->cron(config('release.schedule'))
+    ->withoutOverlapping(10);

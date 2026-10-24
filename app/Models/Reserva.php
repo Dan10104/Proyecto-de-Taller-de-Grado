@@ -40,6 +40,11 @@ class Reserva extends Model
         return $this->belongsTo(EspacioAcademico::class, 'espacio_id', 'recurso_id');
     }
 
+    public function evaluaciones()
+    {
+        return $this->hasMany(EvaluacionLiberacion::class, 'reserva_id');
+    }
+
     public function solicitante()
     {
         return $this->belongsTo(Usuario::class, 'solicitante_id');
