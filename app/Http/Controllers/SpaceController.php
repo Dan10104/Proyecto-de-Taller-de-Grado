@@ -10,6 +10,7 @@ use App\Models\CaracteristicaEspacio;
 use App\Models\EspacioAcademico;
 use App\Models\Piso;
 use App\Models\TipoEspacio;
+use App\Services\IotMonitoringService;
 use App\Services\SpaceAvailabilityService;
 use App\Services\SpaceManagementService;
 use Carbon\CarbonImmutable;
@@ -112,6 +113,6 @@ class SpaceController extends Controller
             $spaces = $service->candidates($filters, $start, $end)->orderBy('recurso_id')->paginate(15)->withQueryString();
         }
 
-        return Inertia::render('Spaces/Availability', ['espacios' => $spaces, 'periodo' => $period, 'filtros' => $filters, 'opciones' => $this->options(), 'fechaActual' => now()->toDateString()]);
+        return Inertia::render('Spaces/Availability', ['espacios' => $spaces, 'periodo' => $period, 'filtros' => $filters, 'opciones' => $this->options(), 'fechaActual' => now()->toDateString(), 'iot' => (object) ($spaces ? app(IotMonitoringService::class)->availability($spaces->pluck('recurso_id')->all()) : [])]);
     }
 }

@@ -67,6 +67,8 @@ onUnmounted(() => document.removeEventListener('keydown', keydown));
         <Link v-if="can('prestamos.ver_propios') || can('prestamos.ver_administrativos')" href="/prestamos" :class="{active:page.url.startsWith('/prestamos')}" @click="drawer=false"><Icon name="users"/>Préstamos</Link>
         <Link v-if="can('incidencias.ver')" href="/incidencias" :class="{active:page.url.startsWith('/incidencias')}" @click="drawer=false"><Icon name="shield"/>Incidencias</Link>
         <Link v-if="can('qr.gestionar')" href="/qr" :class="{active:page.url.startsWith('/qr')}" @click="drawer=false"><Icon name="shield"/>Códigos QR</Link>
+        <Link v-if="can('iot.sensores.ver')" href="/iot/sensores" :class="{active:page.url.startsWith('/iot/sensores')}" @click="drawer=false"><Icon name="shield"/>Sensores IoT</Link>
+        <Link v-if="can('iot.monitoreo.ver')" href="/iot/monitoreo" :class="{active:page.url.startsWith('/iot/monitoreo')}" @click="drawer=false"><Icon name="search"/>Monitoreo de ocupación</Link>
         <Link v-if="can('usuarios.ver')" href="/usuarios" :class="{active:page.url.startsWith('/usuarios')}" @click="drawer=false">
           <Icon name="users"/>
           Usuarios
