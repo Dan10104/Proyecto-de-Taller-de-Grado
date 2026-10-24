@@ -7,6 +7,9 @@ use App\Enums\RolInstitucional;
 class PermissionCatalog
 {
     public const DEFINITIONS = [
+        'qr.gestionar' => ['nombre' => 'Gestionar y rotar códigos QR', 'fuente' => 'D-09 / RF8 / CU11–20'],
+        'qr.validar_uso_espacio' => ['nombre' => 'Validar uso de espacio mediante QR', 'fuente' => 'RF8 / CU11'],
+        'qr.validar_operacion' => ['nombre' => 'Validar entrega o devolución mediante QR', 'fuente' => 'RF13–14 / CU17–18 / CU20'],
         'equipamientos.ver' => ['nombre' => 'Consultar equipamiento y disponibilidad', 'fuente' => 'RF9–15 / CU12–19: contrato Fase 4.5'],
         'equipamientos.gestionar' => ['nombre' => 'Gestionar equipamiento y tipos', 'fuente' => 'RF9–15 / CU12–19: contrato Fase 4.5'],
         'equipamientos.cambiar_estado' => ['nombre' => 'Cambiar estado operativo de equipamiento', 'fuente' => 'RF9–15 / CU12–19: contrato Fase 4.5'],
@@ -47,13 +50,13 @@ class PermissionCatalog
         if (! array_key_exists($code, self::DEFINITIONS)) {
             return [];
         }
-        if (in_array($code, ['reservas.ver_propias', 'reservas.cancelar_propias', 'espacios.ver', 'equipamientos.ver'], true)) {
+        if (in_array($code, ['qr.validar_uso_espacio', 'reservas.ver_propias', 'reservas.cancelar_propias', 'espacios.ver', 'equipamientos.ver'], true)) {
             return array_column(RolInstitucional::cases(), 'value');
         }
         if (in_array($code, ['reservas.solicitar', 'prestamos.solicitar', 'prestamos.ver_propios'], true)) {
             return ['Docente', 'Estudiante'];
         }
-        if (str_starts_with($code, 'espacios.') || str_starts_with($code, 'reservas.') || str_starts_with($code, 'equipamientos.') || str_starts_with($code, 'prestamos.') || str_starts_with($code, 'incidencias.')) {
+        if (str_starts_with($code, 'qr.') || str_starts_with($code, 'espacios.') || str_starts_with($code, 'reservas.') || str_starts_with($code, 'equipamientos.') || str_starts_with($code, 'prestamos.') || str_starts_with($code, 'incidencias.')) {
             return ['Administrador', 'Encargado de Laboratorio'];
         }
 

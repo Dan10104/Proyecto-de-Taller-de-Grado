@@ -23,7 +23,7 @@ function deactivate(id) { router.patch(`/espacios/${props.espacio.recurso_id}/bl
         <h1>{{ espacio.recurso.nombre }}</h1>
         <p>{{ espacio.tipo.nombre }} · {{ espacio.piso.nombre }}</p>
       </div>
-      <div class="button-group">
+      <div class="button-group"><Link v-if="can('qr.gestionar')" :href="'/qr/recurso/'+espacio.recurso_id" class="btn btn-secondary">Gestionar QR</Link>
         <Link href="/espacios" class="btn btn-secondary">Volver al catálogo</Link>
         <Link v-if="can('espacios.gestionar')" :href="`/espacios/${espacio.recurso_id}/editar`" class="btn btn-primary">Editar espacio</Link>
       </div>

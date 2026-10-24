@@ -24,7 +24,7 @@ class LoanActionRequest extends OperationalRequest
         if ($action === 'reject') {
             $protected = array_diff($protected, ['motivo_rechazo']);
         }
-        $rules = self::protectedRules([...$protected, 'equipamiento_id', 'inicio_previsto', 'fin_previsto', 'motivo']);
+        $rules = self::protectedRules([...$protected, 'qr_token', 'validacion_id', 'equipamiento_id', 'inicio_previsto', 'fin_previsto', 'motivo']);
 
         return $rules + match ($action) {
             'approve' => [],

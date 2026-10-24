@@ -11,6 +11,7 @@ use App\Models\IncidenciaMantenimiento;
 use App\Models\Prestamo;
 use App\Models\Usuario;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 
@@ -72,16 +73,30 @@ class LoanService
         Validator::make($data, LoanActionRequest::actionRules('deliver'))->validate();
 
         return $this->transition($actor, $target, 'prestamos.registrar_entrega', function ($actor, $context) use ($data) {
-            $loan = $context['loan'];
-            $this->requireState($loan, 'APROBADO');
-            $this->availability->assertAvailable($context, $loan->inicio_previsto, $loan->fin_previsto, $loan->id);
-            if ($context['deliveries']->contains('prestamo_id', $loan->id)) {
-                throw new EquipmentConflictException('La entrega ya fue registrada.');
-            }
-            (new EntregaPrestamo)->forceFill(['prestamo_id' => $loan->id, 'entregado_por_id' => $actor->id, 'receptor_id' => $loan->solicitante_id, 'fecha_hora' => now(), 'condicion_entrega' => $data['condicion_entrega'], 'observacion' => $data['observacion'] ?? null, 'recepcion_confirmada_en' => null])->save();
-            $this->update($loan, ['estado' => 'ENTREGADO']);
-            $this->operations->setState($context['resource'], 'PRESTADO');
+            $this->deliverLocked($actor, $context, $data);
         });
+    }
+
+    public function assertDeliverable(array $context): void
+    {
+        if (DB::transactionLevel() < 1) {
+            throw new \LogicException('La operación requiere una transacción coordinada.');
+        }
+        $loan = $context['loan'];
+        $this->requireState($loan, 'APROBADO');
+        $this->availability->assertAvailable($context, $loan->inicio_previsto, $loan->fin_previsto, $loan->id);
+        if ($context['deliveries']->contains('prestamo_id', $loan->id)) {
+            throw new EquipmentConflictException('La entrega ya fue registrada.');
+        }
+    }
+
+    public function deliverLocked(Usuario $actor, array $context, array $data): void
+    {
+        $this->assertDeliverable($context);
+        $loan = $context['loan'];
+        (new EntregaPrestamo)->forceFill(['prestamo_id' => $loan->id, 'entregado_por_id' => $actor->id, 'receptor_id' => $loan->solicitante_id, 'fecha_hora' => now(), 'condicion_entrega' => $data['condicion_entrega'], 'observacion' => $data['observacion'] ?? null, 'recepcion_confirmada_en' => null])->save();
+        $this->update($loan, ['estado' => 'ENTREGADO']);
+        $this->operations->setState($context['resource'], 'PRESTADO');
     }
 
     public function receive(Usuario $actor, Prestamo $target, array $data): Prestamo
@@ -100,56 +115,72 @@ class LoanService
         Validator::make($data, LoanActionRequest::actionRules($review ? 'review' : 'receive'))->validate();
 
         return $this->transition($actor, $target, 'prestamos.registrar_devolucion', function ($actor, $context) use ($data, $review) {
-            $loan = $context['loan'];
-            $this->requireState($loan, 'ENTREGADO');
-            $delivery = $context['deliveries']->firstWhere('prestamo_id', $loan->id);
-            if (! $delivery || $delivery->receptor_id !== $loan->solicitante_id) {
-                throw new EquipmentConflictException('No existe una entrega válida para este préstamo.');
-            }
-            $return = $context['returns']->firstWhere('prestamo_id', $loan->id);
-            if ($review ? (! $return || $return->estado->value !== 'PENDIENTE_REVISION') : $return !== null) {
-                throw new EquipmentConflictException('La devolución ya cambió. Actualice el detalle.');
-            }
-            $condition = $data['condicion'];
-            if ($condition === 'CON_INCIDENCIA') {
-                Gate::forUser($actor)->authorize('incidencias.gestionar');
-            }
-            $pending = $condition === 'NO_DETERMINABLE';
-            if ($return && now()->lessThan($return->registrada_en)) {
-                throw new EquipmentConflictException('La confirmación no puede ser anterior a la recepción.');
-            }
-            if (! $return) {
-                $return = new DevolucionPrestamo;
-                $return->forceFill(['prestamo_id' => $loan->id, 'recibido_por_id' => $actor->id, 'registrada_en' => now()]);
-                $context['returns']->push($return);
-            }
-            $return->forceFill(['condicion' => $condition, 'descripcion_condicion' => $data['descripcion_condicion'] ?? null, 'observacion' => $data['observacion'] ?? $return->observacion, 'estado' => $pending ? 'PENDIENTE_REVISION' : 'CONFIRMADA', 'confirmado_por_id' => $pending ? null : $actor->id, 'confirmada_en' => $pending ? null : now()])->save();
-            if ($condition === 'CON_INCIDENCIA') {
-                $incident = new IncidenciaMantenimiento;
-                $incident->forceFill(['recurso_id' => $loan->equipamiento_id, 'devolucion_id' => $return->id, 'reportado_por_id' => $actor->id, 'tipo' => 'INCIDENCIA', 'descripcion' => $data['descripcion_condicion'], 'inicio' => now(), 'estado' => 'ABIERTA'])->save();
-                $context['incidents']->push($incident);
-            }
-            if (! $pending) {
-                $this->update($loan, ['estado' => 'DEVUELTO']);
-            }
-            $equipment = $context['resource'];
-            if ($equipment->estado->value === 'BAJA') {
-                return;
-            }
-            if ($this->operations->restricted($context)) {
-                $this->operations->setState($equipment, 'EN_MANTENIMIENTO');
-
-                return;
-            }
-            $derived = $this->operations->recoveryState($context);
-            if ($equipment->estado->value === 'EN_MANTENIMIENTO') {
-                if (! empty($data['apto'])) {
-                    $this->operations->restore($actor, $context, true);
-                }
-            } else {
-                $this->operations->setState($equipment, $derived);
-            }
+            $this->receiveLocked($actor, $context, $data, $review);
         });
+    }
+
+    public function assertReceivable(Usuario $actor, array $context, array $data, bool $review = false): void
+    {
+        if (DB::transactionLevel() < 1) {
+            throw new \LogicException('La operación requiere una transacción coordinada.');
+        }
+        $loan = $context['loan'];
+        $this->requireState($loan, 'ENTREGADO');
+        $delivery = $context['deliveries']->firstWhere('prestamo_id', $loan->id);
+        if (! $delivery || $delivery->receptor_id !== $loan->solicitante_id) {
+            throw new EquipmentConflictException('No existe una entrega válida para este préstamo.');
+        }
+        $return = $context['returns']->firstWhere('prestamo_id', $loan->id);
+        if ($review ? (! $return || $return->estado->value !== 'PENDIENTE_REVISION') : $return !== null) {
+            throw new EquipmentConflictException('La devolución ya cambió. Actualice el detalle.');
+        }
+        $condition = $data['condicion'];
+        if ($condition === 'CON_INCIDENCIA') {
+            Gate::forUser($actor)->authorize('incidencias.gestionar');
+        }
+    }
+
+    public function receiveLocked(Usuario $actor, array $context, array $data, bool $review = false): void
+    {
+        $this->assertReceivable($actor, $context, $data, $review);
+        $loan = $context['loan'];
+        $return = $context['returns']->firstWhere('prestamo_id', $loan->id);
+        $condition = $data['condicion'];
+        $pending = $condition === 'NO_DETERMINABLE';
+        if ($return && now()->lessThan($return->registrada_en)) {
+            throw new EquipmentConflictException('La confirmación no puede ser anterior a la recepción.');
+        }
+        if (! $return) {
+            $return = new DevolucionPrestamo;
+            $return->forceFill(['prestamo_id' => $loan->id, 'recibido_por_id' => $actor->id, 'registrada_en' => now()]);
+            $context['returns']->push($return);
+        }
+        $return->forceFill(['condicion' => $condition, 'descripcion_condicion' => $data['descripcion_condicion'] ?? null, 'observacion' => $data['observacion'] ?? $return->observacion, 'estado' => $pending ? 'PENDIENTE_REVISION' : 'CONFIRMADA', 'confirmado_por_id' => $pending ? null : $actor->id, 'confirmada_en' => $pending ? null : now()])->save();
+        if ($condition === 'CON_INCIDENCIA') {
+            $incident = new IncidenciaMantenimiento;
+            $incident->forceFill(['recurso_id' => $loan->equipamiento_id, 'devolucion_id' => $return->id, 'reportado_por_id' => $actor->id, 'tipo' => 'INCIDENCIA', 'descripcion' => $data['descripcion_condicion'], 'inicio' => now(), 'estado' => 'ABIERTA'])->save();
+            $context['incidents']->push($incident);
+        }
+        if (! $pending) {
+            $this->update($loan, ['estado' => 'DEVUELTO']);
+        }
+        $equipment = $context['resource'];
+        if ($equipment->estado->value === 'BAJA') {
+            return;
+        }
+        if ($this->operations->restricted($context)) {
+            $this->operations->setState($equipment, 'EN_MANTENIMIENTO');
+
+            return;
+        }
+        $derived = $this->operations->recoveryState($context);
+        if ($equipment->estado->value === 'EN_MANTENIMIENTO') {
+            if (! empty($data['apto'])) {
+                $this->operations->restore($actor, $context, true);
+            }
+        } else {
+            $this->operations->setState($equipment, $derived);
+        }
     }
 
     private function transition(Usuario $actor, Prestamo $target, string $permission, callable $operation): Prestamo
@@ -171,7 +202,7 @@ class LoanService
 
     private function update(Prestamo $loan, array $changes): void
     {
-        if (Prestamo::whereKey($loan->id)->where('estado',$loan->estado->value)->update($changes) !== 1) {
+        if (Prestamo::whereKey($loan->id)->where('estado', $loan->estado->value)->update($changes) !== 1) {
             throw new EquipmentConflictException('El préstamo fue modificado por otra operación.');
         }
         $loan->forceFill($changes)->syncOriginal();

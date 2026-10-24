@@ -6,6 +6,7 @@ use App\Exceptions\SessionStorageException;
 use App\Http\Middleware\EnsureAccessSession;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\PrivateResponse;
+use App\Http\Middleware\QrPrivacy;
 use App\Services\AccessSessionService;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Application;
@@ -18,12 +19,22 @@ use Illuminate\Support\Facades\Log;
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(web: __DIR__.'/../routes/web.php', commands: __DIR__.'/../routes/console.php', health: '/up')
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->prepend(QrPrivacy::class);
+        $middleware->trimStrings(except: ['qr_token']);
         $middleware->web(prepend: [PrivateResponse::class], append: [HandleInertiaRequests::class]);
         $middleware->alias(['access.session' => EnsureAccessSession::class]);
         $middleware->redirectGuestsTo('/login');
         $middleware->redirectUsersTo('/inicio');
     })
     ->withExceptions(function (Exceptions $exceptions): void {
+        $exceptions->dontFlash(['qr_token']);
+        $exceptions->report(function (Throwable $error) {
+            if (request()->is('qr', 'qr/*', 'reservas/*/qr', 'prestamos/*/qr/*')) {
+                Log::error('Operación QR no disponible.', ['exception_class' => $error::class]);
+
+                return false;
+            }
+        });
         $exceptions->dontReport([QueryException::class, SessionStorageException::class, ReservationConflictException::class, EquipmentConflictException::class]);
         $exceptions->render(function (EquipmentConflictException $error, Request $request) {
             return $request->expectsJson() ? response()->json(['message' => $error->getMessage()], 409)

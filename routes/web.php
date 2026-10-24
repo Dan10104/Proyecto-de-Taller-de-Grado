@@ -4,6 +4,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\EquipmentController;
 use App\Http\Controllers\IncidentController;
 use App\Http\Controllers\LoanController;
+use App\Http\Controllers\QrManagementController;
+use App\Http\Controllers\QrValidationController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SpaceCatalogController;
@@ -23,6 +25,16 @@ Route::get('/login', [AuthController::class, 'create'])->name('login');
 Route::post('/login', [AuthController::class, 'store'])->name('login.store');
 Route::post('/logout', [AuthController::class, 'destroy'])->name('logout');
 Route::middleware(['auth', 'access.session'])->group(function () {
+    Route::get('/qr', [QrManagementController::class, 'index'])->name('qr.index');
+    Route::get('/qr/{objetivoTipo}/{objetivo}', [QrManagementController::class, 'show'])->whereIn('objetivoTipo', ['recurso', 'reserva', 'prestamo'])->whereNumber('objetivo')->name('qr.show');
+    Route::post('/qr/{objetivoTipo}/{objetivo}', [QrManagementController::class, 'issue'])->whereIn('objetivoTipo', ['recurso', 'reserva', 'prestamo'])->whereNumber('objetivo')->name('qr.issue');
+    Route::post('/qr/{objetivoTipo}/{objetivo}/{codigo}/desactivar', [QrManagementController::class, 'deactivate'])->whereIn('objetivoTipo', ['recurso', 'reserva', 'prestamo'])->whereNumber(['objetivo', 'codigo'])->name('qr.deactivate');
+    Route::get('/reservas/{reserva}/qr', [QrValidationController::class, 'show'])->name('qr.space');
+    Route::post('/reservas/{reserva}/qr', [QrValidationController::class, 'useSpace'])->name('qr.validate-space');
+    Route::post('/prestamos/{prestamo}/qr/entregar', [QrValidationController::class, 'deliver'])->name('qr.deliver');
+    Route::post('/prestamos/{prestamo}/qr/devolver', [QrValidationController::class, 'receive'])->name('qr.receive');
+    Route::get('/prestamos/{prestamo}/qr/validaciones', [QrValidationController::class, 'loanHistory'])->name('qr.loan-history');
+
     Route::get('/equipamientos', [EquipmentController::class, 'index'])->middleware('can:equipamientos.ver')->name('equipamientos.index');
     Route::get('/equipamientos/disponibilidad', [EquipmentController::class, 'index'])->middleware('can:equipamientos.ver')->name('equipamientos.availability');
     Route::get('/equipamientos/crear', [EquipmentController::class, 'create'])->middleware('can:equipamientos.gestionar')->name('equipamientos.create');
