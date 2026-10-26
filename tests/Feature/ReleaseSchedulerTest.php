@@ -48,14 +48,16 @@ class ReleaseSchedulerTest extends ReleaseConcurrencyTestCase
 
     public function test_minutely_scheduler_configuration_and_phase_boundaries(): void
     {
-        $events = app(Schedule::class)->events();
+        $all = app(Schedule::class)->events();
+        $this->assertCount(2, $all); // Phase 8 release evaluator and Phase 9 reconciler.
+        $events = array_values(array_filter($all, fn ($event) => str_contains($event->command, 'reservas:evaluar-liberacion')));
         $this->assertCount(1, $events);
         $this->assertSame('* * * * *', $events[0]->expression);
         $this->assertStringContainsString('reservas:evaluar-liberacion', $events[0]->command);
         $this->assertTrue($events[0]->withoutOverlapping);
-        foreach (['notificaciones', 'registros_actividad', 'evidencias_trazabilidad'] as $table) {
-            $this->assertFalse(Schema::hasTable($table));
-        }
+        $this->assertFalse(Schema::hasTable('notificaciones'));
+        $this->assertTrue(Schema::hasTable('registros_actividad'));
+        $this->assertTrue(Schema::hasTable('evidencias_trazabilidad'));
         $this->assertFalse(DB::table('roles')->where('nombre', 'Sistema')->exists());
         $routes = collect(app('router')->getRoutes())->filter(fn ($r) => str_contains($r->uri(), 'liberacion'));
         $this->assertCount(9, $routes);

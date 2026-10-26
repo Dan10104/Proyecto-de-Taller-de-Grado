@@ -12,6 +12,7 @@ use App\Models\DevolucionPrestamo;
 use App\Models\EntregaPrestamo;
 use App\Models\EquipamientoTecnologico;
 use App\Models\IncidenciaMantenimiento;
+use App\Models\Prestamo;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
@@ -52,7 +53,8 @@ JSON, true, flags: JSON_THROW_ON_ERROR);
         foreach (['codigos_qr', 'validaciones_qr'] as $table) {
             $this->assertTrue(Schema::hasTable($table)); // Materialized by the authorized Phase 6.
         }
-        foreach (['notificaciones', 'registros_actividad', 'lecturas_iot', 'evidencias_blockchain'] as $table) {
+        $this->assertTrue(Schema::hasTable('registros_actividad')); // Materialized by authorized Phase 9.
+        foreach (['notificaciones', 'lecturas_iot', 'evidencias_blockchain'] as $table) {
             $this->assertFalse(Schema::hasTable($table));
         }
     }
@@ -104,7 +106,7 @@ JSON, true, flags: JSON_THROW_ON_ERROR);
             fn () => DB::table('incidencias_mantenimiento')->where('id', $i->id)->update(['cerrada_en' => $i->inicio->subSecond()]),
             fn () => DB::table('entregas_prestamo')->insert(array_diff_key($p->entrega->getRawOriginal(), ['id' => true])),
             fn () => DB::table('devoluciones_prestamo')->insert(array_diff_key($p->devolucion->getRawOriginal(), ['id' => true])),
-            fn () => $p->equipamiento->delete(), fn () => $p->devolucion->delete(), fn () => $a->delete(),
+            fn () => $p->equipamiento->delete(), fn () => DB::table('devoluciones_prestamo')->where('id', $p->devolucion->id)->delete(), fn () => $a->delete(),
         ];
         foreach ($invalid as $operation) {
             try {
@@ -119,8 +121,11 @@ JSON, true, flags: JSON_THROW_ON_ERROR);
         $e = EquipamientoTecnologico::factory()->create();
         $e->recurso->delete();
         $this->assertFalse(EquipamientoTecnologico::whereKey($e->getKey())->exists());
-        $other = $this->delivered($a);
-        $this->loans()->receive($a, $other, ['condicion' => 'ADECUADA']);
+        // Exercise the original CASCADE with legacy fixtures lacking Phase 9 activity;
+        // new critical history is independently protected by fk_registro_prestamo.
+        $other = Prestamo::factory()->create();
+        EntregaPrestamo::factory()->create(['prestamo_id' => $other->id]);
+        DevolucionPrestamo::factory()->create(['prestamo_id' => $other->id]);
         $other->delete();
         $this->assertNull(EntregaPrestamo::where('prestamo_id', $other->id)->first());
         $this->assertNull(DevolucionPrestamo::where('prestamo_id', $other->id)->first());

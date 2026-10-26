@@ -54,9 +54,9 @@ class SpaceSchemaTest extends SpaceTestCase
             $this->assertSame('CASCADE', $row->u);
             $this->assertSame($delete, $row->d);
         }
-        $this->assertCount(54, $fk);
+        $this->assertCount(61, $fk);
         $checks = DB::select('SELECT CONSTRAINT_NAME AS name FROM information_schema.CHECK_CONSTRAINTS WHERE CONSTRAINT_SCHEMA=DATABASE()');
-        $this->assertEqualsCanonicalizing(['chk_asigrol_fechas', 'chk_sesion_expiracion', 'chk_politica_tolerancia', 'chk_politica_antiguedad', 'chk_espacio_capacidad', 'chk_bloqueo_fechas', 'chk_reserva_fechas', 'chk_prestamo_fechas', 'chk_incidencia_fin_previsto', 'chk_incidencia_cierre', 'chk_qr_objetivo', 'chk_qr_vigencia', 'chk_validacion_contexto', 'chk_validacion_entrega_devolucion'], array_column($checks, 'name'));
+        $this->assertEqualsCanonicalizing(['chk_asigrol_fechas', 'chk_sesion_expiracion', 'chk_politica_tolerancia', 'chk_politica_antiguedad', 'chk_espacio_capacidad', 'chk_bloqueo_fechas', 'chk_reserva_fechas', 'chk_prestamo_fechas', 'chk_incidencia_fin_previsto', 'chk_incidencia_cierre', 'chk_qr_objetivo', 'chk_qr_vigencia', 'chk_validacion_contexto', 'chk_validacion_entrega_devolucion', 'chk_registro_responsable'], array_column($checks, 'name'));
         $this->assertTrue(Schema::hasTable('reservas'));
         $this->assertSame(0, DB::table('politicas_liberacion')->count());
     }
