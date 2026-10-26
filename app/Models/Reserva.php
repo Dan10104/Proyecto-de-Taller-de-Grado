@@ -29,6 +29,10 @@ class Reserva extends Model
             $reserva->codigo ??= 'RES-'.strtolower((string) Str::uuid());
         });
         static::updating(function (Reserva $reserva) {
+            if (($reserva->getRawOriginal('resuelta_en') !== null && $reserva->isDirty(['espacio_id', 'solicitante_id', 'inicio', 'fin', 'resuelta_por_id', 'resuelta_en']))
+                || ($reserva->getRawOriginal('cancelada_en') !== null && $reserva->isDirty(['espacio_id', 'solicitante_id', 'cancelada_por_id', 'cancelada_en', 'motivo_cancelacion']))) {
+                throw new LogicException('Los datos históricos de la reserva son inmutables.');
+            }
             if ($reserva->isDirty('codigo')) {
                 throw new LogicException('El código de reserva es inmutable.');
             }

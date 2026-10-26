@@ -19,6 +19,19 @@ class DevolucionPrestamo extends Model
 
     protected $guarded = ['*'];
 
+    protected static function booted(): void
+    {
+        static::updating(function (self $return) {
+            if ($return->getRawOriginal('estado') === 'CONFIRMADA' && $return->isDirty()) {
+                throw new \LogicException('La devolución confirmada es inmutable.');
+            }
+            if ($return->isDirty(['prestamo_id', 'recibido_por_id', 'registrada_en'])) {
+                throw new \LogicException('La recepción histórica es inmutable.');
+            }
+        });
+        static::deleting(fn () => throw new \LogicException('La devolución histórica no se elimina.'));
+    }
+
     protected function casts(): array
     {
         return ['condicion' => CondicionDevolucion::class, 'estado' => EstadoDevolucion::class, 'registrada_en' => 'immutable_datetime', 'confirmada_en' => 'immutable_datetime'];

@@ -1,0 +1,33 @@
+{
+  "name": "espacio-u-traceability",
+  "private": true,
+  "overrides": {
+    "tmp": "0.2.7"
+  },
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=24.22.1 <25"
+  },
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "test:runtime": "node --test test-runtime/*.test.mjs",
+    "test:integration": "node scripts/integration-local.mjs",
+    "export:abi": "node scripts/export-abi.mjs",
+    "deploy:sepolia": "node scripts/deploy.mjs",
+    "smoke:sepolia": "node scripts/smoke-sepolia.mjs"
+  },
+  "dependencies": {
+    "canonicalize": "5.1.0",
+    "ethers": "6.17.0",
+    "jsonc-parser": "3.3.1"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-ethers": "4.2.1",
+    "@nomicfoundation/hardhat-node-test-runner": "3.1.2",
+    "@openzeppelin/contracts": "5.6.1",
+    "hardhat": "3.21.0",
+    "solc": "0.8.38"
+  }
+}

@@ -1,0 +1,11 @@
+<?php
+
+namespace App\Enums;
+
+enum AccionCritica: string
+{
+    case RESERVA_APROBADA = 'RESERVA_APROBADA';
+    case RESERVA_CANCELADA = 'RESERVA_CANCELADA';
+    case PRESTAMO_ENTREGADO = 'PRESTAMO_ENTREGADO';
+    case PRESTAMO_DEVUELTO = 'PRESTAMO_DEVUELTO';
+}
