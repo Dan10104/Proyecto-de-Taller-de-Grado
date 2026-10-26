@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EquipmentController;
 use App\Http\Controllers\IncidentController;
 use App\Http\Controllers\IotMonitoringController;
@@ -11,6 +12,7 @@ use App\Http\Controllers\QrManagementController;
 use App\Http\Controllers\QrValidationController;
 use App\Http\Controllers\ReleaseEvaluationController;
 use App\Http\Controllers\ReleasePolicyController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SpaceCatalogController;
@@ -31,6 +33,10 @@ Route::get('/login', [AuthController::class, 'create'])->name('login');
 Route::post('/login', [AuthController::class, 'store'])->name('login.store');
 Route::post('/logout', [AuthController::class, 'destroy'])->name('logout');
 Route::middleware(['auth', 'access.session'])->group(function () {
+    Route::get('/reportes', [ReportController::class, 'index'])->middleware('can:reportes.ver')->name('reports.index');
+    Route::get('/reportes/opciones', [ReportController::class, 'options'])->middleware('can:reportes.ver')->name('reports.options');
+    Route::post('/reportes/exportar', [ReportController::class, 'export'])->middleware('can:reportes.exportar')->name('reports.export');
+    Route::get('/dashboard', DashboardController::class)->middleware('can:dashboard.ver')->name('dashboard');
     Route::get('/notificaciones', [NotificationController::class, 'index'])->middleware('can:notificaciones.ver_propias')->name('notifications.index');
     Route::get('/notificaciones/{notificacion}', [NotificationController::class, 'show'])->whereNumber('notificacion')->middleware('can:notificaciones.ver_propias')->name('notifications.show');
     Route::post('/notificaciones/{notificacion}/leer', [NotificationController::class, 'read'])->whereNumber('notificacion')->middleware('can:notificaciones.ver_propias')->name('notifications.read');

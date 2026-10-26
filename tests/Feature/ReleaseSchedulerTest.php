@@ -49,7 +49,7 @@ class ReleaseSchedulerTest extends ReleaseConcurrencyTestCase
     public function test_minutely_scheduler_configuration_and_phase_boundaries(): void
     {
         $all = app(Schedule::class)->events();
-        $this->assertCount(4, $all); // Release, traceability, notifications and overdue detection.
+        $this->assertCount(5, $all); // Release, traceability, notifications, overdue detection and report cleanup.
         $events = array_values(array_filter($all, fn ($event) => str_contains($event->command, 'reservas:evaluar-liberacion')));
         $this->assertCount(1, $events);
         $this->assertSame('* * * * *', $events[0]->expression);

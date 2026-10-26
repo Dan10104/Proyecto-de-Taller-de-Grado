@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\SensorIot;
 use Carbon\CarbonImmutable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 
 class IotMonitoringService
@@ -13,16 +14,8 @@ class IotMonitoringService
         if ($spaceIds === []) {
             return [];
         }
-        $now = now()->startOfSecond();
-        $from = $now->copy()->subSeconds(config('iot.monitoring_freshness_seconds'));
-        $partition = 'PARTITION BY e.sensor_id, e.tipo, e.fecha_evento';
-        $query = DB::table('eventos_ocupacion as e')->join('sensores_iot as s', 's.id', '=', 'e.sensor_id')
-            ->whereIn('e.espacio_historico_id', $spaceIds)->whereColumn('s.espacio_actual_id', 'e.espacio_historico_id')->where('s.estado', 'HABILITADO')
-            ->when($sensorIds !== null, fn ($q) => $q->whereIn('e.sensor_id', $sensorIds))
-            ->whereBetween('e.fecha_evento', [$from, $now])->whereBetween('e.fecha_recepcion', [$from, $now])
-            ->select('e.*')
-            ->selectRaw('ROW_NUMBER() OVER (PARTITION BY e.sensor_id, e.tipo ORDER BY e.fecha_evento DESC, e.fecha_recepcion DESC, e.id DESC) as position')
-            ->selectRaw("MIN(e.valor) OVER ($partition) as min_value, MAX(e.valor) OVER ($partition) as max_value, COUNT(e.valor) OVER ($partition) as nonnull_count, COUNT(*) OVER ($partition) as total_count");
+        $now = CarbonImmutable::now('America/La_Paz')->startOfSecond();
+        $query = $this->currentQuery($spaceIds, $sensorIds, $now);
         $result = array_fill_keys($spaceIds, []);
         foreach (DB::query()->fromSub($query, 'readings')->where('position', 1)->orderBy('sensor_id')->orderBy('tipo')->get() as $row) {
             $contradiction = $row->min_value !== $row->max_value || ($row->nonnull_count > 0 && $row->nonnull_count < $row->total_count);
@@ -35,6 +28,34 @@ class IotMonitoringService
         }
 
         return $result;
+    }
+
+    private function currentQuery($spaceIds, ?array $sensorIds, CarbonImmutable $now): \Illuminate\Database\Query\Builder
+    {
+        $from = $now->copy()->subSeconds(config('iot.monitoring_freshness_seconds'));
+        $partition = 'PARTITION BY e.sensor_id, e.tipo, e.fecha_evento';
+
+        return DB::table('eventos_ocupacion as e')->join('sensores_iot as s', 's.id', '=', 'e.sensor_id')
+            ->whereIn('e.espacio_historico_id', $spaceIds)->whereColumn('s.espacio_actual_id', 'e.espacio_historico_id')->where('s.estado', 'HABILITADO')
+            ->when($sensorIds !== null, fn ($q) => $q->whereIn('e.sensor_id', $sensorIds))
+            ->whereBetween('e.fecha_evento', [$from, $now])->whereBetween('e.fecha_recepcion', [$from, $now])
+            ->select('e.*')
+            ->selectRaw('ROW_NUMBER() OVER (PARTITION BY e.sensor_id, e.tipo ORDER BY e.fecha_evento DESC, e.fecha_recepcion DESC, e.id DESC) as position')
+            ->selectRaw("MIN(e.valor) OVER ($partition) as min_value, MAX(e.valor) OVER ($partition) as max_value, COUNT(e.valor) OVER ($partition) as nonnull_count, COUNT(*) OVER ($partition) as total_count");
+    }
+
+    public function summary(Builder $spaces, CarbonImmutable $now): array
+    {
+        $monitored = (clone $spaces)->whereExists(function ($q) {
+            $q->selectRaw('1')->from('sensores_iot as sensor')->whereColumn('sensor.espacio_actual_id', 'espacios_academicos.recurso_id')->where('sensor.estado', 'HABILITADO');
+        });
+        $count = (clone $monitored)->count();
+        $ids = (clone $monitored)->select('espacios_academicos.recurso_id')->toBase();
+        $current = $this->currentQuery($ids, null, $now);
+        $recent = DB::query()->fromSub($current, 'readings')->where('position', 1)->distinct()->count('espacio_historico_id');
+
+        // D-10 deliberately provides no universal interpretation of generic valor.
+        return ['monitorizados' => $count, 'no_determinable' => $count, 'con_evidencia_reciente' => $recent, 'sin_evidencia_reciente' => $count - $recent];
     }
 
     public function availability(array $spaceIds): array
