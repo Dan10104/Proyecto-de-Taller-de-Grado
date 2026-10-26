@@ -4,12 +4,16 @@ use App\Exceptions\EquipmentConflictException;
 use App\Exceptions\IotException;
 use App\Exceptions\ReservationConflictException;
 use App\Exceptions\SessionStorageException;
+use App\Http\Middleware\ChatbotBoundary;
 use App\Http\Middleware\EnsureAccessSession;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\IotBoundary;
 use App\Http\Middleware\PrivateResponse;
 use App\Http\Middleware\QrPrivacy;
 use App\Services\AccessSessionService;
+use App\Services\Chatbot\ChatbotFailure;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -17,22 +21,44 @@ use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Log;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(web: __DIR__.'/../routes/web.php', api: __DIR__.'/../routes/api.php', commands: __DIR__.'/../routes/console.php', health: '/up')
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->prepend(ChatbotBoundary::class);
         $middleware->prepend(QrPrivacy::class);
         $middleware->prepend(IotBoundary::class);
         $middleware->trimStrings(except: [fn (Request $request) => $request->is('api/iot', 'api/iot/*'), 'identificador']);
         $middleware->convertEmptyStringsToNull(except: [fn (Request $request) => $request->is('api/iot', 'api/iot/*')]);
-        $middleware->trimStrings(except: ['qr_token']);
+        $middleware->trimStrings(except: ['qr_token', 'pregunta']);
         $middleware->web(prepend: [PrivateResponse::class], append: [HandleInertiaRequests::class]);
         $middleware->alias(['access.session' => EnsureAccessSession::class]);
         $middleware->redirectGuestsTo('/login');
         $middleware->redirectUsersTo('/inicio');
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        $exceptions->dontFlash(['qr_token']);
+        $exceptions->dontFlash(['qr_token', 'pregunta']);
+        $exceptions->report(function (Throwable $error) {
+            if (request()->is('asistente', 'asistente/*')) {
+                Log::notice('chatbot.unavailable', ['code' => $error instanceof ChatbotFailure ? $error->reason : 'request_failed']);
+
+                return false;
+            }
+        });
+        $exceptions->render(function (Throwable $error, Request $request) {
+            if (! $request->is('asistente', 'asistente/*')) {
+                return null;
+            }
+            if ($error instanceof ChatbotFailure) {
+                return $error->response();
+            }
+            if ($error instanceof AuthenticationException || $error instanceof AuthorizationException || $error instanceof HttpExceptionInterface) {
+                return null;
+            }
+
+            return (new ChatbotFailure)->response();
+        });
         $exceptions->report(function (Throwable $error) {
             if (request()->is('api/iot', 'api/iot/*', 'iot', 'iot/*')) {
                 return false;

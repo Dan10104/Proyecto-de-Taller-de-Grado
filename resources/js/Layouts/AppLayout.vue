@@ -13,6 +13,7 @@ const drawer = ref(false), pending = ref(false), retrying = ref(false), logoutEr
 const initials = computed(() => `${auth.value?.usuario.nombres?.[0] || ''}${auth.value?.usuario.apellidos?.[0] || ''}`);
 
 async function logout() {
+  window.dispatchEvent(new Event('espacio-u:logout'));
   pending.value = true;
   retrying.value = true;
   sessionStorage.setItem('espacio-u.logout-pending', '1');
@@ -52,6 +53,7 @@ onUnmounted(() => document.removeEventListener('keydown', keydown));
           <Icon name="home"/>
           Inicio
         </Link>
+        <Link v-if="can('chatbot.consultar')" href="/asistente" :class="{active:page.url.startsWith('/asistente')}" @click="drawer=false"><Icon name="search"/>Asistente</Link>
         <Link v-if="can('dashboard.ver')" href="/dashboard" :class="{active:page.url.startsWith('/dashboard')}" @click="drawer=false"><Icon name="home"/>Dashboard</Link>
         <Link v-if="can('reportes.ver')" href="/reportes" :class="{active:page.url.startsWith('/reportes')}" @click="drawer=false"><Icon name="search"/>Reportes</Link>
         <Link v-if="can('notificaciones.ver_propias')" href="/notificaciones" :class="{active:page.url.startsWith('/notificaciones')}" @click="drawer=false"><Icon name="bell"/>Notificaciones</Link>

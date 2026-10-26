@@ -1,0 +1,652 @@
+[
+  {
+    "id": "auth",
+    "version": "2026-10-26",
+    "topic": "autenticacion",
+    "text": "Accede con tu correo y contraseña institucional registrados. La cuenta debe estar activa y la sesión vigente. Cierra sesión con Salir y espera su confirmación; si falla la conexión, reintenta. No hay SSO ni recuperación de contraseña incluidos en este alcance.",
+    "required_permissions": [
+      "chatbot.consultar"
+    ],
+    "allowed_route_keys": [
+      "inicio"
+    ],
+    "source": "docs/SECURITY_IMPLEMENTATION.md",
+    "keywords": [
+      "sesion",
+      "autentic",
+      "contrasena",
+      "acceso",
+      "login",
+      "entrar",
+      "salir"
+    ],
+    "priority": 10
+  },
+  {
+    "id": "spaces",
+    "version": "2026-10-26",
+    "topic": "espacios",
+    "text": "Espacios académicos permite consultar código, nombre, piso, tipo, capacidad y características. DISPONIBLE, BLOQUEADO y EN_MANTENIMIENTO son estados operativos. DISPONIBLE no garantiza que un intervalo esté libre. Consulta Disponibilidad para el periodo deseado.",
+    "required_permissions": [
+      "chatbot.consultar",
+      "espacios.ver"
+    ],
+    "allowed_route_keys": [
+      "espacios",
+      "reservas.disponibilidad"
+    ],
+    "source": "docs/SPACES_IMPLEMENTATION.md",
+    "keywords": [
+      "espacio",
+      "aula",
+      "piso",
+      "capacidad"
+    ],
+    "priority": 10
+  },
+  {
+    "id": "availability",
+    "version": "2026-10-26",
+    "topic": "disponibilidad",
+    "text": "En Disponibilidad indica inicio y fin, con fin posterior al inicio. El sistema comprueba estado operativo, reservas aprobadas, bloqueos e incidencias. Los intervalos son [inicio, fin): periodos contiguos no se solapan. Una solicitud PENDIENTE no bloquea disponibilidad. La evidencia IoT es complementaria.",
+    "required_permissions": [
+      "chatbot.consultar",
+      "espacios.ver"
+    ],
+    "allowed_route_keys": [
+      "reservas.disponibilidad"
+    ],
+    "source": "docs/RESERVATIONS_IMPLEMENTATION.md",
+    "keywords": [
+      "disponib",
+      "libre",
+      "horario",
+      "intervalo"
+    ],
+    "priority": 10
+  },
+  {
+    "id": "reservation-own",
+    "version": "2026-10-26",
+    "topic": "reservas",
+    "text": "Revisa tus solicitudes en Reservas, alcance propias. Estados: PENDIENTE, APROBADA, RECHAZADA, CANCELADA, FINALIZADA y LIBERADA. Una aprobada está activa cuando su inicio ya ocurrió y todavía no llegó el fin; una aprobada futura todavía no está activa. El asistente no consulta tu estado real ni confirma operaciones.",
+    "required_permissions": [
+      "chatbot.consultar",
+      "reservas.ver_propias"
+    ],
+    "allowed_route_keys": [
+      "reservas.propias"
+    ],
+    "source": "docs/RESERVATIONS_IMPLEMENTATION.md",
+    "keywords": [
+      "reserva",
+      "solicitud"
+    ],
+    "priority": 20
+  },
+  {
+    "id": "reservation-request",
+    "version": "2026-10-26",
+    "topic": "reservas",
+    "text": "Para solicitar una reserva, abre Disponibilidad, indica un intervalo, selecciona el espacio y completa la solicitud. La solicitud queda PENDIENTE hasta la resolución autorizada; enviar no equivale a aprobación ni compromete disponibilidad. El sistema verifica las reglas y el horario en el módulo.",
+    "required_permissions": [
+      "chatbot.consultar",
+      "espacios.ver",
+      "reservas.solicitar"
+    ],
+    "allowed_route_keys": [
+      "reservas.disponibilidad"
+    ],
+    "source": "docs/RESERVATIONS_IMPLEMENTATION.md",
+    "keywords": [
+      "reserv",
+      "solicitar",
+      "solicitud"
+    ],
+    "priority": 30
+  },
+  {
+    "id": "reservation-cancel",
+    "version": "2026-10-26",
+    "topic": "reservas",
+    "text": "En tus Reservas selecciona una solicitud cancelable antes de su inicio y utiliza Cancelar con el motivo requerido. El módulo comprueba estado, propiedad, permisos y tiempo antes de confirmar. El asistente no puede cancelar ni confirmar la cancelación.",
+    "required_permissions": [
+      "chatbot.consultar",
+      "reservas.ver_propias",
+      "reservas.cancelar_propias"
+    ],
+    "allowed_route_keys": [
+      "reservas.propias"
+    ],
+    "source": "docs/RESERVATIONS_IMPLEMENTATION.md",
+    "keywords": [
+      "cancelar",
+      "cancelacion"
+    ],
+    "priority": 10
+  },
+  {
+    "id": "reservation-admin",
+    "version": "2026-10-26",
+    "topic": "reservas",
+    "text": "La bandeja administrativa de Reservas permite consultar solicitudes del alcance autorizado. Revisa allí estados y pendientes; este asistente no cuenta ni recupera solicitudes concretas.",
+    "required_permissions": [
+      "chatbot.consultar",
+      "reservas.ver_administrativas"
+    ],
+    "allowed_route_keys": [
+      "reservas.administrativas"
+    ],
+    "source": "docs/RESERVATIONS_IMPLEMENTATION.md",
+    "keywords": [
+      "reserva",
+      "pendiente",
+      "solicitud"
+    ],
+    "priority": 20
+  },
+  {
+    "id": "reservation-resolve",
+    "version": "2026-10-26",
+    "topic": "reservas",
+    "text": "En la bandeja administrativa, abre una reserva PENDIENTE para aprobar o rechazar cuando tengas permiso. Aprobar vuelve a comprobar disponibilidad; rechazar requiere motivo. Una acción solo se confirma en su módulo.",
+    "required_permissions": [
+      "chatbot.consultar",
+      "reservas.ver_administrativas",
+      "reservas.resolver"
+    ],
+    "allowed_route_keys": [
+      "reservas.administrativas"
+    ],
+    "source": "docs/RESERVATIONS_IMPLEMENTATION.md",
+    "keywords": [
+      "aprobar",
+      "rechazar",
+      "resolver",
+      "aprobacion"
+    ],
+    "priority": 30
+  },
+  {
+    "id": "qr-own",
+    "version": "2026-10-26",
+    "topic": "qr",
+    "text": "Para validar uso de un espacio, abre tu reserva y su opción de validación QR. Permite cámara y escanea la etiqueta del recurso esperado dentro del contexto y horario admitidos. QR identifica el recurso y valida contexto: no autentica al usuario ni concede permisos. No pegues códigos en el asistente.",
+    "required_permissions": [
+      "chatbot.consultar",
+      "reservas.ver_propias",
+      "qr.validar_uso_espacio"
+    ],
+    "allowed_route_keys": [
+      "reservas.propias"
+    ],
+    "source": "docs/QR_IMPLEMENTATION.md",
+    "keywords": [
+      "qr",
+      "camara",
+      "escanear",
+      "etiqueta"
+    ],
+    "priority": 30
+  },
+  {
+    "id": "qr-espacios",
+    "version": "2026-10-26",
+    "topic": "qr",
+    "text": "Gestionar QR permite administrar etiquetas del dominio autorizado. Rotar invalida la etiqueta anterior. Los códigos no sustituyen autenticación, autorización ni reglas de la operación. Gestiona y verifica etiquetas únicamente en su módulo.",
+    "required_permissions": [
+      "chatbot.consultar",
+      "qr.gestionar",
+      "espacios.ver"
+    ],
+    "allowed_route_keys": [
+      "qr.gestion"
+    ],
+    "source": "docs/QR_IMPLEMENTATION.md",
+    "keywords": [
+      "qr",
+      "etiqueta",
+      "rotar"
+    ],
+    "priority": 10
+  },
+  {
+    "id": "qr-equipamientos",
+    "version": "2026-10-26",
+    "topic": "qr",
+    "text": "Gestionar QR permite administrar etiquetas del dominio autorizado. Rotar invalida la etiqueta anterior. Los códigos no sustituyen autenticación, autorización ni reglas de la operación. Gestiona y verifica etiquetas únicamente en su módulo.",
+    "required_permissions": [
+      "chatbot.consultar",
+      "qr.gestionar",
+      "equipamientos.ver"
+    ],
+    "allowed_route_keys": [
+      "qr.gestion"
+    ],
+    "source": "docs/QR_IMPLEMENTATION.md",
+    "keywords": [
+      "qr",
+      "etiqueta",
+      "rotar"
+    ],
+    "priority": 10
+  },
+  {
+    "id": "equipment",
+    "version": "2026-10-26",
+    "topic": "equipamiento",
+    "text": "Consulta Equipamiento y su disponibilidad por intervalo. Estados oficiales: DISPONIBLE, PRESTADO, EN_MANTENIMIENTO y BAJA. Una ubicación base no prueba custodia actual. La disponibilidad temporal se comprueba en el módulo; no se deduce solo del estado operativo.",
+    "required_permissions": [
+      "chatbot.consultar",
+      "equipamientos.ver"
+    ],
+    "allowed_route_keys": [
+      "equipamientos",
+      "equipamientos.disponibilidad"
+    ],
+    "source": "docs/EQUIPMENT_LOANS_IMPLEMENTATION.md",
+    "keywords": [
+      "equipo",
+      "equipamiento",
+      "proyector"
+    ],
+    "priority": 10
+  },
+  {
+    "id": "loan-own",
+    "version": "2026-10-26",
+    "topic": "prestamos",
+    "text": "En Préstamos, alcance propios, revisa PENDIENTE, APROBADO, RECHAZADO, ENTREGADO y DEVUELTO. Vencido es una condición derivada: ENTREGADO y ahora es posterior al fin previsto; no es otro estado. El asistente no consulta tu préstamo concreto.",
+    "required_permissions": [
+      "chatbot.consultar",
+      "prestamos.ver_propios"
+    ],
+    "allowed_route_keys": [
+      "prestamos.propios"
+    ],
+    "source": "docs/EQUIPMENT_LOANS_IMPLEMENTATION.md",
+    "keywords": [
+      "prestamo",
+      "vencido"
+    ],
+    "priority": 20
+  },
+  {
+    "id": "loan-request",
+    "version": "2026-10-26",
+    "topic": "prestamos",
+    "text": "Para solicitar un préstamo, consulta disponibilidad del equipamiento e indica inicio y fin previstos y los datos solicitados. Queda PENDIENTE hasta la resolución autorizada. APROBADO no significa que el equipo ya fue entregado.",
+    "required_permissions": [
+      "chatbot.consultar",
+      "equipamientos.ver",
+      "prestamos.solicitar"
+    ],
+    "allowed_route_keys": [
+      "equipamientos.disponibilidad"
+    ],
+    "source": "docs/EQUIPMENT_LOANS_IMPLEMENTATION.md",
+    "keywords": [
+      "prestamo",
+      "solicitar"
+    ],
+    "priority": 30
+  },
+  {
+    "id": "loan-admin",
+    "version": "2026-10-26",
+    "topic": "prestamos",
+    "text": "Consulta la bandeja administrativa de Préstamos para revisar estados del alcance autorizado. Un préstamo ENTREGADO puede estar vigente o vencido; el fin previsto no devuelve el equipo automáticamente.",
+    "required_permissions": [
+      "chatbot.consultar",
+      "prestamos.ver_administrativos"
+    ],
+    "allowed_route_keys": [
+      "prestamos.administrativos"
+    ],
+    "source": "docs/EQUIPMENT_LOANS_IMPLEMENTATION.md",
+    "keywords": [
+      "prestamo",
+      "vencimiento",
+      "vencido"
+    ],
+    "priority": 20
+  },
+  {
+    "id": "loan-resolve",
+    "version": "2026-10-26",
+    "topic": "prestamos",
+    "text": "En Préstamos administrativos abre una solicitud PENDIENTE para aprobar o rechazar. La aprobación revalida disponibilidad del equipo y no registra una entrega. El rechazo solicita el motivo correspondiente.",
+    "required_permissions": [
+      "chatbot.consultar",
+      "prestamos.ver_administrativos",
+      "prestamos.resolver"
+    ],
+    "allowed_route_keys": [
+      "prestamos.administrativos"
+    ],
+    "source": "docs/EQUIPMENT_LOANS_IMPLEMENTATION.md",
+    "keywords": [
+      "prestamo",
+      "resolver",
+      "aprobar",
+      "rechazar"
+    ],
+    "priority": 30
+  },
+  {
+    "id": "delivery",
+    "version": "2026-10-26",
+    "topic": "entregas",
+    "text": "Registrar entrega exige préstamo APROBADO, equipamiento disponible y receptor identificado. Revisa los datos y confirma en Préstamos; solo esa operación registra custodia y transición a ENTREGADO. El chatbot no entrega equipos.",
+    "required_permissions": [
+      "chatbot.consultar",
+      "prestamos.ver_administrativos",
+      "prestamos.registrar_entrega"
+    ],
+    "allowed_route_keys": [
+      "prestamos.administrativos"
+    ],
+    "source": "docs/EQUIPMENT_LOANS_IMPLEMENTATION.md",
+    "keywords": [
+      "entrega",
+      "entregar",
+      "receptor"
+    ],
+    "priority": 30
+  },
+  {
+    "id": "return",
+    "version": "2026-10-26",
+    "topic": "devoluciones",
+    "text": "En Préstamos registra la devolución y condición ADECUADA, CON_INCIDENCIA o NO_DETERMINABLE. La última queda pendiente de revisión: no confirma devolución ni libera automáticamente el equipo. Cuando corresponda, revisa y confirma en el módulo autorizado.",
+    "required_permissions": [
+      "chatbot.consultar",
+      "prestamos.ver_administrativos",
+      "prestamos.registrar_devolucion"
+    ],
+    "allowed_route_keys": [
+      "prestamos.administrativos"
+    ],
+    "source": "docs/EQUIPMENT_LOANS_IMPLEMENTATION.md",
+    "keywords": [
+      "devolucion",
+      "devolver",
+      "retorno"
+    ],
+    "priority": 30
+  },
+  {
+    "id": "incidents",
+    "version": "2026-10-26",
+    "topic": "incidencias",
+    "text": "Consulta Incidencias y mantenimiento para revisar los recursos autorizados. Tipo INCIDENCIA o MANTENIMIENTO; estado ABIERTA o CERRADA. Llegar al fin previsto no cierra el registro automáticamente. El chatbot no recibe descripciones de casos concretos.",
+    "required_permissions": [
+      "chatbot.consultar",
+      "incidencias.ver"
+    ],
+    "allowed_route_keys": [
+      "incidencias"
+    ],
+    "source": "docs/EQUIPMENT_LOANS_IMPLEMENTATION.md",
+    "keywords": [
+      "incidencia",
+      "mantenimiento",
+      "falla"
+    ],
+    "priority": 10
+  },
+  {
+    "id": "iot-base",
+    "version": "2026-10-26",
+    "topic": "iot",
+    "text": "IoT aporta evidencia ambiental complementaria de presencia u ocupación; no identifica personas ni demuestra asistencia. Sin lectura reciente la evidencia es NO_DETERMINABLE, no libre. El valor genérico no permite inventar un porcentaje universal de ocupación.",
+    "required_permissions": [
+      "chatbot.consultar"
+    ],
+    "allowed_route_keys": [],
+    "source": "docs/IOT_IMPLEMENTATION.md",
+    "keywords": [
+      "iot",
+      "sensor",
+      "ocupacion",
+      "lectura"
+    ],
+    "priority": 10
+  },
+  {
+    "id": "iot-monitor",
+    "version": "2026-10-26",
+    "topic": "iot",
+    "text": "Monitoreo muestra evidencia actual e historial ambiental según autorización. Consulta frescura y contexto del evento; datos antiguos o insuficientes no confirman espacio libre. Este asistente no obtiene sensores ni lecturas reales.",
+    "required_permissions": [
+      "chatbot.consultar",
+      "iot.monitoreo.ver"
+    ],
+    "allowed_route_keys": [
+      "iot.monitoreo"
+    ],
+    "source": "docs/IOT_IMPLEMENTATION.md",
+    "keywords": [
+      "iot",
+      "monitoreo",
+      "lectura"
+    ],
+    "priority": 20
+  },
+  {
+    "id": "iot-sensors",
+    "version": "2026-10-26",
+    "topic": "iot",
+    "text": "El catálogo de Sensores IoT permite consultar configuración autorizada. Las credenciales del dispositivo son privadas; nunca deben copiarse al asistente.",
+    "required_permissions": [
+      "chatbot.consultar",
+      "iot.sensores.ver"
+    ],
+    "allowed_route_keys": [
+      "iot.sensores"
+    ],
+    "source": "docs/IOT_IMPLEMENTATION.md",
+    "keywords": [
+      "sensor"
+    ],
+    "priority": 20
+  },
+  {
+    "id": "release-base",
+    "version": "2026-10-26",
+    "topic": "liberacion",
+    "text": "La liberación considera reserva, política vigente, tolerancia y evidencias QR/IoT. ALERTAR no equivale a LIBERAR. Evidencia insuficiente no permite afirmar automáticamente que el espacio está libre. El asistente no ejecuta evaluaciones.",
+    "required_permissions": [
+      "chatbot.consultar"
+    ],
+    "allowed_route_keys": [],
+    "source": "docs/RELEASE_POLICY_IMPLEMENTATION.md",
+    "keywords": [
+      "liberacion",
+      "liberar",
+      "tolerancia",
+      "politica"
+    ],
+    "priority": 10
+  },
+  {
+    "id": "release-propias",
+    "version": "2026-10-26",
+    "topic": "liberacion",
+    "text": "Consulta Evaluaciones de reservas en el alcance autorizado para revisar resultados. El asistente explica el procedimiento, pero no obtiene ni evalúa casos concretos.",
+    "required_permissions": [
+      "chatbot.consultar",
+      "liberacion.evaluaciones.ver_propias"
+    ],
+    "allowed_route_keys": [
+      "liberacion.propias"
+    ],
+    "source": "docs/RELEASE_POLICY_IMPLEMENTATION.md",
+    "keywords": [
+      "liberacion",
+      "evaluacion"
+    ],
+    "priority": 20
+  },
+  {
+    "id": "release-administrativas",
+    "version": "2026-10-26",
+    "topic": "liberacion",
+    "text": "Consulta Evaluaciones de reservas en el alcance autorizado para revisar resultados. El asistente explica el procedimiento, pero no obtiene ni evalúa casos concretos.",
+    "required_permissions": [
+      "chatbot.consultar",
+      "liberacion.evaluaciones.ver_administrativas"
+    ],
+    "allowed_route_keys": [
+      "liberacion.administrativas"
+    ],
+    "source": "docs/RELEASE_POLICY_IMPLEMENTATION.md",
+    "keywords": [
+      "liberacion",
+      "evaluacion"
+    ],
+    "priority": 20
+  },
+  {
+    "id": "policies",
+    "version": "2026-10-26",
+    "topic": "liberacion",
+    "text": "Consulta Políticas de liberación para conocer las versiones y reglas configuradas del alcance autorizado. No cambies ni ejecutes una política desde el asistente.",
+    "required_permissions": [
+      "chatbot.consultar",
+      "liberacion.politicas.ver"
+    ],
+    "allowed_route_keys": [
+      "liberacion.politicas"
+    ],
+    "source": "docs/RELEASE_POLICY_IMPLEMENTATION.md",
+    "keywords": [
+      "politica"
+    ],
+    "priority": 30
+  },
+  {
+    "id": "blockchain-base",
+    "version": "2026-10-26",
+    "topic": "blockchain",
+    "text": "La trazabilidad aporta evidencia verificable complementaria. La operación confirmada permanece en MySQL; un fallo externo no la revierte. Blockchain no sustituye permisos ni es la fuente de verdad del estado operativo.",
+    "required_permissions": [
+      "chatbot.consultar"
+    ],
+    "allowed_route_keys": [],
+    "source": "docs/BLOCKCHAIN_IMPLEMENTATION.md",
+    "keywords": [
+      "blockchain",
+      "trazabilidad",
+      "evidencia"
+    ],
+    "priority": 10
+  },
+  {
+    "id": "blockchain-admin",
+    "version": "2026-10-26",
+    "topic": "blockchain",
+    "text": "En Evidencias de trazabilidad consulta el estado autorizado. La verificación puede ser VALIDO, INCONSISTENTE, PENDIENTE o NO_VERIFICABLE; indisponibilidad externa no prueba alteración. Verificar o reintentar exige sus permisos adicionales en el módulo. No copies claves ni datos de firma.",
+    "required_permissions": [
+      "chatbot.consultar",
+      "trazabilidad.evidencias.ver"
+    ],
+    "allowed_route_keys": [
+      "trazabilidad"
+    ],
+    "source": "docs/BLOCKCHAIN_IMPLEMENTATION.md",
+    "keywords": [
+      "blockchain",
+      "trazabilidad",
+      "verificar"
+    ],
+    "priority": 20
+  },
+  {
+    "id": "notifications",
+    "version": "2026-10-26",
+    "topic": "notificaciones",
+    "text": "Notificaciones muestra únicamente tus avisos internos. Abrir la lista no marca avisos como leídos; utiliza la interacción de lectura del módulo. El asistente no lee, cuenta ni marca tus notificaciones.",
+    "required_permissions": [
+      "chatbot.consultar",
+      "notificaciones.ver_propias"
+    ],
+    "allowed_route_keys": [
+      "notificaciones"
+    ],
+    "source": "docs/NOTIFICATIONS_IMPLEMENTATION.md",
+    "keywords": [
+      "notificacion",
+      "aviso",
+      "leida"
+    ],
+    "priority": 10
+  },
+  {
+    "id": "dashboard",
+    "version": "2026-10-26",
+    "topic": "dashboard",
+    "text": "Dashboard presenta tarjetas y gráficos según permisos y ámbito. Docente y Estudiante tienen panel personal. Puedes actualizar y cambiar filtros autorizados. El chatbot no consulta indicadores. Estado operativo de espacio no equivale a disponibilidad temporal; IoT sin evidencia no significa libre.",
+    "required_permissions": [
+      "chatbot.consultar",
+      "dashboard.ver"
+    ],
+    "allowed_route_keys": [
+      "dashboard"
+    ],
+    "source": "docs/DASHBOARD_REPORTING_IMPLEMENTATION.md",
+    "keywords": [
+      "dashboard",
+      "panel",
+      "indicador",
+      "cuantas",
+      "cuantos",
+      "grafico"
+    ],
+    "priority": 10
+  },
+  {
+    "id": "reports",
+    "version": "2026-10-26",
+    "topic": "reportes",
+    "text": "Reportes ofrece Reservas, Disponibilidad y espacios, Equipamiento, Préstamos y vencimientos, Incidencias y mantenimiento, Ocupación IoT y Actividad operacional. Selecciona reporte y filtros permitidos y revisa la vista previa. Actividad es un resumen agregado, no una bitácora general.",
+    "required_permissions": [
+      "chatbot.consultar",
+      "reportes.ver"
+    ],
+    "allowed_route_keys": [
+      "reportes"
+    ],
+    "source": "docs/DASHBOARD_REPORTING_IMPLEMENTATION.md",
+    "keywords": [
+      "reporte",
+      "informe",
+      "pdf",
+      "excel",
+      "xlsx"
+    ],
+    "priority": 20
+  },
+  {
+    "id": "exports",
+    "version": "2026-10-26",
+    "topic": "reportes",
+    "text": "Para exportar un reporte autorizado, revisa primero su vista previa y elige PDF o XLSX. Sin filas no se genera archivo; si supera el límite técnico inicial de 10.000 filas, refina filtros. La exportación conserva columnas y alcance autorizado y registra actividad no crítica. El chatbot no genera archivos.",
+    "required_permissions": [
+      "chatbot.consultar",
+      "reportes.ver",
+      "reportes.exportar"
+    ],
+    "allowed_route_keys": [
+      "reportes"
+    ],
+    "source": "docs/DASHBOARD_REPORTING_IMPLEMENTATION.md",
+    "keywords": [
+      "exportar",
+      "pdf",
+      "excel",
+      "xlsx"
+    ],
+    "priority": 30
+  }
+]
