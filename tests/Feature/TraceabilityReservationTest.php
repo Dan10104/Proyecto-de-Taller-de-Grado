@@ -49,7 +49,9 @@ class TraceabilityReservationTest extends ReservationTestCase
         $a = RegistroActividad::sole();
         $this->assertNull(app(CanonicalEvidenceBuilder::class)->build($a)['subject']['motivo_cancelacion_hash']);
         $this->service()->reject($admin, $this->pending(), 'No disponible');
-        $this->assertDatabaseCount('registros_actividad', 1);
+        $this->assertDatabaseCount('registros_actividad', 2);
+        $this->assertSame(1, RegistroActividad::where('critica', true)->count());
+        $this->assertDatabaseHas('registros_actividad', ['accion' => 'RESERVA_RECHAZADA', 'critica' => false]);
     }
 
     public function test_failed_critical_insert_rolls_back_business_and_has_no_evidence(): void

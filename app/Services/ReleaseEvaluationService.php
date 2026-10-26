@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Enums\ResultadoEvaluacionLiberacion as Result;
 use App\Exceptions\ReleaseDeferredException;
 use App\Models\EvaluacionLiberacion;
+use App\Services\Notifications\NotificationActivityRecorder;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Collection;
@@ -100,6 +101,10 @@ class ReleaseEvaluationService
                 if ($updated !== 1) {
                     throw new LogicException('La transición de liberación no se confirmó.');
                 }
+            }
+
+            if (in_array($result, [Result::ALERTAR, Result::LIBERAR], true)) {
+                app(NotificationActivityRecorder::class)->release($evaluation);
             }
 
             return $evaluation;

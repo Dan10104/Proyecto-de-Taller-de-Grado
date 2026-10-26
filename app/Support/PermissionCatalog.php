@@ -7,6 +7,7 @@ use App\Enums\RolInstitucional;
 class PermissionCatalog
 {
     public const DEFINITIONS = [
+        'notificaciones.ver_propias' => ['nombre' => 'Consultar y leer notificaciones propias', 'fuente' => 'RF21 / CU26'],
         'trazabilidad.evidencias.ver' => ['nombre' => 'Consultar evidencias de trazabilidad', 'fuente' => 'RF19–20 / CU24–25 / D-12'],
         'trazabilidad.evidencias.verificar' => ['nombre' => 'Verificar evidencias de trazabilidad', 'fuente' => 'RF20 / CU25 / D-12'],
         'trazabilidad.reintentar' => ['nombre' => 'Reintentar registro de evidencias pendientes', 'fuente' => 'RF19 / CU24 / D-12'],
@@ -60,7 +61,7 @@ class PermissionCatalog
         if (! array_key_exists($code, self::DEFINITIONS)) {
             return [];
         }
-        if (in_array($code, ['qr.validar_uso_espacio', 'reservas.ver_propias', 'reservas.cancelar_propias', 'espacios.ver', 'equipamientos.ver'], true)) {
+        if (in_array($code, ['notificaciones.ver_propias', 'qr.validar_uso_espacio', 'reservas.ver_propias', 'reservas.cancelar_propias', 'espacios.ver', 'equipamientos.ver'], true)) {
             return array_column(RolInstitucional::cases(), 'value');
         }
         if (in_array($code, ['liberacion.evaluaciones.ver_propias', 'reservas.solicitar', 'prestamos.solicitar', 'prestamos.ver_propios'], true)) {

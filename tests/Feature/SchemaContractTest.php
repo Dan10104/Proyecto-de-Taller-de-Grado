@@ -23,7 +23,7 @@ class SchemaContractTest extends SecurityTestCase
         sort($names);
         $allowed = [...array_keys($expected), 'migrations', 'pisos', 'recursos_institucionales', 'tipos_espacio', 'caracteristicas_espacio', 'politicas_liberacion', 'espacios_academicos', 'espacios_caracteristicas', 'bloqueos_espacio', 'reservas', 'tipos_equipamiento', 'equipamientos_tecnologicos', 'prestamos', 'entregas_prestamo', 'devoluciones_prestamo', 'incidencias_mantenimiento', 'codigos_qr', 'validaciones_qr', 'sensores_iot', 'eventos_ocupacion', 'evaluaciones_liberacion', 'evaluaciones_eventos_ocupacion', 'evaluaciones_validaciones_qr'];
         sort($allowed);
-        $allowed = [...$allowed, 'registros_actividad', 'evidencias_trazabilidad'];
+        $allowed = [...$allowed, 'registros_actividad', 'evidencias_trazabilidad', 'notificaciones'];
         sort($allowed);
         $this->assertSame($allowed, $names);
         foreach ($expected as $table => $columns) {

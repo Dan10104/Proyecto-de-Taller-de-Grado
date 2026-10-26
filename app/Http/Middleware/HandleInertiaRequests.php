@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Services\AuthorizationService;
+use App\Services\Notifications\NotificationReadService;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -13,8 +14,16 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         return [...parent::share($request),
-            'auth' => fn () => $request->user() ? ['usuario' => $request->user()->only(['id', 'nombres', 'apellidos']),
-                'roles' => $request->user()->rolesActivos()->pluck('nombre')->all(), 'permisos' => app(AuthorizationService::class)->permissions($request->user())] : null,
+            'auth' => function () use ($request) {
+                if (! $request->user()) {
+                    return null;
+                }
+                $permissions = app(AuthorizationService::class)->permissions($request->user());
+
+                return ['usuario' => $request->user()->only(['id', 'nombres', 'apellidos']),
+                    'roles' => $request->user()->rolesActivos()->pluck('nombre')->all(), 'permisos' => $permissions,
+                    'no_leidas' => in_array('notificaciones.ver_propias', $permissions, true) ? app(NotificationReadService::class)->unread($request->user()) : 0];
+            },
             'flash' => ['success' => fn () => $request->session()->get('success'), 'notice' => fn () => $request->session()->get('notice')],
         ];
     }

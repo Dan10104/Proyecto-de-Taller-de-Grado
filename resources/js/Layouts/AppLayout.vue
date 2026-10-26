@@ -52,6 +52,7 @@ onUnmounted(() => document.removeEventListener('keydown', keydown));
           <Icon name="home"/>
           Inicio
         </Link>
+        <Link v-if="can('notificaciones.ver_propias')" href="/notificaciones" :class="{active:page.url.startsWith('/notificaciones')}" @click="drawer=false"><Icon name="bell"/>Notificaciones</Link>
         <Link v-if="can('espacios.ver')" href="/disponibilidad" :class="{active:page.url.startsWith('/disponibilidad')}" @click="drawer=false">
           <Icon name="search"/>
           Disponibilidad
@@ -104,6 +105,7 @@ onUnmounted(() => document.removeEventListener('keydown', keydown));
           <span>Plataforma de gestión</span>
         </div>
         <div class="account">
+          <Link v-if="can('notificaciones.ver_propias')" href="/notificaciones" class="notification-header" :aria-label="`Notificaciones: ${auth.no_leidas} no leídas`"><Icon name="bell"/><span class="notification-badge">{{ auth.no_leidas > 99 ? '99+' : auth.no_leidas }}</span></Link>
           <span class="avatar">{{ initials }}</span>
           <div class="account-text">
             <strong>{{ auth?.usuario.nombres }} {{ auth?.usuario.apellidos }}</strong>

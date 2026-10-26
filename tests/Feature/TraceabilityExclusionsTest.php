@@ -25,7 +25,9 @@ class TraceabilityExclusionsTest extends ReleaseTestCase
         $this->assertSame('LIBERAR', $this->evaluate($r)->resultado->value);
         $this->assertSame('LIBERADA', $r->fresh()->estado->value);
         $this->assertSame('VALIDO', app(LocalEvidenceService::class)->check($e));
-        $this->assertDatabaseCount('registros_actividad', 1);
+        $this->assertDatabaseCount('registros_actividad', 2);
+        $this->assertSame(1, RegistroActividad::where('critica', true)->count());
+        $this->assertDatabaseHas('registros_actividad', ['accion' => 'RESERVA_LIBERADA', 'critica' => false]);
     }
 
     public function test_qr_iot_and_release_evidence_have_no_blockchain_side_effects(): void

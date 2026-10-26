@@ -54,7 +54,8 @@ JSON, true, flags: JSON_THROW_ON_ERROR);
             $this->assertTrue(Schema::hasTable($table)); // Materialized by the authorized Phase 6.
         }
         $this->assertTrue(Schema::hasTable('registros_actividad')); // Materialized by authorized Phase 9.
-        foreach (['notificaciones', 'lecturas_iot', 'evidencias_blockchain'] as $table) {
+        $this->assertTrue(Schema::hasTable('notificaciones')); // Authorized Phase 10.
+        foreach (['lecturas_iot', 'evidencias_blockchain'] as $table) {
             $this->assertFalse(Schema::hasTable($table));
         }
     }

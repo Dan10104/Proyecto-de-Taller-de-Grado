@@ -9,6 +9,7 @@ use App\Models\EspacioAcademico;
 use App\Models\Reserva;
 use App\Models\Rol;
 use App\Models\Usuario;
+use App\Services\Notifications\NotificationActivityRecorder;
 use App\Services\Traceability\CriticalActivityRecorder;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\QueryException;
@@ -39,6 +40,8 @@ class ReservationService
                     $reservation = new Reserva;
                     $reservation->forceFill(['espacio_id' => $space->getKey(), 'solicitante_id' => $currentActor->id,
                         'inicio' => $start, 'fin' => $end, 'proposito' => $data['proposito'], 'solicitada_en' => now(), 'estado' => EstadoReserva::PENDIENTE])->save();
+
+                    app(NotificationActivityRecorder::class)->reservation($reservation->id, 'RESERVA_SOLICITADA');
 
                     return $reservation;
                 });
@@ -114,6 +117,8 @@ class ReservationService
 
             if (in_array($changes['estado'], ['APROBADA', 'CANCELADA'], true)) {
                 app(CriticalActivityRecorder::class)->reservation($reservation->id, $changes['estado'] === 'APROBADA');
+            } elseif ($changes['estado'] === 'RECHAZADA') {
+                app(NotificationActivityRecorder::class)->reservation($reservation->id, 'RESERVA_RECHAZADA');
             }
 
             return $reservation->forceFill($changes)->syncOriginal();
