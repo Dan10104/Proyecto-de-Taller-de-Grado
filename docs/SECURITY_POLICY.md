@@ -1,6 +1,8 @@
 # Política de seguridad
 
-**Estado vigente — Fase 11.5 documental cerrada (2026-10-26).** RF24/CU29: [Chatbot Assistance Contract / Readiness for Phase 12](DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12), **0 bloqueantes documentales**. Fase 12 NO iniciada; CU30 NO IMPLEMENTADO. No cambios de código, dependencias, configuración o datos.
+**Estado vigente — Fase 12 implementada y validada offline (2026-10-26).** RF24/CU29: [implementación del asistente](CHATBOT_IMPLEMENTATION.md), conforme a CH1–CH12. Orientación por permisos, OpenAI Responses y contexto mínimo sin datos operativos ni historial persistido. CU30 **NO IMPLEMENTADO**; aplicación móvil diferida; ninguna fase posterior iniciada. Los cierres siguientes conservan su contexto histórico.
+
+**Estado histórico — Fase 11.5 documental cerrada (2026-10-26).** RF24/CU29: [Chatbot Assistance Contract / Readiness for Phase 12](DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12), **0 bloqueantes documentales**. Fase 12 NO iniciada; CU30 NO IMPLEMENTADO. No cambios de código, dependencias, configuración o datos.
 
 **Base funcional conservada — Fase 11 implementada y verificada (2026-10-26).** RF22/CU27 y RF23/CU28: 747 tests / 9111 assertions; QA y auditorías productivas aprobadas. [Implementación, scopes, formatos y evidencia](DASHBOARD_REPORTING_IMPLEMENTATION.md). Sin nuevas tablas ni índices; CU30 NO IMPLEMENTADO y Fase 12 NO iniciada. Los cierres anteriores son históricos.
 
@@ -212,3 +214,11 @@ La pregunta libre sí se transmite junto con snippets mínimos; el aviso de priv
 Entrada y salida no confiables, schema estricto, statuses cerrados, ruta simbólica allowlisted, texto plano escapado y ninguna URL generada visible/activa. Descartar output inválido/incompleto, HTML/código/enlaces y afirmaciones de operación completada; plantillas locales para rechazo/fuera de alcance. Prompt y heurísticas no son garantía semántica universal: ausencia de ejecución/contexto sensible, validación y reautorización son controles de servidor. Probar attacks, rutas no autorizadas y revocación concurrente.
 
 CSRF permanece activo; no proxy público. Sin persistencia en DB/sesión/logs/browser storage/history ni withInput. Auditar también excepciones HTTP, trazas, APM y errores de validación para que no copien contenido o Authorization. Logs solo metadatos saneados; no actividad, notificación ni Blockchain por mensaje. Límites por usuario, tamaño y plazo total protegen disponibilidad; no retry oculto que multiplique llamadas. Las pruebas normales usan fake y bloquean Internet; smoke real separado, sintético y condicionado a configuración/cuota. Ninguna de estas pruebas se ejecuta por el mero cierre documental.
+
+## Controles de asistencia aplicados — Fase 12
+
+CH1–CH12 materializado: ACTIVO/sesión/chatbot.consultar y CSRF, campos cerrados, cuota atómica por usuario compartida entre sesiones, autorización previa de snippets y nueva autorización posterior a red. Endpoint OpenAI fijo HTTPS/TLS sin redirects; key solo cabecera del servidor, store=false/stream=false/background=false y sin tools/estado/identidad anexa. No filas operativas. UI texto escapado y rutas exclusivamente resueltas por registro.
+
+Entrada de 2.000 puntos de código, cuerpo max_input_chars×12+1.024 para escapes JSON Unicode, respuesta defensiva de 2.000 caracteres/128 KiB y deadline backend de 15 s incluyendo máximo un retry. Plazo de transporte cliente 20 s permite abortar una conexión perdida sin ampliar el presupuesto del servidor. Historial máximo veinte intercambios solo en memoria; se borra al salir/recargar/limpiar/logout/bfcache. Boundary desactiva debug, excepciones se registran por código fijo y FormRequest no conserva input. Logs técnicos sin contenido/Authorization; sin registros de actividad por mensaje.
+
+Heurísticas no prometen invulnerabilidad semántica; los controles de servidor impiden operaciones y exposición de contexto operativo aunque falle una clasificación. store=false no equivale a ZDR. [Fuentes, configuración, pruebas, condiciones de despliegue y smoke pendiente](CHATBOT_IMPLEMENTATION.md). No dependencia adicional ni modificación de excepción dev Hardhat/Zod.

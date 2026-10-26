@@ -1,6 +1,8 @@
 # Plan de implementación web
 
-**Estado vigente — Fase 11.5 documental cerrada (2026-10-26).** RF24/CU29: [Chatbot Assistance Contract / Readiness for Phase 12](DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12), **0 bloqueantes documentales**. Fase 12 NO iniciada; CU30 NO IMPLEMENTADO. No cambios de código, dependencias, configuración o datos.
+**Estado vigente — Fase 12 implementada y validada offline (2026-10-26).** RF24/CU29: [implementación del asistente](CHATBOT_IMPLEMENTATION.md), conforme a CH1–CH12. Orientación por permisos, OpenAI Responses y contexto mínimo sin datos operativos ni historial persistido. CU30 **NO IMPLEMENTADO**; aplicación móvil diferida; ninguna fase posterior iniciada. Los cierres siguientes conservan su contexto histórico.
+
+**Estado histórico — Fase 11.5 documental cerrada (2026-10-26).** RF24/CU29: [Chatbot Assistance Contract / Readiness for Phase 12](DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12), **0 bloqueantes documentales**. Fase 12 NO iniciada; CU30 NO IMPLEMENTADO. No cambios de código, dependencias, configuración o datos.
 
 **Base funcional conservada — Fase 11 implementada y verificada (2026-10-26).** RF22/CU27 y RF23/CU28: 747 tests / 9111 assertions; QA y auditorías productivas aprobadas. [Implementación, scopes, formatos y evidencia](DASHBOARD_REPORTING_IMPLEMENTATION.md). Sin nuevas tablas ni índices; CU30 NO IMPLEMENTADO y Fase 12 NO iniciada. Los cierres anteriores son históricos.
 
@@ -396,3 +398,7 @@ Dashboard por cuatro roles y siete reportes implementados según DR1–DR12 y pr
 Contrato completo en [Readiness for Phase 12](DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12), 0 bloqueantes documentales. Orden futuro: revalidar fuentes oficiales/modelo/SDK/política; incorporar chatbot.consultar y configuración deshabilitada por defecto; provider abstracto/fake y contrato HTTP; conocimiento y rutas autorizados; entrada/salida segura, límites y errores; UI sin persistencia; T-CB/regresión/QA/auditorías/secret scan; smoke real sintético solo con clave/cuota; publicación autorizada. Preferir HTTP Client Laravel sin SDK nuevo salvo justificación actualizada.
 
 No configurar claves ni realizar smoke antes de Fase 12. No crear código, rutas, UI, permisos DB, configuración, dependencias o migraciones en este cierre. CU30 NO IMPLEMENTADO, app móvil diferida y smoke Sepolia pendiente independiente. El cierre documental no reejecuta ni renombra como nuevas las pruebas/auditorías de Fase 11, ni elimina la excepción temporal dev Hardhat/Zod de Fase 9.
+
+## Ejecución de Fase 12 y límite de continuación
+
+La instrucción oficial posterior autoriza la implementación RF24/CU29, ahora materializada conforme a CH1–CH12: permiso, provider abstracto/OpenAI/Fake, catálogo/rutas, límites, contexto mínimo, interfaz y pruebas. [Informe y verificación](CHATBOT_IMPLEMENTATION.md). No clave local disponible: smoke real OpenAI pendiente, conforme a sección 126, sin bloquear validación offline ni fingir inferencia. No iniciar fase posterior; CU30 NO IMPLEMENTADO y app móvil diferida. Siguiente acción sugerida: smoke sintético cuando el operador configure credencial/cuota local segura; cualquier ampliación funcional requiere nueva instrucción.

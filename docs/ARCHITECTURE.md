@@ -1,6 +1,8 @@
 # Arquitectura web de ESPACIO-U
 
-**Estado vigente — Fase 11.5 documental cerrada (2026-10-26).** RF24/CU29: [Chatbot Assistance Contract / Readiness for Phase 12](DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12), **0 bloqueantes documentales**. Fase 12 NO iniciada; CU30 NO IMPLEMENTADO. No cambios de código, dependencias, configuración o datos.
+**Estado vigente — Fase 12 implementada y validada offline (2026-10-26).** RF24/CU29: [implementación del asistente](CHATBOT_IMPLEMENTATION.md), conforme a CH1–CH12. Orientación por permisos, OpenAI Responses y contexto mínimo sin datos operativos ni historial persistido. CU30 **NO IMPLEMENTADO**; aplicación móvil diferida; ninguna fase posterior iniciada. Los cierres siguientes conservan su contexto histórico.
+
+**Estado histórico — Fase 11.5 documental cerrada (2026-10-26).** RF24/CU29: [Chatbot Assistance Contract / Readiness for Phase 12](DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12), **0 bloqueantes documentales**. Fase 12 NO iniciada; CU30 NO IMPLEMENTADO. No cambios de código, dependencias, configuración o datos.
 
 **Base funcional conservada — Fase 11 implementada y verificada (2026-10-26).** RF22/CU27 y RF23/CU28: 747 tests / 9111 assertions; QA y auditorías productivas aprobadas. [Implementación, scopes, formatos y evidencia](DASHBOARD_REPORTING_IMPLEMENTATION.md). Sin nuevas tablas ni índices; CU30 NO IMPLEMENTADO y Fase 12 NO iniciada. Los cierres anteriores son históricos.
 
@@ -260,3 +262,7 @@ DashboardService agrega en MySQL, delega IoT/notificaciones y conserva scopes de
 ChatbotProvider intercambia DTO propios (instrucciones específicas, pregunta actual, capacidades relevantes y snippets; salida status/answer/route_key), no modelos Eloquent ni objetos del SDK. Solo autorización lee cuenta/sesión/roles/permisos; no dependencia de servicios que consulten registros operativos o ejecuten negocio. Adaptador inicial preferido: HTTP Client Laravel existente, sujeto a revisar SDK/documentación antes de instalar nada. No frontend→OpenAI, tools, llamadas SQL del modelo ni proveedor secundario automático.
 
 GET /asistente y POST /asistente/consultar son rutas futuras, con auth/access.session/chatbot.consultar/CSRF. POST JSON sin echo/flash del input, página Inertia sin mensajes en props. No streaming, history remember, conversaciones remotas, tablas, colas con prompts, cache de respuestas ni embedding store. Plazo monotónico único de 15 s, como máximo dos intentos dentro de él; nunca locks operativos o de sesión durante red. Rate limit atómico por usuario en store existente, separado de operaciones principales. Fallo del proveedor retorna aviso y no interrumpe otros módulos. Detalle de validación, memoria efímera y límites en CH8–CH10.
+
+## Asistencia implementada — Fase 12
+
+RF24/CU29 se materializa mediante ChatbotRequest/Boundary/RateLimit → ChatbotService → ChatbotKnowledgeBase/ChatbotProvider → validador/ChatbotRouteRegistry → página Asistente. OpenAIChatbotProvider usa Laravel HTTP Client/Responses y FakeChatbotProvider queda inyectado en pruebas. Sin dependencia nueva ni consulta a entidades operativas; solo autenticación/sesión/autorización existentes. Contexto procedimental separado del mensaje no confiable, schema estricto, deadline conjunto y salida reautorizada. [Detalle, privacidad y evidencia](CHATBOT_IMPLEMENTATION.md). Sin nueva entidad de conversación, caché de conocimiento, tools, colas, streaming o infraestructura BI. CU30 sigue diferido.

@@ -1,6 +1,8 @@
 # ESPACIO-U
 
-**Fase 11.5 documental cerrada.** [Chatbot Assistance Contract / Readiness for Phase 12](docs/DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12): **0 bloqueantes documentales**. OpenAI Responses/Luna configurable, orientación por permisos y sin registros operativos ni historial persistido. **Fase 12 NO iniciada; CU30 NO IMPLEMENTADO.**
+**Estado vigente — Fase 12 implementada y validada offline (2026-10-26).** RF24/CU29: [implementación del asistente](docs/CHATBOT_IMPLEMENTATION.md), conforme a CH1–CH12. Orientación por permisos, OpenAI Responses y contexto mínimo sin datos operativos ni historial persistido. CU30 **NO IMPLEMENTADO**; aplicación móvil diferida; ninguna fase posterior iniciada. Los cierres siguientes conservan su contexto histórico.
+
+**Cierre histórico — Fase 11.5 documental.** [Chatbot Assistance Contract / Readiness for Phase 12](docs/DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12): **0 bloqueantes documentales**. OpenAI Responses/Luna configurable, orientación por permisos y sin registros operativos ni historial persistido. **Fase 12 NO iniciada; CU30 NO IMPLEMENTADO.**
 
 **Fase 11 completada: dashboard y reportes.** 747 tests / 9.111 assertions. [Informe de implementación](docs/DASHBOARD_REPORTING_IMPLEMENTATION.md). Navegación: Dashboard para cuatro roles; Reportes para Admin/Encargado según permisos de dominio. PDF/XLSX locales. CU30 NO IMPLEMENTADO; Fase 12 NO iniciada.
 
@@ -190,3 +192,13 @@ Ejecutar composer install y npm ci con los runtimes oficiales; php artisan db:se
 El contrato RF24/CU29 está definido en CH1–CH12; [50 criterios de aceptación futuros](docs/BUSINESS_RULES.md#aceptación-prevista-para-fase-12) y [plan Fase 12](docs/IMPLEMENTATION_PLAN.md#fase-12--chatbot). Fase 12 puede comenzar con una nueva instrucción. El asistente previsto solo orientará; no consultará registros ni ejecutará operaciones. La pregunta del usuario sí se enviará al proveedor, con snippets mínimos autorizados; store=false no implica retención cero.
 
 Este cierre solo modifica documentación: no instalar SDK, configurar API keys, editar .env/.env.example, crear rutas/servicios/UI, permisos DB o migraciones. Modelo/SDK/política se revalidarán antes de implementar; smoke real solo con clave local válida y cuota, independiente de los tests fake. La baseline 747 tests/9.111 assertions pertenece a Fase 11 y no se reejecutó aquí. Los límites físicos QR, smoke Sepolia y excepción dev Hardhat/Zod mantienen su alcance documentado. Word/PDF fuente intactos y privados.
+
+## Asistente de orientación — Fase 12
+
+Abrir **Asistente** con chatbot.consultar. Orientación sobre procedimientos según permisos; no consulta registros ni ejecuta operaciones. Historial temporal solo en la página, sin almacenamiento; la pregunta actual se envía a OpenAI con contexto mínimo autorizado. Limpiar o recargar elimina la conversación.
+
+1. Cargar scripts/dev-environment.ps1 y ejecutar `php artisan db:seed --class=SecuritySeeder --force` y `npm run build`; no hay migración ni dependencia nueva.
+2. Revisar [configuración y privacidad](docs/CHATBOT_IMPLEMENTATION.md#operación-y-smoke-real). .env.example trae CHATBOT_ENABLED=false y OPENAI_API_KEY vacía; no reemplazar el .env local existente.
+3. Habilitar solo cuando el operador configure la key exclusivamente en .env LOCAL, con cuota, y recargue configuración. Nunca pegar claves en chat o copiarlas al frontend.
+
+Sin key el módulo muestra indisponibilidad controlada y el resto funciona. **Smoke real OpenAI pendiente por ausencia de credencial/cuota**; pruebas offline con proveedor/HTTP simulado. Modelo configurado gpt-6-luna, Responses API, store=false (no equivale a retención cero), reasoning none. [Informe, pruebas, límites y fuentes](docs/CHATBOT_IMPLEMENTATION.md). CU30 NO IMPLEMENTADO; móvil diferida; ninguna fase posterior iniciada.

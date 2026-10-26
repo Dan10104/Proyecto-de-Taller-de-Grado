@@ -1,6 +1,8 @@
 # Modelo de datos documentado
 
-**Estado vigente — Fase 11.5 documental cerrada (2026-10-26).** RF24/CU29: [Chatbot Assistance Contract / Readiness for Phase 12](DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12), **0 bloqueantes documentales**. Fase 12 NO iniciada; CU30 NO IMPLEMENTADO. No cambios de código, dependencias, configuración o datos.
+**Estado vigente — Fase 12 implementada y validada offline (2026-10-26).** RF24/CU29: [implementación del asistente](CHATBOT_IMPLEMENTATION.md), conforme a CH1–CH12. Orientación por permisos, OpenAI Responses y contexto mínimo sin datos operativos ni historial persistido. CU30 **NO IMPLEMENTADO**; aplicación móvil diferida; ninguna fase posterior iniciada. Los cierres siguientes conservan su contexto histórico.
+
+**Estado histórico — Fase 11.5 documental cerrada (2026-10-26).** RF24/CU29: [Chatbot Assistance Contract / Readiness for Phase 12](DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12), **0 bloqueantes documentales**. Fase 12 NO iniciada; CU30 NO IMPLEMENTADO. No cambios de código, dependencias, configuración o datos.
 
 **Base funcional conservada — Fase 11 implementada y verificada (2026-10-26).** RF22/CU27 y RF23/CU28: 747 tests / 9111 assertions; QA y auditorías productivas aprobadas. [Implementación, scopes, formatos y evidencia](DASHBOARD_REPORTING_IMPLEMENTATION.md). Sin nuevas tablas ni índices; CU30 NO IMPLEMENTADO y Fase 12 NO iniciada. Los cierres anteriores son históricos.
 
@@ -1079,3 +1081,7 @@ Cero migraciones y cero índices nuevos. Se reutilizan tablas/columnas/índices 
 ## Persistencia del chatbot — cierre documental Fase 11.5
 
 [Contrato CH3/CH10](DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12): cero tablas, columnas, índices o migraciones previstos para contenido de chat. Identidad/sesión/RBAC reutilizan sus tablas existentes; ninguna consulta del chatbot carga reservas/préstamos/notificaciones/incidencias/eventos/evidencias/indicadores. No filas de conversación ni mensajes, snapshots, registros_actividad.descripcion, sesión o caché con preguntas/respuestas. Solo se prevé añadir chatbot.consultar al catálogo de permisos en Fase 12; ahora no se siembra. Rate limit usa contador/expiración del store existente sin contenido. Logs técnicos sin prompts no convierten CU29 en CU30. El diccionario físico permanece intacto.
+
+## Alcance de datos — Fase 12
+
+No migraciones, índices ni tablas nuevas. SecuritySeeder incorpora únicamente chatbot.consultar (51 permisos totales) mediante esquema RBAC existente. Identidad/sesión/permisos sostienen acceso; ningún registro operativo se consulta para construir respuesta o contexto de IA. Sin tablas de chat, escritura de pregunta/respuesta, REPORTE_EXPORTADO por mensaje, notificación ni evidencia Blockchain. [Pruebas y límites](CHATBOT_IMPLEMENTATION.md).
