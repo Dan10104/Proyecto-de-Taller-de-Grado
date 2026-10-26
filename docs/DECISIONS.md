@@ -1,6 +1,8 @@
 # Registro de decisiones y auditoría documental
 
-**Estado vigente — Fase 10 (2026-10-26).** RF21/CU26 implementados y verificados: 17 reglas, avisos propios, primera lectura y recuperación de 24 h. [Informe y evidencia](NOTIFICATIONS_IMPLEMENTATION.md). CU30 general y Fase 11 no iniciados. Sepolia real sigue pendiente de testETH. Los apartados de cierres anteriores conservan su contexto histórico.
+**Estado vigente — Fase 10.5 documental (2026-10-26).** RF22/CU27 y RF23/CU28: [contrato de dashboard y reportes cerrado](#dashboard--reporting-contract--readiness-for-phase-11), **0 bloqueantes documentales**. Fase 11 NO iniciada; CU30 NO IMPLEMENTADO. Fase 10 funcional se conserva, sin cambios de código, datos, permisos o dependencias. Los cierres anteriores mantienen su contexto histórico.
+
+**Estado histórico funcional — Fase 10 (2026-10-26).** RF21/CU26 implementados y verificados: 17 reglas, avisos propios, primera lectura y recuperación de 24 h. [Informe y evidencia](NOTIFICATIONS_IMPLEMENTATION.md). CU30 general y Fase 11 no iniciados. Sepolia real sigue pendiente de testETH. Los apartados de cierres anteriores conservan su contexto histórico.
 
 **Estado histórico al cierre de Fase 9 implementada (2026-10-25/26).** D-12 aplicada a RF19/CU24 y RF20/CU25. [Implementación y verificación offline, excepciones autorizadas y Sepolia pendiente de testETH](BLOCKCHAIN_IMPLEMENTATION.md). CU30 general y Fase 10 no iniciados. Los cierres documentales anteriores conservan su contexto histórico.
 
@@ -1881,3 +1883,225 @@ Documentos del cierre: DECISIONS, BUSINESS_RULES, DOMAIN_MODEL, DATA_MODEL, USE_
 ## Aplicación del contrato RF21/CU26 — Fase 10
 
 La nueva instrucción autorizó N1–N9. Se conserva el contrato 9.5, cierre administrativo y límite de reconstrucción histórica, sin nuevo expediente D ni excepción SQL. Los 40 criterios tienen evidencia funcional; CU30 general y Fase 11 no iniciados. [Implementación y evidencia](NOTIFICATIONS_IMPLEMENTATION.md).
+
+## Dashboard & Reporting Contract / Readiness for Phase 11
+
+**Cierre documental de Fase 10.5 — 2026-10-26. RF22/CU27 y RF23/CU28: contrato cerrado; implementación NO iniciada. Bloqueantes documentales para Fase 11: 0.** Esta sección es la referencia normativa para el módulo futuro. No añade un D: concreta D-03/D-04, D-05, D-10, D-14, D-16 y D-17 ya existentes. La Fase 11 requiere una nueva instrucción de inicio; este cierre no la ejecuta.
+
+### DR1. Fuentes, alcance y precedencia
+
+Se contrastaron Word/PDF finales y los contratos e informes de Reservas, Equipamiento/Préstamos, IoT, Liberación, Blockchain y Notificaciones, junto con BUSINESS_RULES, DATA_MODEL, DOMAIN_MODEL, USE_CASE_MATRIX, REQUIREMENTS_TRACEABILITY, ARCHITECTURE, SECURITY_POLICY e IMPLEMENTATION_PLAN. Los originales conservan los SHA-256 de «Fuentes verificadas» y no se publican ni modifican.
+
+| Fuente académica | Localización verificada | Aplicación |
+| --- | --- | --- |
+| RF22 / RF23 | Tablas 31/32, pp. impresas 140/141, PDF 141/142; tablas homólogas Word | Indicadores por rol; filtros, preview y exportación autorizada |
+| CU27 / CU28 | Figuras 55/56 y tablas 64/65, pp. 213–215, PDF 214–216 | Cuatro roles en dashboard; Administrador/Encargado en reportes |
+| Análisis CU27/CU28 | Figura 101: título PDF 242 y diagrama PDF 243; figura 102 PDF 243 | Validar filtros/permisos, consolidar y generar; auditoría cuando corresponda |
+| RF25 / CU30 | Tabla 34 PDF 144; figura 58/tabla 67 PDF 218; figura 104 PDF 244 | Consulta global y detalle de bitácora reservados a otro alcance; CU30 NO IMPLEMENTADO |
+| Rendimiento / interfaz | R-TR-05/06 PDF 165; R-PR-05/06 PDF 169; IU-06/07 PDF 151; IS-12/13 PDF 154 | Dashboard <=5 s; exportación <=30 s hasta 10.000 filas; no bloquear otras operaciones |
+
+La instrucción expresa de Fase 10.5 concreta lo que las fuentes dejan abierto: catálogo inicial, fórmulas, granularidad, permisos, formatos, auditoría y exclusiones. Los nombres analíticos «Indicadores» y «Reporte» no autorizan tablas nuevas (D-14). Se consulta MySQL operacional; sin Data Warehouse, Data Mart, tablas agregadas/métricas, snapshots diarios, Elasticsearch, Redis analytics ni motor BI paralelo. Las agregaciones SQL no son tablas agregadas persistidas. No hay métricas financieras, indicador Blockchain general, asistencia inferida ni porcentaje universal de ocupación.
+
+### DR2. Reloj, periodos y semántica actual
+
+`t` es la hora del servidor con precisión de segundos en America/La_Paz al iniciar la consulta consistente. No se acepta «ahora» del cliente. DATETIME y fechas visibles siguen D-16: hora local institucional; convertir entradas externas con zona explícita antes de comparar. No presentar UTC como hora boliviana. Cada respuesta/archivo indica «Generado: fecha/hora (America/La_Paz)».
+
+Dashboard administrativo: Hoy (por defecto), Últimos 7 días, Últimos 30 días y Rango personalizado. Los dos últimos incluyen hoy y respectivamente las seis o veintinueve fechas locales anteriores; son días calendario, no ventanas móviles de 168/720 horas. Las fechas inicial/final son inclusivas para el usuario y se normalizan a `[A,B) = [00:00 del día inicial, 00:00 del día siguiente a la fecha final)`. Validar fechas reales e inicial <= final; mismo día es válido. No usar 23:59:59. Ejemplo: 26/10/2026 a 26/10/2026 significa [26/10 00:00,27/10 00:00). Se permiten fechas futuras para planificación; no inventar una prohibición académica.
+
+Los reportes que requieren rango usan estas mismas opciones, inicialmente Hoy, y explicitan la columna temporal indicada en DR6. Inventarios actuales no reciben un rango sin significado. Disponibilidad temporal exige dos instantes locales explícitos `inicio < fin`, intervalo [inicio,fin), y no transforma el fin a día siguiente. No se reserva ni garantiza disponibilidad futura al consultar/exportar.
+
+**Estado actual no equivale a historia.** Tarjetas de stock y distribuciones actuales ignoran el selector de periodo, con etiqueta «Estado actual al corte». Solo las tarjetas/gráficos identificados como de periodo usan [A,B). Una reserva/préstamo del periodo se agrupa por su estado actual, no por un supuesto estado que tuvo entonces. No reconstruir historia sin evidencia ni autocambiar estados al consultar. Tampoco inferir FINALIZADA porque pasó fin.
+
+Una petición usa lecturas consistentes MySQL del mismo snapshot, sin locks de escritura sobre negocio, y un único corte para condiciones derivadas. Se permite pasar ese corte al lector central existente durante Fase 11 conservando su algoritmo; no duplicar reglas. La lectura de autorización se realiza antes del snapshot y vuelve a comprobarse fuera de él antes de entregar datos/archivo. Error de consulta no es cero; invalidación de autorización no es un dataset vacío.
+
+### DR3. Permisos y matrices de acceso
+
+Son permisos **previstos**, aún no creados en catálogo, seeders ni BD:
+
+| Permiso / capacidad | Administrador | Encargado de Laboratorio | Docente | Estudiante |
+| --- | --- | --- | --- | --- |
+| dashboard.ver | Sí | Sí | Sí | Sí |
+| Dashboard institucional | DR4 y permisos de dominio | DR4 y permisos efectivos, sin igualdad hardcodeada | No | No |
+| Dashboard personal | Solo si además posee un rol solicitante activo elegible | Solo si además posee un rol solicitante activo elegible | DR5, solo propio | DR5, solo propio |
+| reportes.ver | Sí | Sí | No | No |
+| reportes.exportar | Sí | Sí | No | No |
+| Reportes personales en Fase 11 | No hay catálogo | No hay catálogo | No | No |
+| CU30 | NO IMPLEMENTADO | No autorizado por CU30 | No | No |
+
+Cuenta ACTIVO, sesión vigente, asignación no retirada y permiso aportado por rol elegible según D-04 son acumulativos. `dashboard.ver` permite entrar, no leer todos los dominios. No se crea un permiso por tarjeta. Exportar exige `reportes.ver` + `reportes.exportar` + los permisos del dominio de DR6, cada uno con su elegibilidad efectiva; nunca bypass de Administrador. Se reutilizan scopes/Policies actuales, incluidos filtros y opciones disponibles. El alcance administrativo es el actualmente acreditado por cada servicio; no se inventa una asignación Encargado–recurso ni se amplía la cobertura por ausencia de esa relación.
+
+Un actor multirrol puede elegir solo las vistas para las que reúne condiciones; por defecto institucional si tiene rol administrativo vigente y dashboard.ver, personal en otro caso habilitado. Cambiar vista no combina ni amplía scopes. Sin una capacidad de dominio se omite la tarjeta/gráfico y su consulta; no devolver métricas ocultas en props/JSON ni representar falta de permiso mediante 0. Si no quedan tarjetas autorizadas, mostrar un aviso de capacidades disponibles sin cifras ajenas. Para Docente/Estudiante es obligatorio `solicitante_id = actor.id`; notificaciones usan `destinatario_id = actor.id`.
+
+### DR4. Catálogo administrativo cerrado
+
+Todas las filas requieren dashboard.ver. En las columnas Admin/Encargado, «Sí condicionado» significa únicamente si también conserva el permiso indicado y el scope del servicio de dominio. Se cuenta una vez cada entidad, mediante COUNT/EXISTS o GROUP BY; no multiplicar por joins/pivotes.
+
+| ID / tarjeta | Fórmula y periodo | Permiso adicional | Admin | Encargado |
+| --- | --- | --- | --- | --- |
+| A1 Reservas pendientes | COUNT reservas con estado=PENDIENTE; actual, sin rango | reservas.ver_administrativas | Sí condicionado | Sí condicionado |
+| A2 Reservas aprobadas activas | estado=APROBADA e inicio <= t < fin; actual | reservas.ver_administrativas | Sí condicionado | Sí condicionado |
+| A3 Reservas liberadas en el periodo | estado actual=LIBERADA y EXISTS evaluación de esa reserva con resultado=LIBERAR y A <= fecha_hora < B; COUNT reservas distintas | reservas.ver_administrativas + liberacion.evaluaciones.ver_administrativas | Sí condicionado | Sí condicionado |
+| A4 Espacios por estado operativo | COUNT GROUP BY espacios_academicos.estado: DISPONIBLE/BLOQUEADO/EN_MANTENIMIENTO; actual | espacios.ver | Sí condicionado | Sí condicionado |
+| A5 Solicitudes de préstamo pendientes | prestamos.estado=PENDIENTE; actual | prestamos.ver_administrativos | Sí condicionado | Sí condicionado |
+| A6 Préstamos entregados | estado=ENTREGADO; actual; puede presentar dos subtotales disjuntos t <= fin_previsto y t > fin_previsto | prestamos.ver_administrativos | Sí condicionado | Sí condicionado |
+| A7 Préstamos vencidos | estado=ENTREGADO y t > fin_previsto; actual | prestamos.ver_administrativos | Sí condicionado | Sí condicionado |
+| A8 Equipamiento por estado | COUNT GROUP BY estado: DISPONIBLE/PRESTADO/EN_MANTENIMIENTO/BAJA; actual | equipamientos.ver | Sí condicionado | Sí condicionado |
+| A9 Incidencias/mantenimientos abiertos | estado=ABIERTA, desglosable por INCIDENCIA/MANTENIMIENTO; actual, también abiertos con inicio futuro | incidencias.ver | Sí condicionado | Sí condicionado |
+| A10 Espacios con monitoreo IoT no determinable | Número de espacios autorizados con al menos un sensor HABILITADO actualmente asociado cuyo resumen central sea NO_DETERMINABLE; actual | iot.monitoreo.ver + espacios.ver | Sí condicionado | Sí condicionado |
+
+A7 es subconjunto de A6; no sumarlos como si fueran categorías excluyentes. Igualdad t=fin_previsto aún no es vencido. Una devolución PENDIENTE_REVISION conserva ENTREGADO y puede seguir vencida. La distribución de A4 es operativa: DISPONIBLE no significa libre para reservar. La disponibilidad para un intervalo reutiliza SpaceAvailabilityService con estado, APROBADA solapada, bloqueos activos e incidencias ABIERTA según reglas existentes; no sustituirla por IoT ni por el enum. Una incidencia abierta aplica según el contrato de Fase 5, sin redefinir su inicio/fin previsto como ventana de disponibilidad.
+
+El catálogo inicial tiene **10 tarjetas**, sin tarjeta adicional de alertas de liberación. La opción de §70 queda expresamente fuera de la primera entrega. Una ampliación posterior deberá definir un conteo del periodo desde evaluaciones_liberacion.resultado=ALERTAR, con fecha_hora; «pendiente» no es un estado existente y no se lo inventa.
+
+| ID / gráfico | Dataset, agrupación y corte | Permiso adicional | Admin | Encargado |
+| --- | --- | --- | --- | --- |
+| G1 Reservas por estado | Solicitadas en [A,B) según solicitada_en; GROUP BY estado actual, seis estados oficiales | reservas.ver_administrativas | Sí condicionado | Sí condicionado |
+| G2 Préstamos por estado | Solicitados en [A,B) según solicitado_en; GROUP BY estado actual, cinco estados oficiales | prestamos.ver_administrativos | Sí condicionado | Sí condicionado |
+| G3 Equipamiento por estado | Mismo agregado actual de A8; sin filtro de periodo | equipamientos.ver | Sí condicionado | Sí condicionado |
+| G4 Incidencias abiertas por tipo | Mismo agregado actual de A9; sin filtro de periodo | incidencias.ver | Sí condicionado | Sí condicionado |
+| G5 Tendencia de solicitudes de reserva | COUNT reservas por solicitada_en en [A,B); todos los estados | reservas.ver_administrativas | Sí condicionado | Sí condicionado |
+| G6 Tendencia de solicitudes de préstamo | COUNT prestamos por solicitado_en en [A,B); todos los estados | prestamos.ver_administrativos | Sí condicionado | Sí condicionado |
+
+Las tendencias cuentan solicitudes creadas, no aprobaciones ni todas las fechas ocupadas. Para rangos de hasta 31 fechas calendario inclusivas se agrupa por día local; con más de 31, por mes local. Primer/último mes se recortan al rango: no contar eventos exteriores al filtro. Orden temporal ascendente. Completar con 0 únicamente buckets calendario cubiertos por una consulta exitosa, sin filas duplicadas ni intervalos externos; si toda la serie está vacía, mostrar el estado vacío en vez de simular actividad. Mismo agregado se reutiliza en tarjeta/gráfico, no consultas divergentes. Etiquetas distinguen cohortes del periodo y stock actual; sin nuevos gráficos ni indicadores financieros.
+
+### DR5. Dashboard personal e IoT
+
+Las cuatro columnas de DR3 distinguen roles; Docente y Estudiante reciben exactamente estas siete tarjetas, con dashboard.ver, propiedad en SQL y permiso adicional indicado. No comparativas ni totales institucionales:
+
+| ID / tarjeta propia | Fórmula al corte t | Permiso adicional | Docente | Estudiante |
+| --- | --- | --- | --- | --- |
+| P1 Mis reservas pendientes | PENDIENTE, solicitante_id=actor | reservas.ver_propias | Sí condicionado | Sí condicionado |
+| P2 Mis próximas reservas aprobadas | APROBADA, inicio >= t, solicitante_id=actor; orden inicio ASC,id ASC | reservas.ver_propias | Sí condicionado | Sí condicionado |
+| P3 Mis préstamos pendientes | PENDIENTE, solicitante_id=actor | prestamos.ver_propios | Sí condicionado | Sí condicionado |
+| P4 Mis préstamos aprobados pendientes de entrega | APROBADO, solicitante_id=actor | prestamos.ver_propios | Sí condicionado | Sí condicionado |
+| P5 Mis préstamos entregados | ENTREGADO, solicitante_id=actor | prestamos.ver_propios | Sí condicionado | Sí condicionado |
+| P6 Mis préstamos vencidos | ENTREGADO y t > fin_previsto, solicitante_id=actor | prestamos.ver_propios | Sí condicionado | Sí condicionado |
+| P7 Mis notificaciones no leídas | destinatario_id=actor y leida_en IS NULL; contador existente de NotificationReadService | notificaciones.ver_propias | Sí condicionado | Sí condicionado |
+
+Sin selector de periodo en las tarjetas personales actuales. P2 cuenta todas las próximas; el listado auxiliar muestra hasta cinco, ordenado, con enlace a la consulta propia reautorizada. En inicio=t, la reserva satisface P2 y A2 según sus definiciones exactas; no sumar ambos conceptos. P4 conserva APROBADO aunque su intervalo previsto ya haya pasado: no inventar vencimiento de aprobados. P7 no lee/marca notificaciones ni depende de filtros/paginación CU26. Sin gráficos institucionales en la vista personal.
+
+Para A10 y el resumen IoT se reutiliza IotMonitoringService: ventana de frescura configurada (300 s por defecto), ambas fechas evento/recepción, asociación histórica=actual y sensor habilitado. Con lectura reciente no se obtiene una interpretación universal de valor: **el contrato actual conserva ocupacion=NO_DETERMINABLE incluso con lecturas recientes**. A10 puede por tanto coincidir con todos los espacios monitorizados; es incertidumbre de interpretación, no un contador de offline. Espacios sin sensor habilitado quedan «Sin monitoreo» y fuera de su denominador. Si no hay espacios monitorizados, A10=0 y se explica «Sin espacios monitorizados»; eso no afirma cero ocupación.
+
+El resumen adicional autorizado puede presentar número de espacios con al menos una lectura reciente y sin evidencia reciente, partición del mismo conjunto monitorizado, y hasta cinco últimos eventos por espacio consultado con iot.monitoreo.ver. Lecturas contradictorias se señalan según Fase 7 aunque sean recientes. No confundir ultima_comunicacion reciente con evidencia de ocupación; no derivar asistencia o porcentaje de ocupación. Fallo del lector: «Sin datos suficientes»/aviso de indisponibilidad, nunca libre ni 0 como resultado de un error. La semántica especializada de CU23 no se reutiliza como ocupación universal. No persistir online/offline, vencido ni disponibilidad calculada.
+
+### DR6. Catálogo de reportes, filtros, columnas y orden
+
+Siete definiciones estables, administrativas, sin catálogo personal. Toda preview exige reportes.ver y elegibilidad Admin/Encargado; toda exportación añade reportes.exportar. Los permisos de dominio son acumulativos, nunca sustituidos por el permiso general. Paginación de preview: 25 filas, opciones 25/50/100; la exportación contiene todas las filas autorizadas que cumplan filtros dentro del límite técnico, no solo la página visible. Orden fijo por definición; las claves ID de desempate no se añaden como columnas si no aparecen en el catálogo. No aceptar SQL/tabla/columna/ORDER BY desde cliente.
+
+En relaciones a recursos se usan codigo/nombre de recursos_institucionales y las FK físicas de cada subtipo. «Solicitante» es nombre visible del usuario relacionado, permitido por la consulta administrativa de reserva/préstamo; no requiere otorgar gestión global de usuarios al Encargado. No incluir correo, CI, sesiones, credenciales ni atributos del modelo completo. Nullable se muestra «—» en preview/PDF y celda vacía en XLSX, nunca fecha inventada. Las etiquetas humanas no renombrarán columnas SQL. Opciones de selectores se obtienen de datasets autorizados, no de un directorio global.
+
+| ID / nombre | Permisos de dominio | Filtros admitidos y criterio temporal | Orden lógico fijo |
+| --- | --- | --- | --- |
+| reservas / Reservas | reservas.ver_administrativas | Rango obligatorio; estado de los seis oficiales, espacio_id, piso_id, solicitante_id autorizado. Periodo de uso: inicio < B y fin > A | inicio ASC,id ASC |
+| espacios / Disponibilidad y espacios | espacios.ver | Vista inventario o disponibilidad; piso_id, tipo_espacio_id, estado operativo. Inventario sin rango; disponibilidad exige inicio/fin y admite disponible=todos/sí/no | recurso.codigo ASC,recurso_id ASC |
+| equipamiento / Equipamiento tecnológico | equipamientos.ver | estado de los cuatro oficiales, tipo_equipamiento_id, espacio_base_id, incluida opción «Sin ubicación base». Sin rango: inventario actual | recurso.codigo ASC,recurso_id ASC |
+| prestamos / Préstamos y vencimientos | prestamos.ver_administrativos | Rango obligatorio; estado de los cinco oficiales, equipamiento_id, solicitante_id autorizado, vencido=todos/sí/no. Periodo previsto: inicio_previsto < B y fin_previsto > A | inicio_previsto ASC,id ASC |
+| incidencias / Incidencias y mantenimiento | incidencias.ver | Rango obligatorio por A <= inicio < B; tipo INCIDENCIA/MANTENIMIENTO, estado ABIERTA/CERRADA y recurso_id autorizado | inicio DESC,id DESC |
+| iot / Ocupación IoT | iot.monitoreo.ver | Rango obligatorio por A <= fecha_evento < B; espacio_historico_id, sensor_id, tipo PRESENCIA/OCUPACION | fecha_evento DESC,fecha_recepcion DESC,id DESC |
+| actividad-operacional / Resumen de actividad operacional | Permisos por familia en DR7 | Rango obligatorio por A <= registros_actividad.fecha_hora < B; categoría, acción de whitelist y resultado oficial. Sin búsqueda libre global ni filtro de actor | fecha local ASC,categoría ASC,acción ASC,resultado ASC,clase responsable ASC,id/clave responsable ASC,clase referencia ASC,id referencia ASC |
+
+Todos los filtros se combinan por AND; ausente equivale a todos dentro del scope, no a eliminar autorización. Estado/vencido incompatibles producen cero filas, no reinterpretación del filtro. «Vencido=no» es la negación de (ENTREGADO y t>fin_previsto), por lo que incluye otros estados: para entregados vigentes se combinan estado=ENTREGADO y vencido=no. Rango de préstamos/reservas no es fecha de solicitud ni reconstrucción histórica; préstamos antiguos aún vencidos pueden quedar fuera si su intervalo previsto no solapa el rango, y la UI lo explicará. Para incidencias «rango de inicio» no significa «estuvo abierta en algún momento»: fin_previsto no acredita cierre real. Estas distinciones evitan que el reporte se compare erróneamente con un stock actual o una tendencia de solicitudes.
+
+| Reporte / vista | Columnas de preview y exportación, en este orden | Origen / exclusiones |
+| --- | --- | --- |
+| Reservas | Código; Espacio; Solicitante; Inicio; Fin; Estado; Solicitada en; Resuelta en; Cancelada en | reservas.codigo; recurso del espacio (código y nombre); usuario solicitante; inicio,fin,estado,solicitada_en,resuelta_en,cancelada_en. Las dos últimas permanecen como columnas nullable. Excluir propósito, motivo_rechazo y motivo_cancelacion completos |
+| Espacios: inventario operativo | Código; Nombre; Piso; Tipo; Capacidad; Estado operativo | recurso.codigo/nombre, pisos.nombre, tipos_espacio.nombre, capacidad,estado; no afirmar disponibilidad temporal |
+| Espacios: disponibilidad para periodo | Código; Nombre; Piso; Tipo; Capacidad; Estado operativo; Disponible para el periodo | Las seis anteriores más booleano calculado por SpaceAvailabilityService. Inicio/fin consultados figuran en filtros del archivo/preview. Se incluyen todos los espacios del scope salvo filtro disponible. Sin detalles privados de reservas o motivos de terceros |
+| Equipamiento | Código; Nombre; Tipo; Marca; Modelo; Número de serie cuando permitido; Ubicación base; Estado | recurso.codigo/nombre, tipos_equipamiento.nombre, marca,modelo,numero_serie, espacio_base (código y nombre),estado. Número de serie solo con equipamientos.gestionar además de ver; si falta se omite la columna en ambos formatos y preview. Sin ubicación: «Sin ubicación base». No exportar referencia_ubicacion libre |
+| Préstamos | Código; Equipamiento; Solicitante; Inicio previsto; Fin previsto; Estado; Vencido; Solicitado en; Resuelto en | prestamos.codigo, recurso de equipamiento, usuario solicitante, inicio_previsto,fin_previsto,estado, booleano derivado a t, solicitado_en,resuelto_en. Excluir motivo, motivo_rechazo y observaciones de entrega/devolución |
+| Incidencias | Recurso; Tipo; Inicio; Fin previsto; Estado; Reportante cuando autorizado; Cerrada en | recurso (código y nombre), tipo,inicio,fin_previsto,estado, nombre de reportado_por_id con incidencias.ver y scope de esa incidencia, cerrada_en. Excluir descripcion y solucion completas; no inferir responsabilidad culpable |
+| IoT | Espacio histórico; Sensor; Tipo; Valor; Fecha evento; Fecha recepción | recurso de espacio_historico_id (código y nombre actuales de esa identidad histórica), sensor.identificador, tipo,valor,fecha_evento,fecha_recepcion. El vínculo histórico no cambia si se reasigna sensor; no prometer snapshot del nombre anterior. Valor decimal nullable, no porcentaje. Sin persona, firma, secreto, token ni inferencia de asistencia |
+| Actividad operacional | Fecha local (día); Acción; Resultado; Actor/proceso permitido; Categoría; Referencia técnica; Cantidad | Agregado cerrado DR7; no registro individual, descripcion, ID de actividad, detalle de evidencia ni texto canónico |
+
+No hay switches de «incluir todo» ni campos libres adicionales. Las políticas de campos (serie/reportante/actor) se evalúan igualmente en preview/PDF/XLSX, antes de proyectar columnas; una exportación nunca eleva la visibilidad de un atributo.
+
+### DR7. Resumen operacional y frontera con CU30
+
+Fuente: registros_actividad ya existente, solo filas confirmadas y autorizadas. Un grupo es (día local de fecha_hora, accion, resultado, responsable permitido, categoría, referencia técnica), con COUNT(*) como Cantidad. No se agregan eventos inventados a partir del estado de un recurso; no se exige que cada grupo tenga más de una fila para ser un resumen. No se permite abrir/desagregar un grupo a registros individuales. La preview es una tabla agregada del reporte, no un navegador de bitácora.
+
+Whitelist inicial de acciones y alcance exacto:
+
+| Categoría | Acciones incluidas | Permiso adicional y ámbito |
+| --- | --- | --- |
+| RESERVAS | RESERVA_SOLICITADA, RESERVA_APROBADA, RESERVA_RECHAZADA, RESERVA_CANCELADA | reservas.ver_administrativas y scope de la reserva enlazada |
+| PRESTAMOS | PRESTAMO_SOLICITADO, PRESTAMO_APROBADO, PRESTAMO_RECHAZADO, PRESTAMO_ENTREGADO, DEVOLUCION_PENDIENTE_REVISION, PRESTAMO_DEVUELTO, PRESTAMO_VENCIDO | prestamos.ver_administrativos y scope del préstamo enlazado |
+| INCIDENCIAS | INCIDENCIA_REGISTRADA, INCIDENCIA_CERRADA, MANTENIMIENTO_REGISTRADO, MANTENIMIENTO_CERRADO | incidencias.ver y scope de la incidencia enlazada |
+| LIBERACION | RESERVA_ALERTADA_LIBERACION, RESERVA_LIBERADA | reservas.ver_administrativas + liberacion.evaluaciones.ver_administrativas y scope de la reserva/evaluación correlacionada según Fase 10 |
+| REPORTES | REPORTE_EXPORTADO | reportes.ver y actor_id=usuario actual; solo sus exportaciones anteriores, incluso para Administrador |
+
+Las diecisiete acciones de negocio provienen de Fases 9/10; agregar REPORTE_EXPORTADO al reporte no la agrega a NotificationRuleRegistry. Excluir acciones desconocidas/futuras, seguridad, sesiones, configuración, QR/IoT técnicos y detalles Blockchain. No usar prefijos SQL que acepten automáticamente nuevas acciones. Resultado admite el enum físico EXITO/RECHAZO/ERROR; las actividades actuales de negocio son EXITO, sin fabricar filas ERROR ni una nueva política de registro de fallos.
+
+Responsable humano: nombre visible e ID técnico solo con usuarios.ver; sin ese permiso, etiqueta «Usuario #ID» (identidad técnica sin nombre, correo o CI). Proceso: scheduler:liberacion se presenta «Liberación automática» y scheduler:vencimientos como «Detección de vencimientos», conforme a los productores existentes; procesos desconocidos se presentan «Proceso interno», sin ejecutar ni volcar texto arbitrario. La clave de agrupación sigue siendo actor_id o proceso normalizado para no fusionar humanos distintos. Referencia: código de reserva para RESERVAS/LIBERACION, código de préstamo para PRESTAMOS, «Incidencia #ID» para INCIDENCIAS, «—» para REPORTES; nunca enlaces de detalle de bitácora. La autorización usa las relaciones/contexto validado, no parsea texto libre como permiso ni muestra metadatos de otras familias por tener varias FK. Contexto ausente/inconsistente se excluye y diagnostica de forma técnica segura; no se deduce actor/titular.
+
+Fase 11 no crea pantalla `/actividad`, búsqueda global de auditoría, detalle de registro, reconstrucción exhaustiva ni exportación del canónico. **CU30 debe terminar Fase 11 declarado NO IMPLEMENTADO.** RF25 tiene productores mínimos en otros módulos; eso no acredita su consulta integral. Que Admin y Encargado generen este resumen CU28 no concede CU30 al Encargado.
+
+### DR8. Preview, consistencia y arquitectura prevista
+
+Backend autoritativo: DashboardService y queries especializadas reciben actor/corte/filtros, reutilizan scopes y servicios centrales. Vue solo presenta métricas del servidor. Sin WebSocket ni polling automático agresivo: recalcular al cargar, cambiar filtros y navegar; botón «Actualizar» permitido. Las tablas/gráficos tienen texto y estados accesibles; el color no es el único portador del significado.
+
+ReportRegistry contiene las siete definiciones whitelist; cada ReportDefinition fija permisos, filtros tipados, base temporal, scope, proyección autorizada, orden y formatos. ReportQueryService produce la preview y el iterador de exportación con esas mismas reglas; ReportExportService aplica solo renderizado PDF/XLSX, límites, temporales y auditoría. Los nombres son orientativos, las responsabilidades obligatorias. No controladores monolíticos ni filtros/reglas repetidos por formato. Componer scopes existentes; no trasladar la lógica de disponibilidad, vencimiento, monitoreo o CU26 a un BI paralelo.
+
+La preview precede a la exportación: cambiar filtros invalida visualmente la preview anterior y se vuelve a consultar antes de habilitar exportar. Frontend envía identificador de reporte, formato y filtros; nunca filas, SQL, scope, identidad de generador ni resultado calculado. El servidor revalida y reconstruye. PDF/XLSX comparten exactamente filtros normalizados, scope, columnas y orden lógico con la preview. La paginación limita su presentación, no el conjunto exportable.
+
+Cada request consulta datos actuales. La igualdad es de definición y reglas, no una promesa de inmovilidad entre requests: una operación confirmada o un préstamo que vence entre preview y exportación puede cambiar filas/derivados; se muestran cortes distintos. No guardar tablas de snapshots ni confiar en filas antiguas del navegador para forzar igualdad. Si los permisos cambian, se deniega cuando falta una capacidad requerida, o se vuelve a consultar el conjunto/columnas más restringidos y se informa de la nueva preview antes de permitir su exportación. Una revocación durante generación invalida el archivo, que se elimina sin entregarlo.
+
+Dentro de cada generación, COUNT de límite e iteración usan el mismo snapshot de lectura; orden estable con desempate y paginación por claves/tupla cuando corresponda, sin OFFSET cambiante sobre datos vivos. Materializar el dataset autorizado en un temporal privado por lotes permite cerrar pronto el snapshot antes del renderizado/auditoría. Ese temporal efímero no es una tabla/snapshot de negocio. No mantener locks de escritura durante generación ni llamadas a red. Revalidar autorización mediante lectura actual fuera del snapshot antes de enviar la respuesta/archivo.
+
+### DR9. PDF, XLSX y seguridad de formatos
+
+Formatos oficiales: **PDF y XLSX**, sin CSV como requisito principal. Antes de instalar en Fase 11, evaluar alternativas mantenidas: compatibilidad demostrada con Laravel actual y PHP 8.5, licencias y dependencias transitivas, advisories y auditoría, consumo de memoria/tiempo, soporte de Unicode, paginación/streaming y reproducibilidad. Gráficos requieren biblioteca Vue/JS local compatible y mantenida, con licencia, vulnerabilidades e impacto medido del bundle antes/después. No fijar una dependencia sin esa evaluación; la selección técnica en Fase 11 no es un vacío del contrato funcional. En Fase 10.5 no se instala ni elige una versión de biblioteca.
+
+Todo procesamiento PDF/XLSX es local server-side; gráficos empaquetados localmente, sin CDN ni servicio externo. No incluir Hardhat ni herramientas blockchain en el runtime web para generar reportes.
+
+PDF: encabezado ESPACIO-U / FICCT, título/vista, fecha de generación/zona, nombre del usuario generador autenticado, filtros resumidos con etiquetas autorizadas, tabla completa y paginación visual «Página n de N». Repetir encabezados de tabla, permitir orientación horizontal cuando las columnas lo requieran y evitar recortes/superposiciones. Escapar todo dato en plantillas; no permitir HTML libre ni carga de URL remota. Recursos/fonts locales de una whitelist, sin lecturas arbitrarias `file://`, scripts, adjuntos ni enlaces construidos desde texto de usuario. No incluir secretos, motivos o datos excluidos.
+
+XLSX: una hoja principal de nombre fijo del catálogo, título, generación/zona y filtros en una sección clara; encabezados, autofiltro en la tabla y tipos de celda correctos. Fechas reales Excel con formato legible local (y zona explicada en metadatos), cantidades/capacidades/valor decimal tipados, booleanos consistentes, códigos/series/identificadores como texto para conservar ceros iniciales. Nulos vacíos. Sin macros, enlaces externos, fórmulas de totales ni fórmulas procedentes de datos. Cada celda textual se escribe explícitamente como **string** mediante la API de la biblioteca, desactivando detección automática de fórmulas y de hipervínculos. Incluye nombres, códigos, actor, filtros y cualquier campo libre, no solo columnas de datos.
+
+**Formula injection:** contenidos de usuario que empiecen por `=`, `+`, `-` o `@` se conservan como texto inerte, incluidos casos precedidos por espacios, tabuladores, CR/LF o controles. No basta entrecomillar como CSV, dar formato visual «Texto» a una fórmula ya creada o confiar en escapes HTML. El escritor debe emitir celda de texto y ningún elemento de fórmula; si una biblioteca no puede garantizarlo se descarta. Números negativos procedentes de columnas numéricas validadas siguen siendo números; cadenas «-1» de origen libre son texto. Prueba futura inspecciona XML interno de XLSX y apertura real, sin ejecutar entradas maliciosas. Nombres de hoja/archivo no se derivan de contenido libre.
+
+### DR10. Auditoría mínima de exportación
+
+Cada exportación exitosa PDF/XLSX genera **una actividad no crítica REPORTE_EXPORTADO**. Es el único productor nuevo de este contrato; no se implementa ahora. RegistroActividad existente: actor_id=usuario autenticado, accion=REPORTE_EXPORTADO, fecha_hora del servidor al registrar, resultado=EXITO, critica=FALSE; proceso_responsable=NULL. usuario_afectado_id, recurso_id, reserva_id, prestamo_id e incidencia_id son NULL, porque un reporte no representa una mutación de esas entidades. Se conserva el CHECK actor/proceso y no se altera esquema/enum (accion ya es textual).
+
+descripcion es un resumen seguro de hasta 500 caracteres: slug del reporte, vista si aplica, formato, rango/instantes normalizados, filtros de enum y referencias numéricas autorizadas, cantidad y corte. Construir con plantilla/whitelist; sin nombres personales, motivos, SQL, paths internos, credenciales, payloads QR/IoT o el dataset. Puede resumir filtros extensos sin perder tipo/formato/rango. No llamar al recorder de actividades críticas, no crear evidencia Blockchain, no añadir regla de notificación ni depender de RPC, fondos o éxito del consumidor de avisos.
+
+Éxito significa **archivo íntegro generado y autorizado, listo para entregar en una respuesta de descarga**. Secuencia: consulta y validación no vacía → generación local completa → comprobación de archivo/límites → reautorización actual → inserción transaccional de la actividad → servir. Si falla generación, límite, integridad, autorización o inserción de actividad, no se sirve ni se deja REPORTE_EXPORTADO/EXITO. No abrir una transacción de escritura mientras se renderiza. El fallo de auditoría obliga a descartar archivo y ofrecer reintento; no ampliar a bitácora de errores CU30.
+
+No se puede certificar recepción física completa del archivo por el navegador. Una desconexión después del commit de puesta a disposición no borra un éxito ya registrado; el significado no es «usuario guardó el archivo». Un reintento que vuelve a generar y entregar constituye otra exportación exitosa. Preview, filtros, contador y paginación no generan esta actividad. El dataset de actividad se materializa antes de registrar su propia exportación: puede incluir exportaciones anteriores del actor, nunca producir recursión ni incluirse a sí misma.
+
+### DR11. Rendimiento, límites, descarga y estados vacíos
+
+Prioridad inicial: corrección sobre MySQL, sin cache compleja ni colas/tablas de reportes. COUNT, GROUP BY y EXISTS sobre proyecciones mínimas; nunca Model::all() ni descargar tablas enteras a PHP/Vue para contar. Reutilizar índices existentes. Registrar EXPLAIN y mediciones con volúmenes sintéticos; solo proponer migración adicional de índice en Fase 11 si la necesidad está demostrada y documentada. Fase 10.5 no crea índices. Cualquier tabla nueva de negocio exige detener esa propuesta y justificar documentalmente antes de implementarla.
+
+Límite técnico inicial futuro, configurable: `REPORT_EXPORT_MAX_ROWS=10000`, por las pruebas R-TR-06 hasta 10.000 filas y la generación síncrona acotada; no es una restricción académica ni límite de la preview paginada. Aplicar al total de filas de salida (grupos en actividad), contar hasta límite+1 cuando baste y rechazar exceso con explicación para reducir filtros; nunca truncar silenciosamente. Permitir exactamente 10.000. No se fija un máximo arbitrario de días: rangos extensos siguen autorizados, sujetos a presupuesto de consulta; un límite temporal técnico posterior exige medición, configuración y documentación.
+
+Presupuestos iniciales configurables previstos: `REPORT_EXPORT_TIMEOUT_SECONDS=30` para trabajo del servidor (objetivo R-TR-06, sin tiempo de transferencia de red) y `REPORT_EXPORT_MAX_BYTES=67108864` (64 MiB) para acotar disco/salida temporal; máximo de memoria sigue el memory_limit finito del runtime documentado. Estos límites se medirán en Fase 11: no declararlos cumplidos por documentarlos. Leer por chunks/iteradores y usar escritura incremental soportada por la biblioteca; un motor PDF que materialice todo debe demostrar consumo acotado con el límite y las pruebas. Abortar limpiamente al exceder presupuesto, sin archivo parcial entregado ni éxito auditado. Dataset sintético incluirá textos largos/multibyte, 0/1/10.000/10.001 filas y otros usuarios operando durante exportación. Dashboard <=5 s; exportación hasta 10.000 filas <=30 s son criterios por verificar, no evidencia de esta fase.
+
+Temporales solo en almacenamiento privado local del proyecto, con nombre criptográficamente impredecible y acceso del proceso; nunca public/ ni URL permanente. Directorio acotado exclusivo de reportes. Eliminar tras servir/procesar, también en error/abort mediante finally/callback; limpieza de huérfanos al siguiente ciclo de mantenimiento y como máximo una hora después, limitada al directorio propio. TTL técnico previsto `REPORT_TEMP_TTL_SECONDS=3600`, no retención de informes. No persistir reportes por defecto ni incluirlos en Git/backups funcionales. La futura implementación debe probar limpieza también después de terminación abrupta del proceso.
+
+Nombre de descarga: `espacio-u_<reporte>_<YYYYMMDD-HHMMSS>.<ext>`, slug fijo DR6, hora local de generación y extensión pdf/xlsx de whitelist; no texto arbitrario ni ruta del cliente. El nombre público no identifica el temporal. Solo la solicitud autenticada que genera el archivo puede recibirlo; sin endpoint de archivo por path, enlaces compartidos ni URL pública permanente. Respuesta attachment con MIME correcto, nosniff y Cache-Control private,no-store; preview sensible también no-store. Revalidar RBAC/sesión al exportar y antes de entregar; CSRF para la petición de generación que producirá actividad. Los filtros usan Query Builder/Eloquent parametrizado y whitelists de claves/enum/orden, con IDs verificados en scope; rechazar claves desconocidas, fechas inválidas y formato no permitido.
+
+Cero se muestra **0** cuando un conteo completo autorizado realmente es cero. «Sin datos suficientes» corresponde a indeterminación semántica; «No se pudo consultar» a fallo técnico. Gráficos/tablas sin filas: «Sin datos para el periodo seleccionado» (inventarios sin periodo: «Sin datos para los filtros seleccionados»). No gráficos rotos ni un cero inventado por fallo/permiso. Exportación sin filas: preview vacía, mensaje informativo y ninguna descarga/actividad; si entre preview y exportación desaparecen todas las filas, aplicar la misma regla en backend. El archivo nunca incluye más información que la proyección autorizada de la preview.
+
+### DR12. Readiness y evidencia documental
+
+| Área cerrada | Contrato | Aceptación posterior |
+| --- | --- | --- |
+| Catálogo, fórmulas, roles y permisos | DR2–DR5; diez tarjetas/seis gráficos administrativos y siete tarjetas personales; tres permisos previstos | T-DR01–T-DR18 |
+| Siete reportes, filtros, columnas, ámbito y orden | DR6–DR7 | T-DR19–T-DR29 |
+| Preview/PDF/XLSX, arquitectura y auditoría | DR8–DR10 | T-DR30–T-DR39 |
+| Privacidad, seguridad, límites, rendimiento y temporales | DR3, DR9–DR11 | T-DR40–T-DR48 |
+| CU30 separado | DR7/DR10; NO IMPLEMENTADO también al finalizar Fase 11 | T-DR28/T-DR39 |
+| Fuente operacional y esquema | MySQL; 31 tablas académicas, 211 columnas, 63 FK intactas; catálogo actual 47 permisos | Diff exclusivamente documental; ninguna migración/instalación/semilla |
+
+**Bloqueantes documentales = 0.** La aceptación funcional y de rendimiento RF22/RF23 sigue pendiente de implementación/pruebas en Fase 11; los T-DR son criterios futuros, no pruebas ejecutadas. La selección/evaluación de librerías es trabajo técnico delimitado para esa fase, no una autorización de instalación ahora. La revisión documental conserva los textos de los 217 requisitos, los 30 CU, el esquema y fuentes originales. Los límites históricos de pruebas físicas QR, Sepolia pendiente y excepción temporal de desarrollo Hardhat/Zod siguen en sus informes y no se presentan como verificaciones de dashboard/reportes.
+
+**Fase 11 puede comenzar con una instrucción posterior del usuario. No se comenzó en Fase 10.5.** No se crearon dashboard, gráficos, controllers, endpoints, ReportRegistry, PDF/XLSX de salida, permisos en BD, REPORTE_EXPORTADO, tablas, migraciones ni dependencias. Los diagramas PDF consultados son fuentes académicas, no implementaciones.
+
+### Verificación documental de Fase 10.5
+
+Revisión sobre main limpio en 49e34c56ce533ca08e1e3bad6dfb29f0dc456b7b y rama docs/phase-10.5-dashboard-reporting-decisions. El cambio afecta exclusivamente 16 Markdown existentes: README, DECISIONS, BUSINESS_RULES, DATA_MODEL, DOMAIN_MODEL, USE_CASE_MATRIX, REQUIREMENTS_TRACEABILITY, ARCHITECTURE, SECURITY_POLICY, IMPLEMENTATION_PLAN y los seis informes de Reservas, Equipamiento/Préstamos, IoT, Liberación, Blockchain y Notificaciones.
+
+Comprobaciones: 217 requisitos normativos conservados (solo estado/criterio de RF22/RF23 actualizado), 30 CU conservados, catálogo D-01–D-17 intacto, filas del diccionario físico sin cambios, 12 secciones DR, 10 tarjetas administrativas, 6 gráficos, 7 tarjetas personales y 48 criterios futuros. SHA-256 Word/PDF coinciden con los originales verificados. 343 enlaces locales/anclas validados sin errores. Diff sin errores de whitespace; ningún archivo de implementación, migración, dependencia, permiso, configuración o secreto incluido.
+
+Escaneo previo de archivos públicos, índice, diff e historia Git: sin hallazgos de secretos ni material privado versionado; .env y salidas privadas siguen ignorados. Se revisa de nuevo el índice antes del commit. La evidencia de extracción, renderizado de diagramas fuente y controles queda en .local/qa/phase105, fuera de Git. No se ejecutaron pruebas funcionales, build, migraciones, instalaciones o auditorías de dependencias: no hubo cambios funcionales y los T-DR quedan para Fase 11. Esta verificación acredita cierre documental, no funcionalidad de reportes/dashboard.

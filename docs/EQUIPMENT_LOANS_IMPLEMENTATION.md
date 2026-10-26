@@ -1,6 +1,8 @@
 # Equipamiento, préstamos, entrega, devolución e incidencias — Fase 5
 
-**Estado vigente — Fase 10 (2026-10-26).** RF21/CU26 implementados y verificados: 17 reglas, avisos propios, primera lectura y recuperación de 24 h. [Informe y evidencia](NOTIFICATIONS_IMPLEMENTATION.md). CU30 general y Fase 11 no iniciados. Sepolia real sigue pendiente de testETH. Los apartados de cierres anteriores conservan su contexto histórico.
+**Estado vigente — Fase 10.5 documental (2026-10-26).** RF22/CU27 y RF23/CU28: [contrato de dashboard y reportes cerrado](DECISIONS.md#dashboard--reporting-contract--readiness-for-phase-11), **0 bloqueantes documentales**. Fase 11 NO iniciada; CU30 NO IMPLEMENTADO. Fase 10 funcional se conserva, sin cambios de código, datos, permisos o dependencias. Los cierres anteriores mantienen su contexto histórico.
+
+**Estado histórico funcional — Fase 10 (2026-10-26).** RF21/CU26 implementados y verificados: 17 reglas, avisos propios, primera lectura y recuperación de 24 h. [Informe y evidencia](NOTIFICATIONS_IMPLEMENTATION.md). CU30 general y Fase 11 no iniciados. Sepolia real sigue pendiente de testETH. Los apartados de cierres anteriores conservan su contexto histórico.
 
 Fecha: 2026-10-23. Núcleo de CU12–CU19 y RF9–RF15 implementado y validado; CU19 amplía CU06 y las revalidaciones de reservas. Se aplica el contrato congelado de Fase 4.5, D-02/D-11 y D-04/D-05, sin cambiar el SQL final. Las obligaciones de QR, Blockchain, notificaciones y bitácora general siguen pendientes de sus fases. **Fase 6 no iniciada.**
 
@@ -220,3 +222,9 @@ Conservar jerarquía de locks y estados Fase 5; generar avisos después del comm
 ## Extensión RF21 implementada — Fase 10
 
 Solicitud/aprobación/rechazo/revisión pendiente e incidencias/mantenimiento producen actividades no críticas; entrega/devolución final reutilizan críticas. Detector sin nuevo estado, S/AD/AI según contrato. No se alteran custodia, disponibilidad, receptor ni hitos QR. [Implementación y evidencia](NOTIFICATIONS_IMPLEMENTATION.md).
+
+## Consumo documental por CU27/CU28 — Fase 10.5
+
+[DR4–DR6](DECISIONS.md#dashboard--reporting-contract--readiness-for-phase-11) conserva Fase 5. Vencido = ENTREGADO y t>fin_previsto, nunca enum nuevo; igualdad no vence. Entregados incluyen vencidos y devoluciones pendientes de revisión; no sumar esos subconjuntos. Estado APROBADO antiguo no se convierte en vencido. Catálogo de equipo conserva DISPONIBLE/PRESTADO/EN_MANTENIMIENTO/BAJA; ABIERTA cuenta incidencias/mantenimiento incluidos futuros según regla vigente.
+
+Reportes administrativos: préstamos por solapamiento del intervalo previsto; incidencias por inicio, sin inferir cierre con fin_previsto; equipo inventario actual sin rango temporal. Columnas cerradas DR6; serie requiere equipamientos.gestionar, reportante incidencia autorizada, sin motivos, observaciones, descripción/solución completas. No cambiar inventario, custodia, disponibilidad ni estados por consultar/exportar. Tarjetas personales filtran solicitante_id en servidor. Fase 10.5 solo documenta; implementación y aceptación T-DR futuras.

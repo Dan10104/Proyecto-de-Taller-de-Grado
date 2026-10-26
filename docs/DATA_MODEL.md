@@ -1,6 +1,8 @@
 # Modelo de datos documentado
 
-**Estado vigente — Fase 10 (2026-10-26).** RF21/CU26 implementados y verificados: 17 reglas, avisos propios, primera lectura y recuperación de 24 h. [Informe y evidencia](NOTIFICATIONS_IMPLEMENTATION.md). CU30 general y Fase 11 no iniciados. Sepolia real sigue pendiente de testETH. Los apartados de cierres anteriores conservan su contexto histórico.
+**Estado vigente — Fase 10.5 documental (2026-10-26).** RF22/CU27 y RF23/CU28: [contrato de dashboard y reportes cerrado](DECISIONS.md#dashboard--reporting-contract--readiness-for-phase-11), **0 bloqueantes documentales**. Fase 11 NO iniciada; CU30 NO IMPLEMENTADO. Fase 10 funcional se conserva, sin cambios de código, datos, permisos o dependencias. Los cierres anteriores mantienen su contexto histórico.
+
+**Estado histórico funcional — Fase 10 (2026-10-26).** RF21/CU26 implementados y verificados: 17 reglas, avisos propios, primera lectura y recuperación de 24 h. [Informe y evidencia](NOTIFICATIONS_IMPLEMENTATION.md). CU30 general y Fase 11 no iniciados. Sepolia real sigue pendiente de testETH. Los apartados de cierres anteriores conservan su contexto histórico.
 
 **Estado histórico al cierre de Fase 9 implementada (2026-10-25/26).** RF19/CU24 y RF20/CU25, cuatro actividades críticas, dos tablas y tres permisos implementados conforme a D-12. [Implementación, pruebas offline, excepción temporal dev de Zod y Sepolia pendiente de testETH](BLOCKCHAIN_IMPLEMENTATION.md). CU30 general y Fase 10 permanecen pendientes. Las secciones de cierres anteriores conservan su contexto histórico.
 
@@ -1043,3 +1045,24 @@ No hay notification_outbox ni tabla snapshot de destinatarios. La ausencia de ma
 ## Materialización física — Fase 10
 
 Migración incremental 000031: ocho columnas, dos FK CASCADE/RESTRICT e índices oficiales. Sin UNIQUE nueva ni cambios de migraciones previas. Resultado instalado: **31 tablas académicas / 211 columnas / 63 FK**, más migrations técnica. [Implementación y evidencia](NOTIFICATIONS_IMPLEMENTATION.md).
+
+## Lectura para dashboard y reportes — Fase 10.5
+
+[Contrato DR1–DR12](DECISIONS.md#dashboard--reporting-contract--readiness-for-phase-11). Se conserva íntegro el diccionario/SQL: **31 tablas académicas, 211 columnas, 63 FK**. Ninguna tabla, columna, índice, enum, migration o permiso de BD se añade en esta fase. No hacen falta nuevas tablas de negocio para Fase 11. Una propuesta distinta debe justificarse documentalmente antes de implementarse.
+
+| Consulta futura | Fuente física y significado |
+| --- | --- |
+| Estado actual/cohorte de reserva | reservas.estado; actividad temporal inicio/fin; solicitud solicitada_en; resolución resuelta_en; cancelación cancelada_en |
+| Liberadas del periodo | reservas.estado=LIBERADA y EXISTS evaluaciones_liberacion(reserva_id,resultado=LIBERAR,fecha_hora en rango), sin multiplicar por pivotes |
+| Inventario/intervalo de espacio | recursos_institucionales + espacios_academicos; pisos/tipos; SpaceAvailabilityService considera reservas, bloqueos e incidencias existentes |
+| Equipo y préstamo | recursos_institucionales + equipamientos_tecnologicos; prestamos.inicio_previsto/fin_previsto/solicitado_en/resuelto_en; vencido derivado, no columna |
+| Incidencia | incidencias_mantenimiento.inicio/fin_previsto/estado/tipo/reportado_por_id/cerrada_en; sin descripción/solución en exportación inicial |
+| IoT | eventos_ocupacion.espacio_historico_id/sensor_id/tipo/valor/fecha_evento/fecha_recepcion; no reemplazar espacio histórico por asociación actual |
+| Notificaciones | notificaciones.destinatario_id/leida_en para contador central propio |
+| Resumen operacional/auditoría de exportación | registros_actividad, columnas oficiales; DR7/DR10 limitan lectura/escritura futura |
+
+DATETIME conserva America/La_Paz. Fechas civiles se convierten a [inicio de día, inicio del día posterior al final), sin 23:59:59. Un snapshot transaccional de lectura para consistencia no es una tabla de snapshots. Temporales de renderizado son privados y efímeros, fuera de la BD y Git.
+
+Reutilizar índices ya documentados: estado/solicitante y periodo de reservas/préstamos, estado/tipo/piso de espacios, estado/tipo/base de equipo, recurso/estado de incidencias, índices IoT/evaluaciones/actividad/notificaciones. EXPLAIN y mediciones deben acreditar cualquier índice adicional en Fase 11 antes de proponer migración; no se anticipa aquí. COUNT/GROUP BY/EXISTS, proyecciones mínimas e iteradores evitan materializar tablas completas.
+
+REPORTE_EXPORTADO futuro usa actor_id, accion textual existente, fecha_hora, resultado=EXITO, critica=FALSE y descripcion resumida; las FK de entidad, usuario_afectado_id y proceso_responsable quedan NULL. No cambia CHECK de responsable ni las cuatro actividades críticas. Los permisos previstos dashboard.ver/reportes.ver/reportes.exportar se documentan, no se siembran ahora.

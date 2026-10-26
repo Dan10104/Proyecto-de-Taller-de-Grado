@@ -1,6 +1,8 @@
 # Plan de implementación web
 
-**Estado vigente — Fase 10 (2026-10-26).** RF21/CU26 implementados y verificados: 17 reglas, avisos propios, primera lectura y recuperación de 24 h. [Informe y evidencia](NOTIFICATIONS_IMPLEMENTATION.md). CU30 general y Fase 11 no iniciados. Sepolia real sigue pendiente de testETH. Los apartados de cierres anteriores conservan su contexto histórico.
+**Estado vigente — Fase 10.5 documental (2026-10-26).** RF22/CU27 y RF23/CU28: [contrato de dashboard y reportes cerrado](DECISIONS.md#dashboard--reporting-contract--readiness-for-phase-11), **0 bloqueantes documentales**. Fase 11 NO iniciada; CU30 NO IMPLEMENTADO. Fase 10 funcional se conserva, sin cambios de código, datos, permisos o dependencias. Los cierres anteriores mantienen su contexto histórico.
+
+**Estado histórico funcional — Fase 10 (2026-10-26).** RF21/CU26 implementados y verificados: 17 reglas, avisos propios, primera lectura y recuperación de 24 h. [Informe y evidencia](NOTIFICATIONS_IMPLEMENTATION.md). CU30 general y Fase 11 no iniciados. Sepolia real sigue pendiente de testETH. Los apartados de cierres anteriores conservan su contexto histórico.
 
 **Estado histórico al cierre de Fase 9 implementada (2026-10-25/26).** RF19/CU24 y RF20/CU25, cuatro actividades críticas, dos tablas y tres permisos implementados conforme a D-12. [Implementación, pruebas offline, excepción temporal dev de Zod y Sepolia pendiente de testETH](BLOCKCHAIN_IMPLEMENTATION.md). CU30 general y Fase 10 permanecen pendientes. Las secciones de cierres anteriores conservan su contexto histórico.
 
@@ -210,17 +212,24 @@ Implementación disponible, 325 pruebas/4984 aserciones aprobadas. [Evidencia y 
 
 ### Fase 11 — Dashboard, indicadores y reportes
 
+**Lista para comenzar solo mediante nueva instrucción del usuario; NO iniciada.** [Cierre contractual Fase 10.5, 0 bloqueantes documentales](DECISIONS.md#dashboard--reporting-contract--readiness-for-phase-11).
+
 | Campo | Plan |
 | --- | --- |
 | Módulos afectados | Reportes e Indicadores |
-| Carpetas principales futuras | app/Services/; app/Http/; app/Policies/; resources/js/Pages/ y Components/; almacenamiento privado/configuración de exportación; tests/ |
+| Carpetas principales futuras | app/Services/; app/Http/; app/Policies/; resources/js/Pages/ y Components/; configuración/almacenamiento privado de exportación; tests/ |
 | Requisitos relacionados | RF22–23; IU-06/07; IS-12/13; RD-09/22; R-TR-05/06; R-UR-03/06; R-PR-05/06 |
-| Casos de uso | CU27–CU28 |
-| Trabajo previsto | Indicadores por rol; filtros; resultados vacíos; PDF/Excel; descarga autorizada; agregados cuando se justifiquen. |
-| Pruebas requeridas | Conteos contra datos fuente; filtros/permisos; <=5 s dashboard; <=30 s para 10.000 filas; otros usuarios siguen operando. |
-| Riesgos / puertas | Fuga en exportación; métricas inventadas; confundir cero con falta de datos; archivos efímeros/públicos. |
-| Condición de finalización | Indicadores verificables, exportaciones correctas y autorizadas, tiempos/carga medidos con dataset sintético. |
-| Commit esperado | `feat: add role dashboards and PDF Excel reports` |
+| Casos de uso | CU27–CU28; CU30 permanece NO IMPLEMENTADO |
+| Trabajo previsto | Materializar DR1–DR12: 10 tarjetas/6 gráficos administrativos y 7 personales; siete reportes whitelist, preview/PDF/XLSX comunes; auditoría mínima de exportación |
+| Permisos previstos | dashboard.ver para cuatro roles; reportes.ver/reportes.exportar solo Admin/Encargado, además de permisos/scopes de dominio; sin bypass |
+| Arquitectura | DashboardService; ReportRegistry/Definition, QueryService y ExportService o equivalentes; fuente MySQL operacional; sin tablas BI/cache compleja |
+| Evaluación de dependencias | Antes de instalar, comparar compatibilidad PHP 8.5/Laravel/Vue, mantenimiento/licencia, auditorías, streaming/memoria y bundle; procesamiento local, sin CDN/servicio externo |
+| Límites iniciales | 10.000 filas, 30 s servidor, 64 MiB salida/temporal, TTL huérfanos 3600 s; configurables y medidos, sin límite arbitrario de fechas |
+| Pruebas requeridas | T-DR01–T-DR48 y regresiones; <=5 s dashboard; <=30 s PDF/XLSX hasta 10.000 filas; otros usuarios operan; revisión visual y formula injection |
+| Riesgos / puertas | Fuga en métricas/archivo; cambio de permisos; confundir stock/historia, 0/indeterminado, estado/disponibilidad o recencia/ocupación; RAM/temporales; no ampliar CU30 |
+| Esquema e índices | No nuevas tablas de negocio; índices solo tras EXPLAIN/medición y propuesta documentada; cualquier tabla exige justificación previa |
+| Condición de finalización | Catálogo contractual completo, controles y mediciones verificadas, auditoría no crítica correcta; archivos locales seguros; CU30 declarado pendiente |
+| Commit esperado | feat: add role dashboards and PDF Excel reports |
 
 ### Fase 12 — Chatbot
 
@@ -366,3 +375,7 @@ No implementar email/SMS/WhatsApp/push/Firebase, infraestructura realtime, tabla
 ## Cierre y continuación — Fase 10
 
 RF21/CU26 implementados según N1–N9: SQL exacto, 17 acciones, destinatarios efectivos, lote atómico, reconciliación 24 h, detector y UI. Total 656 / 8721 en 788,96 s. CU30 general diferido. Fase 11 no iniciada: cerrar primero RF22/CU27 y RF23/CU28 (fórmulas, permisos, filtros, PDF/Excel, privacidad, vacíos y rendimiento); implementar solo tras nueva instrucción. [Implementación y evidencia](NOTIFICATIONS_IMPLEMENTATION.md).
+
+## Cierre documental de Fase 10.5 y continuación
+
+RF22/CU27 y RF23/CU28 cuentan con catálogo, fórmulas, RBAC, filtros/columnas, PDF/XLSX, auditoría, seguridad y rendimiento congelados en DR1–DR12. No se inició Fase 11 ni se instaló biblioteca, ejecutó migración, creó permiso o produjo REPORTE_EXPORTADO. La siguiente instrucción podrá autorizar su implementación en este orden: evaluar herramientas locales; capacidades y queries centrales; dashboard por rol; reportes y preview; renderizadores/temporales/auditoría; T-DR y regresiones/mediciones/revisión visual; publicación con evidencia real. Mantener CU30 separado.

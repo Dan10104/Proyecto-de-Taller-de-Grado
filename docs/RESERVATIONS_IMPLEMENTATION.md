@@ -1,6 +1,8 @@
 # Reservas de espacios académicos — Fase 4
 
-**Estado vigente — Fase 10 (2026-10-26).** RF21/CU26 implementados y verificados: 17 reglas, avisos propios, primera lectura y recuperación de 24 h. [Informe y evidencia](NOTIFICATIONS_IMPLEMENTATION.md). CU30 general y Fase 11 no iniciados. Sepolia real sigue pendiente de testETH. Los apartados de cierres anteriores conservan su contexto histórico.
+**Estado vigente — Fase 10.5 documental (2026-10-26).** RF22/CU27 y RF23/CU28: [contrato de dashboard y reportes cerrado](DECISIONS.md#dashboard--reporting-contract--readiness-for-phase-11), **0 bloqueantes documentales**. Fase 11 NO iniciada; CU30 NO IMPLEMENTADO. Fase 10 funcional se conserva, sin cambios de código, datos, permisos o dependencias. Los cierres anteriores mantienen su contexto histórico.
+
+**Estado histórico funcional — Fase 10 (2026-10-26).** RF21/CU26 implementados y verificados: 17 reglas, avisos propios, primera lectura y recuperación de 24 h. [Informe y evidencia](NOTIFICATIONS_IMPLEMENTATION.md). CU30 general y Fase 11 no iniciados. Sepolia real sigue pendiente de testETH. Los apartados de cierres anteriores conservan su contexto histórico.
 
 **Estado vigente — Fase 8 implementada (2026-10-24).** CU23 incorpora APROBADA→LIBERADA atómica con evaluación y pivotes. Reserva es lock coordinador; D-05 y ReservationService no cambian. Cancelación conserva inicio exclusivo y las carreras MySQL confirman una sola transición válida. FINALIZADA por tiempo permanece fuera. [Informe de implementación, verificaciones y límites](RELEASE_POLICY_IMPLEMENTATION.md). Las declaraciones de fases anteriores que siguen a continuación se conservan como historia de esos cierres.
 
@@ -153,3 +155,9 @@ CU08 aporta enlace contextual sujeto a autorización actual; el mensaje es snaps
 ## Extensión RF21 implementada — Fase 10
 
 Solicitud/rechazo producen actividad no crítica dentro de negocio; aprobación/cancelación reutilizan la crítica existente. Postcommit AR/S según N3. Estados, exclusividad, disponibilidad y locks previos conservados. [Implementación y evidencia](NOTIFICATIONS_IMPLEMENTATION.md).
+
+## Consumo documental por CU27/CU28 — Fase 10.5
+
+[DR2/DR4–DR6](DECISIONS.md#dashboard--reporting-contract--readiness-for-phase-11) conserva el servicio y permisos de Fase 4. Aprobada activa = APROBADA e inicio<=t<fin; próxima propia = APROBADA e inicio>=t. Pendientes son stock actual, no historia filtrada. Liberadas del periodo se acreditan por EXISTS evaluación LIBERAR/fecha_hora y estado actual LIBERADA; no inferir fecha ni duplicar por pivotes. No finalizar reservas al consultar.
+
+Reporte de reservas filtra solapamiento inicio<B y fin>A, orden inicio/id; tendencias y estados del periodo usan solicitada_en. Explicar esa diferencia. Las nueve columnas excluyen propósito/motivos libres; solicitante solo bajo consulta administrativa autorizada. Espacio DISPONIBLE no prueba disponibilidad: SpaceAvailabilityService sigue siendo único para el intervalo con reservas, bloqueos e incidencias. Dashboard y reportes no cambian ni escriben el ciclo de reserva. Fase 11 no iniciada.
