@@ -9,6 +9,7 @@ use App\Models\EspacioAcademico;
 use App\Models\Reserva;
 use App\Models\Rol;
 use App\Models\Usuario;
+use App\Services\Traceability\CriticalActivityRecorder;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
@@ -109,6 +110,10 @@ class ReservationService
             $affected = Reserva::whereKey($reservation->id)->where('estado', $reservation->estado->value)->update($changes);
             if ($affected !== 1) {
                 throw new ReservationConflictException('La operación ya fue procesada. Actualice la página.');
+            }
+
+            if (in_array($changes['estado'], ['APROBADA', 'CANCELADA'], true)) {
+                app(CriticalActivityRecorder::class)->reservation($reservation->id, $changes['estado'] === 'APROBADA');
             }
 
             return $reservation->forceFill($changes)->syncOriginal();

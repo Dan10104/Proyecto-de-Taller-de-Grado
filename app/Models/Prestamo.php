@@ -55,6 +55,9 @@ class Prestamo extends Model
             $loan->codigo ??= 'PRE-'.strtolower((string) Str::uuid());
         });
         static::updating(function (self $loan) {
+            if ($loan->isDirty(['equipamiento_id', 'solicitante_id']) && $loan->entrega()->exists()) {
+                throw new \LogicException('El contexto de un préstamo entregado es inmutable.');
+            }
             if ($loan->isDirty('codigo')) {
                 throw new \LogicException('El código del préstamo es inmutable.');
             }

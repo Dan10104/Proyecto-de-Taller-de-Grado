@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use App\Models\Usuario;
 use App\Services\AuthorizationService;
+use App\Services\Traceability\BlockchainDriver;
+use App\Services\Traceability\EthereumSepoliaDriver;
 use App\Support\CheckedFileSessionHandler;
 use App\Support\PermissionCatalog;
 use App\Support\TestingDatabaseGuard;
@@ -14,6 +16,11 @@ use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
+    public function register(): void
+    {
+        $this->app->bind(BlockchainDriver::class, EthereumSepoliaDriver::class);
+    }
+
     public function boot(): void
     {
         foreach (array_keys(PermissionCatalog::DEFINITIONS) as $code) {

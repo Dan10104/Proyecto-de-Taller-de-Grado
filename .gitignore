@@ -4,6 +4,11 @@
 !.env.example
 /vendor/
 /node_modules/
+/blockchain/node_modules/
+/blockchain/cache/
+/blockchain/artifacts/
+/blockchain/coverage/
+/blockchain/runtime-data/
 /storage/*.key
 /storage/logs/*
 /bootstrap/cache/*

@@ -10,6 +10,7 @@ use App\Models\EntregaPrestamo;
 use App\Models\IncidenciaMantenimiento;
 use App\Models\Prestamo;
 use App\Models\Usuario;
+use App\Services\Traceability\CriticalActivityRecorder;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
@@ -97,6 +98,7 @@ class LoanService
         (new EntregaPrestamo)->forceFill(['prestamo_id' => $loan->id, 'entregado_por_id' => $actor->id, 'receptor_id' => $loan->solicitante_id, 'fecha_hora' => now(), 'condicion_entrega' => $data['condicion_entrega'], 'observacion' => $data['observacion'] ?? null, 'recepcion_confirmada_en' => null])->save();
         $this->update($loan, ['estado' => 'ENTREGADO']);
         $this->operations->setState($context['resource'], 'PRESTADO');
+        app(CriticalActivityRecorder::class)->loan($loan->id, true);
     }
 
     public function receive(Usuario $actor, Prestamo $target, array $data): Prestamo
@@ -163,6 +165,7 @@ class LoanService
         }
         if (! $pending) {
             $this->update($loan, ['estado' => 'DEVUELTO']);
+            app(CriticalActivityRecorder::class)->loan($loan->id, false);
         }
         $equipment = $context['resource'];
         if ($equipment->estado->value === 'BAJA') {
