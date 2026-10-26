@@ -8,6 +8,7 @@
     <source><include><directory>app</directory></include></source>
     <php>
         <env name="APP_ENV" value="testing" force="true"/>
+        <env name="NOTIFICATIONS_EVENTS_FROM" value="2000-01-01 00:00:00" force="true"/>
         <env name="BLOCKCHAIN_ENABLED" value="false" force="true"/>
         <env name="APP_CONFIG_CACHE" value=".local/testing/config.php" force="true"/>
         <env name="APP_MAINTENANCE_DRIVER" value="file"/>

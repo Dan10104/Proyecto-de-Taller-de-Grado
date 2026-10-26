@@ -10,6 +10,7 @@ use App\Models\EntregaPrestamo;
 use App\Models\IncidenciaMantenimiento;
 use App\Models\Prestamo;
 use App\Models\Usuario;
+use App\Services\Notifications\NotificationActivityRecorder;
 use App\Services\Traceability\CriticalActivityRecorder;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
@@ -33,6 +34,8 @@ class LoanService
                     $loan = new Prestamo;
                     $loan->forceFill(['equipamiento_id' => $context['resource']->getKey(), 'solicitante_id' => $actor->id, 'inicio_previsto' => $start, 'fin_previsto' => $end, 'motivo' => $data['motivo'], 'estado' => 'PENDIENTE', 'solicitado_en' => now()])->save();
 
+                    app(NotificationActivityRecorder::class)->loan($loan->id, 'PRESTAMO_SOLICITADO', $actor->id);
+
                     return $loan;
                 });
             } catch (QueryException $e) {
@@ -54,6 +57,7 @@ class LoanService
             $this->requireState($loan, 'PENDIENTE');
             $this->availability->assertAvailable($context, $loan->inicio_previsto, $loan->fin_previsto, $loan->id);
             $this->update($loan, ['estado' => 'APROBADO', 'resuelto_por_id' => $actor->id, 'resuelto_en' => now(), 'motivo_rechazo' => null]);
+            app(NotificationActivityRecorder::class)->loan($loan->id, 'PRESTAMO_APROBADO', $actor->id);
         });
     }
 
@@ -65,6 +69,7 @@ class LoanService
         return $this->transition($actor, $target, 'prestamos.resolver', function ($actor, $context) use ($reason) {
             $this->requireState($context['loan'], 'PENDIENTE');
             $this->update($context['loan'], ['estado' => 'RECHAZADO', 'resuelto_por_id' => $actor->id, 'resuelto_en' => now(), 'motivo_rechazo' => $reason]);
+            app(NotificationActivityRecorder::class)->loan($context['loan']->id, 'PRESTAMO_RECHAZADO', $actor->id);
         });
     }
 
@@ -162,10 +167,13 @@ class LoanService
             $incident = new IncidenciaMantenimiento;
             $incident->forceFill(['recurso_id' => $loan->equipamiento_id, 'devolucion_id' => $return->id, 'reportado_por_id' => $actor->id, 'tipo' => 'INCIDENCIA', 'descripcion' => $data['descripcion_condicion'], 'inicio' => now(), 'estado' => 'ABIERTA'])->save();
             $context['incidents']->push($incident);
+            app(NotificationActivityRecorder::class)->incident($incident, false);
         }
         if (! $pending) {
             $this->update($loan, ['estado' => 'DEVUELTO']);
             app(CriticalActivityRecorder::class)->loan($loan->id, false);
+        } elseif (! $review) {
+            app(NotificationActivityRecorder::class)->loan($loan->id, 'DEVOLUCION_PENDIENTE_REVISION', $actor->id);
         }
         $equipment = $context['resource'];
         if ($equipment->estado->value === 'BAJA') {

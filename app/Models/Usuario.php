@@ -39,6 +39,11 @@ class Usuario extends Authenticatable
         return $this->belongsToMany(Rol::class, 'asignaciones_roles', 'usuario_id', 'rol_id')->wherePivotNull('fecha_retiro')->distinct();
     }
 
+    public function notificaciones(): HasMany
+    {
+        return $this->hasMany(Notificacion::class, 'destinatario_id');
+    }
+
     public function sesiones(): HasMany
     {
         return $this->hasMany(SesionAcceso::class, 'usuario_id');

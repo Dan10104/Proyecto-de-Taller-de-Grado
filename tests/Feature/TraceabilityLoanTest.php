@@ -19,15 +19,16 @@ class TraceabilityLoanTest extends QrTestCase
         $b = $this->user('Encargado de Laboratorio');
         $p = $this->loan();
         $this->loans()->approve($a, $p);
-        $this->assertDatabaseCount('registros_actividad', 0);
+        $this->assertDatabaseHas('registros_actividad', ['accion' => 'PRESTAMO_APROBADO', 'critica' => false]);
+        $this->assertSame(0, RegistroActividad::where('critica', true)->count());
         $this->loans()->deliver($a, $p, $this->deliveryData(['observacion' => 'Observación sintética']));
-        $activity = RegistroActividad::sole();
+        $activity = RegistroActividad::where('critica', true)->sole();
         $e = app(LocalEvidenceService::class)->ensure($activity->id);
         $this->assertCount(9, app(CanonicalEvidenceBuilder::class)->build($activity)['subject']);
         $this->loans()->receive($a, $p, ['condicion' => 'NO_DETERMINABLE', 'descripcion_condicion' => 'Revisar']);
-        $this->assertDatabaseCount('registros_actividad', 1);
+        $this->assertSame(1, RegistroActividad::where('critica', true)->count());
         $this->loans()->confirmReview($b, $p, ['condicion' => 'ADECUADA', 'apto' => true]);
-        $this->assertDatabaseCount('registros_actividad', 2);
+        $this->assertSame(2, RegistroActividad::where('critica', true)->count());
         $return = RegistroActividad::orderByDesc('id')->first();
         $subject = app(CanonicalEvidenceBuilder::class)->build($return)['subject'];
         $this->assertCount(11, $subject);
@@ -47,9 +48,9 @@ class TraceabilityLoanTest extends QrTestCase
         $this->code($token, ['prestamo_id' => $p->id]);
         $this->qr()->operation($a, $p, TipoOperacionQr::ENTREGA, $token, $this->deliveryData());
         $this->qr()->operation($a, $p, TipoOperacionQr::DEVOLUCION, $token, ['condicion' => 'ADECUADA']);
-        $this->assertSame(['PRESTAMO_ENTREGADO', 'PRESTAMO_DEVUELTO'], RegistroActividad::orderBy('id')->pluck('accion')->all());
+        $this->assertSame(['PRESTAMO_ENTREGADO', 'PRESTAMO_DEVUELTO'], RegistroActividad::where('critica', true)->orderBy('id')->pluck('accion')->all());
         $this->assertDatabaseCount('validaciones_qr', 2);
-        foreach (RegistroActividad::all() as $activity) {
+        foreach (RegistroActividad::where('critica', true)->get() as $activity) {
             $this->assertSame('VALIDO', app(LocalEvidenceService::class)->check(app(LocalEvidenceService::class)->ensure($activity->id)));
         }
     }
@@ -71,7 +72,7 @@ class TraceabilityLoanTest extends QrTestCase
         } catch (\RuntimeException $e) {
             $this->assertSame('atomic-return', $e->getMessage());
         }
-        $this->assertDatabaseCount('registros_actividad', 1);
+        $this->assertSame(1, RegistroActividad::where('critica', true)->count());
         $this->assertDatabaseCount('devoluciones_prestamo', 0);
         $this->assertDatabaseCount('incidencias_mantenimiento', 0);
         $this->assertSame('ENTREGADO', $p->fresh()->estado->value);

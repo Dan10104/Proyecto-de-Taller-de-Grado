@@ -8,6 +8,7 @@ use App\Models\DevolucionPrestamo;
 use App\Models\EquipamientoTecnologico;
 use App\Models\IncidenciaMantenimiento;
 use App\Models\Usuario;
+use App\Services\Notifications\NotificationActivityRecorder;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
@@ -32,6 +33,8 @@ class IncidentMaintenanceService
             $incident = new IncidenciaMantenimiento;
             $incident->forceFill(['recurso_id' => $resource->getKey(), 'reportado_por_id' => $actor->id, 'tipo' => $data['tipo'], 'descripcion' => $data['descripcion'], 'inicio' => CarbonImmutable::createFromFormat('!Y-m-d\TH:i', $data['inicio'], 'America/La_Paz'), 'fin_previsto' => empty($data['fin_previsto']) ? null : CarbonImmutable::createFromFormat('!Y-m-d\TH:i', $data['fin_previsto'], 'America/La_Paz'), 'estado' => 'ABIERTA'])->save();
             $this->operations->setState($resource, $state);
+
+            app(NotificationActivityRecorder::class)->incident($incident, false);
 
             return $incident;
         });
@@ -63,6 +66,8 @@ class IncidentMaintenanceService
             }
             $incident->forceFill($changes)->syncOriginal();
             $this->operations->restore($actor, $context, ! empty($data['apto']));
+
+            app(NotificationActivityRecorder::class)->incident($incident, true);
 
             return $incident;
         });

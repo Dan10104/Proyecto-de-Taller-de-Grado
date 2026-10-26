@@ -6,6 +6,7 @@ use App\Http\Controllers\IncidentController;
 use App\Http\Controllers\IotMonitoringController;
 use App\Http\Controllers\IotSensorController;
 use App\Http\Controllers\LoanController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\QrManagementController;
 use App\Http\Controllers\QrValidationController;
 use App\Http\Controllers\ReleaseEvaluationController;
@@ -30,6 +31,9 @@ Route::get('/login', [AuthController::class, 'create'])->name('login');
 Route::post('/login', [AuthController::class, 'store'])->name('login.store');
 Route::post('/logout', [AuthController::class, 'destroy'])->name('logout');
 Route::middleware(['auth', 'access.session'])->group(function () {
+    Route::get('/notificaciones', [NotificationController::class, 'index'])->middleware('can:notificaciones.ver_propias')->name('notifications.index');
+    Route::get('/notificaciones/{notificacion}', [NotificationController::class, 'show'])->whereNumber('notificacion')->middleware('can:notificaciones.ver_propias')->name('notifications.show');
+    Route::post('/notificaciones/{notificacion}/leer', [NotificationController::class, 'read'])->whereNumber('notificacion')->middleware('can:notificaciones.ver_propias')->name('notifications.read');
     Route::get('/liberacion/politicas', [ReleasePolicyController::class, 'index'])->middleware('can:liberacion.politicas.ver')->name('release.policies.index');
     Route::get('/liberacion/politicas/crear', [ReleasePolicyController::class, 'create'])->middleware('can:liberacion.politicas.gestionar')->name('release.policies.create');
     Route::post('/liberacion/politicas', [ReleasePolicyController::class, 'store'])->middleware('can:liberacion.politicas.gestionar')->name('release.policies.store');

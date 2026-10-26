@@ -46,9 +46,9 @@ class TraceabilitySchemaTest extends ReservationTestCase
         $this->assertTrue($indexes->has('idx_evidencia_estado'));
         $this->assertTrue($indexes->has('idx_evidencia_referencia'));
         $this->assertSame(1, DB::table('information_schema.TABLE_CONSTRAINTS')->whereRaw('CONSTRAINT_SCHEMA=DATABASE()')->where('CONSTRAINT_NAME', 'chk_registro_responsable')->count());
-        $this->assertSame(30, DB::table('information_schema.TABLES')->whereRaw('TABLE_SCHEMA=DATABASE()')->where('TABLE_NAME', '!=', 'migrations')->count());
-        $this->assertSame(203, DB::table('information_schema.COLUMNS')->whereRaw('TABLE_SCHEMA=DATABASE()')->where('TABLE_NAME', '!=', 'migrations')->count());
-        $this->assertSame(61, DB::table('information_schema.REFERENTIAL_CONSTRAINTS')->whereRaw('CONSTRAINT_SCHEMA=DATABASE()')->count());
+        $this->assertSame(31, DB::table('information_schema.TABLES')->whereRaw('TABLE_SCHEMA=DATABASE()')->where('TABLE_NAME', '!=', 'migrations')->count());
+        $this->assertSame(211, DB::table('information_schema.COLUMNS')->whereRaw('TABLE_SCHEMA=DATABASE()')->where('TABLE_NAME', '!=', 'migrations')->count());
+        $this->assertSame(63, DB::table('information_schema.REFERENTIAL_CONSTRAINTS')->whereRaw('CONSTRAINT_SCHEMA=DATABASE()')->count());
     }
 
     public function test_constraints_unique_check_foreign_keys_and_immutable_models(): void

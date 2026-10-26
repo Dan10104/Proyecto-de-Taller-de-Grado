@@ -1,0 +1,1 @@
+export const notificationTypes = { SOLICITUD: 'Solicitud', DECISION: 'Decisión', CANCELACION: 'Cancelación', ENTREGA: 'Entrega', DEVOLUCION: 'Devolución', VENCIMIENTO: 'Vencimiento', INCIDENCIA: 'Incidencia', LIBERACION: 'Liberación' };
