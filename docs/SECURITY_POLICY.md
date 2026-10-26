@@ -1,6 +1,8 @@
 # Política de seguridad
 
-**Estado vigente — Fase 10.5 documental (2026-10-26).** RF22/CU27 y RF23/CU28: [contrato de dashboard y reportes cerrado](DECISIONS.md#dashboard--reporting-contract--readiness-for-phase-11), **0 bloqueantes documentales**. Fase 11 NO iniciada; CU30 NO IMPLEMENTADO. Fase 10 funcional se conserva, sin cambios de código, datos, permisos o dependencias. Los cierres anteriores mantienen su contexto histórico.
+**Estado vigente — Fase 11 implementada y verificada (2026-10-26).** RF22/CU27 y RF23/CU28: 747 tests / 9111 assertions; QA y auditorías productivas aprobadas. [Implementación, scopes, formatos y evidencia](DASHBOARD_REPORTING_IMPLEMENTATION.md). Sin nuevas tablas ni índices; CU30 NO IMPLEMENTADO y Fase 12 NO iniciada. Los cierres anteriores son históricos.
+
+**Estado histórico — Fase 10.5 documental (2026-10-26).** RF22/CU27 y RF23/CU28: [contrato de dashboard y reportes cerrado](DECISIONS.md#dashboard--reporting-contract--readiness-for-phase-11), **0 bloqueantes documentales**. Fase 11 NO iniciada; CU30 NO IMPLEMENTADO. Fase 10 funcional se conserva, sin cambios de código, datos, permisos o dependencias. Los cierres anteriores mantienen su contexto histórico.
 
 **Estado histórico funcional — Fase 10 (2026-10-26).** RF21/CU26 implementados y verificados: 17 reglas, avisos propios, primera lectura y recuperación de 24 h. [Informe y evidencia](NOTIFICATIONS_IMPLEMENTATION.md). CU30 general y Fase 11 no iniciados. Sepolia real sigue pendiente de testETH. Los apartados de cierres anteriores conservan su contexto histórico.
 
@@ -193,3 +195,7 @@ Query Builder/Eloquent parametrizado; catálogo fijo de slugs, filtros, columnas
 XLSX: todas las cadenas se escriben con tipo explícito string, sin detección de fórmulas/hipervínculos. Probar prefijos =,+,-,@ incluidos espacios/controles iniciales; no basta escapar CSV/HTML ni aplicar formato visual. Datos numéricos validados mantienen su tipo. Sin macros, fórmulas de usuario ni relaciones externas. PDF: escapar contenido y limitar recursos a assets locales autorizados; impedir HTML/URL/file arbitrarios. Librerías locales, sin CDN/servicios externos, evaluadas antes de instalar en Fase 11.
 
 Actividad de exportación no crítica EXITO solo para archivo generado y autorizado listo para servir; descripción mínima segura, sin payload. Fallos/preview no producen REPORTE_EXPORTADO EXITO; no agregar notificación ni evidencia Blockchain. Poner a disposición no acredita recepción física completa en el navegador. Estos controles son requisitos futuros T-DR01–T-DR48, no funcionalidad implementada por Fase 10.5.
+
+## Controles de dashboard y reportes — Fase 11
+
+Sesión vigente, dashboard.ver/reportes.ver/reportes.exportar, roles elegibles y permisos de dominio acumulativos. Ownership SQL en panel personal; no IDs arbitrarios del actor. Opciones y columnas autorizadas; serie restringida, datos libres excluidos, actor de actividad sin nombre salvo usuarios.ver. Revalidar permisos al finalizar; firma de preview no contiene filas. XLSX StringCell inerte incluso ante prefijos/control chars; PDF literal local sin HTML/recursos remotos. Parámetros tipados/whitelist, temporales privados no públicos, limpieza y presupuestos; EXITO de exportación no crítico/no Blockchain/no avisos. [Pruebas y operación](DASHBOARD_REPORTING_IMPLEMENTATION.md).

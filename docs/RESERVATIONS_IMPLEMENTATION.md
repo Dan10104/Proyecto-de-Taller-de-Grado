@@ -161,3 +161,7 @@ Solicitud/rechazo producen actividad no crítica dentro de negocio; aprobación/
 [DR2/DR4–DR6](DECISIONS.md#dashboard--reporting-contract--readiness-for-phase-11) conserva el servicio y permisos de Fase 4. Aprobada activa = APROBADA e inicio<=t<fin; próxima propia = APROBADA e inicio>=t. Pendientes son stock actual, no historia filtrada. Liberadas del periodo se acreditan por EXISTS evaluación LIBERAR/fecha_hora y estado actual LIBERADA; no inferir fecha ni duplicar por pivotes. No finalizar reservas al consultar.
 
 Reporte de reservas filtra solapamiento inicio<B y fin>A, orden inicio/id; tendencias y estados del periodo usan solicitada_en. Explicar esa diferencia. Las nueve columnas excluyen propósito/motivos libres; solicitante solo bajo consulta administrativa autorizada. Espacio DISPONIBLE no prueba disponibilidad: SpaceAvailabilityService sigue siendo único para el intervalo con reservas, bloqueos e incidencias. Dashboard y reportes no cambian ni escriben el ciclo de reserva. Fase 11 no iniciada.
+
+## Integración con Fase 11
+
+[Dashboard y reportes](DASHBOARD_REPORTING_IMPLEMENTATION.md) reutilizan las reglas, consultas y scopes de este dominio. No modifican sus estados, decisiones o productores. REPORTE_EXPORTADO no se añade a la whitelist de notificaciones ni a eventos críticos Blockchain. CU30 sigue NO IMPLEMENTADO; las limitaciones históricas de este informe conservan su alcance.

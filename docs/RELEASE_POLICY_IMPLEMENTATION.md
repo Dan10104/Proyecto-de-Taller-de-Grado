@@ -175,3 +175,7 @@ ALERTAR/LIBERAR producen actividad no crítica en la misma transacción de evalu
 [DR4/DR7](DECISIONS.md#dashboard--reporting-contract--readiness-for-phase-11) preserva evaluación, matriz y scheduler. Reservas liberadas del periodo = COUNT de reservas actualmente LIBERADA con EXISTS evaluación LIBERAR cuya fecha_hora esté en [A,B). No usar resuelta_en/cancelada_en ni eventos de notificación como sustitutos; no multiplicar por pivotes o reevaluaciones.
 
 La primera entrega de dashboard tiene diez tarjetas y excluye la ampliación opcional de alertas. ALERTAR no significa pendiente ni libera; una extensión necesitaría definición explícita del periodo desde evaluaciones_liberacion. El resumen operacional puede agrupar RESERVA_ALERTADA_LIBERACION/RESERVA_LIBERADA ya registradas con permisos de reservas y evaluaciones administrativas; no reconstruye CU23 ni expone evidencia completa. Fase 10.5 no ejecuta evaluaciones ni implementa Fase 11.
+
+## Integración con Fase 11
+
+[Dashboard y reportes](DASHBOARD_REPORTING_IMPLEMENTATION.md) reutilizan las reglas, consultas y scopes de este dominio. No modifican sus estados, decisiones o productores. REPORTE_EXPORTADO no se añade a la whitelist de notificaciones ni a eventos críticos Blockchain. CU30 sigue NO IMPLEMENTADO; las limitaciones históricas de este informe conservan su alcance.

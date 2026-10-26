@@ -228,3 +228,7 @@ Solicitud/aprobación/rechazo/revisión pendiente e incidencias/mantenimiento pr
 [DR4–DR6](DECISIONS.md#dashboard--reporting-contract--readiness-for-phase-11) conserva Fase 5. Vencido = ENTREGADO y t>fin_previsto, nunca enum nuevo; igualdad no vence. Entregados incluyen vencidos y devoluciones pendientes de revisión; no sumar esos subconjuntos. Estado APROBADO antiguo no se convierte en vencido. Catálogo de equipo conserva DISPONIBLE/PRESTADO/EN_MANTENIMIENTO/BAJA; ABIERTA cuenta incidencias/mantenimiento incluidos futuros según regla vigente.
 
 Reportes administrativos: préstamos por solapamiento del intervalo previsto; incidencias por inicio, sin inferir cierre con fin_previsto; equipo inventario actual sin rango temporal. Columnas cerradas DR6; serie requiere equipamientos.gestionar, reportante incidencia autorizada, sin motivos, observaciones, descripción/solución completas. No cambiar inventario, custodia, disponibilidad ni estados por consultar/exportar. Tarjetas personales filtran solicitante_id en servidor. Fase 10.5 solo documenta; implementación y aceptación T-DR futuras.
+
+## Integración con Fase 11
+
+[Dashboard y reportes](DASHBOARD_REPORTING_IMPLEMENTATION.md) reutilizan las reglas, consultas y scopes de este dominio. No modifican sus estados, decisiones o productores. REPORTE_EXPORTADO no se añade a la whitelist de notificaciones ni a eventos críticos Blockchain. CU30 sigue NO IMPLEMENTADO; las limitaciones históricas de este informe conservan su alcance.

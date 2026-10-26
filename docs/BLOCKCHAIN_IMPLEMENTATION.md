@@ -319,3 +319,7 @@ Esta fase es documental: no ejecuta nuevos tests Blockchain ni auditorías, no m
 [DR7/DR10](DECISIONS.md#dashboard--reporting-contract--readiness-for-phase-11) conserva las cuatro acciones críticas, builders y evidencia. REPORTE_EXPORTADO futuro tendrá critica=FALSE; no invoca Blockchain, no requiere Sepolia/RPC/fondos y no genera avisos. Resumen de actividad no exporta canónicos, hashes de contenido sensible, payloads ni detalle de evidencia; no implementa CU30. No se añade estado Blockchain como tarjeta general.
 
 No se modifica blockchain/, no se instala ni audita de nuevo el toolchain en esta fase documental. La excepción temporal conocida de cinco entradas altas exclusivamente dev de Hardhat/Zod y Sepolia pendiente de testETH conservan el alcance de sus apartados anteriores; no se afirman auditorías nuevas ni cero vulnerabilidades de desarrollo. Las futuras bibliotecas de PDF/XLSX se evalúan por separado; esta excepción no cubre su runtime.
+
+## Integración con Fase 11
+
+[Dashboard y reportes](DASHBOARD_REPORTING_IMPLEMENTATION.md) reutilizan las reglas, consultas y scopes de este dominio. No modifican sus estados, decisiones o productores. REPORTE_EXPORTADO no se añade a la whitelist de notificaciones ni a eventos críticos Blockchain. CU30 sigue NO IMPLEMENTADO; las limitaciones históricas de este informe conservan su alcance.

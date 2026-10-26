@@ -1,8 +1,10 @@
 # ESPACIO-U
 
+**Fase 11 completada: dashboard y reportes.** 747 tests / 9.111 assertions. [Informe de implementación](docs/DASHBOARD_REPORTING_IMPLEMENTATION.md). Navegación: Dashboard para cuatro roles; Reportes para Admin/Encargado según permisos de dominio. PDF/XLSX locales. CU30 NO IMPLEMENTADO; Fase 12 NO iniciada.
+
 Sistema de información para la gestión y control de reservas de espacios académicos y préstamos de equipamiento tecnológico en la FICCT, con monitoreo de ocupación mediante IoT y trazabilidad de operaciones mediante Blockchain.
 
-**Estado vigente: Fase 10.5 documental cerrada.** [Contrato de dashboard/reportes y Readiness for Phase 11](docs/DECISIONS.md#dashboard--reporting-contract--readiness-for-phase-11): **0 bloqueantes documentales**, 10 tarjetas/6 gráficos administrativos, 7 tarjetas personales y 7 reportes PDF/XLSX definidos. Fase 11 NO iniciada; CU30 NO IMPLEMENTADO. Solo se actualizó documentación.
+**Estado histórico: Fase 10.5 documental cerrada.** [Contrato de dashboard/reportes y Readiness for Phase 11](docs/DECISIONS.md#dashboard--reporting-contract--readiness-for-phase-11): **0 bloqueantes documentales**, 10 tarjetas/6 gráficos administrativos, 7 tarjetas personales y 7 reportes PDF/XLSX definidos. Fase 11 NO iniciada; CU30 NO IMPLEMENTADO. Solo se actualizó documentación.
 
 **Base funcional conservada: Fase 10 implementada y verificada — RF21/CU26.** Diecisiete reglas, destinatarios por permisos efectivos, centro propio de avisos, primera lectura, contador y recuperación de 24 h. [Informe, pruebas y límites](docs/NOTIFICATIONS_IMPLEMENTATION.md). CU30 general y Fase 11 no iniciados.
 
@@ -174,4 +176,8 @@ Abrir **Notificaciones** o la campana. Cuatro roles consultan solo propios; 15 p
 
 ## Continuación tras Fase 10.5
 
-Fase 11 puede comenzar con una nueva instrucción. [48 criterios de aceptación previstos](docs/BUSINESS_RULES.md#aceptación-prevista-para-fase-11) y [plan](docs/IMPLEMENTATION_PLAN.md#fase-11--dashboard-indicadores-y-reportes). La documentación no acredita implementación, nuevas pruebas funcionales ni nuevas auditorías: los resultados Fase 10 y las limitaciones de QR/Blockchain mantienen su alcance histórico. No hay cambio de código, esquema, dependencias ni permisos en este cierre; los Word/PDF fuente permanecen intactos y privados.
+En el cierre histórico de Fase 10.5, Fase 11 quedó lista para una nueva instrucción; su implementación posterior está en [el informe Fase 11](docs/DASHBOARD_REPORTING_IMPLEMENTATION.md). [48 criterios de aceptación previstos](docs/BUSINESS_RULES.md#aceptación-prevista-para-fase-11) y [plan](docs/IMPLEMENTATION_PLAN.md#fase-11--dashboard-indicadores-y-reportes). La documentación no acredita implementación, nuevas pruebas funcionales ni nuevas auditorías: los resultados Fase 10 y las limitaciones de QR/Blockchain mantienen su alcance histórico. No hay cambio de código, esquema, dependencias ni permisos en este cierre; los Word/PDF fuente permanecen intactos y privados.
+
+## Habilitar dashboard y reportes — Fase 11
+
+Ejecutar composer install y npm ci con los runtimes oficiales; php artisan db:seed --class=SecuritySeeder --force incorpora los tres permisos nuevos sin restaurar permisos retirados. Compilar con npm run build y mantener scheduler para reportes:limpiar-temporales cada minuto. No hay migración nueva. Límites opcionales en .env local: 10.000 filas, 30 s, 64 MiB; temporales privados con máximo de una hora. [Procedimiento, dependencias y seguridad](docs/DASHBOARD_REPORTING_IMPLEMENTATION.md#verificación-y-operación).

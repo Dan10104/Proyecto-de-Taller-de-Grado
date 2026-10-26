@@ -1,6 +1,8 @@
 # Plan de implementación web
 
-**Estado vigente — Fase 10.5 documental (2026-10-26).** RF22/CU27 y RF23/CU28: [contrato de dashboard y reportes cerrado](DECISIONS.md#dashboard--reporting-contract--readiness-for-phase-11), **0 bloqueantes documentales**. Fase 11 NO iniciada; CU30 NO IMPLEMENTADO. Fase 10 funcional se conserva, sin cambios de código, datos, permisos o dependencias. Los cierres anteriores mantienen su contexto histórico.
+**Estado vigente — Fase 11 implementada y verificada (2026-10-26).** RF22/CU27 y RF23/CU28: 747 tests / 9111 assertions; QA y auditorías productivas aprobadas. [Implementación, scopes, formatos y evidencia](DASHBOARD_REPORTING_IMPLEMENTATION.md). Sin nuevas tablas ni índices; CU30 NO IMPLEMENTADO y Fase 12 NO iniciada. Los cierres anteriores son históricos.
+
+**Estado histórico — Fase 10.5 documental (2026-10-26).** RF22/CU27 y RF23/CU28: [contrato de dashboard y reportes cerrado](DECISIONS.md#dashboard--reporting-contract--readiness-for-phase-11), **0 bloqueantes documentales**. Fase 11 NO iniciada; CU30 NO IMPLEMENTADO. Fase 10 funcional se conserva, sin cambios de código, datos, permisos o dependencias. Los cierres anteriores mantienen su contexto histórico.
 
 **Estado histórico funcional — Fase 10 (2026-10-26).** RF21/CU26 implementados y verificados: 17 reglas, avisos propios, primera lectura y recuperación de 24 h. [Informe y evidencia](NOTIFICATIONS_IMPLEMENTATION.md). CU30 general y Fase 11 no iniciados. Sepolia real sigue pendiente de testETH. Los apartados de cierres anteriores conservan su contexto histórico.
 
@@ -212,12 +214,12 @@ Implementación disponible, 325 pruebas/4984 aserciones aprobadas. [Evidencia y 
 
 ### Fase 11 — Dashboard, indicadores y reportes
 
-**Lista para comenzar solo mediante nueva instrucción del usuario; NO iniciada.** [Cierre contractual Fase 10.5, 0 bloqueantes documentales](DECISIONS.md#dashboard--reporting-contract--readiness-for-phase-11).
+**Implementada y verificada por instrucción de Fase 11: 747 tests / 9111 assertions.** [Cierre contractual Fase 10.5, 0 bloqueantes documentales](DECISIONS.md#dashboard--reporting-contract--readiness-for-phase-11).
 
 | Campo | Plan |
 | --- | --- |
 | Módulos afectados | Reportes e Indicadores |
-| Carpetas principales futuras | app/Services/; app/Http/; app/Policies/; resources/js/Pages/ y Components/; configuración/almacenamiento privado de exportación; tests/ |
+| Carpetas implementadas | app/Services/Reporting; app/Services/DashboardService; app/Http; resources/js/Pages/Dashboard y Reports; config/reporting; tests/Feature |
 | Requisitos relacionados | RF22–23; IU-06/07; IS-12/13; RD-09/22; R-TR-05/06; R-UR-03/06; R-PR-05/06 |
 | Casos de uso | CU27–CU28; CU30 permanece NO IMPLEMENTADO |
 | Trabajo previsto | Materializar DR1–DR12: 10 tarjetas/6 gráficos administrativos y 7 personales; siete reportes whitelist, preview/PDF/XLSX comunes; auditoría mínima de exportación |
@@ -379,3 +381,7 @@ RF21/CU26 implementados según N1–N9: SQL exacto, 17 acciones, destinatarios e
 ## Cierre documental de Fase 10.5 y continuación
 
 RF22/CU27 y RF23/CU28 cuentan con catálogo, fórmulas, RBAC, filtros/columnas, PDF/XLSX, auditoría, seguridad y rendimiento congelados en DR1–DR12. No se inició Fase 11 ni se instaló biblioteca, ejecutó migración, creó permiso o produjo REPORTE_EXPORTADO. La siguiente instrucción podrá autorizar su implementación en este orden: evaluar herramientas locales; capacidades y queries centrales; dashboard por rol; reportes y preview; renderizadores/temporales/auditoría; T-DR y regresiones/mediciones/revisión visual; publicación con evidencia real. Mantener CU30 separado.
+
+## Ejecución Fase 11
+
+Dashboard por cuatro roles y siete reportes implementados según DR1–DR12 y precisiones explícitas de la instrucción Fase 11. [Servicios, trazabilidad, controles y pruebas](DASHBOARD_REPORTING_IMPLEMENTATION.md). Sin nuevas migraciones/tablas; índice no justificado por mediciones. CU30 sigue NO IMPLEMENTADO; Fase 12 NO iniciada. Próximo paso recomendado, solo con nueva autorización: cerrar proveedor/privacidad/contexto del chatbot orientativo D-14/RF24/CU29 antes de integrarlo.
