@@ -217,3 +217,9 @@ D-09 y la aceptación de Fase 6 se conservan, incluido su límite de corroboraci
 ## Límite de asistencia previsto — Fase 11.5
 
 Orientación sobre el flujo del módulo y validación contextual; no recibir/generar/escanear tokens en chat ni enlazar objetos por ID del modelo. No añade prueba física ni altera la aceptación y su límite de corroboración existentes. [Contrato CH1–CH12](DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12). Cambio exclusivamente documental; Fase 12 NO iniciada.
+
+## Continuidad documental de RF25/CU30 — Fase 12.5
+
+El [contrato AC1–AC15](DECISIONS.md#activity-audit-contract--readiness-for-cu30) prevé QR_GENERADO sin historia previa, QR_ROTADO con historia y QR_DESACTIVADO explícito. Rotación engloba desactivaciones internas; emisiones confirmadas distintas conservan D-09/concurrencia. FK según objetivo real, identificadores QR mínimos, jamás token/token_hash/SVG. No fila por validaciones_qr ni duplicado de entrega/devolución mediante QR. No se modifica aceptación física ni implementación QR en Fase 12.5.
+
+Cambio exclusivamente documental. CU30 **NO IMPLEMENTADO**; implementación requiere nueva instrucción. La evidencia funcional anterior conserva su fecha y no se presenta como verificación nueva.

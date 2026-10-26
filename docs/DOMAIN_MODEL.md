@@ -1,6 +1,8 @@
 # Modelo del dominio
 
-**Estado vigente — Fase 12 implementada y validada offline (2026-10-26).** RF24/CU29: [implementación del asistente](CHATBOT_IMPLEMENTATION.md), conforme a CH1–CH12. Orientación por permisos, OpenAI Responses y contexto mínimo sin datos operativos ni historial persistido. CU30 **NO IMPLEMENTADO**; aplicación móvil diferida; ninguna fase posterior iniciada. Los cierres siguientes conservan su contexto histórico.
+**Estado vigente — Fase 12.5 documental cerrada (2026-10-26).** [Activity Audit Contract / Readiness for CU30](DECISIONS.md#activity-audit-contract--readiness-for-cu30), **0 bloqueantes documentales**. RF25 con productores parciales; CU30 **NO IMPLEMENTADO**. Implementación solo con nueva instrucción. Sin cambios de código, datos, permisos, migraciones o dependencias; OpenAI/Sepolia pendientes independientes.
+
+**Base funcional conservada — Fase 12 implementada y validada offline (2026-10-26).** RF24/CU29: [implementación del asistente](CHATBOT_IMPLEMENTATION.md), conforme a CH1–CH12. Orientación por permisos, OpenAI Responses y contexto mínimo sin datos operativos ni historial persistido. CU30 **NO IMPLEMENTADO**; aplicación móvil diferida; ninguna fase posterior iniciada. Los cierres siguientes conservan su contexto histórico.
 
 **Estado histórico — Fase 11.5 documental cerrada (2026-10-26).** RF24/CU29: [Chatbot Assistance Contract / Readiness for Phase 12](DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12), **0 bloqueantes documentales**. Fase 12 NO iniciada; CU30 NO IMPLEMENTADO. No cambios de código, dependencias, configuración o datos.
 
@@ -264,3 +266,9 @@ El usuario ACTIVO con sesión vigente y chatbot.consultar puede solicitar orient
 ## Orientación implementada — Fase 12
 
 ChatbotContext es efímero y no relaciona consultas con registros operativos. ChatbotService/Provider/KnowledgeBase/RouteRegistry implementados sin tablas ni enums nuevos. ANSWER/OUT_OF_SCOPE/RESTRICTED solo describen respuesta de asistencia; no modifican negocio. 32 fragmentos y 20 destinos autorizados orientan sobre los módulos existentes. [Implementación RF24/CU29](CHATBOT_IMPLEMENTATION.md). CU30 NO IMPLEMENTADO; D-14 conserva ausencia de conversación persistida.
+
+## RegistroActividad — cierre documental Fase 12.5
+
+[Activity Audit Contract / Readiness for CU30](DECISIONS.md#activity-audit-contract--readiness-for-cu30): RegistroActividad sigue siendo historia mínima inmutable, responsable humano o proceso (CHECK OR, no XOR), resultado EXITO/RECHAZO/ERROR y contexto por FK. Actor no equivale a usuario afectado; se admiten varias relaciones simultáneas. Actor inactivo conserva historia. Los 18 hitos actuales permanecen; 38 acciones previstas cubren administración/configuración realmente disponibles. No nuevas entidades ni historial de chat; no rehabilitación de usuarios inexistente.
+
+Para roles/catálogos/sensores/QR/bloqueos/políticas sin FK propia se usa referencia técnica mínima en plantilla, sin parsearla como vínculo o autorización. tipo_entidad será derivado de las FK, no persistido. Ver AC3/AC4/AC7 para responsabilidad, disparador y asociaciones exactas; AC6 limita fallos. CU30 NO IMPLEMENTADO; no cambia ningún estado operativo ni D-12.

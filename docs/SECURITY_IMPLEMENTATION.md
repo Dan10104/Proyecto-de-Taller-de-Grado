@@ -128,3 +128,9 @@ El permiso chatbot.consultar se prevé para cuatro roles y se añadirá recién 
 ## Permiso de asistencia — Fase 12
 
 Se añade chatbot.consultar, elegible para los cuatro roles institucionales. Catálogo total: 51 permisos. SecuritySeeder incremental no restaura concesiones revocadas. GET/POST Asistente exigen permiso efectivo, ACTIVO y sesión; POST mantiene CSRF. Contexto y rutas se reautorizan tras red. [Pruebas de acceso, revocación, privacidad y límites](CHATBOT_IMPLEMENTATION.md). CU30 sigue NO IMPLEMENTADO.
+
+## Continuidad documental de RF25/CU30 — Fase 12.5
+
+El [contrato AC1–AC15](DECISIONS.md#activity-audit-contract--readiness-for-cu30) prevé auditoría de alta/edición/deshabilitación, roles/permisos/asignaciones/retiros, sin cambiar D-04/D-07. No existe rehabilitación implementada, no añadirla para auditar. Inicio/rechazo/cierre de sesión fuera del catálogo inicial; sesiones_acceso conserva su función. actividad.ver futuro solo Administrador y revocable; no se crea ahora. Rechazos de último administrador/recuperación se limitan por AC6; secretos/valores personales excluidos. Integración futura en AdministrationService con rollback común, no una segunda tabla.
+
+Cambio exclusivamente documental. CU30 **NO IMPLEMENTADO**; implementación requiere nueva instrucción. La evidencia funcional anterior conserva su fecha y no se presenta como verificación nueva.

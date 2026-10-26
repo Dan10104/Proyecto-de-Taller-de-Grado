@@ -184,3 +184,9 @@ La primera entrega de dashboard tiene diez tarjetas y excluye la ampliación opc
 ## Límite de asistencia previsto — Fase 11.5
 
 Explicar políticas y resultados autorizados sin evaluar reservas o enviar sus evidencias. ALERTAR no equivale a LIBERAR; la semántica de CU23 no redefine el monitoreo CU22. No activar ni ejecutar liberación desde chat. [Contrato CH1–CH12](DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12). Cambio exclusivamente documental; Fase 12 NO iniciada.
+
+## Continuidad documental de RF25/CU30 — Fase 12.5
+
+El [contrato AC1–AC15](DECISIONS.md#activity-audit-contract--readiness-for-cu30) prevé alta/activación/desactivación de versiones y asignación/retiro de política del espacio, incluidas guardas de compromisos en AC6. No nueva operación ni edición de versión. ALERTAR/LIBERAR conservan actividades, scheduler:liberacion, texto evaluación/política e idempotencia N4/D-08. Evaluaciones ordinarias no crean otra actividad; sin cambio de evidencia, locks o política efectiva.
+
+Cambio exclusivamente documental. CU30 **NO IMPLEMENTADO**; implementación requiere nueva instrucción. La evidencia funcional anterior conserva su fecha y no se presenta como verificación nueva.

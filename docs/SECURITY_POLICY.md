@@ -1,6 +1,8 @@
 # Política de seguridad
 
-**Estado vigente — Fase 12 implementada y validada offline (2026-10-26).** RF24/CU29: [implementación del asistente](CHATBOT_IMPLEMENTATION.md), conforme a CH1–CH12. Orientación por permisos, OpenAI Responses y contexto mínimo sin datos operativos ni historial persistido. CU30 **NO IMPLEMENTADO**; aplicación móvil diferida; ninguna fase posterior iniciada. Los cierres siguientes conservan su contexto histórico.
+**Estado vigente — Fase 12.5 documental cerrada (2026-10-26).** [Activity Audit Contract / Readiness for CU30](DECISIONS.md#activity-audit-contract--readiness-for-cu30), **0 bloqueantes documentales**. RF25 con productores parciales; CU30 **NO IMPLEMENTADO**. Implementación solo con nueva instrucción. Sin cambios de código, datos, permisos, migraciones o dependencias; OpenAI/Sepolia pendientes independientes.
+
+**Base funcional conservada — Fase 12 implementada y validada offline (2026-10-26).** RF24/CU29: [implementación del asistente](CHATBOT_IMPLEMENTATION.md), conforme a CH1–CH12. Orientación por permisos, OpenAI Responses y contexto mínimo sin datos operativos ni historial persistido. CU30 **NO IMPLEMENTADO**; aplicación móvil diferida; ninguna fase posterior iniciada. Los cierres siguientes conservan su contexto histórico.
 
 **Estado histórico — Fase 11.5 documental cerrada (2026-10-26).** RF24/CU29: [Chatbot Assistance Contract / Readiness for Phase 12](DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12), **0 bloqueantes documentales**. Fase 12 NO iniciada; CU30 NO IMPLEMENTADO. No cambios de código, dependencias, configuración o datos.
 
@@ -222,3 +224,9 @@ CH1–CH12 materializado: ACTIVO/sesión/chatbot.consultar y CSRF, campos cerrad
 Entrada de 2.000 puntos de código, cuerpo max_input_chars×12+1.024 para escapes JSON Unicode, respuesta defensiva de 2.000 caracteres/128 KiB y deadline backend de 15 s incluyendo máximo un retry. Plazo de transporte cliente 20 s permite abortar una conexión perdida sin ampliar el presupuesto del servidor. Historial máximo veinte intercambios solo en memoria; se borra al salir/recargar/limpiar/logout/bfcache. Boundary desactiva debug, excepciones se registran por código fijo y FormRequest no conserva input. Logs técnicos sin contenido/Authorization; sin registros de actividad por mensaje.
 
 Heurísticas no prometen invulnerabilidad semántica; los controles de servidor impiden operaciones y exposición de contexto operativo aunque falle una clasificación. store=false no equivale a ZDR. [Fuentes, configuración, pruebas, condiciones de despliegue y smoke pendiente](CHATBOT_IMPLEMENTATION.md). No dependencia adicional ni modificación de excepción dev Hardhat/Zod.
+
+## Política de auditoría prevista — Fase 12.5
+
+[Activity Audit Contract / Readiness for CU30](DECISIONS.md#activity-audit-contract--readiness-for-cu30): actividad.ver elegible solo para Administrador vigente/ACTIVO y sesión D-07 válida, permiso efectivo sin bypass y revocable (no RECOVERY). Encargado/Docente/Estudiante sin CU30; reportes.ver no lo concede. Alcance institucional de auditoría mínima; nombres actuales solo con usuarios.ver y enlaces según Policy del destino. Autorización antes de consultas, opciones, conteos y detalle; DTO cerrado, privado/no-store.
+
+No secretos, hashes de credenciales/QR, HMAC, cookies, cuerpos HTTP, SQL, excepciones completas, motivos/soluciones libres ni textos de chatbot en actividad/props. Plantillas nuevas <=500 caracteres; historia desconocida o sospechosa se conserva en DB y su descripción se omite en presentación segura, sin confiar solo en regex. No mass assignment, edición/borrado/purge o reconstrucción de identidad histórica inexistente. Autenticación y 403/validaciones genéricos fuera de catálogo; nueve rechazos funcionales concretos y ERROR admitido según AC6. No logging recursivo ni datos de request como respaldo ante fallo. Estos controles son contrato futuro, no implementación ni nueva auditoría de dependencias.

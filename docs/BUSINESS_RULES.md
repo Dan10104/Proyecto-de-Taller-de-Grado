@@ -1,6 +1,8 @@
 # Reglas de negocio y controles verificables
 
-**Estado vigente — Fase 12 implementada y validada offline (2026-10-26).** RF24/CU29: [implementación del asistente](CHATBOT_IMPLEMENTATION.md), conforme a CH1–CH12. Orientación por permisos, OpenAI Responses y contexto mínimo sin datos operativos ni historial persistido. CU30 **NO IMPLEMENTADO**; aplicación móvil diferida; ninguna fase posterior iniciada. Los cierres siguientes conservan su contexto histórico.
+**Estado vigente — Fase 12.5 documental cerrada (2026-10-26).** [Activity Audit Contract / Readiness for CU30](DECISIONS.md#activity-audit-contract--readiness-for-cu30), **0 bloqueantes documentales**. RF25 con productores parciales; CU30 **NO IMPLEMENTADO**. Implementación solo con nueva instrucción. Sin cambios de código, datos, permisos, migraciones o dependencias; OpenAI/Sepolia pendientes independientes.
+
+**Base funcional conservada — Fase 12 implementada y validada offline (2026-10-26).** RF24/CU29: [implementación del asistente](CHATBOT_IMPLEMENTATION.md), conforme a CH1–CH12. Orientación por permisos, OpenAI Responses y contexto mínimo sin datos operativos ni historial persistido. CU30 **NO IMPLEMENTADO**; aplicación móvil diferida; ninguna fase posterior iniciada. Los cierres siguientes conservan su contexto histórico.
 
 **Estado histórico — Fase 11.5 documental cerrada (2026-10-26).** RF24/CU29: [Chatbot Assistance Contract / Readiness for Phase 12](DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12), **0 bloqueantes documentales**. Fase 12 NO iniciada; CU30 NO IMPLEMENTADO. No cambios de código, dependencias, configuración o datos.
 
@@ -568,3 +570,54 @@ Las fórmulas, siete reportes, scopes y columnas DR1–DR12 están implementados
 | T-CB48 | Responsive 1440×900/1366×768/768×1024/390×844, loading/error acotados, consola limpia; proveedor caído no impide navegación/operaciones principales. |
 | T-CB49 | Suite normal usa FakeChatbotProvider/fake HTTP y bloquea Internet; conserva 747 tests previos y MySQL espacio_u_testing; no fake en producción presentado como respuesta real. |
 | T-CB50 | Smoke real separado, sintético y autorizado en Fase 12 con clave/cuota; documentar pendiente si falta. Revalidar modelo/política/SDK; eval adversarial real no sustituye los controles de servidor ni promete infalibilidad. |
+
+## Bitácora — contrato documental de Fase 12.5
+
+[Activity Audit Contract / Readiness for CU30](DECISIONS.md#activity-audit-contract--readiness-for-cu30), AC1–AC15, concreta BR-21 sin cambiar reglas de negocio. Catálogo: 18 acciones existentes y 38 futuras sobre operaciones disponibles. EXITO es transición confirmada; RECHAZO solo nueve acciones/guardas AC6; ERROR solo nuevos productores admitidos con rollback confirmado. Descripciones mínimas, CHECK OR, contexto por FK, inmutabilidad y retención sin purga. actividad.ver previsto exclusivamente para Administrador con permiso efectivo; no concesión DB ahora. CU30 **NO IMPLEMENTADO**.
+
+### Aceptación prevista para RF25/CU30 — Fase 12.5
+
+Criterios futuros; **no tests ejecutados en esta fase documental**. Fixture sintética parametrizada por cada una de las 56 acciones AC3/AC4: comprobar operación, identidad del actor/proceso, FK exactas/NULL, fecha, resultado, descripción permitida y criticidad. No prueba contra desarrollo; usar espacio_u_testing real. No borrar ninguna de las 877 pruebas previas (10.217 assertions al cierre de Fase 12).
+
+| Criterio | Comprobación futura obligatoria |
+| --- | --- |
+| T-A01 | Catálogo exacto de 56 claves únicas: 18 existentes + 38 nuevas; rechazo de escritura con acción no permitida, sin nuevo enum SQL. |
+| T-A02 | Las 18 existentes conservan nombres, fechas, contexto, NULL, EXITO y las cuatro críticas; adaptar recorder no duplica filas ni cambia builders. |
+| T-A03 | Usuarios: alta, edición real, contraseña sin valor/hash y deshabilitación; sesiones revocadas conservan D-07; no rehabilitación inventada. |
+| T-A04 | Roles/permisos: alta institucional faltante, edición de descripción, conjunto cambiado, asignación/retiro; una por hito/par y U correcto. |
+| T-A05 | Espacios/bloqueos: creación/edición/estado, asociaciones, bloqueo/desactivación; precedencia sin doble evento, motivo excluido. |
+| T-A06 | Ocho acciones de catálogos: piso/tipo espacio/característica/tipo equipo, alta/edición; referencia ID segura y FK de contexto NULL. |
+| T-A07 | Equipamiento: tres acciones administrativas; PRESTADO solo entrega; estados automáticos por préstamo/incidencia no duplican actividad. |
+| T-A08 | Sensor: seis acciones, incluido tipo y consulta de credencial; reasignación conserva espacio al evento/origen mínimo; no clave/HMAC/identificador en fila. |
+| T-A09 | QR: sin historia GENERADO, con historia ROTADO, desactivación explícita; actor/objetivo U/R/V/P exactos; sin token/hash/SVG ni fila por validación. |
+| T-A10 | Políticas: nueva versión, activación/desactivación, asignación/reemplazo/retiro; sin fila por cada espacio ni evaluación ordinaria. |
+| T-A11 | Guardados idénticos, mismo conjunto/política, retiro o desactivación repetidos no crean EXITO; alta con roles registra hitos distintos atómicos. |
+| T-A12 | Dos procesos: misma transición de estado/retiro/entrega confirma una actividad; no actividad del intento revertido ni permiso usado tras revocación. |
+| T-A13 | Detección vencida concurrente una vez por préstamo; CU23 evaluación reutilizada no reaudita; QR emisiones distintas y exportaciones distintas conservan identidad AC12. |
+| T-A14 | Fallo de inserción EXITO revierte negocio e hijos; ninguna fila EXITO huérfana, notificación o evidencia de transacción abortada. |
+| T-A15 | Deadlock/retry interno revierte actividades previas y confirma una lógica; recorder no invierte locks ni hace red dentro de transacción. |
+| T-A16 | Cada una de nueve acciones RECHAZO y sus guardas exactas: después del rollback, sin cambios de negocio, actor/FK verificados, critica=false. |
+| T-A17 | ERROR de cada productor nuevo admitido: fallo relevante, rollback confirmado y una fila raíz segura; creación revertida sin ID provisional/FK huérfana. |
+| T-A18 | Sin auditoría genérica por 401/403/404/419/422/429, validaciones, no-op, auth fallida, listado/detalle/preview o acciones existentes fallidas excluidas. |
+| T-A19 | Caída de BD/recorder sin recursión ni negocio confirmado; COMMIT incierto no fabrica ERROR ni replay ciego; fallo afterCommit no revierte éxito. |
+| T-A20 | CHECK OR exige responsable, admite historia con ambos; humano/procesos actuales bien asignados, sin usuario Sistema ni proceso inventado. |
+| T-A21 | Varias FK coherentes simultáneas; incidentes manuales sin U inventada; QR y sensor conservan referencias históricas; sin FK de entidades inexistentes. |
+| T-A22 | Administrador ACTIVO con actividad.ver accede; permiso revocado, sesión vencida/inválida o cuenta inactiva deniegan antes de queries. |
+| T-A23 | Encargado/Docente/Estudiante 403 incluso con concesión errónea o URL/ID directo; no bypass por rol ni actividad.ver en RECOVERY. |
+| T-A24 | Alcance institucional mínimo para Admin; no ownership artificial; datos personales solo con usuarios.ver y sin email/CI/hash. |
+| T-A25 | Fechas locales: default 30 días, mismo día, medianoche inicial incluida/final siguiente excluida, fin inválido/extremos y vacío sin error. |
+| T-A26 | Filtros actor/afectado/acción/resultado/criticidad/IDs exactos, tipados y AND; inactivos históricos incluidos; desconocidos/SQL rechazados. |
+| T-A27 | Ocho tipos derivados de FK/EXISTS; una fila puede coincidir con varios, nunca duplicada; SIN_REFERENCIA correcto; no parsear descripción. |
+| T-A28 | Orden fecha_hora DESC,id DESC con empates; 25 por página, límites de página/filtros; no promesa de snapshot entre requests. |
+| T-A29 | Detalle único/404 seguro; DTO cerrado sin modelos completos, payloads, cuerpos HTTP ni relaciones no autorizadas. |
+| T-A30 | Cada enlace exige permiso/Policy actual del dominio; revocar quita link sin borrar referencia técnica; destino reautoriza. |
+| T-A31 | Actor inactivo, nombres actuales, NULL y responsables histórico mixto/desconocido se muestran seguros, sin reconstrucción falsa. |
+| T-A32 | Cuatro críticas con evidencia ofrecen CU25 solo autorizado; evidencia ausente informativa; lectura CU30 no verifica RPC ni modifica evidencia. |
+| T-A33 | Descripción 500 caracteres y plantillas; textos libres/secretos/SQL/headers/chat no entran; historia desconocida/dudosa se suprime en DTO, sin editar BD. |
+| T-A34 | Sin rutas update/delete, mass assignment ni hard delete/purge; modelos y FK conservan historia; no retroescritura/backfill. |
+| T-A35 | RF23 sigue agregado y con 18 acciones/scopes; nuevas acciones administrativas no aparecen ni conceden CU30 al Encargado. |
+| T-A36 | Las 17 reglas N3 y cuatro D-12 mantienen consumidores una vez; 38 nuevas, RECHAZO/ERROR y REPORTE_EXPORTADO no notifican ni generan evidencia. |
+| T-A37 | Chatbot sin textos en bitácora, acceso a datos CU30, route_key adicional o cambio de proveedor; no auditoría de dashboard/lecturas IoT/QR. |
+| T-A38 | SQL agregado/paginado, sin N+1/Model::all; dataset sintético y EXPLAIN/tiempo/memoria documentados antes de índice adicional. |
+| T-A39 | UI futura con filtros etiquetados, teclado/foco, resultado/criticidad no solo color, estados vacío/error, responsive y respuestas privadas. |
+| T-A40 | Regresión completa: 31 tablas/211 columnas/63 FK sin cambios no autorizados; D-12/N/DR/CH intactos, secretos ausentes; sin export CU30/móvil/fase posterior. |

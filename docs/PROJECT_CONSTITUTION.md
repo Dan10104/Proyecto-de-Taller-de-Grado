@@ -1,6 +1,8 @@
 # Constitución del proyecto ESPACIO-U
 
-**Estado vigente — Fase 12 implementada y validada offline (2026-10-26).** RF24/CU29: [implementación del asistente](CHATBOT_IMPLEMENTATION.md), conforme a CH1–CH12. Orientación por permisos, OpenAI Responses y contexto mínimo sin datos operativos ni historial persistido. CU30 **NO IMPLEMENTADO**; aplicación móvil diferida; ninguna fase posterior iniciada. Los cierres siguientes conservan su contexto histórico.
+**Estado vigente — Fase 12.5 documental cerrada (2026-10-26).** [Activity Audit Contract / Readiness for CU30](DECISIONS.md#activity-audit-contract--readiness-for-cu30), **0 bloqueantes documentales**. RF25 con productores parciales; CU30 **NO IMPLEMENTADO**. Implementación solo con nueva instrucción. Sin cambios de código, datos, permisos, migraciones o dependencias; OpenAI/Sepolia pendientes independientes.
+
+**Base funcional conservada — Fase 12 implementada y validada offline (2026-10-26).** RF24/CU29: [implementación del asistente](CHATBOT_IMPLEMENTATION.md), conforme a CH1–CH12. Orientación por permisos, OpenAI Responses y contexto mínimo sin datos operativos ni historial persistido. CU30 **NO IMPLEMENTADO**; aplicación móvil diferida; ninguna fase posterior iniciada. Los cierres siguientes conservan su contexto histórico.
 
 **Estado histórico — Fase 8 implementada (2026-10-24).** Se ejecuta la instrucción oficial de Fase 8 en el workspace único. RF18/CU23 materializado sin ampliar alcance ni iniciar Fase 9. [Informe de implementación, verificaciones y límites](RELEASE_POLICY_IMPLEMENTATION.md). Las declaraciones de fases anteriores que siguen a continuación se conservan como historia de esos cierres.
 
@@ -113,3 +115,7 @@ La nueva instrucción autorizó CU12–CU19 y RF9–RF15: inventario, disponibil
 ## Aplicación vigente de Fase 6
 
 La petición Fase 6 autorizó CU11/CU20 y extensión opcional CU17/CU18. Se conservan workspace único, originales, stack, historia y límites; la excepción SQL de siete ON UPDATE RESTRICT fue autorizada expresamente. [Implementación y aceptación y límite físico documentado](QR_IMPLEMENTATION.md). No se inicia Fase 7 ni se anticipan CU23/CU24/CU26/CU30.
+
+## Alcance autorizado — Fase 12.5
+
+La nueva instrucción autoriza exclusivamente [Activity Audit Contract / Readiness for CU30](DECISIONS.md#activity-audit-contract--readiness-for-cu30) y documentos de soporte. RF25 mantiene productores parciales; CU30 NO IMPLEMENTADO. Cero bloqueantes documentales no autoriza programar: requiere nueva instrucción. No cambios funcionales, migraciones, permisos DB, nuevas escrituras, fase posterior ni cliente móvil. Fase 12 permanece validada offline; sus smokes OpenAI y Sepolia siguen separados. Workspace/originales/Git/privacidad intactos.

@@ -237,3 +237,9 @@ Reportes administrativos: préstamos por solapamiento del intervalo previsto; in
 ## Límite de asistencia previsto — Fase 11.5
 
 Solo orientar sobre equipamiento, préstamos, entregas, devoluciones e incidencias. No adjuntar equipos/series/receptores/filas ni ejecutar acciones; devolución NO_DETERMINABLE no implica devolución confirmada y vencido sigue derivado. [Contrato CH1–CH12](DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12). Cambio exclusivamente documental; Fase 12 NO iniciada.
+
+## Continuidad documental de RF25/CU30 — Fase 12.5
+
+El [contrato AC1–AC15](DECISIONS.md#activity-audit-contract--readiness-for-cu30) conserva siete hitos de préstamo y cuatro de incidencia/mantenimiento, incluidos devolución pendiente y detección vencida; sin duplicar entrega/devolución o estado físico derivado. Añade contractualmente tres acciones de inventario y dos de tipo de equipamiento sobre operaciones existentes. Actor real, R/P/U/I según AC3/AC7; descripción/solución/serie completas excluidas. Nuevos hooks administrativos y migración compatible del recorder se ejecutarán solo con autorización posterior.
+
+Cambio exclusivamente documental. CU30 **NO IMPLEMENTADO**; implementación requiere nueva instrucción. La evidencia funcional anterior conserva su fecha y no se presenta como verificación nueva.
