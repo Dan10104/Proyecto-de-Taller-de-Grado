@@ -1,5 +1,7 @@
 # Blockchain y trazabilidad verificable — Fase 9
 
+**Estado documental vigente — Fase 9.5 (2026-10-26).** Contrato RF21/CU26 cerrado; [Readiness for Phase 10](DECISIONS.md#readiness-for-phase-10), **0 bloqueantes documentales**. Fase 10 no iniciada. La implementación base sigue siendo Fase 9, con validación offline y smoke Sepolia real pendiente de testETH. Los cierres anteriores conservan su contexto histórico.
+
 **Fase 9 implementada y validada offline, 2026-10-25/26.** Rama `feature/phase-9-blockchain` desde main limpio `a7731994f9a7339a8398739721af043c83ede6fc`. El contrato D-12 sigue vigente. Sepolia real pendiente de testETH; excepción temporal dev de Zod autorizada. No se inicia Fase 10 ni CU30 general. Se distinguen resultados ejecutados offline de la integración pública pendiente.
 
 ## Evaluación JCS y propuesta de implementación
@@ -301,3 +303,11 @@ QA descubrió y corrigió el uso indebido del formatter DATETIME sobre ISO UTC s
 ## Registro Git de entrega
 
 Secuencia coherente desde `a773199`: `29b6ce3 feat: implement critical traceability and Sepolia registry`; `b9e3a0d feat: add authorized traceability verification interface`; `1cdfa2b test: cover traceability privacy recovery and concurrency`; cierre `docs: record phase 9 validation and development-only exception`. La rama de entrega es `feature/phase-9-blockchain`; se publica antes de integrar por fast-forward en main, sin reescritura de historial. El commit documental final puede consultarse con `git log -1`; no se incluye su propio hash dentro de este archivo para evitar una autorreferencia imposible. El informe de entrega comunica el resultado efectivo del push y la comparación final de referencias.
+
+## Coexistencia documental con RF21 — Fase 9.5
+
+[Notification Contract / Readiness for Phase 10](DECISIONS.md#notification-contract--readiness-for-phase-10) reutiliza exactamente RESERVA_APROBADA, RESERVA_CANCELADA, PRESTAMO_ENTREGADO y PRESTAMO_DEVUELTO, sin segunda actividad, cambio de criticidad, canonicalización o evidencia. Una actividad confirmada puede tener una evidencia y varios avisos internos. Ambos consumidores actúan después del commit y se aíslan: un fallo en evidencia/RPC no impide intentar avisos y un fallo de avisos no impide evidencia. La operación confirmada conserva su validez.
+
+Las trece acciones RF21 nuevas serán no críticas y no amplían el allowlist D-12. No generar avisos por evidencia PENDIENTE/REGISTRADA, verificaciones, RPC caído, QR o IoT aislados. registros_actividad mantiene su esquema e inmutabilidad; ampliarlo solo para los eventos RF21 no implementa CU30 general. El reconciliador de avisos será independiente del de trazabilidad y tendrá la ventana/límites N6; no se incorpora ahora.
+
+Esta fase es documental: no ejecuta nuevos tests Blockchain ni auditorías, no modifica dependencias, contratos o configuración. La excepción temporal dev Hardhat/Zod conserva las condiciones y deuda técnica de este informe; auditorías productivas sin vulnerabilidades corresponden al cierre de Fase 9, no a una nueva medición. El smoke real de Sepolia sigue pendiente exclusivamente de testETH y separado de RF21; no se intenta financiar ni desplegar en 9.5. Fase 10 puede comenzar con nueva instrucción según Readiness, sin que ese pendiente externo la bloquee.

@@ -1,6 +1,8 @@
 # Matriz CU01–CU30
 
-**Estado vigente — Fase 9 implementada (2026-10-25/26).** RF19/CU24 y RF20/CU25, cuatro actividades críticas, dos tablas y tres permisos implementados conforme a D-12. [Implementación, pruebas offline, excepción temporal dev de Zod y Sepolia pendiente de testETH](BLOCKCHAIN_IMPLEMENTATION.md). CU30 general y Fase 10 permanecen pendientes. Las secciones de cierres anteriores conservan su contexto histórico.
+**Estado documental vigente — Fase 9.5 (2026-10-26).** Contrato RF21/CU26 cerrado; [Readiness for Phase 10](DECISIONS.md#readiness-for-phase-10), **0 bloqueantes documentales**. Fase 10 no iniciada. La implementación base sigue siendo Fase 9, con validación offline y smoke Sepolia real pendiente de testETH. Los cierres anteriores conservan su contexto histórico.
+
+**Estado funcional base — Fase 9 implementada (2026-10-25/26).** RF19/CU24 y RF20/CU25, cuatro actividades críticas, dos tablas y tres permisos implementados conforme a D-12. [Implementación, pruebas offline, excepción temporal dev de Zod y Sepolia pendiente de testETH](BLOCKCHAIN_IMPLEMENTATION.md). CU30 general y Fase 10 permanecen pendientes. Las secciones de cierres anteriores conservan su contexto histórico.
 
 **Estado al cierre funcional de Fase 8 (2026-10-24).** CU23 implementado como proceso interno programado, extensión temporal de CU22 sobre evidencia persistida; no requiere actor humano ni evento entrante. Versiones, ventanas, pivotes, matriz, idempotencia y concurrencia comprobados. RegistroActividad de la ficha original y notificaciones continúan pendientes de sus fases. [Informe de implementación, verificaciones y límites](RELEASE_POLICY_IMPLEMENTATION.md). Las declaraciones de fases anteriores que siguen a continuación se conservan como historia de esos cierres.
 
@@ -841,3 +843,20 @@ CU23 no extiende CU24 en este alcance: APROBADA→LIBERADA excluida explícitame
 CU24 implementado como extensión exclusiva de aprobación/cancelación de reserva y entrega/devolución final de préstamo. Negocio y actividad atómicos; JCS/SHA-256 y evidencia posterior al commit, envío diferido y reconciliación recuperable. CU25 implementado con verificación local primero, prueba externa y cuatro resultados, sin modificar identidad histórica. Tres permisos exclusivos de Administrador, vistas paginadas/detalle y POST de verificación/reintento con CSRF.
 
 [Cadena RF19/RF20, criterios T-B01–T-B40 y resultados](BLOCKCHAIN_IMPLEMENTATION.md). La integración EVM local pasó; smoke Sepolia pendiente de testETH. Las descripciones futuras originales permanecen como contrato; no implican que se haya ejecutado la red pública. CU30 general no se implementa por incorporar registros_actividad.
+
+## Contrato operativo RF21/CU26 — Fase 9.5
+
+La ficha de CU26 conserva la fuente académica; [N1–N9 de DECISIONS](DECISIONS.md#notification-contract--readiness-for-phase-10) cierra sus parámetros de implementación, con cero bloqueantes documentales y Fase 10 sin iniciar. No cambia quién puede ejecutar los casos de uso previos.
+
+| Caso / productor | Contrato de eventos y consulta futura |
+| --- | --- |
+| CU07/CU09/CU10 | Solicitud, aprobación, rechazo y cancelación de reserva; destinatarios AR/S según N3; aprobación/cancelación reutilizan actividad crítica. CU08 solo aporta enlace autorizado, no genera avisos por consultar. |
+| CU14/CU16/CU17/CU18 | Solicitud, aprobación, rechazo, entrega, devolución pendiente y confirmada. Entrega/devolución final reutilizan actividad crítica; los caminos con y sin QR producen el mismo evento. CU15 permite enlace propio/administrativo autorizado. |
+| Detector de vencimientos RF21 | Proceso interno, una actividad por préstamo ENTREGADO con ahora > fin_previsto; sin nuevo estado, actor humano o permiso de ejecución. S y AD reciben. |
+| CU19 / extensión CU18 | Apertura/cierre de incidencia o mantenimiento; AI y solicitante solo por devolución vinculada; texto sin culpa, tipo INCIDENCIA. |
+| CU23 | ALERTAR y LIBERAR generan actividad dentro de su evaluación; mensaje después del commit a S/AL. MANTENER_POR_USO y NO_DETERMINABLE no generan aviso. |
+| CU26 | Identificar cuenta activa y permiso notificaciones.ver_propias; lista/contador/filtros paginados solo propios; detalle con snapshot y enlace reautorizado; POST/PATCH de primera lectura después de apertura expresa. Listado/GET/prefetch no mutan. |
+| CU24/CU25 | Consumo independiente de las mismas cuatro actividades críticas; no avisos técnicos de evidencia, verificación o RPC. |
+| CU30 | Sin implementación general, buscador ni listado de actividades. Ampliar productores estrictamente necesarios para RF21 no satisface CU30. |
+
+Alternativas cerradas: lista vacía comprensible; sin receptor no se fabrica aviso; sin regla se omite; fallo de generación post-commit conserva negocio y permite recuperación N6. ID ajeno/inexistente 404, sin permiso de módulo 403. Administrador carece de bypass de propiedad. Sin marcar todas, borrar ni volver a no leída. [T-N01–T-N40](BUSINESS_RULES.md#aceptación-de-notificaciones-prevista-para-fase-10) amplía T-CU26 como aceptación futura, sin acreditar pruebas ejecutadas.

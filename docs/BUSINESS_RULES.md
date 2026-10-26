@@ -1,6 +1,8 @@
 # Reglas de negocio y controles verificables
 
-**Estado vigente — Fase 9 implementada (2026-10-25/26).** RF19/CU24 y RF20/CU25, cuatro actividades críticas, dos tablas y tres permisos implementados conforme a D-12. [Implementación, pruebas offline, excepción temporal dev de Zod y Sepolia pendiente de testETH](BLOCKCHAIN_IMPLEMENTATION.md). CU30 general y Fase 10 permanecen pendientes. Las secciones de cierres anteriores conservan su contexto histórico.
+**Estado documental vigente — Fase 9.5 (2026-10-26).** Contrato RF21/CU26 cerrado; [Readiness for Phase 10](DECISIONS.md#readiness-for-phase-10), **0 bloqueantes documentales**. Fase 10 no iniciada. La implementación base sigue siendo Fase 9, con validación offline y smoke Sepolia real pendiente de testETH. Los cierres anteriores conservan su contexto histórico.
+
+**Estado funcional base — Fase 9 implementada (2026-10-25/26).** RF19/CU24 y RF20/CU25, cuatro actividades críticas, dos tablas y tres permisos implementados conforme a D-12. [Implementación, pruebas offline, excepción temporal dev de Zod y Sepolia pendiente de testETH](BLOCKCHAIN_IMPLEMENTATION.md). CU30 general y Fase 10 permanecen pendientes. Las secciones de cierres anteriores conservan su contexto histórico.
 
 **Estado al cierre funcional de Fase 8 (2026-10-24).** BR-14 y T-L01–T-L36 cuentan con implementación/verificación en Fase 8. Se conserva literalmente el contrato D-08 y su matriz. El encabezado «pruebas futuras» identifica el cierre histórico 7.5; el informe nuevo documenta la ejecución posterior. [Informe de implementación, verificaciones y límites](RELEASE_POLICY_IMPLEMENTATION.md). Las declaraciones de fases anteriores que siguen a continuación se conservan como historia de esos cierres.
 
@@ -367,3 +369,67 @@ Contrato normativo [D-12](DECISIONS.md#contrato-blockchain--cierre-d-12-de-fase-
 | T-B40 | Integración Sepolia separada | Solo cuando haya configuración segura y saldo testnet: registro, confirmación, recuperación y CU25 reales; guardar prueba sin claves/URLs privadas; no acreditarla con mocks. |
 
 La garantía es una evidencia local y un registro lógico externo por actividad crítica, no exactamente un broadcast. La actividad fallida revierte negocio; un fallo posterior del hash/red no revierte un commit. Un reintento no cambia el hash original. La exclusión LIBERADA no reduce la evidencia propia de CU23.
+
+## Contrato de notificaciones — Fase 9.5
+
+RF21/CU26 queda cerrado documentalmente en [Notification Contract / Readiness for Phase 10](DECISIONS.md#notification-contract--readiness-for-phase-10), N1–N9. No se ejecuta Fase 10. Las reglas siguientes son obligaciones de implementación futura:
+
+| Regla | Invariante y consecuencia |
+| --- | --- |
+| BR-N01 | Solo los 17 eventos EXITO de N3 generan los ocho tipos oficiales. Rechazo de negocio confirmado es EXITO; ERROR/RECHAZO técnico y acciones sin regla no notifican. |
+| BR-N02 | Actividad durable y negocio se confirman juntos; avisos después del commit. Un fallo posterior de generación no invalida negocio. Cuatro actividades críticas reutilizadas; trece nuevas no críticas; consumidores Blockchain/avisos independientes. |
+| BR-N03 | Destinatarios ACTIVO, permisos efectivos al corte N2; grupos administrativos sin actor redundante. Unión sin duplicados; S tiene prioridad de plantilla. Autocancelación: AR y nunca el propio titular. |
+| BR-N04 | Idempotencia por actividad+destinatario+tipo bajo lock de actividad y lote atómico. Ninguna UNIQUE nueva ni mutex global; distintas actividades concurrentes. |
+| BR-N05 | Recuperación N6: 24 h desde evento, solo posteriores a habilitación RF21, primer lote cierra grupo administrativo; después solo reparación directa reconstruible. Sin filas permite resolver actuales dentro de ventana; ausencia de snapshot impide recuperar integrantes administrativos perdidos de un lote ya confirmado. |
+| BR-N06 | Vencimiento calculado ENTREGADO y ahora > fin_previsto, como máximo una actividad por préstamo; sin cambiar estado ni custodia. Revisión pendiente inicial notifica AD y no equivale a devolución confirmada. |
+| BR-N07 | CU19 diferencia incidencia/mantenimiento en acción, ambos tipo INCIDENCIA; apertura/cierre a AI y afectado solo por devolución vinculada. No atribuir culpa ni prometer disponibilidad. |
+| BR-N08 | CU23 ALERTAR y LIBERAR crean actividad en su evaluación/transición; avisos posteriores. MANTENER_POR_USO/NO_DETERMINABLE no notifican; idempotencia D-08 intacta. |
+| BR-N09 | Mensaje histórico plano y determinista; título ≤160; sin motivos libres, PII innecesaria ni secretos. Cambios actuales no reescriben el mensaje; enlaces sujetos a permiso actual. |
+| BR-N10 | CU26 solo propietario con notificaciones.ver_propias, incluidos administradores; contador propio. Primera lectura del servidor inmutable, listado/prefetch/GET no mutan. Apertura expresa del detalle solicita POST/PATCH autorizado y con CSRF. |
+
+### Aceptación de notificaciones prevista para Fase 10
+
+**T-N01–T-N40 son criterios futuros, no pruebas ejecutadas en Fase 9.5.** Cada caso debe probar resultado y ausencia de efectos indebidos. Las carreras requieren conexiones/procesos MySQL independientes y barreras observables, no solo invocaciones secuenciales. Datos exclusivamente sintéticos; no usar cuentas, tokens ni mensajes reales.
+
+| ID | Escenario futuro y resultado exigido |
+| --- | --- |
+| T-N01 | Esquema oficial: exactamente 8 columnas, PK, 2 FK CASCADE/RESTRICT, 8 enums, índices, creada_en default y leida_en NULL; sin UNIQUE nueva ni timestamps del framework. Título de 160 aceptado/161 rechazado. |
+| T-N02 | Dataset de las 17 filas N3: acción → tipo exacto, evento/actor/contexto/critica/EXITO correctos; solo cuatro acciones críticas con evidencia. |
+| T-N03 | Por cada acción, conjunto exacto de receptores y no receptores: ACTIVO, INACTIVO, rol retirado/inactivo, permiso revocado, permiso parcial, elegibilidad D-04 y alcance. Rol por nombre sin permiso no basta. |
+| T-N04 | Solicitud de reserva: solo AR; aprobación/rechazo: solo S; actor resolutor no recibe por ser administrador. Autocancelación: AR sin titular; cancelación ajena: S sin grupo adicional. |
+| T-N05 | Solicitud de préstamo: AP; decisión/entrega/devolución final: S; receptor = solicitante; sin administrativos adicionales. |
+| T-N06 | Multirol, coincidencia S/grupo y múltiples permisos: una fila por clave lógica, plantilla directa prevalece. Excluir actor solo de grupo; excepción explícita de autocancelación. |
+| T-N07 | Fallo/rollback antes del commit de negocio, incluidas escrituras de actividad: ningún evento/aviso parcial. Reintento de transición ya confirmada no genera segunda actividad. |
+| T-N08 | Fallo forzado de generación/despacho después de commit en reserva, préstamo, devolución, incidencia y liberación: operación y actividad permanecen; respuesta no afirma rollback de negocio. |
+| T-N09 | Fallo del consumidor Blockchain no impide avisos; fallo de avisos no impide evidencia; no exigir testETH/RPC/REGISTRADA. Eventos técnicos Blockchain, QR o IoT aislados no notifican. |
+| T-N10 | Dos generadores simultáneos sobre la misma actividad: exactamente una fila por destinatario/tipo; el segundo consulta filas confirmadas tras esperar. |
+| T-N11 | Generación normal y notificaciones:reconciliar simultáneos: misma garantía T-N10 y sin modificar texto/creada_en/leida_en existentes. |
+| T-N12 | Detener worker después de insertar parte del lote pero antes de commit: rollback total; recuperación crea el conjunto completo. No persistencia parcial por commits por destinatario. |
+| T-N13 | Fallo inicial sin filas y recuperación dentro de ventana: destinatarios actuales válidos; una y diez ejecuciones mantienen conjunto bajo elegibilidad estable. |
+| T-N14 | Fixture parcial persistido: administrativo ya existente y S faltante. Recuperar S activo dentro de ventana; conservar fila/lectura administrativas; no agregar un administrador recién autorizado. |
+| T-N15 | Lote administrativo ya confirmado con supuesto integrante faltante: no inferirlo de permisos actuales ni ampliar el conjunto. Documentar la imposibilidad de reconstrucción histórica sin snapshot; no afirmar reparación administrativa completa. |
+| T-N16 | Cero destinatarios: cero filas, sin receptor ficticio; reintento antes de límite usa actuales. Cambio de permisos antes del primer lote puede cambiar receptores; después de primer lote no agrega administrativos. |
+| T-N17 | Ventana: evento+24 h incluido, después excluido; evento anterior a habilitación excluido, reloj anterior al evento difiere. Reiniciar no mueve habilitación ni vuelve a abrir historial. |
+| T-N18 | Evento sin regla, ERROR, RECHAZO técnico y contexto incoherente: cero avisos; rechazo correcto con EXITO sí cumple N3; diagnóstico no copia datos sensibles. |
+| T-N19 | Cuenta deshabilitada después de recibir: fila conservada; no nuevas filas mientras esté inactiva. Reactivación/permisos semanas después no produce backfill; pérdida de CU26 bloquea consulta, no borra historia. |
+| T-N20 | Revocación/desactivación concurrente: commit anterior al corte de destinatarios excluye; posterior conserva el corte; revocación entre GET detalle y POST lectura impide marcar. No reutilizar permisos cacheados de petición anterior. |
+| T-N21 | Actividades distintas procesan simultáneamente, incluso con receptores compartidos, sin mutex exclusivo global, locks de huecos sobre notificaciones vacías ni espera por locks de negocio. Primer snapshot de selección posterior al lock de actividad. Timeout/deadlock agota reintentos saneados sin revertir negocio. |
+| T-N22 | Propietario con permiso lista/consulta; ID ajeno e inexistente dan 404 sin cuerpo revelador; incluso Administrador no accede al ajeno. Sin permiso de módulo, 403; sin sesión/inactivo, acceso denegado. |
+| T-N23 | Solo leida_en NULL es no leída; POST/PATCH propio fija hora del servidor. Segunda llamada conserva primera fecha; fecha/destinatario manipulados se ignoran o rechazan. |
+| T-N24 | Dos lecturas concurrentes conservan un único primer timestamp; el perdedor no lo reemplaza. CSRF ausente/incorrecto impide mutación. |
+| T-N25 | Listado, contador, prefetch y GET detalle no marcan; apertura expresa de detalle renderizado envía la operación autorizada. Fallo de esa operación no muestra lectura confirmada; URL directa usa mismo flujo. |
+| T-N26 | Contador cuenta todas las propias no leídas, independiente de filtros/página; no incluye ajenas. Orden creada_en DESC,id DESC, 15 por página; todas/no leídas/leídas/tipo y vacío correctos. |
+| T-N27 | Plantillas N7 exactas: título ≤160, fecha del evento distinta de inserción recuperada; aprobación sigue aprobación tras cancelación. Texto libre/HTML del recurso, motivo o solución no se copia ni ejecuta. |
+| T-N28 | Privacidad de respuestas, Inertia, mensajes y logs: sin CI/correo/terceros/secreto/QR/HMAC/RPC/private key; DTO no serializa RegistroActividad completo. Plantilla propia no filtra contenido administrativo. |
+| T-N29 | Enlaces derivados y reautorizados: permiso perdido conserva aviso propio pero no acceso al objeto; afectado de incidencia sin incidencias.ver solo enlaza préstamo permitido. Acceso directo al destino también se controla. |
+| T-N30 | Vencimiento: no ENTREGADO, antes del límite e igualdad no generan; después sí. Dos detectores simultáneos crean una actividad y una notificación por destinatario, sin estado VENCIDO. |
+| T-N31 | Repetir barridos vencidos no repite actividad; devolución posterior impide nuevo evento. Carrera detector/devolución conserva resultado según primer commit; aviso histórico puede recuperarse sin afirmar estado actual. |
+| T-N32 | CU18 NO_DETERMINABLE/PENDIENTE_REVISION crea una actividad no crítica y avisos AD, sin PRESTAMO_DEVUELTO ni aviso reiterado a S. Confirmación posterior produce una actividad crítica final y aviso normal; mismo hito. |
+| T-N33 | Incidencia abierta/cerrada manual: acción y plantilla correctas, AI activos sin actor; sin S si no deriva de devolución. Cierre repetido no repite actividad y no promete recurso disponible. |
+| T-N34 | Mantenimiento abierto/cerrado: acciones MANTENIMIENTO_*, tipo INCIDENCIA, mismos controles; no inventar enum, receptor afectado ni vínculo inexistente. |
+| T-N35 | Incidencia derivada de devolución: S adicional por vínculo real, mensaje requiere revisión/sin culpa; cierre avisa S. Rollback de devolución revierte también incidencia/actividades. |
+| T-N36 | CU23 ALERTAR produce actividad no crítica + S/AL; mensaje no dice liberada. LIBERAR produce actividad solo si transición APROBADA→LIBERADA y evaluación confirman juntas. |
+| T-N37 | CU23 MANTENER_POR_USO/NO_DETERMINABLE: sin aviso ni nueva actividad RF21; política/ventanas/resultado/evidencias D-08 no cambian. |
+| T-N38 | Dos evaluadores CU23, reintentos y barridos repetidos: evaluación terminal/actividad/aviso únicos; rollback elimina todo lo nuevo; cancelación/QR/IoT concurrentes conservan guardas previas. Referencia CU23 en descripcion apunta a evaluación correcta. |
+| T-N39 | EXPLAIN y consultas con volumen sintético: filtro propietario antes de contar/paginar, índices oficiales aprovechables, lotes acotados, sin N+1 ni carga de historial completo; registrar mediciones sin inventar SLA nuevo. |
+| T-N40 | Regresión de Fases 2–9 y alcance: estados/locks/RBAC/QR/IoT/D-12 intactos; sin email, servicios externos, realtime complejo, avisos técnicos, CU30 general, marcar todas, volver a no leída o borrar. Navegación responsive y accesible por teclado. |

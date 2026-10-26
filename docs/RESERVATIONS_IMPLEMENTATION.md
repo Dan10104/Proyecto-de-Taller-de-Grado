@@ -1,5 +1,7 @@
 # Reservas de espacios académicos — Fase 4
 
+**Estado documental vigente — Fase 9.5 (2026-10-26).** Contrato RF21/CU26 cerrado; [Readiness for Phase 10](DECISIONS.md#readiness-for-phase-10), **0 bloqueantes documentales**. Fase 10 no iniciada. La implementación base sigue siendo Fase 9, con validación offline y smoke Sepolia real pendiente de testETH. Los cierres anteriores conservan su contexto histórico.
+
 **Estado vigente — Fase 8 implementada (2026-10-24).** CU23 incorpora APROBADA→LIBERADA atómica con evaluación y pivotes. Reserva es lock coordinador; D-05 y ReservationService no cambian. Cancelación conserva inicio exclusivo y las carreras MySQL confirman una sola transición válida. FINALIZADA por tiempo permanece fuera. [Informe de implementación, verificaciones y límites](RELEASE_POLICY_IMPLEMENTATION.md). Las declaraciones de fases anteriores que siguen a continuación se conservan como historia de esos cierres.
 
 **Continuidad documental de Fase 7.5:** [D-08 cerrada para Fase 8](DECISIONS.md#readiness-for-phase-8). CU23 futuro solo evaluará APROBADA desde inicio+tolerancia y antes de fin. LIBERAR confirmará evaluación/pivotes/transición en un commit. D-05 conserva cancelación estrictamente antes de inicio y la finalización natural diferida; los órdenes de lock actuales se conservan mediante el protocolo CU23 con NOWAIT. Sin cambios funcionales ahora.
@@ -139,3 +141,11 @@ El núcleo funcional descrito arriba no cambia. [D-12](DECISIONS.md#contrato-blo
 RESERVA_APROBADA usa reserva_id, reserva_codigo, espacio_id, inicio, fin, resuelta_por_id y resuelta_en; excluye estado actual. RESERVA_CANCELADA usa reserva_id, reserva_codigo, espacio_id, cancelada_por_id, cancelada_en y motivo_cancelacion_hash. Conservar resolución/intervalo/código tras aprobación permite verificarla después de cancelación o liberación; cancelar una pendiente también es una operación crítica válida si cumple CU10. Contexto común y tipos exactos se centralizan en D-12.
 
 Solicitud CU07, rechazo y LIBERADA quedan excluidos. No se añade transición FINALIZADA ni se modifica disponibilidad. No se incorporaron ahora actividad, hashing, callback, migración o RPC. Los tests de reservas previos siguen siendo evidencia histórica; T-B06/07/10/29 especifican la futura integración y regresión.
+
+## Integración RF21 prevista — cierre de Fase 9.5
+
+El núcleo funcional de reservas y las actividades críticas ya implementadas en Fase 9 se conservan. [Contrato N2–N8](DECISIONS.md#notification-contract--readiness-for-phase-10) fija RESERVA_SOLICITADA (SOLICITUD → AR), RESERVA_APROBADA/RECHAZADA (DECISION → solicitante) y RESERVA_CANCELADA (CANCELACION). AR exige reservas.resolver + reservas.ver_administrativas y cuenta activa. Cancelación ajena avisa al solicitante; autocancelación avisa a AR excluyendo al titular/actor, nunca a sí mismo.
+
+Solo solicitud/rechazo necesitan nuevas actividades no críticas dentro de su transacción. Aprobación/cancelación reutilizan exactamente la actividad crítica de Fase 9; notificación posterior al commit e independiente de evidencia Blockchain. No modificar D-05, guardas temporales, disponibilidad, permisos, orden de locks ni hitos. Una operación revertida no origina aviso; un fallo posterior del aviso no revierte una reserva confirmada.
+
+CU08 aporta enlace contextual sujeto a autorización actual; el mensaje es snapshot y no cambia al cambiar estado de la reserva. CU23 ALERTAR/LIBERADA tiene contrato específico en N3/N4 y RELEASE_POLICY_IMPLEMENTATION. Recuperación acotada por N6. T-N04, T-N07–T-N11, T-N27–T-N29 y T-N36–T-N38 serán pruebas futuras. Sin hooks, UI ni nuevas escrituras en Fase 9.5.

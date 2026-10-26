@@ -1,6 +1,8 @@
 # Modelo de datos documentado
 
-**Estado vigente — Fase 9 implementada (2026-10-25/26).** RF19/CU24 y RF20/CU25, cuatro actividades críticas, dos tablas y tres permisos implementados conforme a D-12. [Implementación, pruebas offline, excepción temporal dev de Zod y Sepolia pendiente de testETH](BLOCKCHAIN_IMPLEMENTATION.md). CU30 general y Fase 10 permanecen pendientes. Las secciones de cierres anteriores conservan su contexto histórico.
+**Estado documental vigente — Fase 9.5 (2026-10-26).** Contrato RF21/CU26 cerrado; [Readiness for Phase 10](DECISIONS.md#readiness-for-phase-10), **0 bloqueantes documentales**. Fase 10 no iniciada. La implementación base sigue siendo Fase 9, con validación offline y smoke Sepolia real pendiente de testETH. Los cierres anteriores conservan su contexto histórico.
+
+**Estado funcional base — Fase 9 implementada (2026-10-25/26).** RF19/CU24 y RF20/CU25, cuatro actividades críticas, dos tablas y tres permisos implementados conforme a D-12. [Implementación, pruebas offline, excepción temporal dev de Zod y Sepolia pendiente de testETH](BLOCKCHAIN_IMPLEMENTATION.md). CU30 general y Fase 10 permanecen pendientes. Las secciones de cierres anteriores conservan su contexto histórico.
 
 ## Compatibilidad MySQL para Fase 9 — excepción autorizada
 
@@ -1027,3 +1029,13 @@ Estado instalado conservado: **28 tablas académicas, 179 columnas y 54 FK**. Fa
 Migraciones 000029/000030: registros_actividad (13 columnas, 6 FK) y evidencias_trazabilidad (11 columnas, 1 FK), fieles al SQL salvo ON UPDATE RESTRICT autorizado en fk_registro_actor. chk_registro_responsable, defaults y UNIQUE actividad/hash conservados. Ninguna de las 28 tablas previas se modifica. Resultado: 30 tablas académicas / 203 columnas / 61 FK; migrations es técnica. El modelo documental completo sigue conteniendo 31 tablas: notificaciones aún no se materializa. Sin columna canónica, outbox ni backfill.
 
 [Pruebas de esquema e historia inmutable](BLOCKCHAIN_IMPLEMENTATION.md#esquema-actividades-y-atomicidad). Fase 9 §11 precisa actor humano real y proceso_responsable NULL en las cuatro actividades; la tabla de decisión histórica 8.5 se interpreta con esta instrucción posterior.
+
+## Preservación del SQL de notificaciones — Fase 9.5
+
+[Contrato RF21/CU26](DECISIONS.md#notification-contract--readiness-for-phase-10), N4/N6/N9, contrastado nuevamente con SQL Word/PDF pp. 295–299. La tabla futura es exactamente la descrita en [notificaciones](#notificaciones): **8 columnas**, con PK id, destinatario_id y registro_actividad_id obligatorios, titulo VARCHAR(160), mensaje TEXT, enum oficial de ocho tipos, creada_en DATETIME DEFAULT CURRENT_TIMESTAMP y leida_en DATETIME NULL. Nombres de FK: fk_notificacion_destinatario y fk_notificacion_evento_origen; ambas ON UPDATE CASCADE / ON DELETE RESTRICT. Índices idx_notificacion_destinatario(destinatario_id, leida_en) e idx_notificacion_fecha(creada_en). No UNIQUE de entrega, timestamps automáticos, JSON, soft delete ni esquema del sistema genérico de notificaciones de un framework.
+
+La unicidad lógica actividad+destinatario+tipo será responsabilidad del servicio mediante lock por actividad y lote completo en una transacción. Los índices existentes no equivalen a UNIQUE. registros_actividad conserva sus trece columnas y su inmutabilidad; no añadir procesada_en ni lista de receptores, ni reutilizar descripcion como estado mutable. Solo las nuevas actividades CU23 llevarán en descripcion la referencia humana segura a evaluación/política definida en N4; la cardinalidad no adquiere una FK inexistente. Las demás nuevas acciones usan contexto FK y descripcion NULL. Se conserva fk_registro_actor ON UPDATE RESTRICT, excepción ya autorizada para MySQL, y el CHECK de actor o proceso responsable.
+
+No hay notification_outbox ni tabla snapshot de destinatarios. La ausencia de marcador/snapshot limita la recuperación administrativa después de un lote persistido: N6 fija ventana de 24 h, cierre del grupo y reparación directa detectable, sin prometer reconstrucción arbitraria de filas perdidas. Cambios de permisos no habilitan redistribuir historia.
+
+**Estado real al cerrar 9.5: 30 tablas académicas / 203 columnas / 61 FK; notificaciones todavía ausente.** La futura implementación completaría 31/211/63, sin alterar las 30 tablas previas. No se creó migración, modelo ni índice. T-N01 y T-N10–T-N21 verificarán esquema/concurrencia/recuperación en Fase 10.
