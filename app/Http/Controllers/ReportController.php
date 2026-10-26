@@ -37,7 +37,7 @@ class ReportController extends Controller
         } catch (AuthorizationException|ValidationException $e) {
             throw $e;
         } catch (\Throwable $e) {
-            // No dataset or filters in logs; detailed failure stays on the private server.
+            // The central reporter retains only safe exception metadata, never dataset or filters.
             report($e);
             throw ValidationException::withMessages(['exportacion' => 'No se pudo generar el archivo. Intente nuevamente o reduzca el rango.']);
         }

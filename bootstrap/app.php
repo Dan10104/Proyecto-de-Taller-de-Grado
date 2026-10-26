@@ -29,10 +29,11 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->prepend(ChatbotBoundary::class);
         $middleware->prepend(QrPrivacy::class);
         $middleware->prepend(IotBoundary::class);
+        $middleware->prepend(PrivateResponse::class);
         $middleware->trimStrings(except: [fn (Request $request) => $request->is('api/iot', 'api/iot/*'), 'identificador']);
         $middleware->convertEmptyStringsToNull(except: [fn (Request $request) => $request->is('api/iot', 'api/iot/*')]);
         $middleware->trimStrings(except: ['qr_token', 'pregunta']);
-        $middleware->web(prepend: [PrivateResponse::class], append: [HandleInertiaRequests::class]);
+        $middleware->web(append: [HandleInertiaRequests::class]);
         $middleware->alias(['access.session' => EnsureAccessSession::class]);
         $middleware->redirectGuestsTo('/login');
         $middleware->redirectUsersTo('/inicio');
@@ -79,6 +80,15 @@ return Application::configure(basePath: dirname(__DIR__))
                 return false;
             }
         });
+        $exceptions->report(function (Throwable $error) {
+            // Exception messages, previous errors and traces may contain credentials or user text.
+            Log::error('application.unexpected_error', [
+                'exception_class' => $error::class,
+                'source' => substr(hash('sha256', $error->getFile().':'.$error->getLine()), 0, 16),
+            ]);
+
+            return false;
+        });
         $exceptions->dontReport([QueryException::class, SessionStorageException::class, ReservationConflictException::class, EquipmentConflictException::class]);
         $exceptions->render(function (EquipmentConflictException $error, Request $request) {
             return $request->expectsJson() ? response()->json(['message' => $error->getMessage()], 409)
@@ -108,6 +118,12 @@ return Application::configure(basePath: dirname(__DIR__))
         });
         $exceptions->shouldRenderJsonWhen(fn (Request $request) => $request->expectsJson());
         $exceptions->respond(function ($response) {
+            if ($response->getStatusCode() === 500 && ! config('app.debug')) {
+                return request()->expectsJson()
+                    ? response()->json(['message' => 'El servicio no está disponible temporalmente.'], 500)
+                    : Inertia\Inertia::render('Error', ['status' => 500])->toResponse(request())->setStatusCode(500);
+            }
+
             if (in_array($response->getStatusCode(), [403, 404, 419, 429], true) && ! request()->expectsJson() && ! request()->is('api/iot', 'api/iot/*')) {
                 return Inertia\Inertia::render('Error', ['status' => $response->getStatusCode()])->toResponse(request())->setStatusCode($response->getStatusCode());
             }
