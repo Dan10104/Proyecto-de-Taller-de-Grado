@@ -1,6 +1,8 @@
 # Modelo de datos documentado
 
-**Estado vigente — Fase 10.5 documental (2026-10-26).** RF22/CU27 y RF23/CU28: [contrato de dashboard y reportes cerrado](DECISIONS.md#dashboard--reporting-contract--readiness-for-phase-11), **0 bloqueantes documentales**. Fase 11 NO iniciada; CU30 NO IMPLEMENTADO. Fase 10 funcional se conserva, sin cambios de código, datos, permisos o dependencias. Los cierres anteriores mantienen su contexto histórico.
+**Estado vigente — Fase 11 implementada y verificada (2026-10-26).** RF22/CU27 y RF23/CU28: 747 tests / 9111 assertions; QA y auditorías productivas aprobadas. [Implementación, scopes, formatos y evidencia](DASHBOARD_REPORTING_IMPLEMENTATION.md). Sin nuevas tablas ni índices; CU30 NO IMPLEMENTADO y Fase 12 NO iniciada. Los cierres anteriores son históricos.
+
+**Estado histórico — Fase 10.5 documental (2026-10-26).** RF22/CU27 y RF23/CU28: [contrato de dashboard y reportes cerrado](DECISIONS.md#dashboard--reporting-contract--readiness-for-phase-11), **0 bloqueantes documentales**. Fase 11 NO iniciada; CU30 NO IMPLEMENTADO. Fase 10 funcional se conserva, sin cambios de código, datos, permisos o dependencias. Los cierres anteriores mantienen su contexto histórico.
 
 **Estado histórico funcional — Fase 10 (2026-10-26).** RF21/CU26 implementados y verificados: 17 reglas, avisos propios, primera lectura y recuperación de 24 h. [Informe y evidencia](NOTIFICATIONS_IMPLEMENTATION.md). CU30 general y Fase 11 no iniciados. Sepolia real sigue pendiente de testETH. Los apartados de cierres anteriores conservan su contexto histórico.
 
@@ -1066,3 +1068,7 @@ DATETIME conserva America/La_Paz. Fechas civiles se convierten a [inicio de día
 Reutilizar índices ya documentados: estado/solicitante y periodo de reservas/préstamos, estado/tipo/piso de espacios, estado/tipo/base de equipo, recurso/estado de incidencias, índices IoT/evaluaciones/actividad/notificaciones. EXPLAIN y mediciones deben acreditar cualquier índice adicional en Fase 11 antes de proponer migración; no se anticipa aquí. COUNT/GROUP BY/EXISTS, proyecciones mínimas e iteradores evitan materializar tablas completas.
 
 REPORTE_EXPORTADO futuro usa actor_id, accion textual existente, fecha_hora, resultado=EXITO, critica=FALSE y descripcion resumida; las FK de entidad, usuario_afectado_id y proceso_responsable quedan NULL. No cambia CHECK de responsable ni las cuatro actividades críticas. Los permisos previstos dashboard.ver/reportes.ver/reportes.exportar se documentan, no se siembran ahora.
+
+## Esquema de Fase 11
+
+Cero migraciones y cero índices nuevos. Se reutilizan tablas/columnas/índices operacionales y registros_actividad; SecuritySeeder añade tres filas de permisos y asociaciones elegibles. No métricas, snapshots, reportes persistidos o caché de negocio. JSONL/PDF/XLSX son temporales privados fuera del esquema y se eliminan. EXPLAIN/mediciones no justifican un índice adicional. [Informe](DASHBOARD_REPORTING_IMPLEMENTATION.md#mediciones-locales-y-explain).

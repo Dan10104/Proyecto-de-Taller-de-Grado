@@ -177,3 +177,7 @@ Escaneo privado previo al commit: 479 archivos públicos, índice, diferencias e
 [DR5/DR10](DECISIONS.md#dashboard--reporting-contract--readiness-for-phase-11) reutiliza NotificationReadService para P7, solo destinatario autenticado y leida_en NULL, independiente de filtros/página. Cargar dashboard no marca lectura ni duplica reglas/consulta de contador. Las diecisiete reglas, fuentes, recuperación y destinatarios permanecen intactos.
 
 REPORTE_EXPORTADO futuro será actividad no crítica fuera de NotificationRuleRegistry: no notificación, no evidencia Blockchain. Preview no produce actividad; el resumen operacional solo puede incluir exportaciones anteriores propias conforme DR7, sin ciclo. Fase 10.5 no crea actividades, permisos ni notificaciones; las 656 pruebas/8721 aserciones de este informe son evidencia histórica de Fase 10, no una nueva ejecución ni certificación de RF22/RF23.
+
+## Integración con Fase 11
+
+[Dashboard y reportes](DASHBOARD_REPORTING_IMPLEMENTATION.md) reutilizan las reglas, consultas y scopes de este dominio. No modifican sus estados, decisiones o productores. REPORTE_EXPORTADO no se añade a la whitelist de notificaciones ni a eventos críticos Blockchain. CU30 sigue NO IMPLEMENTADO; las limitaciones históricas de este informe conservan su alcance.

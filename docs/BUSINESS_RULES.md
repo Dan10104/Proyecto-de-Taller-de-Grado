@@ -1,6 +1,8 @@
 # Reglas de negocio y controles verificables
 
-**Estado vigente — Fase 10.5 documental (2026-10-26).** RF22/CU27 y RF23/CU28: [contrato de dashboard y reportes cerrado](DECISIONS.md#dashboard--reporting-contract--readiness-for-phase-11), **0 bloqueantes documentales**. Fase 11 NO iniciada; CU30 NO IMPLEMENTADO. Fase 10 funcional se conserva, sin cambios de código, datos, permisos o dependencias. Los cierres anteriores mantienen su contexto histórico.
+**Estado vigente — Fase 11 implementada y verificada (2026-10-26).** RF22/CU27 y RF23/CU28: 747 tests / 9111 assertions; QA y auditorías productivas aprobadas. [Implementación, scopes, formatos y evidencia](DASHBOARD_REPORTING_IMPLEMENTATION.md). Sin nuevas tablas ni índices; CU30 NO IMPLEMENTADO y Fase 12 NO iniciada. Los cierres anteriores son históricos.
+
+**Estado histórico — Fase 10.5 documental (2026-10-26).** RF22/CU27 y RF23/CU28: [contrato de dashboard y reportes cerrado](DECISIONS.md#dashboard--reporting-contract--readiness-for-phase-11), **0 bloqueantes documentales**. Fase 11 NO iniciada; CU30 NO IMPLEMENTADO. Fase 10 funcional se conserva, sin cambios de código, datos, permisos o dependencias. Los cierres anteriores mantienen su contexto histórico.
 
 **Estado histórico funcional — Fase 10 (2026-10-26).** RF21/CU26 implementados y verificados: 17 reglas, avisos propios, primera lectura y recuperación de 24 h. [Informe y evidencia](NOTIFICATIONS_IMPLEMENTATION.md). CU30 general y Fase 11 no iniciados. Sepolia real sigue pendiente de testETH. Los apartados de cierres anteriores conservan su contexto histórico.
 
@@ -500,3 +502,7 @@ Los siguientes **48 criterios no se ejecutan en Fase 10.5**. Usar datos sintéti
 | T-DR46 | EXPLAIN, consultas COUNT/GROUP BY/EXISTS, ausencia N+1/Model::all; cualquier índice propuesto sustentado antes de migración; sin cache/tablas BI. |
 | T-DR47 | Medir dashboard <=5 s y PDF/XLSX <=30 s hasta 10.000 filas con otros usuarios operando; registrar entorno, dataset, máximos y recursos. |
 | T-DR48 | Revisar licencia/compatibilidad PHP 8.5/Laravel/Vue, auditorías y bundle antes de instalar; paquete local, sin CDN/servicio externo; regresiones existentes. |
+
+## Aplicación del contrato DR en Fase 11
+
+Las fórmulas, siete reportes, scopes y columnas DR1–DR12 están implementados y trazados en [DASHBOARD_REPORTING_IMPLEMENTATION](DASHBOARD_REPORTING_IMPLEMENTATION.md). La instrucción posterior §13 precisa A3 como conteo de evaluaciones LIBERAR autorizadas en el periodo, sin depender del estado actual de reserva; no se infiere fecha. §59 añade presupuesto de memoria 64 MiB; las pruebas de límite incluyen 9.999/10.000/10.001, sin truncamiento. Límite técnico configurable de 1200 puntos de tendencias evita generar un DOM de cientos de miles de puntos con fechas extremas, sin cambiar reglas académicas ni limitar fechas de reportes. CU30 NO IMPLEMENTADO.
