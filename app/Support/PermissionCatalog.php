@@ -7,6 +7,9 @@ use App\Enums\RolInstitucional;
 class PermissionCatalog
 {
     public const DEFINITIONS = [
+        'trazabilidad.evidencias.ver' => ['nombre' => 'Consultar evidencias de trazabilidad', 'fuente' => 'RF19–20 / CU24–25 / D-12'],
+        'trazabilidad.evidencias.verificar' => ['nombre' => 'Verificar evidencias de trazabilidad', 'fuente' => 'RF20 / CU25 / D-12'],
+        'trazabilidad.reintentar' => ['nombre' => 'Reintentar registro de evidencias pendientes', 'fuente' => 'RF19 / CU24 / D-12'],
         'liberacion.politicas.ver' => ['nombre' => 'Consultar políticas de liberación', 'fuente' => 'RF18 / CU23 / D-08'],
         'liberacion.politicas.gestionar' => ['nombre' => 'Gestionar versiones y asignación de políticas', 'fuente' => 'RF18 / CU23 / D-08'],
         'liberacion.evaluaciones.ver_administrativas' => ['nombre' => 'Consultar evaluaciones administrativas', 'fuente' => 'RF18 / CU23 / D-08'],

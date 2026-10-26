@@ -75,6 +75,10 @@ onUnmounted(() => document.removeEventListener('keydown', keydown));
           <Icon name="users"/>
           Usuarios
         </Link>
+        <Link v-if="can('trazabilidad.evidencias.ver')" href="/trazabilidad" :class="{active:page.url.startsWith('/trazabilidad')}" @click="drawer=false">
+          <Icon name="shield"/>
+          Evidencias de trazabilidad
+        </Link>
         <Link v-if="can('roles.ver')" href="/roles" :class="{active:page.url.startsWith('/roles')||page.url.startsWith('/permisos')}" @click="drawer=false">
           <Icon name="shield"/>
           Roles y permisos
