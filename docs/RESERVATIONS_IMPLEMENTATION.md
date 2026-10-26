@@ -1,6 +1,6 @@
 # Reservas de espacios académicos — Fase 4
 
-**Estado documental vigente — Fase 9.5 (2026-10-26).** Contrato RF21/CU26 cerrado; [Readiness for Phase 10](DECISIONS.md#readiness-for-phase-10), **0 bloqueantes documentales**. Fase 10 no iniciada. La implementación base sigue siendo Fase 9, con validación offline y smoke Sepolia real pendiente de testETH. Los cierres anteriores conservan su contexto histórico.
+**Estado vigente — Fase 10 (2026-10-26).** RF21/CU26 implementados y verificados: 17 reglas, avisos propios, primera lectura y recuperación de 24 h. [Informe y evidencia](NOTIFICATIONS_IMPLEMENTATION.md). CU30 general y Fase 11 no iniciados. Sepolia real sigue pendiente de testETH. Los apartados de cierres anteriores conservan su contexto histórico.
 
 **Estado vigente — Fase 8 implementada (2026-10-24).** CU23 incorpora APROBADA→LIBERADA atómica con evaluación y pivotes. Reserva es lock coordinador; D-05 y ReservationService no cambian. Cancelación conserva inicio exclusivo y las carreras MySQL confirman una sola transición válida. FINALIZADA por tiempo permanece fuera. [Informe de implementación, verificaciones y límites](RELEASE_POLICY_IMPLEMENTATION.md). Las declaraciones de fases anteriores que siguen a continuación se conservan como historia de esos cierres.
 
@@ -149,3 +149,7 @@ El núcleo funcional de reservas y las actividades críticas ya implementadas en
 Solo solicitud/rechazo necesitan nuevas actividades no críticas dentro de su transacción. Aprobación/cancelación reutilizan exactamente la actividad crítica de Fase 9; notificación posterior al commit e independiente de evidencia Blockchain. No modificar D-05, guardas temporales, disponibilidad, permisos, orden de locks ni hitos. Una operación revertida no origina aviso; un fallo posterior del aviso no revierte una reserva confirmada.
 
 CU08 aporta enlace contextual sujeto a autorización actual; el mensaje es snapshot y no cambia al cambiar estado de la reserva. CU23 ALERTAR/LIBERADA tiene contrato específico en N3/N4 y RELEASE_POLICY_IMPLEMENTATION. Recuperación acotada por N6. T-N04, T-N07–T-N11, T-N27–T-N29 y T-N36–T-N38 serán pruebas futuras. Sin hooks, UI ni nuevas escrituras en Fase 9.5.
+
+## Extensión RF21 implementada — Fase 10
+
+Solicitud/rechazo producen actividad no crítica dentro de negocio; aprobación/cancelación reutilizan la crítica existente. Postcommit AR/S según N3. Estados, exclusividad, disponibilidad y locks previos conservados. [Implementación y evidencia](NOTIFICATIONS_IMPLEMENTATION.md).

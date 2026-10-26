@@ -1,8 +1,8 @@
 # Modelo de datos documentado
 
-**Estado documental vigente — Fase 9.5 (2026-10-26).** Contrato RF21/CU26 cerrado; [Readiness for Phase 10](DECISIONS.md#readiness-for-phase-10), **0 bloqueantes documentales**. Fase 10 no iniciada. La implementación base sigue siendo Fase 9, con validación offline y smoke Sepolia real pendiente de testETH. Los cierres anteriores conservan su contexto histórico.
+**Estado vigente — Fase 10 (2026-10-26).** RF21/CU26 implementados y verificados: 17 reglas, avisos propios, primera lectura y recuperación de 24 h. [Informe y evidencia](NOTIFICATIONS_IMPLEMENTATION.md). CU30 general y Fase 11 no iniciados. Sepolia real sigue pendiente de testETH. Los apartados de cierres anteriores conservan su contexto histórico.
 
-**Estado funcional base — Fase 9 implementada (2026-10-25/26).** RF19/CU24 y RF20/CU25, cuatro actividades críticas, dos tablas y tres permisos implementados conforme a D-12. [Implementación, pruebas offline, excepción temporal dev de Zod y Sepolia pendiente de testETH](BLOCKCHAIN_IMPLEMENTATION.md). CU30 general y Fase 10 permanecen pendientes. Las secciones de cierres anteriores conservan su contexto histórico.
+**Estado histórico al cierre de Fase 9 implementada (2026-10-25/26).** RF19/CU24 y RF20/CU25, cuatro actividades críticas, dos tablas y tres permisos implementados conforme a D-12. [Implementación, pruebas offline, excepción temporal dev de Zod y Sepolia pendiente de testETH](BLOCKCHAIN_IMPLEMENTATION.md). CU30 general y Fase 10 permanecen pendientes. Las secciones de cierres anteriores conservan su contexto histórico.
 
 ## Compatibilidad MySQL para Fase 9 — excepción autorizada
 
@@ -1039,3 +1039,7 @@ La unicidad lógica actividad+destinatario+tipo será responsabilidad del servic
 No hay notification_outbox ni tabla snapshot de destinatarios. La ausencia de marcador/snapshot limita la recuperación administrativa después de un lote persistido: N6 fija ventana de 24 h, cierre del grupo y reparación directa detectable, sin prometer reconstrucción arbitraria de filas perdidas. Cambios de permisos no habilitan redistribuir historia.
 
 **Estado real al cerrar 9.5: 30 tablas académicas / 203 columnas / 61 FK; notificaciones todavía ausente.** La futura implementación completaría 31/211/63, sin alterar las 30 tablas previas. No se creó migración, modelo ni índice. T-N01 y T-N10–T-N21 verificarán esquema/concurrencia/recuperación en Fase 10.
+
+## Materialización física — Fase 10
+
+Migración incremental 000031: ocho columnas, dos FK CASCADE/RESTRICT e índices oficiales. Sin UNIQUE nueva ni cambios de migraciones previas. Resultado instalado: **31 tablas académicas / 211 columnas / 63 FK**, más migrations técnica. [Implementación y evidencia](NOTIFICATIONS_IMPLEMENTATION.md).

@@ -1,8 +1,8 @@
 # Reglas de negocio y controles verificables
 
-**Estado documental vigente — Fase 9.5 (2026-10-26).** Contrato RF21/CU26 cerrado; [Readiness for Phase 10](DECISIONS.md#readiness-for-phase-10), **0 bloqueantes documentales**. Fase 10 no iniciada. La implementación base sigue siendo Fase 9, con validación offline y smoke Sepolia real pendiente de testETH. Los cierres anteriores conservan su contexto histórico.
+**Estado vigente — Fase 10 (2026-10-26).** RF21/CU26 implementados y verificados: 17 reglas, avisos propios, primera lectura y recuperación de 24 h. [Informe y evidencia](NOTIFICATIONS_IMPLEMENTATION.md). CU30 general y Fase 11 no iniciados. Sepolia real sigue pendiente de testETH. Los apartados de cierres anteriores conservan su contexto histórico.
 
-**Estado funcional base — Fase 9 implementada (2026-10-25/26).** RF19/CU24 y RF20/CU25, cuatro actividades críticas, dos tablas y tres permisos implementados conforme a D-12. [Implementación, pruebas offline, excepción temporal dev de Zod y Sepolia pendiente de testETH](BLOCKCHAIN_IMPLEMENTATION.md). CU30 general y Fase 10 permanecen pendientes. Las secciones de cierres anteriores conservan su contexto histórico.
+**Estado histórico al cierre de Fase 9 implementada (2026-10-25/26).** RF19/CU24 y RF20/CU25, cuatro actividades críticas, dos tablas y tres permisos implementados conforme a D-12. [Implementación, pruebas offline, excepción temporal dev de Zod y Sepolia pendiente de testETH](BLOCKCHAIN_IMPLEMENTATION.md). CU30 general y Fase 10 permanecen pendientes. Las secciones de cierres anteriores conservan su contexto histórico.
 
 **Estado al cierre funcional de Fase 8 (2026-10-24).** BR-14 y T-L01–T-L36 cuentan con implementación/verificación en Fase 8. Se conserva literalmente el contrato D-08 y su matriz. El encabezado «pruebas futuras» identifica el cierre histórico 7.5; el informe nuevo documenta la ejecución posterior. [Informe de implementación, verificaciones y límites](RELEASE_POLICY_IMPLEMENTATION.md). Las declaraciones de fases anteriores que siguen a continuación se conservan como historia de esos cierres.
 
@@ -433,3 +433,7 @@ RF21/CU26 queda cerrado documentalmente en [Notification Contract / Readiness fo
 | T-N38 | Dos evaluadores CU23, reintentos y barridos repetidos: evaluación terminal/actividad/aviso únicos; rollback elimina todo lo nuevo; cancelación/QR/IoT concurrentes conservan guardas previas. Referencia CU23 en descripcion apunta a evaluación correcta. |
 | T-N39 | EXPLAIN y consultas con volumen sintético: filtro propietario antes de contar/paginar, índices oficiales aprovechables, lotes acotados, sin N+1 ni carga de historial completo; registrar mediciones sin inventar SLA nuevo. |
 | T-N40 | Regresión de Fases 2–9 y alcance: estados/locks/RBAC/QR/IoT/D-12 intactos; sin email, servicios externos, realtime complejo, avisos técnicos, CU30 general, marcar todas, volver a no leída o borrar. Navegación responsive y accesible por teclado. |
+
+## Evidencia posterior T-N01–T-N40 — Fase 10
+
+Los criterios anteriores conservan su estado histórico en 9.5. Ahora están implementados y cubiertos por 86 casos nuevos dentro de 656 pruebas / 8721 aserciones. El informe contiene mapa a suites, carreras reales y revisión interactiva. No se amplía recuperación administrativa histórica. [Implementación y evidencia](NOTIFICATIONS_IMPLEMENTATION.md).

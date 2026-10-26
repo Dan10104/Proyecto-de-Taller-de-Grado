@@ -1,8 +1,8 @@
 # Política de seguridad
 
-**Estado documental vigente — Fase 9.5 (2026-10-26).** Contrato RF21/CU26 cerrado; [Readiness for Phase 10](DECISIONS.md#readiness-for-phase-10), **0 bloqueantes documentales**. Fase 10 no iniciada. La implementación base sigue siendo Fase 9, con validación offline y smoke Sepolia real pendiente de testETH. Los cierres anteriores conservan su contexto histórico.
+**Estado vigente — Fase 10 (2026-10-26).** RF21/CU26 implementados y verificados: 17 reglas, avisos propios, primera lectura y recuperación de 24 h. [Informe y evidencia](NOTIFICATIONS_IMPLEMENTATION.md). CU30 general y Fase 11 no iniciados. Sepolia real sigue pendiente de testETH. Los apartados de cierres anteriores conservan su contexto histórico.
 
-**Estado funcional base — Fase 9 implementada (2026-10-25/26).** RF19/CU24 y RF20/CU25, cuatro actividades críticas, dos tablas y tres permisos implementados conforme a D-12. [Implementación, pruebas offline, excepción temporal dev de Zod y Sepolia pendiente de testETH](BLOCKCHAIN_IMPLEMENTATION.md). CU30 general y Fase 10 permanecen pendientes. Las secciones de cierres anteriores conservan su contexto histórico.
+**Estado histórico al cierre de Fase 9 implementada (2026-10-25/26).** RF19/CU24 y RF20/CU25, cuatro actividades críticas, dos tablas y tres permisos implementados conforme a D-12. [Implementación, pruebas offline, excepción temporal dev de Zod y Sepolia pendiente de testETH](BLOCKCHAIN_IMPLEMENTATION.md). CU30 general y Fase 10 permanecen pendientes. Las secciones de cierres anteriores conservan su contexto histórico.
 
 **Estado al cierre funcional de Fase 8 (2026-10-24).** Se añaden exactamente cuatro permisos liberacion.*, sin bypass ni usuario Sistema. Autorización humana coordina/revalida RBAC; CU23 interno no toma ese lock. Scope propio obligatorio en servidor y DTO sin actores ni identificadores IoT. QR/HMAC/tokens/credenciales no aparecen en motivos, logs, respuestas ni documentación pública. [Informe de implementación, verificaciones y límites](RELEASE_POLICY_IMPLEMENTATION.md). Las declaraciones de fases anteriores que siguen a continuación se conservan como historia de esos cierres.
 
@@ -175,3 +175,7 @@ Resolver grupos administrativos por permisos efectivos y ámbito D-04, no nombre
 Plantillas planas deterministas con IDs/códigos estables y fecha del evento, escapadas en Vue. No copiar motivos, descripciones libres, solución, CI, correos innecesarios, nombres de terceros, passwords, tokens, QR/hash, HMAC, private keys, RPC keys ni payloads de sensores. No almacenar HTML o URLs arbitrarios. Mensajes propios de incidencia solo dicen requiere revisión/cierre, sin imputar responsabilidad. Logs técnicos mínimos de ID/categoría/conteo, sin cuerpo de notificación; sin avisos recursivos de errores de generación.
 
 El aviso propio permanece si cambia el permiso del objeto. El enlace se reautoriza en servidor tanto al mostrarlo como al acceder; no expone actividad completa ni otorga acceso a CU19/CU30. No borrado histórico, marcar todas ni volver a no leída. T-N03, T-N06, T-N16–T-N29 y T-N40 serán evidencia futura; no se presentan como pruebas realizadas en 9.5. Las reglas de secretos y la excepción exclusivamente dev Hardhat/Zod conservan su alcance previo.
+
+## Seguridad aplicada a CU26 — Fase 10
+
+notificaciones.ver_propias para cuatro roles, sin bypass administrativo. Query por destinatario antes de listar/contar/abrir; ajeno/inexistente 404, sin permiso 403. Primera lectura POST con CSRF y hora servidor, GET sin mutación. Enlaces reautorizados, DTO mínimo y snapshots sin texto libre/secreto. [Implementación y evidencia](NOTIFICATIONS_IMPLEMENTATION.md).

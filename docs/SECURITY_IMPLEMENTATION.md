@@ -115,3 +115,7 @@ El catálogo total ahora contiene 21 permisos. La [matriz de reservas](RESERVATI
 ## Ampliación RBAC de Fase 5
 
 El catálogo vigente tiene 33 códigos: los 21 existentes y los 12 documentados en [matriz exacta de equipamiento/préstamos/incidencias](EQUIPMENT_LOANS_IMPLEMENTATION.md#permisos-y-alcance). Concesiones iniciales completas: Administrador 30, Encargado de Laboratorio 19, Docente 7, Estudiante 7. SecuritySeeder añade únicamente permisos nuevos y conserva revocaciones; probado idempotente. Policies de EquipamientoTecnologico, Prestamo e IncidenciaMantenimiento aplican permisos y propiedad. Pruebas de 403, CSRF, manipulación de actores/alcances, sesión y revocación durante espera preservan el núcleo anterior; CU30 permanece diferido.
+
+## Permiso de CU26 — Fase 10
+
+Solo notificaciones.ver_propias nuevo para Administrador, Encargado de Laboratorio, Docente y Estudiante. Catálogo total 47; por rol 43/29/10/10. Sin bypass de propiedad ni acceso a avisos ajenos. [Implementación y evidencia](NOTIFICATIONS_IMPLEMENTATION.md).
