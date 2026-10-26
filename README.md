@@ -1,6 +1,8 @@
 # ESPACIO-U
 
-**Fase 12.5 documental cerrada:** [contrato de bitácora / RF25 / CU30](docs/DECISIONS.md#activity-audit-contract--readiness-for-cu30), **0 bloqueantes documentales**. CU30 **NO IMPLEMENTADO**; requiere nueva instrucción. Ninguna ruta/pantalla, permiso DB o escritura nueva se incorpora aquí. Baseline Fase 12 conservado; smokes OpenAI y Sepolia pendientes independientes.
+**Fase 12.6 — RF25/CU30 implementados y validados localmente (2026-10-26).** [Registro de actividad y bitácora](docs/ACTIVITY_AUDIT_IMPLEMENTATION.md): 56 acciones, recorder transaccional, permiso exclusivo de Administrador y consulta individual. Sin nuevas tablas/dependencias. Fase 13 NO iniciada; smokes OpenAI/Sepolia pendientes independientes. Los cierres siguientes conservan su alcance histórico.
+
+**Cierre histórico — Fase 12.5 documental:** [contrato de bitácora / RF25 / CU30](docs/DECISIONS.md#activity-audit-contract--readiness-for-cu30), **0 bloqueantes documentales**. CU30 **NO IMPLEMENTADO**; requiere nueva instrucción. Ninguna ruta/pantalla, permiso DB o escritura nueva se incorpora aquí. Baseline Fase 12 conservado; smokes OpenAI y Sepolia pendientes independientes.
 
 **Base funcional conservada — Fase 12 implementada y validada offline (2026-10-26).** RF24/CU29: [implementación del asistente](docs/CHATBOT_IMPLEMENTATION.md), conforme a CH1–CH12. Orientación por permisos, OpenAI Responses y contexto mínimo sin datos operativos ni historial persistido. CU30 **NO IMPLEMENTADO**; aplicación móvil diferida; ninguna fase posterior iniciada. Los cierres siguientes conservan su contexto histórico.
 
@@ -205,6 +207,15 @@ Abrir **Asistente** con chatbot.consultar. Orientación sobre procedimientos seg
 
 Sin key el módulo muestra indisponibilidad controlada y el resto funciona. **Smoke real OpenAI pendiente por ausencia de credencial/cuota**; pruebas offline con proveedor/HTTP simulado. Modelo configurado gpt-6-luna, Responses API, store=false (no equivale a retención cero), reasoning none. [Informe, pruebas, límites y fuentes](docs/CHATBOT_IMPLEMENTATION.md). CU30 NO IMPLEMENTADO; móvil diferida; ninguna fase posterior iniciada.
 
-## Bitácora: siguiente implementación, todavía no disponible
+## Contrato histórico de bitácora — Fase 12.5
 
 Contrato documental [AC1–AC15](docs/DECISIONS.md#activity-audit-contract--readiness-for-cu30): 18 acciones existentes y 38 nuevas previstas, actividad.ver exclusivamente Administrador, filtros y detalle individual, 25 registros por página, historia inmutable y sin exportaciones propias. El reporte agregado de actividad de CU28 sigue disponible con su alcance actual y no concede CU30. Los [40 criterios de aceptación](docs/BUSINESS_RULES.md#aceptación-prevista-para-rf25cu30--fase-125) se ejecutarán cuando se autorice programarlo. Esta fase no requiere setup, comandos Artisan, seeders, librerías o cambios de .env.
+
+
+## Bitácora RF25/CU30 — Fase 12.6
+
+Navegación **Bitácora** para Administrador con actividad.ver: /actividad, filtros y detalle de solo lectura. Los demás roles no reciben acceso. Exportaciones siguen en Reportes; el chatbot no accede a la bitácora. [Contrato, catálogo, pruebas y límites](docs/ACTIVITY_AUDIT_IMPLEMENTATION.md).
+
+Setup incremental del permiso (entorno oficial activado): `php artisan db:seed --class=SecuritySeeder --force`. Solo añade el permiso nuevo y sus concesiones elegibles; no restaura revocaciones ni crea cuentas. No requiere migration ni biblioteca adicional. Nunca ejecutar migrate:fresh en desarrollo; fixtures y pruebas solo en espacio_u_testing.
+
+Pruebas específicas: `php artisan test --filter=Activity`; regresión completa: `php artisan test`. Fase 13 permanece sin iniciar; no se certifican despliegue, aplicación móvil ni los smokes reales OpenAI/Sepolia pendientes.

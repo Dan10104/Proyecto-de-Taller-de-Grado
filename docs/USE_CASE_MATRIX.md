@@ -1,6 +1,8 @@
 # Matriz CU01–CU30
 
-**Estado vigente — Fase 12.5 documental cerrada (2026-10-26).** [Activity Audit Contract / Readiness for CU30](DECISIONS.md#activity-audit-contract--readiness-for-cu30), **0 bloqueantes documentales**. RF25 con productores parciales; CU30 **NO IMPLEMENTADO**. Implementación solo con nueva instrucción. Sin cambios de código, datos, permisos, migraciones o dependencias; OpenAI/Sepolia pendientes independientes.
+**Fase 12.6 — RF25/CU30 implementados y validados localmente (2026-10-26).** [Registro de actividad y bitácora](ACTIVITY_AUDIT_IMPLEMENTATION.md): 56 acciones, recorder transaccional, permiso exclusivo de Administrador y consulta individual. Sin nuevas tablas/dependencias. Fase 13 NO iniciada; smokes OpenAI/Sepolia pendientes independientes. Los cierres siguientes conservan su alcance histórico.
+
+**Estado histórico — Fase 12.5 documental cerrada (2026-10-26).** [Activity Audit Contract / Readiness for CU30](DECISIONS.md#activity-audit-contract--readiness-for-cu30), **0 bloqueantes documentales**. RF25 con productores parciales; CU30 **NO IMPLEMENTADO**. Implementación solo con nueva instrucción. Sin cambios de código, datos, permisos, migraciones o dependencias; OpenAI/Sepolia pendientes independientes.
 
 **Base funcional conservada — Fase 12 implementada y validada offline (2026-10-26).** RF24/CU29: [implementación del asistente](CHATBOT_IMPLEMENTATION.md), conforme a CH1–CH12. Orientación por permisos, OpenAI Responses y contexto mínimo sin datos operativos ni historial persistido. CU30 **NO IMPLEMENTADO**; aplicación móvil diferida; ninguna fase posterior iniciada. Los cierres siguientes conservan su contexto histórico.
 
@@ -55,7 +57,7 @@ Cobertura: 30/30 casos de uso del cap. V, tablas 38–67; prioridad según tabla
 | CU27 | Visualizar dashboard e indicadores | Media | RF22 | 11 |
 | CU28 | Generar y exportar reportes | Media | RF23 | 11 |
 | CU29 | Consultar chatbot de asistencia | Media | RF24 | 12 |
-| CU30 | Consultar bitácora de actividad | Media | RF25 | Pendiente de autorización de bitácora; alcance ajustado en Fase 1.5 |
+| CU30 | Consultar bitácora de actividad | Media | RF25 | Implementado y verificado en Fase 12.6 según AC1–AC15 |
 
 ## Relaciones de los diagramas
 
@@ -668,11 +670,11 @@ Fuente: tabla 66; p. 216 (PDF 217); figura 57; análisis figura 103.
 | Módulo implementado y fase | Servicios de Notificación y Asistencia; Fase 12; ChatbotService/Provider/KnowledgeBase/RouteRegistry y Asistente |
 | Pruebas necesarias | T-CU29: Petición de aprobar/cancelar no modifica nada; contexto ajeno excluido; proveedor caído; respuesta/aviso objetivo <=15 s. |
 
-**Contrato vigente CU29:** cerrado documentalmente en Fase 11.5, [CH1–CH12 / Readiness for Phase 12](DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12), 0 bloqueantes. OpenAI Responses/Luna configurable, chatbot.consultar para cuatro roles, orientación por permisos efectivos, sin tools/datos operativos/historial persistido; salida y rutas validadas. T-CB01–T-CB50 tienen evidencia en [Fase 12 implementada](CHATBOT_IMPLEMENTATION.md); el cierre documental 11.5 no acreditaba software. **CU30 continúa NO IMPLEMENTADO.**
+**Contrato vigente CU29:** cerrado documentalmente en Fase 11.5, [CH1–CH12 / Readiness for Phase 12](DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12), 0 bloqueantes. OpenAI Responses/Luna configurable, chatbot.consultar para cuatro roles, orientación por permisos efectivos, sin tools/datos operativos/historial persistido; salida y rutas validadas. T-CB01–T-CB50 tienen evidencia en [Fase 12 implementada](CHATBOT_IMPLEMENTATION.md); el cierre documental 11.5 no acreditaba software. **Al cierre histórico de Fase 12, CU30 no estaba implementado; su implementación posterior corresponde a Fase 12.6.**
 
 ## CU30 — Consultar bitácora de actividad
 
-**Estado: NO IMPLEMENTADO; contrato cerrado en Fase 12.5, 0 bloqueantes documentales.** [Activity Audit Contract / Readiness for CU30](DECISIONS.md#activity-audit-contract--readiness-for-cu30). CU28 agregado/REPORTE_EXPORTADO no acreditan CU30. Consulta individual futura para Administrador con actividad.ver: listado, filtros, detalle, 25 por página, fecha_hora DESC/id DESC, sin exportación específica. Requiere nueva instrucción para implementar. [Frontera DR7/DR10](DECISIONS.md#dashboard--reporting-contract--readiness-for-phase-11).
+**Estado: IMPLEMENTADO y verificado en Fase 12.6.** [Activity Audit Contract / Readiness for CU30](DECISIONS.md#activity-audit-contract--readiness-for-cu30) conservado. Consulta individual para Administrador con permiso efectivo actividad.ver: listado, filtros, detalle, 25 por página, fecha_hora DESC/id DESC y enlaces reautorizados. Sin exportación específica; CU28 mantiene su resumen agregado. [Implementación y evidencia](ACTIVITY_AUDIT_IMPLEMENTATION.md).
 
 Fuente: tabla 67; p. 217 (PDF 218); figura 58; análisis figura 104.
 
@@ -689,8 +691,8 @@ Fuente: tabla 67; p. 217 (PDF 218); figura 58; análisis figura 104.
 | RF relacionado | RF25 |
 | Entidades / clases principales | Usuario, RegistroActividad |
 | Tablas directamente relacionadas | `usuarios`, `registros_actividad` |
-| Módulo futuro y fase | Seguridad y Administración; contrato AC1–AC15 cerrado en Fase 12.5; implementación pendiente de nueva instrucción |
-| Pruebas necesarias | T-CU30 / T-A01–T-A40: catálogo, fallos/rollback/concurrencia, RBAC, filtros/paginación/detalle, enlaces, privacidad e historia; criterios definidos, no ejecutados. |
+| Módulo y fase implementada | Seguridad y Administración; Fase 12.6; registros_actividad, ActivityRecorder, productores y consulta CU30 |
+| Pruebas y evidencia | T-CU30 / T-A01–T-A40 → Activity*Test y regresión; catálogo, fallos/rollback/concurrencia, RBAC, filtros/paginación/detalle, enlaces, privacidad e historia. [Resultados](ACTIVITY_AUDIT_IMPLEMENTATION.md#mediciones-y-verificación-final). |
 
 
 ## Dependencias transversales de la matriz
@@ -882,3 +884,8 @@ Alternativas cerradas: lista vacía comprensible; sin receptor no se fabrica avi
 ## CU26 implementado — Fase 10
 
 RF21/CU26 genera avisos para 17 acciones; cuatro roles consultan solo propios. Contador, 15 por página, filtros, detalle y primera lectura POST implementados. CU27/CU28 y CU30 general siguen sin implementar. [Implementación y evidencia](NOTIFICATIONS_IMPLEMENTATION.md).
+
+
+## Implementación RF25/CU30 — Fase 12.6
+
+CU30 materializa la consulta individual autorizada para Administrador: /actividad y /actividad/{id}, 25 por página, orden fecha/id, filtros tipados, detalle y vínculos reautorizados. RF23 no se convierte en CU30, ni actividad.ver concede acceso a dominios. La interfaz no crea/edita/borra/exporta actividad. Las fichas anteriores conservan las fuentes académicas y sus cierres históricos. [Implementación, evidencia y límites](ACTIVITY_AUDIT_IMPLEMENTATION.md).

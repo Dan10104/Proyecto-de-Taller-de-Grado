@@ -1,6 +1,8 @@
 # Modelo del dominio
 
-**Estado vigente — Fase 12.5 documental cerrada (2026-10-26).** [Activity Audit Contract / Readiness for CU30](DECISIONS.md#activity-audit-contract--readiness-for-cu30), **0 bloqueantes documentales**. RF25 con productores parciales; CU30 **NO IMPLEMENTADO**. Implementación solo con nueva instrucción. Sin cambios de código, datos, permisos, migraciones o dependencias; OpenAI/Sepolia pendientes independientes.
+**Fase 12.6 — RF25/CU30 implementados y validados localmente (2026-10-26).** [Registro de actividad y bitácora](ACTIVITY_AUDIT_IMPLEMENTATION.md): 56 acciones, recorder transaccional, permiso exclusivo de Administrador y consulta individual. Sin nuevas tablas/dependencias. Fase 13 NO iniciada; smokes OpenAI/Sepolia pendientes independientes. Los cierres siguientes conservan su alcance histórico.
+
+**Estado histórico — Fase 12.5 documental cerrada (2026-10-26).** [Activity Audit Contract / Readiness for CU30](DECISIONS.md#activity-audit-contract--readiness-for-cu30), **0 bloqueantes documentales**. RF25 con productores parciales; CU30 **NO IMPLEMENTADO**. Implementación solo con nueva instrucción. Sin cambios de código, datos, permisos, migraciones o dependencias; OpenAI/Sepolia pendientes independientes.
 
 **Base funcional conservada — Fase 12 implementada y validada offline (2026-10-26).** RF24/CU29: [implementación del asistente](CHATBOT_IMPLEMENTATION.md), conforme a CH1–CH12. Orientación por permisos, OpenAI Responses y contexto mínimo sin datos operativos ni historial persistido. CU30 **NO IMPLEMENTADO**; aplicación móvil diferida; ninguna fase posterior iniciada. Los cierres siguientes conservan su contexto histórico.
 
@@ -272,3 +274,8 @@ ChatbotContext es efímero y no relaciona consultas con registros operativos. Ch
 [Activity Audit Contract / Readiness for CU30](DECISIONS.md#activity-audit-contract--readiness-for-cu30): RegistroActividad sigue siendo historia mínima inmutable, responsable humano o proceso (CHECK OR, no XOR), resultado EXITO/RECHAZO/ERROR y contexto por FK. Actor no equivale a usuario afectado; se admiten varias relaciones simultáneas. Actor inactivo conserva historia. Los 18 hitos actuales permanecen; 38 acciones previstas cubren administración/configuración realmente disponibles. No nuevas entidades ni historial de chat; no rehabilitación de usuarios inexistente.
 
 Para roles/catálogos/sensores/QR/bloqueos/políticas sin FK propia se usa referencia técnica mínima en plantilla, sin parsearla como vínculo o autorización. tipo_entidad será derivado de las FK, no persistido. Ver AC3/AC4/AC7 para responsabilidad, disparador y asociaciones exactas; AC6 limita fallos. CU30 NO IMPLEMENTADO; no cambia ningún estado operativo ni D-12.
+
+
+## Implementación RF25/CU30 — Fase 12.6
+
+RegistroActividad conserva trece campos, responsable OR, contexto FK e inmutabilidad. 56 acciones en ActivityAction; 38 nuevas no críticas, sin nuevas operaciones de dominio. Noop/transición efectiva y precedencia AC4/AC12; nombres actuales no snapshot. CU30 consulta individual; RF23 conserva agregado y CU29 no obtiene actividad. [Implementación, evidencia y límites](ACTIVITY_AUDIT_IMPLEMENTATION.md).

@@ -1,6 +1,8 @@
 # Plan de implementación web
 
-**Estado vigente — Fase 12.5 documental cerrada (2026-10-26).** [Activity Audit Contract / Readiness for CU30](DECISIONS.md#activity-audit-contract--readiness-for-cu30), **0 bloqueantes documentales**. RF25 con productores parciales; CU30 **NO IMPLEMENTADO**. Implementación solo con nueva instrucción. Sin cambios de código, datos, permisos, migraciones o dependencias; OpenAI/Sepolia pendientes independientes.
+**Fase 12.6 — RF25/CU30 implementados y validados localmente (2026-10-26).** [Registro de actividad y bitácora](ACTIVITY_AUDIT_IMPLEMENTATION.md): 56 acciones, recorder transaccional, permiso exclusivo de Administrador y consulta individual. Sin nuevas tablas/dependencias. Fase 13 NO iniciada; smokes OpenAI/Sepolia pendientes independientes. Los cierres siguientes conservan su alcance histórico.
+
+**Estado histórico — Fase 12.5 documental cerrada (2026-10-26).** [Activity Audit Contract / Readiness for CU30](DECISIONS.md#activity-audit-contract--readiness-for-cu30), **0 bloqueantes documentales**. RF25 con productores parciales; CU30 **NO IMPLEMENTADO**. Implementación solo con nueva instrucción. Sin cambios de código, datos, permisos, migraciones o dependencias; OpenAI/Sepolia pendientes independientes.
 
 **Base funcional conservada — Fase 12 implementada y validada offline (2026-10-26).** RF24/CU29: [implementación del asistente](CHATBOT_IMPLEMENTATION.md), conforme a CH1–CH12. Orientación por permisos, OpenAI Responses y contexto mínimo sin datos operativos ni historial persistido. CU30 **NO IMPLEMENTADO**; aplicación móvil diferida; ninguna fase posterior iniciada. Los cierres siguientes conservan su contexto histórico.
 
@@ -412,3 +414,8 @@ La instrucción oficial posterior autoriza la implementación RF24/CU29, ahora m
 Implementación futura únicamente tras nueva instrucción: (1) mantener main limpio y revisar AC1–AC15; (2) centralizar escritores conservando los existentes e integrar nuevos hooks transaccionales; (3) permiso incremental y consulta autorizada; (4) pruebas por evento/rollback/concurrencia/privacidad sobre espacio_u_testing y regresión; (5) mediciones/EXPLAIN y QA; (6) documentación/publicación. No atribuir número de fase nuevo ni iniciar esa secuencia ahora. No exportaciones CU30, app móvil o integración de chatbot con auditoría.
 
 Baseline funcional conservado: 877 tests/10.217 assertions de Fase 12; no se ejecutan como si fueran nuevos resultados de esta fase documental. Smoke OpenAI sin clave y Sepolia sin testETH independientes. No cambiar .env, servicios, librerías, permisos DB, índices o datos para cerrar documentos.
+
+
+## Implementación RF25/CU30 — Fase 12.6
+
+La instrucción posterior autorizó Fase 12.6, insertada antes de Fase 13: recorder/productores, permiso/consulta/UI, pruebas de integridad/privacidad/concurrencia, QA, medición y documentación. No sustituye la QA integral de todo el sistema: Fase 13 permanece NO INICIADA. Tras cerrar esta entrega, la siguiente instrucción puede autorizar ese endurecimiento global; smokes OpenAI/Sepolia continúan separados. [Implementación, evidencia y límites](ACTIVITY_AUDIT_IMPLEMENTATION.md).

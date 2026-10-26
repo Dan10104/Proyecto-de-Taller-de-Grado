@@ -152,3 +152,10 @@ Solo orientación sobre tarjetas, filtros, siete reportes y PDF/XLSX según perm
 El [contrato AC1–AC15](DECISIONS.md#activity-audit-contract--readiness-for-cu30) separa CU30 individual para Administrador del resumen agregado/exportable RF23. ActivityReportQuery mantiene exactamente 18 acciones/scopes; no incorporar automáticamente las 38 nuevas, seguridad/configuración o todas las exportaciones ajenas. REPORTE_EXPORTADO conserva transacción previa a respuesta, NULL de contexto, descripción tipada segura y ausencia de Blockchain/aviso; falla de auditoría impide descarga. Preview/dashboard sin actividad. CU30 futuro no añade exportación PDF/XLSX propia ni acceso al Encargado.
 
 Cambio exclusivamente documental. CU30 **NO IMPLEMENTADO**; implementación requiere nueva instrucción. La evidencia funcional anterior conserva su fecha y no se presenta como verificación nueva.
+
+
+## Integración de auditoría — Fase 12.6
+
+ReportAuditService delega REPORTE_EXPORTADO al ActivityRecorder sin cambiar actor, resultado EXITO, criticidad false, contexto NULL ni metadata tipada. El fallo obligatorio sigue impidiendo descarga. ActivityReportQuery conserva sus dieciocho acciones, agregación y scopes: no se incorporan automáticamente las 38 administrativas. Preview/dashboard no generan actividad. CU30 ofrece consulta individual separada y no exporta; ActivitySemanticsTest comprueba la frontera y el recorrido manual verificó una sola actividad por PDF exitoso.
+
+[Implementación RF25/CU30, pruebas y resultados de integración](ACTIVITY_AUDIT_IMPLEMENTATION.md). Los cierres de fases anteriores conservan su alcance histórico. Fase 13 no iniciada.

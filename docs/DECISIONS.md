@@ -1,6 +1,8 @@
 # Registro de decisiones y auditoría documental
 
-**Estado vigente — Fase 12.5 documental cerrada (2026-10-26).** [Activity Audit Contract / Readiness for CU30](DECISIONS.md#activity-audit-contract--readiness-for-cu30), **0 bloqueantes documentales**. RF25 con productores parciales; CU30 **NO IMPLEMENTADO**. Implementación solo con nueva instrucción. Sin cambios de código, datos, permisos, migraciones o dependencias; OpenAI/Sepolia pendientes independientes.
+**Fase 12.6 — RF25/CU30 implementados y validados localmente (2026-10-26).** [Registro de actividad y bitácora](ACTIVITY_AUDIT_IMPLEMENTATION.md): 56 acciones, recorder transaccional, permiso exclusivo de Administrador y consulta individual. Sin nuevas tablas/dependencias. Fase 13 NO iniciada; smokes OpenAI/Sepolia pendientes independientes. Los cierres siguientes conservan su alcance histórico.
+
+**Estado histórico — Fase 12.5 documental cerrada (2026-10-26).** [Activity Audit Contract / Readiness for CU30](DECISIONS.md#activity-audit-contract--readiness-for-cu30), **0 bloqueantes documentales**. RF25 con productores parciales; CU30 **NO IMPLEMENTADO**. Implementación solo con nueva instrucción. Sin cambios de código, datos, permisos, migraciones o dependencias; OpenAI/Sepolia pendientes independientes.
 
 **Base funcional conservada — Fase 12 implementada y validada offline (2026-10-26).** RF24/CU29: [implementación del asistente](CHATBOT_IMPLEMENTATION.md), conforme a CH1–CH12. Orientación por permisos, OpenAI Responses y contexto mínimo sin datos operativos ni historial persistido. CU30 **NO IMPLEMENTADO**; aplicación móvil diferida; ninguna fase posterior iniciada. Los cierres siguientes conservan su contexto histórico.
 
@@ -2597,3 +2599,8 @@ Criterios [T-A01–T-A40](BUSINESS_RULES.md#aceptación-prevista-para-rf25cu30--
 **Bloqueantes documentales = 0.** RF25 conserva cobertura productora parcial; CU30 **NO IMPLEMENTADO**. Su implementación puede comenzar **solo con nueva instrucción**. No código, endpoints, UI, permiso DB, servicio funcional, migraciones, índices o actividad nueva. No .env/dependencias/entornos de datos/seeders modificados. Los cierres funcionales anteriores conservan su evidencia histórica.
 
 Verificación documental de Fase 12.5: 21 documentos modificados; 520 referencias locales comprobadas sin errores. Se conservaron 217 textos normativos, 30 CU, 17 expedientes D, CH1–CH12, veinte route_key y cincuenta criterios T-CB; añadidos AC1–AC15 y cuarenta criterios T-A. Catálogo AC3 cotejado con NotificationRuleRegistry y REPORTE_EXPORTADO. Huellas Word/PDF intactas; árbol de archivos funcionales/dependencias/migraciones idéntico a 985df46. Diff y staged revisados; escaneo de secretos en worktree/índice/diferencias/historial sin hallazgos; evidencias de comprobación privadas e ignoradas en .local/qa/phase125. No suite funcional, build, nuevas auditorías de dependencias ni smoke externo atribuidos a este cierre documental. Publicación e integración autorizadas por la instrucción; hash y estado remoto definitivos en el informe final.
+
+
+## Implementación RF25/CU30 — Fase 12.6
+
+La instrucción posterior de Fase 12.6 autoriza implementar AC1–AC15; el cierre documental anterior permanece histórico. Catálogo/matriz/fallos/privacidad no se reinterpretan. Implementación y trazabilidad de T-A se detallan en el informe enlazado. No nuevo D, tablas, acciones 57 o acceso de chatbot; Fase 13 no iniciada. [Implementación, evidencia y límites](ACTIVITY_AUDIT_IMPLEMENTATION.md).

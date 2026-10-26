@@ -243,3 +243,10 @@ Solo orientar sobre equipamiento, préstamos, entregas, devoluciones e incidenci
 El [contrato AC1–AC15](DECISIONS.md#activity-audit-contract--readiness-for-cu30) conserva siete hitos de préstamo y cuatro de incidencia/mantenimiento, incluidos devolución pendiente y detección vencida; sin duplicar entrega/devolución o estado físico derivado. Añade contractualmente tres acciones de inventario y dos de tipo de equipamiento sobre operaciones existentes. Actor real, R/P/U/I según AC3/AC7; descripción/solución/serie completas excluidas. Nuevos hooks administrativos y migración compatible del recorder se ejecutarán solo con autorización posterior.
 
 Cambio exclusivamente documental. CU30 **NO IMPLEMENTADO**; implementación requiere nueva instrucción. La evidencia funcional anterior conserva su fecha y no se presenta como verificación nueva.
+
+
+## Integración de auditoría — Fase 12.6
+
+EquipmentService registra cinco acciones nuevas de inventario y tipo de equipamiento. Prevalece cambio administrativo de estado sobre edición; no se copia número de serie ni texto libre. Los siete hitos de préstamos y cuatro de incidencia/mantenimiento conservan acción, contexto y resultado; entrega/devolución y cambios físicos derivados no se duplican. CriticalActivityRecorder y NotificationActivityRecorder delegan una sola inserción al recorder central.
+
+[Implementación RF25/CU30, pruebas y resultados de integración](ACTIVITY_AUDIT_IMPLEMENTATION.md). Los cierres de fases anteriores conservan su alcance histórico. Fase 13 no iniciada.

@@ -334,3 +334,10 @@ Solo explicación funcional permitida, sin evidencia/canónico/hash/dirección/c
 El [contrato AC1–AC15](DECISIONS.md#activity-audit-contract--readiness-for-cu30) mantiene exclusivamente cuatro EXITO críticos D-12, sin cambios de hash/canónico/contrato/builders. Centralizar CriticalActivityRecorder no duplica actividad/evidencia; procesamiento externo posterior al commit sigue independiente. Verificar/reintentar/reconciliar no añade acción de bitácora. CU30 futuro solo enlaza evidencia existente con permiso, no verifica cadena al leer. Excepción dev Hardhat/Zod y smoke Sepolia pendiente independientes; sin nuevas auditorías ni modificación del módulo en Fase 12.5.
 
 Cambio exclusivamente documental. CU30 **NO IMPLEMENTADO**; implementación requiere nueva instrucción. La evidencia funcional anterior conserva su fecha y no se presenta como verificación nueva.
+
+
+## Integración de auditoría — Fase 12.6
+
+CriticalActivityRecorder delega la inserción única al ActivityRecorder y conserva las cuatro acciones D-12, canonicalización, contexto y callbacks posteriores al commit. Las 38 acciones administrativas siguen no críticas. CU30 solo enlaza evidencia existente con trazabilidad.evidencias.ver: consultar listado/detalle no ejecuta CU25 ni RPC. Retry/reconcile/verify no producen nuevas actividades. Auditoría actual del módulo: cinco vulnerabilidades altas dev Hardhat/Zod bajo la excepción temporal documentada; runtime --omit=dev cero. Smoke Sepolia continúa pendiente; no se cambian dependencias ni se amplía D-12.
+
+[Implementación RF25/CU30, pruebas y resultados de integración](ACTIVITY_AUDIT_IMPLEMENTATION.md). Los cierres de fases anteriores conservan su alcance histórico. Fase 13 no iniciada.
