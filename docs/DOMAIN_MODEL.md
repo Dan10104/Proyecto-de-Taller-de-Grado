@@ -1,6 +1,8 @@
 # Modelo del dominio
 
-**Estado vigente — Fase 8 implementada (2026-10-24).** Los enums de modo/resultado y EvaluacionLiberacion materializan el dominio congelado. Una evaluación relaciona reserva/política y Q/E mediante M:N histórica. Solo LIBERAR cambia APROBADA→LIBERADA; no cambia estado del espacio ni crea FINALIZADA. [Informe de implementación, verificaciones y límites](RELEASE_POLICY_IMPLEMENTATION.md). Las declaraciones de fases anteriores que siguen a continuación se conservan como historia de esos cierres.
+**Estado vigente — Fase 8.5 documental cerrada (2026-10-25).** D-12 RESUELTA PARA FASE 9; [Readiness for Phase 9](DECISIONS.md#readiness-for-phase-9), **0 bloqueantes documentales**. La implementación sigue en Fase 8; Fase 9 no iniciada. El contrato nuevo se distingue de las fotografías históricas que se conservan debajo.
+
+**Estado al cierre funcional de Fase 8 (2026-10-24).** Los enums de modo/resultado y EvaluacionLiberacion materializan el dominio congelado. Una evaluación relaciona reserva/política y Q/E mediante M:N histórica. Solo LIBERAR cambia APROBADA→LIBERADA; no cambia estado del espacio ni crea FINALIZADA. [Informe de implementación, verificaciones y límites](RELEASE_POLICY_IMPLEMENTATION.md). Las declaraciones de fases anteriores que siguen a continuación se conservan como historia de esos cierres.
 
 **Estado histórico: Fase 7 implementada conforme a D-10.** CU21/CU22 y evidencia informativa en CU06; dos tablas IoT y tres permisos nuevos. [Implementación, seguridad, pruebas y límites](IOT_IMPLEMENTATION.md). CU23 y Fase 8 no iniciados.
 
@@ -201,3 +203,13 @@ MANTENER_POR_USO, NO_DETERMINABLE y ALERTAR conservan APROBADA; solo LIBERAR en 
 ## Actualización de Fase 7
 
 SensorIot y EventoOcupacion materializan las relaciones de asociación actual e historia al aceptar. Estados persistidos HABILITADO/DESHABILITADO y tipos PRESENCIA/OCUPACION exactos. NO_DETERMINABLE y comunicación reciente son resultados de consulta, no nuevos estados persistidos. No inferir personas, desocupación ni liberación. [Implementación y verificación](IOT_IMPLEMENTATION.md).
+
+## Registro crítico y evidencia complementaria — Fase 8.5
+
+[D-12](DECISIONS.md#contrato-blockchain--cierre-d-12-de-fase-85) delimita RegistroActividad a cuatro escrituras críticas en Fase 9: RESERVA_APROBADA/CU09, RESERVA_CANCELADA/CU10, PRESTAMO_ENTREGADO/CU17 y PRESTAMO_DEVUELTO/CU18 confirmado. resultado EXITO y critica TRUE; actividad atómica con la transición/hito. No se añade entidad ni se implementa CU30 general por anticipado.
+
+EvidenciaTrazabilidad se relaciona obligatoriamente con una actividad y esta tiene 0..1 evidencia por UNIQUE; el reconciliador completa la evidencia faltante tras commit. Algoritmo/versión/hash identifican la representación histórica, no el estado actual de la reserva o préstamo. Aprobación verificable tras CANCELADA/LIBERADA; entrega verificable tras devolución; una revisión pendiente no produce aún devolución crítica.
+
+Estados persistidos siguen exactamente PENDIENTE y REGISTRADA; resultado de verificación sigue VALIDO, INCONSISTENTE, PENDIENTE y NO_VERIFICABLE. Las acciones críticas son valores exactos de accion VARCHAR, no un enum SQL nuevo. Hash/ref no son credenciales ni confieren autorización. Registry es un componente externo mínimo, no otra entidad MySQL.
+
+LIBERADA/CU23, QR individual, IoT, rechazo, aprobación de préstamo e incidencias/mantenimiento quedan fuera del conjunto externo inicial. Sus historias y estados vigentes se mantienen. Los esquemas por acción y tipos se centralizan en D-12 para evitar variantes; campos de los hitos usados por esos esquemas quedan inmutables tras su confirmación. No se crea snapshot JSON.

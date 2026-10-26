@@ -1,6 +1,8 @@
 # Arquitectura web de ESPACIO-U
 
-**Estado vigente — Fase 8 implementada (2026-10-24).** ReleasePolicyManagementService administra versiones/asignación; ReleaseEvaluationService ejecuta la transacción CU23; ReleaseDecision aplica la matriz; ReleaseScanService y Artisan/Scheduler coordinan lotes. HTTP/Inertia tiene proyecciones propias/administrativas. La ingestión IoT y las consultas CU22 no disparan liberación. [Informe de implementación, verificaciones y límites](RELEASE_POLICY_IMPLEMENTATION.md). Las declaraciones de fases anteriores que siguen a continuación se conservan como historia de esos cierres.
+**Estado vigente — Fase 8.5 documental cerrada (2026-10-25).** D-12 RESUELTA PARA FASE 9; [Readiness for Phase 9](DECISIONS.md#readiness-for-phase-9), **0 bloqueantes documentales**. La implementación sigue en Fase 8; Fase 9 no iniciada. El contrato nuevo se distingue de las fotografías históricas que se conservan debajo.
+
+**Estado al cierre funcional de Fase 8 (2026-10-24).** ReleasePolicyManagementService administra versiones/asignación; ReleaseEvaluationService ejecuta la transacción CU23; ReleaseDecision aplica la matriz; ReleaseScanService y Artisan/Scheduler coordinan lotes. HTTP/Inertia tiene proyecciones propias/administrativas. La ingestión IoT y las consultas CU22 no disparan liberación. [Informe de implementación, verificaciones y límites](RELEASE_POLICY_IMPLEMENTATION.md). Las declaraciones de fases anteriores que siguen a continuación se conservan como historia de esos cierres.
 
 **Cierre histórico de Fase 7.5:** [D-08 resuelta para Fase 8](DECISIONS.md#readiness-for-phase-8), sin implementación nueva. El proceso futuro será Scheduler→comando→servicio CU23→transacción MySQL, con reserva coordinadora, espacio/política/sensores NOWAIT y evidencia persistida. No requiere actor humano, llegada de un evento ni consulta a un dispositivo. Los apartados anteriores/futuros se interpretan con su fecha de cierre.
 
@@ -59,7 +61,7 @@ La validación del cliente mejora la interacción; la validación del servidor d
 
 **Contrato técnico de reservas cerrado en Fase 3.5, implementado y probado en Fase 4:** serializar sobre la fila del espacio mediante SELECT FOR UPDATE, con orden compatible con la coordinación RBAC existente, lecturas actuales de conflictos y rollback completo. Dos PENDIENTE pueden coexistir; dos procesos que aprueban periodos solapados deben dejar exactamente una APROBADA y la otra PENDIENTE cuando las demás condiciones sean válidas. El informe exige el resultado sin solapamientos; no prescribe un algoritmo concreto de bloqueo. Aplicar D-05: [inicio, fin), fin>inicio, reserva APROBADA y préstamos APROBADO/ENTREGADO comprometen periodos; PENDIENTE no concede exclusividad. Estado operativo, custodia y bloqueos pueden impedir disponibilidad adicionalmente. D-05 fija cancelación estrictamente antes del inicio, con motivo opcional; FINALIZADA automática queda fuera de Fase 4. CU06/CU07/CU09 comparten SpaceAvailabilityService desde Fase 4; permanece sin cambios funcionales en Fase 4.5. [Contrato y orden de locks](DECISIONS.md#protocolo-transaccional-y-orden-de-bloqueos). No ejecutar llamadas remotas dentro de una transacción que retenga bloqueos operativos.
 
-Una vez confirmada la operación, generar los efectos complementarios sin deshacerla por caída externa. El informe permite envío Blockchain inmediato o pendiente; la estrategia durable de recuperación, idempotencia y ejecución en varias instancias debe decidirse antes de Fase 9. No afirmar “exactly once” sin una garantía probada.
+Una vez confirmada la operación, generar los efectos complementarios sin deshacerla por caída externa. El informe permite envío Blockchain inmediato o pendiente; la estrategia durable de recuperación, idempotencia y ejecución en varias instancias quedó cerrada en D-12/Fase 8.5, todavía sin implementación. No afirmar “exactly once” sin una garantía probada.
 
 ## Integraciones
 
@@ -67,7 +69,7 @@ Una vez confirmada la operación, generar los efectos complementarios sin deshac
 | --- | --- | --- |
 | IoT | D-10 cerrada en Fase 6.5 e implementada en 7: REST/HMAC, evento ambiental, historia, frescura y deduplicación por sensor | MQTT opcional futuro. CU22 genérico; interpretación exclusiva de CU23 cerrada documentalmente por D-08 en 7.5 |
 | QR | D-09 cerrada: token/hash, ciclo, contexto y correlación atómica definidos en Fase 5.5 | Implementación Fase 6 y pruebas automatizadas disponibles; aceptación física por confirmación del usuario (sin corroboración independiente nueva); obligatoriedad global diferida |
-| Blockchain | Hash local con algoritmo/versión canónica, operación de origen y referencia externa; privacidad previa al envío | Proveedor/red, conjunto exacto de operaciones críticas, formato canónico, reintentos y verificación |
+| Blockchain | Hash local con algoritmo/versión canónica, operación de origen y referencia externa; privacidad previa al envío | D-12 cerrada en Fase 8.5; falta implementación y validación en Fase 9 |
 | Chatbot | Backend con credenciales privadas, alcance por usuario y respuesta/error comprensible | Proveedor/modelo, contenido de orientación autorizado y límites de contexto; sin persistencia adicional asumida |
 
 No se añaden contratos de proveedores imaginarios. Sustituir un proveedor no debe cambiar las reglas operativas. Los fallos se registran con datos sanitizados y se presentan sin revelar secretos.
@@ -175,3 +177,23 @@ Entrada IoT por RawIotRequest/IotBoundary → IotEventController → IotIngestio
 Scheduler futuro cada minuto (frecuencia técnica configurable), candidatos APROBADA/inicio<=ahora/fin>ahora/política asignada, lotes por clave y servicio interno. No se evalúa dentro de la ingestión ni se espera una lectura. La reserva coordina idempotencia/estado; el protocolo [NOWAIT y snapshot posterior](DECISIONS.md#transacción-cu23-y-compatibilidad-de-locks) evita esperar espacio/sensor en orden contrario a servicios existentes. No toma el coordinador RBAC humano. Conflictos reintentan fuera de locks y fallos de lectura cierran sin liberar.
 
 Una transacción confirma evaluación, evidencia M:N y eventual LIBERADA. La disponibilidad central interpreta el estado resultante; CU22 conserva su propia ventana y valor genérico. Las UI futuras de políticas/evaluaciones no ejecutan CU23 manualmente; Scheduler no necesita usuario Sistema. Notificaciones/Blockchain futuros ocurren fuera y después del commit cuando se autoricen. No se creó todavía comando, scheduler, clase, endpoint, cola, tabla ni configuración.
+
+## Arquitectura de trazabilidad congelada — Fase 8.5
+
+[Contrato D-12](DECISIONS.md#contrato-blockchain--cierre-d-12-de-fase-85). Diseño futuro: servicios de CU09/10/17/18 confirman negocio y RegistroActividad en la misma transacción; después del commit un servicio local reconstruye el documento JCS y crea EvidenciaTrazabilidad. Ninguna llamada RPC participa en esa transacción. Si la actividad falla, rollback local; si falla el procesamiento posterior, negocio confirmado y recuperación desde la actividad durable.
+
+```mermaid
+flowchart LR
+  B[Operación y actividad crítica] --> C[Commit MySQL]
+  C --> L[Evidencia local PENDIENTE]
+  L --> R[Reconciliador automático]
+  R --> D[BlockchainTraceabilityDriver]
+  D --> S[EthereumSepoliaDriver]
+  S --> E[RPC configurable hacia Sepolia]
+  E --> T[TraceabilityRegistry]
+  T --> V[Confirmación y referencia local]
+```
+
+El scheduler futuro ejecuta trazabilidad:reconciliar cada minuto; recupera actividades sin evidencia y evidencias PENDIENTE. El callback after-commit no es la garantía durable. No se requiere tabla de cola/outbox ni payload JSON; actividad + UNIQUE local + consulta por hash + Registry idempotente garantizan un registro lógico. Exclusión por wallet en conexión MySQL dedicada coordina nonce/envío; no hay transacción ni locks de negocio durante RPC. Las consultas CU25 siguen autorización → reconstrucción/hash local → comprobación externa cuando corresponda → persistencia de última verificación.
+
+Interfaz desacoplada de proveedor; única implementación inicial Sepolia/11155111 con guarda de red y firma. El adaptador recibe únicamente digest bytes32 para inscripción, sin objetos Eloquent/canónicos completos. Retorna resultados técnicos saneados para distinguir pendiente, confirmación y respuesta incierta. Una caída externa no cambia reservas/préstamos ni retrocede REGISTRADA. CU23/LIBERADA está excluido; QR/IoT conservan sus tablas. No se crearon ahora clases, jobs, comandos, scheduler adicional, contrato, rutas ni configuración.

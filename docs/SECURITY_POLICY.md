@@ -1,6 +1,8 @@
 # Política de seguridad
 
-**Estado vigente — Fase 8 implementada (2026-10-24).** Se añaden exactamente cuatro permisos liberacion.*, sin bypass ni usuario Sistema. Autorización humana coordina/revalida RBAC; CU23 interno no toma ese lock. Scope propio obligatorio en servidor y DTO sin actores ni identificadores IoT. QR/HMAC/tokens/credenciales no aparecen en motivos, logs, respuestas ni documentación pública. [Informe de implementación, verificaciones y límites](RELEASE_POLICY_IMPLEMENTATION.md). Las declaraciones de fases anteriores que siguen a continuación se conservan como historia de esos cierres.
+**Estado vigente — Fase 8.5 documental cerrada (2026-10-25).** D-12 RESUELTA PARA FASE 9; [Readiness for Phase 9](DECISIONS.md#readiness-for-phase-9), **0 bloqueantes documentales**. La implementación sigue en Fase 8; Fase 9 no iniciada. El contrato nuevo se distingue de las fotografías históricas que se conservan debajo.
+
+**Estado al cierre funcional de Fase 8 (2026-10-24).** Se añaden exactamente cuatro permisos liberacion.*, sin bypass ni usuario Sistema. Autorización humana coordina/revalida RBAC; CU23 interno no toma ese lock. Scope propio obligatorio en servidor y DTO sin actores ni identificadores IoT. QR/HMAC/tokens/credenciales no aparecen en motivos, logs, respuestas ni documentación pública. [Informe de implementación, verificaciones y límites](RELEASE_POLICY_IMPLEMENTATION.md). Las declaraciones de fases anteriores que siguen a continuación se conservan como historia de esos cierres.
 
 **Cierre histórico de Fase 7.5:** [D-08 y permisos futuros](DECISIONS.md#scheduler-consultas-y-permisos-previstos). Ninguna reserva se libera con evidencia requerida insuficiente/desactualizada/no interpretable o con contradicción. Positivo fiable opcional también veta. Los cuatro permisos liberacion.* están previstos, todavía ausentes de DB; ejecución interna independiente de RBAC humano, sin rol Sistema ni endpoint de liberación manual.
 
@@ -65,7 +67,7 @@ Aplicar D-03: iniciador y flujo del CU, permiso efectivo, RBAC y guardas por obj
 
 QR no autentica: verificar sesión, permisos, código, recurso, operación, estado y tiempo aplicable en servidor. Sensor registrado/habilitado/asociado tampoco identifica personas. Datos insuficientes no autorizan liberación automática. Todos los valores persistidos y exclusividades SQL conservan el contrato de DOMAIN_MODEL/DATA_MODEL.
 
-Blockchain solo recibe evidencia mínima tras confirmación principal; excluir nombres, correos, contraseñas, datos personales completos y datos operativos completos. Especificación canónica antes de Fase 9: determinismo, orden/fechas estables, UTF-8, selección permitida y version_canonica. Fallo externo conserva operación y estado local PENDIENTE cuando corresponda; no afirmar que la cadena sea fuente principal.
+Blockchain solo recibe evidencia mínima tras confirmación principal; excluir nombres, correos, contraseñas, datos personales completos y datos operativos completos. Especificación canónica cerrada en D-12/Fase 8.5: SHA-256/JCS, orden/fechas estables, UTF-8, selección permitida y version_canonica espacio-u-jcs-v1. Fallo externo conserva operación y estado local PENDIENTE cuando corresponda; no afirmar que la cadena sea fuente principal.
 
 El cierre histórico de Fase 0.5 solo actualizó documentación y un comentario de la plantilla; no creó secretos ni infraestructura. La Fase 1 posterior añadió la aplicación y su configuración privada conforme a las medidas siguientes.
 
@@ -137,3 +139,19 @@ Maestros separados en .env/.env.testing, claves derivadas solo en memoria, provi
 Fuente positiva fiable opcional veta liberación; incertidumbre requerida y contradicción conservan APROBADA. La consulta del veto es obligatoria: un error de BD no equivale a ausencia. El servicio interno usa hora confiable y revalida estado/configuración/evidencia tras locks; ningún payload, parámetro UI o resultado CU22 puede ordenar LIBERAR. NOWAIT ocupado aborta/reintenta, sin saltar sensores ni inventar unanimidad.
 
 Gestión futura mantiene sesión/CSRF/permiso elegible y reautorización; evaluaciones propias se filtran por solicitante_id y proyectan solo resultado/contexto seguro. Motivo <=500 sin PII, token/hash QR, clave/firma IoT ni JSON de cuerpos. Sin edición/borrado histórico, rol Sistema ni botón/API manual. No cambiar secretos, configuración, roles ni permisos persistidos en 7.5. [Matriz y límites](DECISIONS.md#scheduler-consultas-y-permisos-previstos).
+
+## Seguridad de trazabilidad congelada — Fase 8.5
+
+[D-12](DECISIONS.md#contrato-blockchain--cierre-d-12-de-fase-85) fija SHA-256/JCS sobre datos mínimos históricos; la privacidad se comprueba antes de transmitir. Canónico solo en memoria durante generación/verificación, sin PII directa ni textos libres: hashes secundarios exactos para motivo/condición/observaciones. IDs técnicos permitidos localmente no se envían a Sepolia. No presentar hashes como cifrado o anonimización absoluta.
+
+El único dato de negocio externo es digest bytes32; firma, gas, nonce, chain ID y direcciones de wallet/contrato son metadatos técnicos. No JSON canónico, identificadores internos, códigos o fechas de negocio. Pruebas inspeccionarán el argumento ABI y las solicitudes para impedir contenido adicional; no exigir que todo el mensaje JSON-RPC mida 32 bytes.
+
+Wallet futura exclusiva de proyecto/testnet; ni wallet personal ni fondos reales ni clave reutilizada. BLOCKCHAIN_PRIVATE_KEY y BLOCKCHAIN_RPC_URL se tratan como secretos: solo .env local ignorado o gestor del despliegue, nunca BD/Git/logs/props/errores/fixtures. Plantilla futura con valores sensibles vacíos; esta fase no edita .env.example ni genera secretos. No registrar requests/tx firmadas/cuerpos RPC ni URLs con credenciales como diagnóstico; usar códigos de error seguros y evidencia técnica mínima.
+
+Driver restringido a Sepolia/11155111, configuración + eth_chainId + firma con red fijada antes de enviar; bytecode/contrato/writer del despliegue reconocidos. Mainnet no se habilita cambiando una variable. Timeout acotado, HTTPS remoto y saneamiento de errores. Referencias estrictas eip155, sin URLs arbitrarias; explorador público derivado de red/contrato/tx validados. Cambiar proveedor no invalida historia; cambiar despliegue exige conservar referencias anteriores autorizadas.
+
+Tres permisos exactos: trazabilidad.evidencias.ver, trazabilidad.evidencias.verificar y trazabilidad.reintentar. Inicialmente solo Administrador; Encargado/Docente/Estudiante no reciben acceso. Sesión y cuenta vigentes, asignación efectiva en rol elegible, CSRF en mutaciones y reautorización ante cambios; no bypass por nombre de rol. Verificar/reintentar exige además ver. Proceso automático interno separado de sesión humana, sin usuario Sistema inventado.
+
+Actividad obligatoria en la transacción del negocio; fallo local revierte esa transacción. RPC después del commit sin locks de negocio; fallo externo no la revierte. Evidencia/historia inmutables: no reemplazar hash para ocultar alteración. Reintentos idempotentes, consulta antes del envío, exclusión por wallet y validación de pruebas externas. PENDIENTE no equivale a fracaso definitivo; REGISTRADA no retrocede por RPC caído. UI autorizada puede mostrar hash/referencia y metadatos, nunca canónico completo o secretos. CU30 sigue diferido; no se registra una nueva acción crítica por CU25.
+
+Aceptación futura T-B01–T-B40: suite normal offline sin claves activas; integración live separada con fondos de prueba. Las huellas de Word/PDF y el escaneo de secretos/índice se verifican en este cierre documental; ello no acredita seguridad de un contrato aún no escrito.

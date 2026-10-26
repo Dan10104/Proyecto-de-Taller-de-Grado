@@ -2,7 +2,9 @@
 
 Sistema de información para la gestión y control de reservas de espacios académicos y préstamos de equipamiento tecnológico en la FICCT, con monitoreo de ocupación mediante IoT y trazabilidad de operaciones mediante Blockchain.
 
-**Estado: Fase 8 implementada — políticas de liberación, CU23, evidencia QR/IoT y scheduler.** Se conserva el núcleo anterior; D-08 se aplica sin cambiar su contrato. [Informe de Fase 8, pruebas, seguridad y trazabilidad](docs/RELEASE_POLICY_IMPLEMENTATION.md). Blockchain, notificaciones, CU30 y Fase 9 siguen pendientes. La aceptación física QR conserva el límite de su propio informe.
+**Estado: Fase 8.5 documental cerrada; D-12 RESUELTA PARA FASE 9, 0 bloqueantes documentales.** [Contrato y Readiness for Phase 9](docs/DECISIONS.md#readiness-for-phase-9). Cuatro acciones críticas, SHA-256/JCS, Sepolia/11155111, privacidad, recuperación, verificación y RBAC congelados. LIBERADA/CU23 excluida. La excepción ON UPDATE RESTRICT se limita a fk_registro_actor y fue autorizada expresamente. **Fase 9 no iniciada; requiere nueva instrucción.**
+
+El software permanece en Fase 8: políticas de liberación, CU23, evidencia QR/IoT y scheduler. [Informe funcional de Fase 8](docs/RELEASE_POLICY_IMPLEMENTATION.md). No se crearon migraciones, contrato, wallet, driver, permisos o configuración Blockchain en este cierre. Notificaciones y CU30 general siguen pendientes; la aceptación física QR conserva el límite de su propio informe.
 
 Fase 7.5 cerró D-08 con cero bloqueantes documentales; la instrucción oficial posterior autorizó la implementación actual. [Contrato congelado](docs/DECISIONS.md#readiness-for-phase-8) y [mapa de los 36 criterios ejecutados](docs/RELEASE_POLICY_IMPLEMENTATION.md#verificación-y-trazabilidad-de-aceptación).
 

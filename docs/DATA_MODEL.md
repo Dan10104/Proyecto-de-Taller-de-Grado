@@ -1,6 +1,16 @@
 # Modelo de datos documentado
 
-**Estado vigente — Fase 8 implementada (2026-10-24).** Tres migraciones 000026–000028 materializan evaluaciones_liberacion, evaluaciones_eventos_ocupacion y evaluaciones_validaciones_qr. Totales instalados: 28 tablas académicas / 179 columnas / 54 FK, más migrations técnica. Las 25 migraciones anteriores y los diccionarios físicos se conservan. El modelo completo previsto sigue siendo 31 tablas / 211 columnas / 63 FK. [Informe de implementación, verificaciones y límites](RELEASE_POLICY_IMPLEMENTATION.md). Las declaraciones de fases anteriores que siguen a continuación se conservan como historia de esos cierres.
+**Estado vigente — Fase 8.5 documental cerrada (2026-10-25).** D-12 RESUELTA PARA FASE 9; [Readiness for Phase 9](DECISIONS.md#readiness-for-phase-9), **0 bloqueantes documentales**. La implementación sigue en Fase 8; Fase 9 no iniciada. El contrato nuevo se distingue de las fotografías históricas que se conservan debajo.
+
+## Compatibilidad MySQL para Fase 9 — excepción autorizada
+
+La revisión de Fase 8.5 identifica `actor_id` simultáneamente en `chk_registro_responsable` y en `fk_registro_actor ... ON UPDATE CASCADE`. MySQL impide esa combinación de CHECK y acción referencial. [Manual oficial](https://dev.mysql.com/doc/refman/9.7/en/create-table-check-constraints.html).
+
+**Autorización expresa del usuario, 2026-10-25: «Autorizar RESTRICT solo en fk_registro_actor».** En la futura migración, cambiar únicamente esa FK de ON UPDATE CASCADE a **ON UPDATE RESTRICT**, conservando ON DELETE RESTRICT, el CHECK de actor/proceso, todas las columnas, índices y las otras seis FK de ambas tablas. Impide renumerar usuarios con actividad histórica, operación que la aplicación no ofrece. No modifica Word/PDF ni el diccionario fuente inferior. La autorización previa de siete FK QR no se amplía: esta es una excepción independiente y limitada a una FK nueva.
+
+Estado: aprobada documentalmente para Fase 9; no se ejecutó DDL ni se creó migración. Cero bloqueantes documentales de compatibilidad pendientes para estas dos tablas.
+
+**Estado al cierre funcional de Fase 8 (2026-10-24).** Tres migraciones 000026–000028 materializan evaluaciones_liberacion, evaluaciones_eventos_ocupacion y evaluaciones_validaciones_qr. Totales instalados: 28 tablas académicas / 179 columnas / 54 FK, más migrations técnica. Las 25 migraciones anteriores y los diccionarios físicos se conservan. El modelo completo previsto sigue siendo 31 tablas / 211 columnas / 63 FK. [Informe de implementación, verificaciones y límites](RELEASE_POLICY_IMPLEMENTATION.md). Las declaraciones de fases anteriores que siguen a continuación se conservan como historia de esos cierres.
 
 **Estado histórico: Fase 7 implementada conforme a D-10.** CU21/CU22 y evidencia informativa en CU06; dos tablas IoT y tres permisos nuevos. [Implementación, seguridad, pruebas y límites](IOT_IMPLEMENTATION.md). CU23 y Fase 8 no iniciados.
 
@@ -997,3 +1007,17 @@ Dos migraciones IoT exactas materializan sensores_iot/eventos_ocupacion. Total i
 Motivo permanece VARCHAR(500) NULL físicamente y será obligatorio en aplicación. No UNIQUE de evaluación terminal, snapshots JSON, watermark ni FK de política en reservas; idempotencia usa lock de reserva e historia/pivotes existentes. Antigüedad NULL se exige funcionalmente cuando no usa IoT; con IoT debe ser entero >=0. Nombre/version y campos de decisión serán inmutables por versión; activa solo gobierna uso futuro. El historial de asociaciones conserva datos originales, no se recalcula con inventario/configuración actual.
 
 En 7.5 permanecen instaladas **25 tablas académicas, 169 columnas, 48 FK y 39 permisos**; cero tablas evaluaciones_* y cero permisos liberacion.*. El alcance futuro de Fase 8 llevaría a 28/179/54 y 43 permisos; son proyecciones, no migraciones/seed ejecutados. El modelo final 31/211/63 permanece intacto.
+
+## Contrato de persistencia de trazabilidad — Fase 8.5
+
+[D-12 y esquemas canónicos](DECISIONS.md#contrato-blockchain--cierre-d-12-de-fase-85). Las dos secciones físicas anteriores se conservan literales: registros_actividad tiene 13 columnas/6 FK y evidencias_trazabilidad 11 columnas/1 FK. Solo cambia en la futura materialización la acción ON UPDATE de fk_registro_actor según autorización superior; no se eliminan CHECK, UNIQUE ni índices. Las otras seis FK de ambas tablas conservan ON UPDATE CASCADE y todas ON DELETE RESTRICT.
+
+Registros críticos: una fila EXITO/critica=TRUE por transición, accion exacta, responsable y fechas históricos, usuario afectado, recurso y reserva o préstamo; incidencia NULL. Se crea en la transacción principal. La tabla permite otros resultados para CU30 futuro, pero Fase 9 no implementa esa bitácora general. No añadir estados/flags/índices de deduplicación al SQL por conveniencia.
+
+La evidencia se crea después del commit. FK NOT NULL + UNIQUE(registro_actividad_id) y UNIQUE(hash) mantienen una evidencia por actividad; 0..1 físicamente hasta recuperarla y exactamente una para cada actividad crítica procesable. Inicialmente PENDIENTE; algoritmo SHA-256; versión espacio-u-jcs-v1; hash hex minúsculo de 64 caracteres, aunque la columna admite 255. Fecha local del servidor; referencia, fecha externa y ultima_verificacion NULL; resultado_verificacion PENDIENTE por su NOT NULL/default oficial. No confundir este default con una verificación ejecutada.
+
+Referencia: eip155:11155111/contrato/tx, 125 caracteres; puede ser candidata en PENDIENTE. Fecha externa del bloque confirmado traducida a America/La_Paz. Solo tras confirmación coherente pasa a REGISTRADA. CU25 escribe ultima_verificacion/resultado_verificacion; no cambia hash, versión ni negocio. Una interrupción de red no borra registro previo.
+
+Sin columna JSON canónico, payload en descripcion, tabla auxiliar, timestamps Laravel adicionales ni persistencia de claves/RPC/nonce. Se reconstruye con campos históricos protegidos; NULL y string vacío no son equivalentes. Las fechas canónicas son UTC aunque el DATETIME siga local. La integridad de contexto, inmutabilidad histórica y transición única corresponden a servicios/locks además del SQL; no se atribuyen a constraints inexistentes.
+
+Estado instalado conservado: **28 tablas académicas, 179 columnas y 54 FK**. Fase 9 agregará únicamente estas dos: proyección 30 tablas, 203 columnas, 61 FK; el modelo completo permanece 31/211/63. Estos son conteos del contrato, no migraciones ejecutadas ni una nueva inspección de BD en Fase 8.5. Los tres permisos futuros no se insertan ahora.

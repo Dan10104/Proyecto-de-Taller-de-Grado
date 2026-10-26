@@ -1,6 +1,8 @@
 # Matriz CU01–CU30
 
-**Estado vigente — Fase 8 implementada (2026-10-24).** CU23 implementado como proceso interno programado, extensión temporal de CU22 sobre evidencia persistida; no requiere actor humano ni evento entrante. Versiones, ventanas, pivotes, matriz, idempotencia y concurrencia comprobados. RegistroActividad de la ficha original y notificaciones continúan pendientes de sus fases. [Informe de implementación, verificaciones y límites](RELEASE_POLICY_IMPLEMENTATION.md). Las declaraciones de fases anteriores que siguen a continuación se conservan como historia de esos cierres.
+**Estado vigente — Fase 8.5 documental cerrada (2026-10-25).** D-12 RESUELTA PARA FASE 9; [Readiness for Phase 9](DECISIONS.md#readiness-for-phase-9), **0 bloqueantes documentales**. La implementación sigue en Fase 8; Fase 9 no iniciada. El contrato nuevo se distingue de las fotografías históricas que se conservan debajo.
+
+**Estado al cierre funcional de Fase 8 (2026-10-24).** CU23 implementado como proceso interno programado, extensión temporal de CU22 sobre evidencia persistida; no requiere actor humano ni evento entrante. Versiones, ventanas, pivotes, matriz, idempotencia y concurrencia comprobados. RegistroActividad de la ficha original y notificaciones continúan pendientes de sus fases. [Informe de implementación, verificaciones y límites](RELEASE_POLICY_IMPLEMENTATION.md). Las declaraciones de fases anteriores que siguen a continuación se conservan como historia de esos cierres.
 
 **Cierre histórico de Fase 7.5:** [D-08 cerrada, 0 bloqueantes para Fase 8](DECISIONS.md#readiness-for-phase-8). CU23 permanece sin implementación; su contrato futuro incluye matriz completa, fuentes opcionales con veto, scheduler, idempotencia, versiones y concurrencia. No declara cumplidas las notificaciones ni CU30 del flujo completo.
 
@@ -819,3 +821,17 @@ A/E con permisos específicos iot.sensores.ver, iot.sensores.gestionar e iot.mon
 ## Evidencia funcional CU21/CU22 — Fase 7
 
 CU21 implementa gestión/provisión y CU22 recepción/historia/monitoreo; [trazabilidad T-I01–T-I32](IOT_IMPLEMENTATION.md#verificación-y-trazabilidad-de-aceptación). CU06 añade evidencia ambiental mínima sin alterar filtros de disponibilidad. CU23 permanece pendiente de Fase 8 y la bitácora general de RF16 permanece pendiente de CU30.
+
+## Contrato cerrado de CU24 y CU25 — Fase 8.5
+
+Las tablas fuente de CU24/CU25 conservan sus actores y flujos; [D-12](DECISIONS.md#contrato-blockchain--cierre-d-12-de-fase-85) completa sus vacíos. **Contrato resuelto, comportamiento todavía no implementado.**
+
+| Caso | Contrato futuro aplicable | Permisos / aceptación |
+| --- | --- | --- |
+| CU24 | Solo CU09 aprobado, CU10 cancelado, CU17 entregado y CU18 finalmente devuelto. Actividad crítica EXITO en la transacción base; evidencia JCS/SHA-256 después del commit y envío automático Sepolia. Caída externa conserva negocio y pendiente; recuperación durable e idempotente. | Proceso interno; T-B01–T-B28, T-B37–T-B40 |
+| CU25 | Reconstruir historia y comparar primero; después comprobar referencia/contrato/red si REGISTRADA. Persistir última verificación; cuatro resultados exactos. Caída RPC con REGISTRADA produce NO_VERIFICABLE sin retroceso. | Administrador con trazabilidad.evidencias.ver + trazabilidad.evidencias.verificar; T-B29–T-B36 |
+| Recuperación manual | Solo evidencia PENDIENTE; mismo servicio, sin nueva evidencia/hash; no sustituye scheduler normal | Administrador con trazabilidad.evidencias.ver + trazabilidad.reintentar; T-B23–T-B28/35 |
+
+CU25 no asigna Encargado por la referencia genérica de RF20 a supervisión. Administrador tampoco evita permisos efectivos, sesión/CSRF y guardas. Docente/Estudiante no acceden a administración de evidencia. No se crea actividad recursiva por una verificación; CU30 y su consulta general siguen diferidos.
+
+CU23 no extiende CU24 en este alcance: APROBADA→LIBERADA excluida explícitamente. Validaciones QR/IoT e incidencias tampoco generan evidencia individual. Fuente RF/CU y textos originales de los requisitos permanecen sin alteración; [matriz de pruebas futuras](BUSINESS_RULES.md#aceptación-futura-blockchain--fase-9).

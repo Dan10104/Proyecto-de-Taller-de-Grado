@@ -194,3 +194,11 @@ El contrato fija token CSPRNG/base64url, hash SHA-256, gestión/rotación histó
 ## Integración posterior QR — Fase 6
 
 La Fase 6 posterior implementa CU11/CU20 y las extensiones opcionales de CU17/CU18; preserva estados, disponibilidad central, núcleo sin QR y la historia descrita en este cierre. [Implementación, pruebas actuales y aceptación física por confirmación del usuario (sin corroboración independiente nueva)](QR_IMPLEMENTATION.md). Las referencias a QR pendiente en el cierre histórico de este documento no describen el avance actual. IoT, liberación, Blockchain, notificaciones y CU30 siguen diferidos.
+
+## Punto de integración cerrado en Fase 8.5
+
+[D-12](DECISIONS.md#contrato-blockchain--cierre-d-12-de-fase-85) declara críticas PRESTAMO_ENTREGADO/CU17 y PRESTAMO_DEVUELTO/CU18 final. Cada transición y su hito único escribirá actividad EXITO/critica en la misma transacción; evidencia local y registro externo después del commit. La aprobación CU16 y rechazo de préstamo, escaneos QR individuales e incidencias/mantenimiento se excluyen.
+
+La entrega usa identidad de préstamo/equipo/hito, entregador, receptor, fecha y hashes secundarios de condición/observación. La devolución usa préstamo/equipo/hito, recibido_por_id, confirmado_por_id, registrada_en, confirmada_en, condición y hashes de descripción/observación. Esquemas exactos, JCS y tipos en D-12. recepcion_confirmada_en sigue con su contrato vigente y no entra al canónico.
+
+PENDIENTE_REVISION/NO_DETERMINABLE no produce evidencia de devolución. La confirmación posterior actualiza el mismo hito, conserva responsable de recepción inicial/fecha y crea una sola actividad al pasar ENTREGADO→DEVUELTO; desde ahí los campos del hito son inmutables. Incidencia derivada no genera una segunda evidencia Blockchain. Fallo local de actividad revierte negocio; fallo externo no. Sin cambios funcionales en esta fase; T-B08/09/11/29 especifican futuras pruebas/regresiones.

@@ -1,6 +1,8 @@
 # Plan de implementación web
 
-**Estado vigente — Fase 8 implementada (2026-10-24).** Fase 8 implementa RF18/CU23. Fases 9–14 no iniciadas. Siguiente paso: instrucción explícita para cerrar D-12 (operaciones críticas, canonicalización, privacidad, proveedor y recuperación) antes de programar Fase 9. [Informe de implementación, verificaciones y límites](RELEASE_POLICY_IMPLEMENTATION.md). Las declaraciones de fases anteriores que siguen a continuación se conservan como historia de esos cierres.
+**Estado vigente — Fase 8.5 documental cerrada (2026-10-25).** D-12 RESUELTA PARA FASE 9; [Readiness for Phase 9](DECISIONS.md#readiness-for-phase-9), **0 bloqueantes documentales**. La implementación sigue en Fase 8; Fase 9 no iniciada. El contrato nuevo se distingue de las fotografías históricas que se conservan debajo.
+
+**Estado al cierre funcional de Fase 8 (2026-10-24).** Fase 8 implementa RF18/CU23. Fases 9–14 no iniciadas. Siguiente paso: instrucción explícita para cerrar D-12 (operaciones críticas, canonicalización, privacidad, proveedor y recuperación) antes de programar Fase 9. [Informe de implementación, verificaciones y límites](RELEASE_POLICY_IMPLEMENTATION.md). Las declaraciones de fases anteriores que siguen a continuación se conservan como historia de esos cierres.
 
 Estado histórico: **Fase 7 implementada conforme a D-10; Fases 8–14 no iniciadas**. [Evidencia funcional IoT](IOT_IMPLEMENTATION.md). Fase 6 mantiene su implementación, suite y aceptación del usuario. Fases 0 y 0.5 conservaron su alcance documental; la nueva instrucción de Fase 1 autorizó la fundación técnica descrita en [DEVELOPMENT_SETUP.md](DEVELOPMENT_SETUP.md). No existe Flutter, Android ni cliente nativo en el plan de ejecución.
 
@@ -169,18 +171,25 @@ Implementación disponible, 325 pruebas/4984 aserciones aprobadas. [Evidencia y 
 | Condición de finalización | Cada resultado del enum probado; ALERTA no libera; AUTOMATICA solo con condiciones suficientes; historia de evaluación íntegra. |
 | Commit esperado | `feat: add evidence based reservation release policies` |
 
+### Fase 8.5 — Cierre de D-12
+
+**Completada documentalmente el 2026-10-25.** [Readiness for Phase 9](DECISIONS.md#readiness-for-phase-9): 0 bloqueantes documentales. SHA-256/JCS, cuatro esquemas, privacidad, Sepolia, contrato mínimo, recuperación, CU25/RBAC y pruebas congelados. Excepción autorizada solo para ON UPDATE de fk_registro_actor. Sin código, migraciones, permisos, wallet, contrato o configuración nuevos.
+
 ### Fase 9 — Trazabilidad Blockchain
+
+**No iniciada; requiere una nueva instrucción expresa.** Preparación técnica y aceptación siguientes no se presentan como realizadas.
 
 | Campo | Plan |
 | --- | --- |
-| Módulos afectados | Trazabilidad Blockchain |
-| Carpetas principales futuras | app/Services/; app/Models/; app/Http/; config/; database/; ejecución diferida convencional si procede; resources/js/Pages/; tests/ |
+| Módulos afectados | Trazabilidad Blockchain; puntos críticos CU09/CU10/CU17/CU18, sin CU23/LIBERADA |
+| Carpetas principales futuras | app/Models, Services, Policies, Http y Console; database/migrations y seeders de tres permisos; config; resources/js/Pages; tests; blockchain/contracts para source público |
 | Requisitos relacionados | RF19–20; RNF-17/19; IS-09/10; IC-09; DB-11/24; RD-17/20/41/42; R-DISP-06; R-PR-03/04 |
-| Casos de uso | CU24–CU25; extensiones críticas acordadas |
-| Trabajo previsto | Aplicar cardinalidades D-06. Antes de iniciar Fase 9, cerrar especificación exacta D-12: canonicalización (orden, fechas, UTF-8, version_canonica y datos mínimos permitidos), algoritmo/proveedor/recuperación; luego implementar hash local, evidencia, adaptador externo, pendiente/reintentos y verificación. |
-| Pruebas requeridas | Proveedor caído; privacidad previa; operación no confirmada; duplicados; alteración de datos; cuatro resultados; local <=3 s. |
-| Riesgos / puertas | Datos personales on-chain; revertir transacción principal; serialización inestable; doble envío en varias instancias. |
-| Condición de finalización | Operación persistente ante caída externa; evidencia recuperable y verificación reproducible; contrato/algoritmo versionados y documentados. |
+| Casos de uso | CU24/CU25; subconjunto de escritura crítica de registros_actividad, sin CU30 general |
+| Trabajo previsto | Aplicar D-12 cerrado: dos tablas SQL exactas y una FK autorizada; actividad en transacción; JCS/SHA-256 histórico tras commit; evidencia/reconciliación; driver Sepolia; Registry idempotente; UI autorizada y cuatro resultados |
+| Preparación técnica | Verificar y fijar dependencias compatibles, licencia/versión estable de Solidity/compilador, ABI/bytecode y deployment; wallet exclusiva testnet, RPC secreto y saldo de prueba; ninguna clave en repositorio |
+| Pruebas requeridas | T-B01–T-B40 de BUSINESS_RULES: suite normal offline/fake, MySQL aislado, EVM local controlado, privacidad, fallos, recuperación, concurrencia, historia, permisos, <=3 s local; regresión de reservas/préstamos/QR/CU23; live Sepolia separado |
+| Riesgos / puertas | Documentación cerrada; no Mainnet, no PII externa, no rollback por RPC, no locks de negocio durante red, no snapshot/columnas extra, no backfill ni CU30 anticipados |
+| Condición de finalización | Cuatro acciones y exclusiones probadas, evidencia única y recuperable, verificación reproducible, secretos protegidos; registrar evidencia real y límites de integración sin confundir mocks con live |
 | Commit esperado | `feat: add Blockchain evidence generation and verification` |
 
 ### Fase 10 — Notificaciones

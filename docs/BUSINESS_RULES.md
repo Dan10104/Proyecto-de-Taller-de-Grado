@@ -1,6 +1,8 @@
 # Reglas de negocio y controles verificables
 
-**Estado vigente — Fase 8 implementada (2026-10-24).** BR-14 y T-L01–T-L36 cuentan con implementación/verificación en Fase 8. Se conserva literalmente el contrato D-08 y su matriz. El encabezado «pruebas futuras» identifica el cierre histórico 7.5; el informe nuevo documenta la ejecución posterior. [Informe de implementación, verificaciones y límites](RELEASE_POLICY_IMPLEMENTATION.md). Las declaraciones de fases anteriores que siguen a continuación se conservan como historia de esos cierres.
+**Estado vigente — Fase 8.5 documental cerrada (2026-10-25).** D-12 RESUELTA PARA FASE 9; [Readiness for Phase 9](DECISIONS.md#readiness-for-phase-9), **0 bloqueantes documentales**. La implementación sigue en Fase 8; Fase 9 no iniciada. El contrato nuevo se distingue de las fotografías históricas que se conservan debajo.
+
+**Estado al cierre funcional de Fase 8 (2026-10-24).** BR-14 y T-L01–T-L36 cuentan con implementación/verificación en Fase 8. Se conserva literalmente el contrato D-08 y su matriz. El encabezado «pruebas futuras» identifica el cierre histórico 7.5; el informe nuevo documenta la ejecución posterior. [Informe de implementación, verificaciones y límites](RELEASE_POLICY_IMPLEMENTATION.md). Las declaraciones de fases anteriores que siguen a continuación se conservan como historia de esos cierres.
 
 **Estado histórico: Fase 7 implementada conforme a D-10.** CU21/CU22 y evidencia informativa en CU06; dos tablas IoT y tres permisos nuevos. [Implementación, seguridad, pruebas y límites](IOT_IMPLEMENTATION.md). CU23 y Fase 8 no iniciados.
 
@@ -79,11 +81,11 @@ Convención temporal del alcance institucional único: `America/La_Paz` para cap
 
 **Liberación (D-08).** [Contrato cerrado en Fase 7.5](DECISIONS.md#contrato-de-liberación-de-reservas--cierre-d-08-de-fase-75). Solo APROBADA desde inicio+tolerancia y antes de fin, con política asignada activa/válida. Uso positivo veta; insuficiencia requerida o contradicción mantiene; inactividad suficientemente demostrada produce ALERTAR en ALERTA o LIBERAR en AUTOMATICA. La matriz exacta, ventanas, versiones, evidencia M:N, scheduler, idempotencia y locks están congelados. CU23 todavía no está implementado; silencio no equivale a ausencia.
 
-**Blockchain (D-12).** Secuencia: operación crítica → registro principal confirmado en MySQL → selección de datos mínimos → representación canónica consistente → hash → evidencia local → envío externo → referencia externa. Fallo externo conserva la operación y evidencia PENDIENTE cuando corresponda; no rollback de la transacción principal. Nunca enviar nombres, correos, contraseñas, información personal completa ni datos operativos completos. La canonicalización deberá ser determinista, con orden de campos y formato de fechas estables, UTF-8, sin campos personales no permitidos y versionada por `version_canonica`. Su especificación exacta, algoritmo y proveedor se cierran antes de Fase 9; aquí no se elige silenciosamente JSON, una norma de canonicalización o un algoritmo hash concreto.
+**Blockchain (D-12).** [Contrato cerrado en Fase 8.5](DECISIONS.md#contrato-blockchain--cierre-d-12-de-fase-85): cuatro acciones exactas; actividad crítica en la transacción principal, evidencia local y red tras commit; SHA-256/JCS espacio-u-jcs-v1, subjects históricos, Sepolia/11155111, idempotencia/recuperación y CU25 con cuatro resultados. LIBERADA excluida. No se implementa aún CU24/CU25; T-B01–T-B40 especifican su aceptación.
 
 ## Límites diferidos y pruebas futuras
 
-D-04/D-07 cerradas en Fase 1.5: Laravel Session web y expiración desde configuración; RBAC y convención de permisos oficiales. El catálogo administrativo está implementado en Fase 2; Fases 3/3.5 precisan autorización por módulo/acción y propiedad para CU05–CU10, manteniendo diferido el alcance fino. Autenticación móvil/API diferida. Reservas: D-05 resuelta para Fase 4 mediante Fase 3.5; cancelación antes del inicio y finalización automática diferida a una fase posterior autorizada. Emisión/correlación QR: antes de Fase 6. Payload, transporte y frescura IoT: cerrados en Fase 6.5; implementación pendiente de Fase 7. Combinación de evidencias, disparador y versión de política: antes de Fase 8. Canonicalización exacta, proveedor y recuperación Blockchain: antes de Fase 9. Protocolos de medición/retención: fases de integración/operación según D-16. Las versiones de herramientas ya se seleccionaron y verificaron en Fase 1 (D-15).
+D-04/D-07 cerradas en Fase 1.5: Laravel Session web y expiración desde configuración; RBAC y convención de permisos oficiales. El catálogo administrativo está implementado en Fase 2; Fases 3/3.5 precisan autorización por módulo/acción y propiedad para CU05–CU10, manteniendo diferido el alcance fino. Autenticación móvil/API diferida. Reservas: D-05 resuelta para Fase 4 mediante Fase 3.5; cancelación antes del inicio y finalización automática diferida a una fase posterior autorizada. Emisión/correlación QR: antes de Fase 6. Payload, transporte y frescura IoT: cerrados en Fase 6.5; implementación pendiente de Fase 7. Combinación de evidencias, disparador y versión de política: antes de Fase 8. Canonicalización exacta, proveedor y recuperación Blockchain: cerrados documentalmente en Fase 8.5; implementación pendiente de Fase 9. Protocolos de medición/retención: fases de integración/operación según D-16. Las versiones de herramientas ya se seleccionaron y verificaron en Fase 1 (D-15).
 
 Estos detalles no bloquean inicializar la base técnica, pero sí el punto de implementación que depende de ellos. Las pruebas de este documento son obligaciones futuras, no resultados ejecutados. El cierre de Fase 0.5 valida contratos documentales y no certifica comportamiento de software.
 
@@ -316,3 +318,52 @@ Estos **36 criterios son especificaciones de pruebas futuras**, no tests ejecuta
 | T-L34 | Evaluaciones propias | Titular solo sus reservas; proyección segura sin PII ajena, secretos QR, identificadores/historia técnica de sensores; administrativo con permiso vigente |
 | T-L35 | Límites de fase | Sin notificaciones funcionales, Blockchain, CU30, usuario/rol Sistema, API de liberación manual ni scheduler de FINALIZADA |
 | T-L36 | Revisión manual | Crear versión, asignar bajo guardas, desactivar, consultar uso/historia y cuatro resultados; móvil/tablet/escritorio, teclado, etiquetas, foco, errores y consola; sin botón Liberar ahora |
+
+## Aceptación futura Blockchain — Fase 9
+
+Contrato normativo [D-12](DECISIONS.md#contrato-blockchain--cierre-d-12-de-fase-85); **T-B01–T-B40 pendientes de implementar/ejecutar en Fase 9**. No son resultados de Fase 8.5. Cubren RF19/RF20, CU24/CU25, R-PR-03/04 y R-DISP-06. La suite normal será offline, con datos sintéticos y MySQL separado; pruebas live en un grupo independiente. Los tests de concurrencia deben usar procesos/conexiones distintos y barreras controladas, no solamente invocar dos veces en serie.
+
+| Criterio | Área | Comprobación exigida |
+| --- | --- | --- |
+| T-B01 | JCS reproducible | Mismos datos y orden de propiedades distinto producen exactamente los mismos bytes JCS y SHA-256; usar vectores independientes de referencia, no un test que repita el algoritmo. |
+| T-B02 | Unicode y validación | UTF-8 válido, caracteres no ASCII/escapes y orden UTF-16; rechazar Unicode inválido/claves duplicadas; no normalizar composiciones Unicode diferentes. |
+| T-B03 | IDs y fechas | BIGINT mayores a 2^53 conservan strings exactos; UTC segundos Z desde America/La_Paz, cruce de fecha, sin float/fracciones/fecha de navegador. |
+| T-B04 | Null y texto secundario | NULL JSON vs vacío con hash, acentos, espacios/case y saltos de línea exactos; claves presentes; obligatorio faltante no se sustituye por NULL válido. |
+| T-B05 | Esquemas cerrados | Seis claves comunes y subjects de 7/6/9/11 claves; schema/versión/acciones exactos, cambio de cada campo relevante cambia el hash; sin atributos adicionales. |
+| T-B06 | Aprobación y atomicidad | CU09 válido crea una sola actividad EXITO/critica en su transacción; fallo de actividad revierte aprobación; evidencia solo después de commit. |
+| T-B07 | Cancelación | CU10 exitoso desde PENDIENTE o APROBADA crea una actividad/hito con actor y motivo hash correctos; ilegal/fallida no crea evidencia. |
+| T-B08 | Entrega | CU17 exitoso crea entrega/actividad únicas y equipo PRESTADO; actor/receptor/contexto correctos; rollback local sin evidencia huérfana. |
+| T-B09 | Devolución final | NO_DETERMINABLE/PENDIENTE_REVISION no crea actividad crítica; confirmar mismo hito conserva recepción inicial y produce solo una actividad al quedar DEVUELTO. |
+| T-B10 | Exclusiones de reservas | Rechazo, solicitud y APROBADA→LIBERADA CU23 no generan actividad crítica ni evidencia; evaluaciones/QR/IoT conservan su historia. |
+| T-B11 | Exclusiones restantes | Aprobación/rechazo préstamo, validación QR individual, IoT e incidencia/mantenimiento no envían evidencia; incidencia derivada de devolución no duplica. |
+| T-B12 | Minimización canónica | Nombres, correos, CI, password, teléfonos, motivos/observaciones en claro ausentes; solo allowlist local y hashes secundarios. |
+| T-B13 | Privacidad externa | Interceptar calldata y requests: un argumento bytes32 más metadatos técnicos; sin JSON, IDs internos, códigos, fechas de negocio, motivos/observaciones ni payload añadido. |
+| T-B14 | Algoritmo y versión | SHA-256 hex minúsculo/64 y espacio-u-jcs-v1 persistidos; bytes32 externos equivalentes; no confundir Keccak de protocolo con SHA-256 de evidencia. |
+| T-B15 | Contrato autorizado | Solo writer configurado registra; llamada ajena revierte; lookup público devuelve timestamp; no objetos de negocio ni envío de valor. |
+| T-B16 | Contrato idempotente | Mismo hash dos veces conserva primer timestamp y un único evento/registro lógico; hashes distintos no se mezclan. |
+| T-B17 | Red incorrecta | Config o eth_chainId distinto de 11155111 bloquea firma/envío, incluso cambio a Mainnet solo por variable; negocio confirmado y evidencia pendiente. |
+| T-B18 | Configuración/contrato | Integración deshabilitada, RPC/clave ausente, contrato ausente o bytecode/writer ajeno no envían; actividad/evidencia locales sobreviven; diagnóstico sin secretos. |
+| T-B19 | Confirmaciones | Tx_hash solo no registra; receipt exitoso, bloque canónico, contrato/hash/evento y N>=1 coherentes sí; fecha externa del bloque, nunca cliente. |
+| T-B20 | Fallo externo | RPC timeout, HTTP error, red caída y contrato no consultable dejan negocio válido y pendiente; no locks ni rollback principal. |
+| T-B21 | Transacción no final | Revert o transacción pendiente/confirmaciones insuficientes conservan PENDIENTE; no fecha externa fabricada y no reenvío mientras tx conocida pendiente. |
+| T-B22 | Referencia | Formato eip155 estricto y longitud 125; normalizar hex; rechazar red/contrato/tx ajenos y URLs; cambio de proveedor mantiene referencia verificable. |
+| T-B23 | Actividad sin evidencia | Interrupción tras commit y antes del callback se recupera desde actividad; falla de hash no genera placeholder; un error no impide otros casos. |
+| T-B24 | Evidencia pendiente | Ejecuciones repetidas y reintento manual reutilizan actividad/evidencia/hash/version/fecha local; nunca segunda evidencia. |
+| T-B25 | Registro ya externo | Contrato contiene hash: no broadcast adicional; logs indexados recuperan tx original y se valida confirmación antes de registrar localmente. |
+| T-B26 | Timeout incierto | Simular aceptación de broadcast y pérdida de respuesta: no asumir fracaso; consultar hash/receipt; recuperar sin doble registro lógico. |
+| T-B27 | Caídas intermedias | Interrumpir antes de envío, después de envío y antes de actualizar MySQL; ref candidata, ausencia comprobada y tx pendiente se distinguen; no inventar éxito. |
+| T-B28 | Dos workers | Procesos reales sobre MySQL aislado compiten por una actividad y wallet; una evidencia local, un registro lógico externo, nonce coordinado y locks liberados tras fallo. |
+| T-B29 | Historia estable | Verificar aprobación después de CANCELADA/LIBERADA y entrega después de devolución; no estado actual, no sobrescribir resolución o recepción inicial. |
+| T-B30 | Inconsistencia local | Alterar campo histórico reconstruible cambia hash: INCONSISTENTE sin RPC; no sobrescribir hash ni enviar para ocultar diferencia. |
+| T-B31 | Pendiente verificable | Hash local igual y estado PENDIENTE produce PENDIENTE, salvo reconciliación confirmada previa; metadatos iniciales no simulan una verificación. |
+| T-B32 | Verificación válida | Hash local y referencia/receipt/evento/contrato/red coherentes producen VALIDO; persistir resultado y hora servidor. |
+| T-B33 | No verificable | Historia obligatoria ausente, versión no soportada o RPC caído con REGISTRADA producen NO_VERIFICABLE; conservar estado/ref/fecha externa. |
+| T-B34 | Inconsistencia externa | Prueba positiva de hash/red/contrato/tx incorrectos o ausencia confirmada produce INCONSISTENTE; reorg/no conclusión no se confunde con timeout ni reenvío automático. |
+| T-B35 | RBAC y sesión | Solo Administrador con permisos efectivos; denegar Encargado/Docente/Estudiante, permiso retirado/cuenta inactiva/sesión revocada; verificar/reintentar requieren ver y CSRF. |
+| T-B36 | UI y verificación concurrente | Solo metadatos permitidos en UI/props/logs; cuatro resultados; serializar CU25 por evidencia, actualizar última comprobación sin resultados obsoletos por carrera ni efectos de GET. |
+| T-B37 | Latencia y locks | Medir generación local <=3 s tras commit con datos sintéticos; bloquear RPC artificialmente y demostrar por otra conexión que reserva/préstamo/equipo quedan libres. |
+| T-B38 | Esquema y alcance | Dos tablas exactas/UNIQUE/índices/CHECK y única excepción fk_registro_actor; sin columnas JSON/outbox/CU30 general/backfill; default resultado_verificacion=PENDIENTE. |
+| T-B39 | Pruebas offline y secretos | Suite normal fake/mock, MySQL aislado y EVM local controlado sin Internet; fixtures sin claves activas, RPC privado ni mnemonic; errores saneados. |
+| T-B40 | Integración Sepolia separada | Solo cuando haya configuración segura y saldo testnet: registro, confirmación, recuperación y CU25 reales; guardar prueba sin claves/URLs privadas; no acreditarla con mocks. |
+
+La garantía es una evidencia local y un registro lógico externo por actividad crítica, no exactamente un broadcast. La actividad fallida revierte negocio; un fallo posterior del hash/red no revierte un commit. Un reintento no cambia el hash original. La exclusión LIBERADA no reduce la evidencia propia de CU23.
