@@ -1,6 +1,8 @@
 # Registro de decisiones y auditoría documental
 
-**Estado vigente — Fase 8 implementada (2026-10-24).** D-08 continúa RESUELTA PARA FASE 8 y ahora aplicada; no se altera su contrato ni Readiness histórico. Las diferencias entre estado documental 7.5 y software actual se registran en RELEASE_POLICY_IMPLEMENTATION. D-12 sigue requiriendo cierre previo a Fase 9. [Informe de implementación, verificaciones y límites](RELEASE_POLICY_IMPLEMENTATION.md). Las declaraciones de fases anteriores que siguen a continuación se conservan como historia de esos cierres.
+**Estado vigente — Fase 8.5 documental cerrada (2026-10-25).** D-12 RESUELTA PARA FASE 9; [Readiness for Phase 9](#readiness-for-phase-9), **0 bloqueantes documentales**. La implementación sigue en Fase 8; Fase 9 no iniciada. El contrato nuevo se distingue de las fotografías históricas que se conservan debajo.
+
+**Estado al cierre funcional de Fase 8 (2026-10-24).** D-08 continúa RESUELTA PARA FASE 8 y ahora aplicada; no se altera su contrato ni Readiness histórico. Las diferencias entre estado documental 7.5 y software actual se registran en RELEASE_POLICY_IMPLEMENTATION. D-12 se cerró posteriormente en Fase 8.5; ver el estado vigente superior. [Informe de implementación, verificaciones y límites](RELEASE_POLICY_IMPLEMENTATION.md). Las declaraciones de fases anteriores que siguen a continuación se conservan como historia de esos cierres.
 
 **Estado histórico: Fase 7.5 documental cerrada. D-08 RESUELTA PARA FASE 8; [Readiness for Phase 8](#readiness-for-phase-8), 0 bloqueantes documentales.** La Fase 7 permanece implementada; CU23 y Fase 8 no se han implementado. Las fotografías de cierres anteriores conservan su fecha y alcance.
 
@@ -57,7 +59,7 @@ SQL es contrato principal de tablas, columnas, tipos, PK/FK, nulabilidad, enums,
 
 ## Clasificación de las 17 decisiones originales (cierre de Fase 0.5)
 
-Esta clasificación conserva la fotografía histórica de Fase 0.5, con **un único estado por expediente en ese cierre**. Los estados vigentes se actualizan en sus fichas y en Readiness for Phase 2/4/5/6/7/8; no se reescribe el recuento histórico. La clasificación cuenta expedientes de Fase 0, no cada parámetro interno. Una convención puede dejar parámetros posteriores expresamente enumerados; eso no los declara resueltos ni bloquea la fundación.
+Esta clasificación conserva la fotografía histórica de Fase 0.5, con **un único estado por expediente en ese cierre**. Los estados vigentes se actualizan en sus fichas y en Readiness for Phase 2/4/5/6/7/8/9; no se reescribe el recuento histórico. La clasificación cuenta expedientes de Fase 0, no cada parámetro interno. Una convención puede dejar parámetros posteriores expresamente enumerados; eso no los declara resueltos ni bloquea la fundación.
 
 | Estado | Cantidad |
 | --- | --- |
@@ -362,11 +364,12 @@ Sustento técnico: [autenticación Laravel 13](https://laravel.com/docs/13.x/aut
 | Conflicto original de Fase 0 | RF19 permite operaciones críticas configuradas; CU24 enumera extensiones concretas. Proveedor/red, algoritmo, versión canónica, contenido mínimo y recuperación no están fijados. La prohibición de datos sensibles figura al final de un flujo textual; secuencia 114 la comprueba antes del envío. |
 | Tratamiento registrado en Fase 0 (histórico) | Verificar privacidad antes de cualquier transmisión. Definir conjunto de operaciones, representación estable, recuperación/reintentos y comprobación externa. SHA-256 del boceto no se adopta automáticamente como única especificación. |
 | Impacto | Falta especificación de representación canónica y proveedor, pero orden y privacidad están establecidos. |
-| Decisión vigente de Fase 0.5 | Congelar MySQL confirmado → datos mínimos permitidos → representación consistente → hash → evidencia local → envío externo → referencia. Privacidad antes de transmitir; no nombres/correos/contraseñas/datos completos. Caída externa conserva operación y evidencia PENDIENTE. Representación determinista, orden estable, fechas estables, UTF-8 y version_canonica obligatorios; no fijar ahora algoritmo/serialización exactos. |
+| Decisión de Fase 0.5 (histórica) | Congelar MySQL confirmado → datos mínimos permitidos → representación consistente → hash → evidencia local → envío externo → referencia. Privacidad antes de transmitir; no nombres/correos/contraseñas/datos completos. Caída externa conserva operación y evidencia PENDIENTE. Representación determinista, orden estable, fechas estables, UTF-8 y version_canonica obligatorios; no fijar ahora algoritmo/serialización exactos. |
 | Justificación | Separar atomicidad local de dependencia externa satisface CU24 y R-DISP-06; version_canonica permite verificación reproducible. No adoptar SHA-256 de un boceto como decisión automática. |
-| Estado | DIFERIDA A UNA FASE POSTERIOR |
+| Estado | RESUELTA PARA FASE 9 — cierre documental Fase 8.5, 2026-10-25. |
 | Fase afectada | 9, antes de generación/verificación funcional. |
-| Detalle diferido / límite de la resolución | Definir campos permitidos, canonicalización exacta, algoritmo, proveedor, operaciones críticas concretas entre las extensiones del CU, idempotencia y recuperación. No bloquea Fase 1. |
+| Decisión vigente de Fase 8.5 | Cuatro acciones exactas; actividad en transacción, evidencia tras commit; SHA-256/JCS espacio-u-jcs-v1; Sepolia/11155111; Registry mínimo e idempotente; recuperación, CU25 y tres permisos solo Administrador. [Contrato completo](#contrato-blockchain--cierre-d-12-de-fase-85). |
+| Detalle diferido / límite de la resolución | Ningún bloqueante documental para Fase 9. Implementación, compilador estable, despliegue y configuración segura se harán en esa fase cuando sea autorizada; CU30 general sigue diferido. |
 | Bloquea iniciar Fase 1 | No |
 | Fecha de adopción | 2026-10-23; instrucción Fase 0.5 |
 
@@ -479,7 +482,7 @@ Estos puntos no se implementaron ni se presentan como especificaciones completas
 | D-08 | Ejecución temporal de monitoreo/liberación, umbrales y combinación de evidencia, conservación de versiones aplicadas | Fase 8, con contrato de datos preparado en 7 |
 | D-09 | Detalles resueltos documentalmente en Fase 5.5; [contrato y puerta de Fase 6](#readiness-for-phase-6) | Implementación en Fase 6; ninguna relajación de CHECK/UNIQUE |
 | D-10 | RESUELTA PARA FASE 7; [contrato congelado](#readiness-for-phase-7) | Implementar/probar cuando se autorice Fase 7; MQTT no obligatorio |
-| D-12 | Canonicalización exacta, campos permitidos, algoritmo, proveedor y recuperación | Antes de Fase 9 funcional; determinismo/orden/fechas/UTF-8/version_canonica ya obligatorios |
+| D-12 | RESUELTA PARA FASE 9 en Fase 8.5: contrato exacto, SQL compatible autorizado y estrategia de pruebas | [Readiness for Phase 9](#readiness-for-phase-9), cero bloqueantes documentales; implementación no iniciada |
 | D-15 | Versiones/instancia local atendidas en Fase 1; solo operatividad Docker pendiente | Docker antes de ensayos de 14 |
 | D-16 | Protocolo de medición, umbral específico de login si se define y retención operativa | Fases 7/13/14 según punto; formato canónico de fechas en 9 |
 | D-17 | Mecanismo concreto de transacciones/bloqueos y pruebas de invariantes | Fase que implemente el flujo, sin alterar el contrato físico |
@@ -1421,3 +1424,252 @@ Revisión de fuentes, matriz completa, invariantes, enlaces y alcance exclusivam
 Resultados del control documental: **14 Markdown modificados, 0 archivos funcionales**, cuatro SQL Word/PDF equivalentes y cuatro secciones físicas del diccionario intactas; 217 textos de requisitos preservados; 48 resultados de matriz coherentes, 36 criterios futuros y 248 enlaces locales sin errores. SHA-256 originales sin cambios. Escaneo de 347 archivos públicos y 105 artefactos locales (95 anteriores y 10 de esta revisión), sin secretos detectados. Metadatos de solo lectura: 25 tablas académicas, 169 columnas, 48 FK, 39 permisos; cero tablas evaluaciones_* y cero permisos liberacion.*.
 
 Rama docs/phase-7.5-release-policy-decisions desde main/origin/main limpio ffdebb9; commit documental, push e integración fast-forward autorizados, sin force push. El informe final confirma el SHA, igualdad remota y árbol limpio después de las operaciones. El cierre documental no equivale a implementación, calibración de hardware ni certificación de comportamiento concurrente: son condiciones de aceptación de Fase 8.
+
+## Contrato Blockchain — cierre D-12 de Fase 8.5
+
+**2026-10-25: D-12 RESUELTA PARA FASE 9. Solo documentación; CU24/CU25 no implementados.** La instrucción oficial de Fase 8.5 fija las decisiones siguientes. MySQL permanece como fuente operativa principal; Blockchain es evidencia complementaria y nunca decide el estado del negocio. No se modifican Word/PDF, el contrato D-08 ni el alcance de CU30.
+
+### Fuentes y alcance de la decisión
+
+Se contrastaron RF19/RF20 (tablas 28/29, PDF 138–139), CU24/CU25 (tablas 61/62, PDF 210–212), dominio (figura 19, PDF 110), clases/diseño lógico (figuras 108/109, PDF 249–250), arquitectura (figuras 106/107, PDF 247–248), secuencia 114 (PDF 305) y SQL de ambas tablas (PDF 296–299). El SQL extraído de Word y PDF coincide tras normalizar espacios. PROJECT_CONSTITUTION, reglas, modelos, seguridad, matrices y los cuatro informes de reservas, préstamos, liberación y QR se revisaron como contratos vigentes. Las fuentes no fijaban JCS, red ni recuperación: esas elecciones provienen de esta instrucción, no se atribuyen retrospectivamente al informe académico.
+
+RF20 permite un usuario autorizado de auditoría/supervisión, sin asignar ese rol al Encargado. CU25 identifica Administrador como iniciador; D-03 prioriza ese detalle. Se congela inicialmente Administrador para los tres permisos, sin extenderlos implícitamente a otro rol. La privacidad se comprueba **antes** de generar/transmitir datos externos, conforme a la secuencia 114; el paso tardío del texto CU24 no autoriza una fuga previa.
+
+Excepción física autorizada expresamente por el usuario el 2026-10-25: **solo `fk_registro_actor` tendrá ON UPDATE RESTRICT**, conservando ON DELETE RESTRICT y `chk_registro_responsable`. La restricción MySQL entre CHECK y cascada impide copiar esa cláusula literalmente. [Detalle y límites](DATA_MODEL.md#compatibilidad-mysql-para-fase-9--excepción-autorizada). No se ejecutó DDL; la autorización de siete FK QR continúa separada.
+
+### Acciones críticas y transacción local
+
+El conjunto cerrado es exactamente el siguiente. Cada transición exitosa crea **una fila en `registros_actividad`** dentro de la misma transacción que la operación y su hito histórico. El bloqueo/guarda de estado vigente impide repetir la transición y su actividad; no se añade un UNIQUE nuevo al SQL. Si falla esta escritura local obligatoria, se revierte la transacción de negocio completa. Un intento fallido/rechazado no crea actividad crítica exitosa ni evidencia externa.
+
+| accion exacta | Caso y condición | actor_id / fecha_hora | usuario_afectado_id / recurso_id | Contexto / proceso_responsable |
+| --- | --- | --- | --- | --- |
+| RESERVA_APROBADA | CU09: PENDIENTE → APROBADA | resuelta_por_id / resuelta_en | solicitante / espacio_id | reserva_id; `CU09` |
+| RESERVA_CANCELADA | CU10: cancelación legal de PENDIENTE o APROBADA | cancelada_por_id / cancelada_en | solicitante / espacio_id | reserva_id; `CU10` |
+| PRESTAMO_ENTREGADO | CU17: APROBADO → ENTREGADO y entrega única | entregado_por_id / entrega.fecha_hora | receptor = solicitante / equipamiento_id | prestamo_id; `CU17` |
+| PRESTAMO_DEVUELTO | CU18: devolución CONFIRMADA y ENTREGADO → DEVUELTO | confirmado_por_id / confirmada_en | solicitante / equipamiento_id | prestamo_id; `CU18` |
+
+En las cuatro filas: `critica=TRUE`, `resultado=EXITO`, `descripcion=NULL` porque los hitos ya conservan la información necesaria; `incidencia_id=NULL`. Solo una FK de reserva/préstamo tiene valor. Se exige actor humano persistido para estas acciones aunque el SQL general permita proceso sin actor. La fecha de actividad es el mismo instante persistido en el hito, no un reloj posterior. No se inventa un usuario Sistema para procesar la evidencia.
+
+Se excluyen RESERVA_RECHAZADA, PRESTAMO_RECHAZADO, aprobación de préstamo CU16, solicitudes, validaciones QR individuales, IoT, incidencias/mantenimiento y **APROBADA → LIBERADA de CU23**. Una devolución PENDIENTE_REVISION/NO_DETERMINABLE tampoco produce PRESTAMO_DEVUELTO; solo la confirmación final, incluso en una revisión posterior. CU23 conserva evaluaciones_liberacion, eventos IoT y validaciones QR como su historia. Ampliar este conjunto requiere nueva decisión/versionado, nunca una inferencia por la palabra «crítica».
+
+Orden obligatorio: **operación + actividad crítica en transacción → commit MySQL → crear/confirmar evidencia local → intento externo**. No hay RPC bajo locks de reserva, préstamo o equipo. El callback posterior al commit prepara la evidencia local; su objetivo R-PR-03 es máximo 3 s desde confirmación, medido en Fase 9. Si falla hash/persistencia posterior, la operación ya confirmada sigue válida y la actividad permite recuperación; no se inventa un hash ni se oculta el fallo. Crear `registros_actividad` no implementa CU30: solo estas escrituras, sin buscador, pantalla o consulta general de bitácora.
+
+### Esquema canónico y representación
+
+`algoritmo_hash` se persiste exactamente como **`SHA-256`**, y `version_canonica` como **`espacio-u-jcs-v1`**. El hash principal es hexadecimal minúsculo de 64 caracteres sobre los bytes UTF-8 del documento JCS; en el contrato externo se decodifica a bytes32. No se sustituye por MD5, SHA-1 ni Keccak. Las firmas/selectores Ethereum usan su mecanismo de protocolo sin cambiar el algoritmo de evidencia.
+
+Se adopta [JCS, RFC 8785](https://www.rfc-editor.org/rfc/rfc8785): serialización determinista sin espacios entre tokens, orden recursivo de propiedades por unidades UTF-16, strings Unicode válidos sin normalización y salida UTF-8. No basta ordenar claves manualmente o usar el JSON predeterminado del framework. Claves duplicadas, Unicode inválido y datos fuera del contrato se rechazan. El orden manual de los ejemplos no define el hash.
+
+Todos los BIGINT son strings decimales positivos sin signo ni ceros a la izquierda, jamás números JSON; no pasar por float. Cada fecha canónica es UTC [RFC3339](https://www.rfc-editor.org/rfc/rfc3339), segundos y sufijo `Z`, sin fracciones: `YYYY-MM-DDTHH:mm:ssZ`. DATETIME y la operación de la aplicación conservan America/La_Paz; convertir explícitamente desde esa zona, no reinterpretar el texto local como UTC. No se usa la hora del navegador.
+
+El objeto común contiene **exactamente seis claves**; no se incorporan atributos del modelo automáticamente:
+
+| Clave | Tipo y valor/fuente |
+| --- | --- |
+| activity_id | String decimal: registros_actividad.id |
+| occurred_at | String UTC: registros_actividad.fecha_hora |
+| operation | String: una de las cuatro acciones exactas |
+| schema | String constante `espacio-u-trace` |
+| subject | Objeto con el esquema exacto por acción de las tablas siguientes |
+| version | String constante `1`, no número JSON |
+
+#### Subject RESERVA_APROBADA
+
+| Clave | Fuente y representación |
+| --- | --- |
+| reserva_id | reserva.id, string decimal |
+| reserva_codigo | reserva.codigo, string exacto persistido |
+| espacio_id | reserva.espacio_id, string decimal |
+| inicio | reserva.inicio, UTC |
+| fin | reserva.fin, UTC |
+| resuelta_por_id | reserva.resuelta_por_id, string decimal |
+| resuelta_en | reserva.resuelta_en, UTC |
+
+No se incluye `estado` actual. La cancelación o liberación posterior conserva los campos de resolución y no invalida la evidencia de aprobación. Se conserva también código, recurso e intervalo históricos: no pueden editarse tras la aprobación.
+
+#### Subject RESERVA_CANCELADA
+
+| Clave | Fuente y representación |
+| --- | --- |
+| reserva_id | reserva.id, string decimal |
+| reserva_codigo | reserva.codigo, string exacto |
+| espacio_id | reserva.espacio_id, string decimal |
+| cancelada_por_id | reserva.cancelada_por_id, string decimal |
+| cancelada_en | reserva.cancelada_en, UTC |
+| motivo_cancelacion_hash | SHA-256 del texto persistido o JSON null |
+
+Este esquema no exige aprobación previa: CU10 también admite cancelar una solicitud pendiente dentro de las guardas vigentes.
+
+#### Subject PRESTAMO_ENTREGADO
+
+| Clave | Fuente y representación |
+| --- | --- |
+| prestamo_id | prestamo.id, string decimal |
+| prestamo_codigo | prestamo.codigo, string exacto |
+| equipamiento_id | prestamo.equipamiento_id, string decimal |
+| entrega_id | entrega.id, string decimal |
+| entregado_por_id | entrega.entregado_por_id, string decimal |
+| receptor_id | entrega.receptor_id, string decimal |
+| fecha_hora | entrega.fecha_hora, UTC |
+| condicion_entrega_hash | SHA-256 de entrega.condicion_entrega |
+| observacion_hash | SHA-256 de entrega.observacion o JSON null |
+
+La entrega se obtiene por el préstamo, con la unicidad oficial, no buscando «la última» por fecha. `recepcion_confirmada_en` no forma parte de este documento ni se modifica su contrato vigente.
+
+#### Subject PRESTAMO_DEVUELTO
+
+| Clave | Fuente y representación |
+| --- | --- |
+| prestamo_id | prestamo.id, string decimal |
+| prestamo_codigo | prestamo.codigo, string exacto |
+| equipamiento_id | prestamo.equipamiento_id, string decimal |
+| devolucion_id | devolucion.id, string decimal |
+| recibido_por_id | devolucion.recibido_por_id, string decimal |
+| confirmado_por_id | devolucion.confirmado_por_id, string decimal |
+| registrada_en | devolucion.registrada_en, UTC |
+| confirmada_en | devolucion.confirmada_en, UTC |
+| condicion | Valor literal ADECUADA o CON_INCIDENCIA de la condición final persistida |
+| descripcion_condicion_hash | SHA-256 de devolucion.descripcion_condicion o JSON null |
+| observacion_hash | SHA-256 de devolucion.observacion o JSON null |
+
+La revisión conserva el mismo hito de devolución. Se admite corregir los campos de condición mientras está pendiente; después de confirmar quedan inmutables para esta versión. `recibido_por_id` y `registrada_en` conservan la recepción inicial, aunque otra persona confirme después.
+
+#### Textos secundarios, historia y reconstrucción
+
+Todo hash secundario es SHA-256 hexadecimal minúsculo de los **bytes UTF-8 exactos del texto persistido**: sin trim, cambios de mayúsculas, normalización Unicode ni conversión de saltos de línea. NULL → JSON `null`; string vacío → hash del string vacío; no omitir claves. La condición de entrega es obligatoria según SQL; un NULL indebido en un campo obligatorio no se transforma silenciosamente en dato válido. La política general NULL → null aplica a campos textuales opcionales.
+
+El contrato no contiene nombres, apellidos, correos, CI, contraseña, teléfono ni texto personal innecesario. Solo IDs técnicos necesarios y hashes de los textos indicados. Un hash secundario no es cifrado y no habilita publicar textos o correlaciones adicionales.
+
+La reconstrucción usa actividad + reserva/préstamo + entrega/devolución única e historia persistida. Todos los campos utilizados quedan protegidos contra edición/borrado/renumeración por flujos de aplicación después de su hito crítico; las transiciones posteriores conservan ese pasado. No se guarda JSON canónico en BD, descripcion, archivos, caché ni logs como sustituto de una columna. El SQL no tiene columna para ello. Si falta historia obligatoria, la verificación es NO_VERIFICABLE; si se puede reconstruir y cambia el hash, INCONSISTENTE. No se «repara» una evidencia reemplazando su hash.
+
+### Persistencia local e idempotencia
+
+La futura tabla evidencias_trazabilidad conserva sus **11 columnas**: id, registro_actividad_id, algoritmo_hash, hash, version_canonica, referencia_externa, registrada_localmente_en, registrada_externamente_en, estado, ultima_verificacion y resultado_verificacion. `registro_actividad_id` NOT NULL y UNIQUE; `hash` UNIQUE. El contrato conceptual 0..* de un dibujo se subordina al SQL: una actividad tiene 0..1 evidencia y la recuperación busca completar exactamente una para cada actividad crítica válida. Durante un fallo posterior al commit puede faltar temporalmente esa evidencia.
+
+La creación usa una transacción local corta: bloquear actividad, buscar evidencia por su ID, reconstruir y crear si falta; ante carrera recuperar la existente por UNIQUE. No mezclar dos actividades por una colisión de hash: detener ese caso para revisión, sin sal/sufijo ni una segunda identidad. `activity_id` dentro del canónico separa operaciones distintas; no se promete imposibilidad matemática de colisiones.
+
+Nueva evidencia: PENDIENTE, referencia/fecha externa/última verificación NULL, resultado_verificacion=PENDIENTE (NOT NULL y default oficial) y registrada_localmente_en del servidor. El resultado inicial no acredita una comprobación ejecutada; ultima_verificacion NULL lo distingue. Algoritmo, hash, versión, actividad y fecha local no se reescriben al reintentar. Deshabilitar la integración externa no desactiva actividad ni evidencia locales. No hay backfill automático de operaciones de fases anteriores a partir de su estado actual: una reconstrucción histórica masiva necesitaría una decisión expresa.
+
+### Red, adaptador, configuración y contrato externo
+
+Única red inicial: **Ethereum Sepolia Testnet, chain ID 11155111**. Mainnet y fondos reales quedan fuera. [Redes oficiales Ethereum](https://ethereum.org/en/developers/docs/networks/) y [configuración Sepolia de go-ethereum](https://raw.githubusercontent.com/ethereum/go-ethereum/master/params/chainspecs/sepolia.json). La interfaz conceptual `BlockchainTraceabilityDriver` separa negocio de RPC; `EthereumSepoliaDriver` es la implementación futura inicial. El proveedor RPC es configurable: cambiarlo no cambia red, contrato, hash o referencia histórica.
+
+Configuración prevista, **sin editar .env ni .env.example en Fase 8.5**:
+
+| Variable futura | Contrato |
+| --- | --- |
+| BLOCKCHAIN_ENABLED | Booleano; desactivado hasta configurar y validar integración |
+| BLOCKCHAIN_NETWORK | `sepolia` |
+| BLOCKCHAIN_CHAIN_ID | `11155111` |
+| BLOCKCHAIN_RPC_URL | Secreto; vacío en plantilla futura |
+| BLOCKCHAIN_PRIVATE_KEY | Secreto; vacío en plantilla futura |
+| BLOCKCHAIN_CONTRACT_ADDRESS | Dirección pública del despliegue autorizado; vacía hasta tenerlo |
+| BLOCKCHAIN_CONFIRMATIONS | `1` inicialmente, configurable, entero >=1 |
+
+Fase 9 preparará wallet exclusiva del proyecto/testnet, sin reutilizar wallet personal, seed ni clave de Mainnet. Private key solo en .env local ignorado o gestor de secretos del despliegue: nunca BD, Git, logs, UI, README o fixtures públicos. RPC URL puede contener una API key y recibe el mismo tratamiento. No se generan ahora wallet, clave, RPC key ni contrato.
+
+El driver valida configuración y `eth_chainId == 11155111` antes de enviar; fija también ese chain ID al firmar. Cambiar solo una variable no permite Mainnet. Si red, contrato, bytecode esperado o wallet autorizada no coinciden, no enviar; evidencia PENDIENTE y diagnóstico seguro. RPC solo en backend, HTTPS en integración remota, límites de conexión/respuesta y errores saneados sin cuerpos/URLs sensibles.
+
+Contrato conceptual **TraceabilityRegistry**: `bytes32 evidenceHash → timestamp`, con registro restringido a la wallet autorizada del proyecto y consulta pública del hash/timestamp. La primera inscripción guarda `block.timestamp` y emite `EvidenceRegistered(bytes32 indexed evidenceHash, uint256 timestamp)`; una repetición devuelve el registro existente sin sobrescribirlo ni emitir un segundo evento lógico. No borra ni modifica registros, no recibe objetos de negocio ni fondos por la operación de registro. La dirección autorizada es configuración técnica del contrato, no identidad de usuario de ESPACIO-U.
+
+El único argumento de negocio enviado es el hash de **32 bytes**. El selector ABI, firma, nonce, gas, dirección técnica de contrato/wallet y chain ID son metadatos necesarios; no se confunden con un envío de JSON de negocio. El timestamp externo nace del bloque, no de una fecha de operación enviada. No enviar IDs, códigos, motivos, observaciones, timestamps de negocio ni documento canónico. [Especificación oficial ABI y eventos](https://docs.soliditylang.org/en/stable/abi-spec.html#events).
+
+En Fase 9 se fijarán licencia, versión estable de Solidity/compilador, configuración reproducible, ABI, bytecode y manifiesto público de despliegue (chain ID, dirección, bloque inicial, transacción, writer autorizado). Source podrá vivir en blockchain/contracts/. No se crea nada de ello ahora. Dirección y saldo testnet son preparación técnica de esa fase, no un contrato funcional pendiente. Cambiar contrato/writer no es equivalente a cambiar RPC: exige documentar el despliegue y conservar la capacidad de verificar referencias antiguas autorizadas.
+
+### Referencia, confirmación y estados
+
+`referencia_externa` se congela como **`eip155:11155111/<contract_address>/<tx_hash>`**: dirección `0x` + 40 hex y transacción `0x` + 64 hex, normalizadas a minúsculas; longitud 125, dentro de VARCHAR(255). No es una URL RPC. Solo se consulta un contrato reconocido del despliegue; una referencia no puede introducir una URL/host arbitrario. Un enlace de explorador se deriva de esa referencia validada y una base pública Sepolia sin credenciales.
+
+| Estado persistido | Condición |
+| --- | --- |
+| PENDIENTE | No enviado, integración deshabilitada, RPC/contrato no disponible, envío incierto, transacción pendiente, revertida aún no recuperada o confirmaciones insuficientes |
+| REGISTRADA | Cadena correcta, receipt exitoso en bloque canónico con >=N confirmaciones, evento del contrato para el hash y consulta contractual coherente |
+
+Una respuesta de broadcast/tx_hash no es confirmación. Se comprueba receipt.status=1, contrato/evento/hash, blockHash frente al bloque canónico y `head - blockNumber + 1 >= N`, además del registro consultable en ese bloque confirmado. El timestamp de contrato debe corresponder al bloque de inscripción. Una confirmación inicial no equivale a finalidad absoluta; reorgs requieren comprobación posterior. [JSON-RPC Ethereum](https://ethereum.org/en/developers/docs/apis/json-rpc/).
+
+Puede persistirse una referencia candidata con tx_hash conocido mientras sigue PENDIENTE, idealmente calculada antes de broadcast. `registrada_externamente_en` continúa NULL hasta confirmar; entonces se toma timestamp del bloque, convertido a la convención DATETIME local. La fecha local siempre es del servidor. Ni fecha externa ni referencia se inventan para dar por exitoso un envío incierto.
+
+### Reconciliación y concurrencia
+
+El procesamiento externo normal es automático. Fase 9 tendrá `trazabilidad:reconciliar`, invocado periódicamente por scheduler interno (inicialmente cada minuto), sin usuario humano ni dependencia durable de un callback en memoria. Recorre por lotes actividades críticas EXITO sin evidencia y evidencias PENDIENTE; un caso fallido no bloquea los demás. La actividad es el origen durable de trabajo: no se agregan tablas outbox/jobs ni columnas de payload/intentos a este contrato. El callback posterior al commit intenta la generación local inmediata; el reconciliador repara interrupciones.
+
+Antes de cualquier reenvío, reconstruir y comprobar hash local, consultar contrato por hash y buscar transacción/receipt si existe referencia candidata. Si el registro ya existe, no emitir otra transacción: recuperar evento indexado por hash desde el bloque de despliegue, paginando logs, y validar la misma prueba de confirmación. Si existe hash pero aún no puede recuperarse una referencia coherente, conservar PENDIENTE y volver a consultar, sin inventarla ni reenviar.
+
+Timeout tras broadcast significa **resultado incierto**, no fracaso. Una transacción conocida pendiente impide un nuevo envío. Revert definitivo o ausencia externa comprobada, sin transacción conocida pendiente, permite otro intento del mismo hash; un RPC inaccesible no demuestra ausencia. Tras caída antes/después de envío o actualización local, el siguiente recorrido repite estas comprobaciones. Propagación lenta puede causar más de un intento físico; se garantiza un único registro **lógico**, no «exactly once» de broadcast ni coste único de gas.
+
+Dos workers coordinan creación local mediante actividad + UNIQUE. Para envíos desde una misma wallet, se usa exclusión entre procesos mediante GET_LOCK de MySQL, nombre acotado por proyecto/red/wallet, en conexión dedicada y con espera cero; si no se obtiene, se difiere. Bajo esa exclusión se consulta contrato y nonce pendiente y se envía. Se libera en finally/cierre de conexión, pues commit/rollback no liberan ese lock. No mantener una transacción SQL abierta ni locks de filas de negocio durante RPC. [Semántica de locks de sesión MySQL](https://dev.mysql.com/doc/refman/8.4/en/locking-functions.html).
+
+La coordinación cubre instancias que comparten el MySQL del proyecto; no habilita usar la misma wallet desde procesos independientes ajenos al servicio. El contrato idempotente sigue siendo la defensa final. La publicación local de confirmación usa una transacción corta de evidencia y revalida su identidad; no retrocede una evidencia REGISTRADA por una carrera de un intento viejo. Límites/timeout de red acotados y liberación del lock se probarán, sin una espera de RPC dentro del negocio.
+
+Reintento manual solo de evidencia PENDIENTE y con permiso: dispara el mismo servicio, sin nueva actividad, evidencia o hash. No garantiza disponibilidad de red. Una inconsistencia local detiene el envío y requiere revisión; nunca se recalcula y sobrescribe el original para «hacerlo coincidir».
+
+### Verificación CU25
+
+Primero autorización y lectura coherente de actividad/historia/evidencia; luego reconstrucción con algoritmo/versión guardados y comparación local. Cerrar cualquier transacción de lectura antes del RPC. No se usan estado actual ni timestamps del cliente. La prioridad de resultados es:
+
+| Condición comprobada | resultado_verificacion | Efecto sobre estado |
+| --- | --- | --- |
+| Historia necesaria ausente o versión/algoritmo no soportado | NO_VERIFICABLE | Conserva estado |
+| Documento reconstruible y hash recalculado distinto | INCONSISTENTE; no requiere RPC | Conserva estado |
+| Hash local igual y estado PENDIENTE | PENDIENTE | Conserva estado, salvo reconciliación confirmada previa |
+| Hash local igual, REGISTRADA y prueba externa/referencia/contrato/red coherentes | VALIDO | Conserva REGISTRADA |
+| Hash local igual, REGISTRADA y consulta externa temporalmente imposible o confirmación actual no concluyente | NO_VERIFICABLE | Conserva REGISTRADA, referencia y fecha externa |
+| Prueba positiva de red/contrato/hash/transacción incompatibles, referencia inválida en REGISTRADA o ausencia confirmada del registro esperado | INCONSISTENTE | Conserva REGISTRADA para revisión; no reenvío automático |
+
+Una respuesta RPC temporalmente errónea no prueba ausencia. Se verifica la referencia exacta, no solo que «algún hash» exista en el contrato. Reorg que haga no concluyente la confirmación produce NO_VERIFICABLE; prueba de referencia desplazada/incompatible produce INCONSISTENTE. Nunca convertir REGISTRADA a PENDIENTE por indisponibilidad. Solo cuatro valores oficiales: **VALIDO, INCONSISTENTE, PENDIENTE, NO_VERIFICABLE**.
+
+Cada comprobación completada actualiza `ultima_verificacion` con hora del servidor y `resultado_verificacion`. Petición denegada o evidencia inexistente no fabrica resultado persistido. Serializar comprobaciones de la misma evidencia mediante exclusión por evidencia sin locks de negocio durante red; reautorizar y guardar resultado bajo transacción local corta. Releer identidad y estado antes de guardar: si la reconciliación cambió PENDIENTE a REGISTRADA durante la comprobación, repetir la evaluación con el estado nuevo, sin publicar un resultado pendiente obsoleto. Si está ocupada, informar que hay una comprobación en curso sin inventar un quinto resultado. No crear actividad crítica por verificar/reintentar, evitando recursión; la auditoría general condicional de CU30 sigue diferida.
+
+### Permisos y presentación previstos
+
+| Permiso futuro exacto | Administrador | Encargado | Docente / Estudiante |
+| --- | --- | --- | --- |
+| trazabilidad.evidencias.ver | Sí | No | No |
+| trazabilidad.evidencias.verificar | Sí | No | No |
+| trazabilidad.reintentar | Sí | No | No |
+
+Son códigos documentales, sin alta en BD durante esta fase. Exigir rol elegible, permiso efectivo en ese rol, cuenta/sesión vigente y guardas de servidor, sin bypass de Administrador. Verificar/reintentar requieren también poder ver la evidencia; acciones mediante petición con CSRF, nunca efecto lateral de GET. Revocación de sesión/permiso invalida la siguiente acción; no confiar en botones ocultos. El proceso automático interno no asume identidad humana ni depende de esos botones.
+
+La futura UI muestra operación, actividad, hash, algoritmo, versión, estado, referencia externa, fechas, última verificación y resultado. Hash y referencia pueden mostrarse, pero el módulo sigue autorizado. No exponer private key, RPC API key, payload canónico completo o datos personales innecesarios en props, HTML, errores ni logs. Es una consulta de evidencias, no la pantalla general CU30. El enlace opcional de explorador se deriva de red/referencia segura.
+
+### Estrategia de aceptación
+
+[T-B01–T-B40](BUSINESS_RULES.md#aceptación-futura-blockchain--fase-9) son especificaciones futuras, no tests ejecutados. Suite normal offline con driver fake/mock y MySQL de pruebas aislado, fixtures sintéticos sin secretos; pruebas de protocolo/contrato con entorno EVM local controlado cuando se implemente. Integración real Sepolia separada y explícita, una vez configurados wallet exclusiva, RPC y saldo testnet. Nunca depender de Internet para la suite normal ni publicar una clave activa como fixture.
+
+El cierre exige JCS/Unicode/null/BIGINT/fechas/textos, cuatro acciones y exclusiones, límites de privacidad externa, rollback solo por fallo local dentro de la transacción, fallos de red sin pérdida de negocio, recuperación y dos workers sin duplicación lógica, permisos/CU25 y generación local <=3 s. La Fase 8.5 solo comprueba documentos, fuentes, enlaces, alcance y secretos; no ejecuta CU24/CU25 ni afirma validación de Sepolia.
+
+## Readiness for Phase 9
+
+**D-12: RESUELTA PARA FASE 9. Bloqueantes documentales: 0.** Fecha de cierre: 2026-10-25. La excepción de una FK fue autorizada expresamente; no queda una autorización pendiente escondida en el esquema.
+
+| Aspecto | Decisión cerrada |
+| --- | --- |
+| Fuente principal y atomicidad | MySQL; negocio + actividad EXITO/critica en la misma transacción; evidencia y red después del commit |
+| Acciones | RESERVA_APROBADA, RESERVA_CANCELADA, PRESTAMO_ENTREGADO, PRESTAMO_DEVUELTO final |
+| Exclusiones | Rechazos, aprobación préstamo, QR individual, IoT, incidencias/mantenimiento y LIBERADA CU23 |
+| Dependencia | registros_actividad estructural y escritura crítica; CU30 general diferido |
+| Esquema | Dos tablas oficiales, 13 + 11 columnas, UNIQUE actividad/hash; solo fk_registro_actor UPDATE RESTRICT autorizada |
+| Algoritmo y canónico | SHA-256; JCS RFC8785; espacio-u-jcs-v1; schema espacio-u-trace/version string 1; seis claves comunes y cuatro subjects exactos |
+| Representación e historia | UTF-8 sin normalización; IDs strings; UTC segundos Z; hashes secundarios; hitos inmutables sin JSON persistido |
+| Privacidad | Solo hash bytes32 y metadatos de protocolo externos; no PII, IDs, códigos, fechas de negocio ni canónico |
+| Red/adaptador | Sepolia/11155111, BlockchainTraceabilityDriver/EthereumSepoliaDriver, RPC configurable y guarda anti-Mainnet |
+| Wallet/seguridad | Exclusiva testnet; secretos locales/gestor; ninguna generación en esta fase |
+| Registry | Hash→timestamp, writer autorizado, evento indexado, consulta e inscripción idempotente |
+| Referencia/confirmación | eip155:11155111/contrato/tx; N=1 configurable; receipt/contrato/red/evento coherentes |
+| Recuperación | Reconciliador automático, actividad durable, UNIQUE, consulta antes de reenvío, logs por hash y timeout incierto |
+| Verificación | Recalcular primero; cuatro resultados; REGISTRADA no retrocede por RPC caído; última comprobación del servidor |
+| RBAC/UI | Tres permisos, inicialmente solo Administrador; evidencia mínima sin CU30 ni secretos |
+| Pruebas | T-B01–T-B40, fake offline, MySQL aislado, concurrencia, privacidad y live Sepolia separado |
+| Continuación | **Fase 9 puede comenzar con una nueva instrucción expresa. No comienza en esta entrega.** |
+
+Versión/licencia del compilador estable, dependencias compatibles, dirección/ABI/bytecode efectivos, despliegue, claves y saldo testnet se prepararán y verificarán al implementar Fase 9. No son ambigüedades del contrato de negocio ni evidencia de infraestructura ya existente. Este cierre no certifica rendimiento, red externa o funcionamiento que todavía no se ha implementado.
+
+### Verificación documental de Fase 8.5
+
+Revisión limitada a **13 Markdown y cero archivos funcionales**. Los 217 textos de requisitos, los dos diccionarios físicos y el contrato/Readiness D-08 se compararon con main de partida y se conservaron. SQL de las dos tablas equivalente entre Word/PDF y SHA-256 originales intactos. Se comprobaron las seis claves comunes, los subjects de 7/6/9/11 campos y los 40 criterios futuros. **293 enlaces locales comprobados, sin errores.**
+
+Escaneo de 389 archivos públicos, índice, historial Git y material temporal de esta revisión contra valores privados locales y patrones de credenciales: sin secretos detectados. Los valores usados en el control nunca se imprimen. Extracciones y ayudas de revisión se mantuvieron ignoradas dentro del workspace oficial y se retiran al terminar; no se publican copias de Word/PDF.
+
+No se ejecutaron migraciones, seeders, pruebas funcionales, llamadas RPC, generación de wallet/clave, compilación Solidity ni cambios de configuración/BD. T-B01–T-B40 son obligaciones futuras. Las pruebas de Fase 8 conservan su evidencia histórica y no se atribuyen a esta fase documental.
+
+Rama docs/phase-8.5-blockchain-decisions desde main/origin/main limpio f3c38ea2f2093b79941e29b5d71fe97860f1a67b. Commit documental, push e integración fast-forward autorizados, sin force push. El informe final confirma el SHA, igualdad remota y árbol limpio una vez realizadas esas operaciones.

@@ -131,3 +131,11 @@ D-09 está resuelta para Fase 6; [contrato CU11](DECISIONS.md#cu11-y-autorizaci�
 ## Integración posterior QR — Fase 6
 
 La Fase 6 posterior implementa CU11/CU20 y las extensiones opcionales de CU17/CU18; preserva estados, disponibilidad central, núcleo sin QR y la historia descrita en este cierre. [Implementación, pruebas actuales y aceptación física por confirmación del usuario (sin corroboración independiente nueva)](QR_IMPLEMENTATION.md). Las referencias a QR pendiente en el cierre histórico de este documento no describen el avance actual. IoT, liberación, Blockchain, notificaciones y CU30 siguen diferidos.
+
+## Punto de integración cerrado en Fase 8.5
+
+El núcleo funcional descrito arriba no cambia. [D-12](DECISIONS.md#contrato-blockchain--cierre-d-12-de-fase-85) queda RESUELTA PARA FASE 9: aprobación CU09 y cancelación CU10 exitosas crearán una actividad EXITO/critica dentro de su misma transacción; solo después del commit se generará la evidencia local y se intentará registro externo. Fallo de actividad obligatoria revierte la operación; fallo externo posterior no.
+
+RESERVA_APROBADA usa reserva_id, reserva_codigo, espacio_id, inicio, fin, resuelta_por_id y resuelta_en; excluye estado actual. RESERVA_CANCELADA usa reserva_id, reserva_codigo, espacio_id, cancelada_por_id, cancelada_en y motivo_cancelacion_hash. Conservar resolución/intervalo/código tras aprobación permite verificarla después de cancelación o liberación; cancelar una pendiente también es una operación crítica válida si cumple CU10. Contexto común y tipos exactos se centralizan en D-12.
+
+Solicitud CU07, rechazo y LIBERADA quedan excluidos. No se añade transición FINALIZADA ni se modifica disponibilidad. No se incorporaron ahora actividad, hashing, callback, migración o RPC. Los tests de reservas previos siguen siendo evidencia histórica; T-B06/07/10/29 especifican la futura integración y regresión.

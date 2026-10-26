@@ -146,4 +146,10 @@ No se modifican los originales Word/PDF, los 217 textos normativos, SQL congelad
 
 Blockchain/CU24/CU25, canonicalización y hashing de operaciones críticas **no implementados**. Notificaciones funcionales y tabla notificaciones **no implementadas** (Fase 10). CU30/registros_actividad, chatbot, dashboard final, aplicación móvil y APROBADA→FINALIZADA por tiempo **no implementados**. Evaluaciones son historia funcional de CU23. No se promete observar actividad física sin evidencia confirmada antes del corte transaccional.
 
-**Fase 9 no iniciada.** Siguiente paso recomendado: una instrucción explícita de cierre documental de **D-12** que fije operaciones críticas (decidir expresamente si incluye LIBERADA), campos mínimos permitidos, canonicalización/versionado/fechas, algoritmo, proveedor/red, idempotencia, recuperación y pruebas de privacidad/fallo externo. Solo después autorizar implementación de Fase 9; cualquier integración se ejecutaría después del commit principal sin revertir la reserva por un fallo externo.
+**Estado al cierre de Fase 8:** Fase 9 no iniciada y D-12 pendiente. La posterior Fase 8.5 cerró D-12 y excluyó LIBERADA expresamente, como se detalla a continuación; la implementación de Fase 9 sigue requiriendo nueva instrucción.
+
+## Exclusión Blockchain cerrada en Fase 8.5
+
+[D-12 y Readiness for Phase 9](DECISIONS.md#readiness-for-phase-9) quedaron cerrados documentalmente el 2026-10-25. **APROBADA→LIBERADA/CU23 no es una acción crítica Blockchain del alcance inicial.** CU24 extiende únicamente CU09/CU10/CU17/CU18; evaluaciones_liberacion, eventos IoT y validaciones QR mantienen la evidencia completa de CU23. No se añade actividad crítica, hash, envío ni hook Blockchain a la liberación.
+
+La aprobación previa conserva su evidencia y sus campos históricos; CU25 podrá verificarla después de LIBERADA sin usar estado actual en el canónico. Incorporar liberación a la cadena exigiría una nueva decisión/versionado. D-08, políticas, scheduler, locks y criterios T-L se conservan; T-B10/T-B29 verificarán esta exclusión y la historia en Fase 9. Las cifras de pruebas de Fase 8 son históricas; no se repitieron ni se modificó código durante Fase 8.5.
