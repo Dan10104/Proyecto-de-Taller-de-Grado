@@ -1,4 +1,5 @@
 <script setup>
+import { keepDialogFocus } from '../dialogFocus';
 import { computed, nextTick, ref, useId } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 import InputField from './InputField.vue';
@@ -36,7 +37,7 @@ function submit() {
     </div>
   </div>
   <Teleport to="body">
-    <dialog ref="dialog" class="confirm-dialog reservation-dialog" :aria-labelledby="titleId" @cancel="form.processing && $event.preventDefault()">
+    <dialog @keydown="keepDialogFocus" ref="dialog" class="confirm-dialog reservation-dialog" :aria-labelledby="titleId" @cancel="form.processing && $event.preventDefault()">
       <form @submit.prevent="submit">
         <h2 :id="titleId">{{ labels[action] }}</h2>
         <p v-if="action === 'aprobar'">Se comprobará nuevamente la disponibilidad de {{ reserva.espacio.nombre }} antes de aprobar esta solicitud.</p>

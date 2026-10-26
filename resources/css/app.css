@@ -371,12 +371,12 @@ p {
   display: flex;
   gap: 10px;
   font-size: 11px;
-  color: #697c95;
+  color: #526781;
   margin-bottom: 28px;
 }
 
 .breadcrumb a {
-  color: #637a96;
+  color: #526781;
 }
 
 .page-heading {
@@ -900,7 +900,7 @@ input[type=checkbox] {
   font-size: 10px;
   letter-spacing: 1.8px;
   font-weight: 650;
-  color: #a9c4e7;
+  color: #526781;
 }
 
 .role-chips {
@@ -2001,3 +2001,6 @@ input[type=checkbox] {
 .notification-context { border-top:1px solid #e5eaf1; padding-top:22px; margin-top:26px; }
 @media(max-width:900px) { .notification-filters { grid-template-columns:1fr 1fr; } }
 @media(max-width:560px) { .notification-filters { grid-template-columns:1fr; } .notification-list li { padding:18px 16px; gap:12px; flex-wrap:wrap; } .notification-list li.unread { padding-left:12px; } .notification-symbol { display:none; } .notification-open { margin-left:auto; } .notification-content { flex-basis:100%; } .notification-detail { padding:22px 18px; } .notification-header { gap:3px; padding:6px; } }
+
+/* Light labels remain legible on the existing dark hero panels. */
+.welcome-panel .eyebrow, .login-story .eyebrow { color: #a9c4e7; }

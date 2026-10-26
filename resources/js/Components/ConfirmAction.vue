@@ -1,5 +1,6 @@
 <script setup>
 import { ref, useId } from 'vue';
+import { keepDialogFocus } from '../dialogFocus';
 
 defineProps({
   label: { type: String, required: true },
@@ -19,7 +20,7 @@ function confirm() {
 <template>
   <button type="button" class="danger-link" @click="dialog.showModal()">{{ label }}</button>
   <Teleport to="body">
-    <dialog ref="dialog" class="confirm-dialog" :aria-labelledby="titleId">
+    <dialog ref="dialog" class="confirm-dialog" :aria-labelledby="titleId" @keydown="keepDialogFocus">
       <h2 :id="titleId">{{ label }}</h2>
       <p>{{ message }}</p>
       <div class="form-actions">
