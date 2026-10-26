@@ -1,6 +1,8 @@
 # Plan de implementación web
 
-**Fase 12.6 — RF25/CU30 implementados y validados localmente (2026-10-26).** [Registro de actividad y bitácora](ACTIVITY_AUDIT_IMPLEMENTATION.md): 56 acciones, recorder transaccional, permiso exclusivo de Administrador y consulta individual. Sin nuevas tablas/dependencias. Fase 13 NO iniciada; smokes OpenAI/Sepolia pendientes independientes. Los cierres siguientes conservan su alcance histórico.
+**Estado vigente — Fase 13 completada y validada (2026-10-26).** QA integral de CU01–CU30 y RF1–RF25 web; RF26 móvil diferido. [Informe de seguridad, rendimiento y pruebas](PHASE_13_SYSTEM_VALIDATION.md) y [matriz final por CU](FINAL_USE_CASE_VALIDATION.md). Los estados de fases anteriores que siguen son históricos. OpenAI/Sepolia pendientes independientes; excepción dev Hardhat/Zod explícita. Fase 14 NO iniciada.
+
+**Cierre histórico — Fase 12.6 — RF25/CU30 implementados y validados localmente (2026-10-26).** [Registro de actividad y bitácora](ACTIVITY_AUDIT_IMPLEMENTATION.md): 56 acciones, recorder transaccional, permiso exclusivo de Administrador y consulta individual. Sin nuevas tablas/dependencias. Fase 13 NO iniciada; smokes OpenAI/Sepolia pendientes independientes. Los cierres siguientes conservan su alcance histórico.
 
 **Estado histórico — Fase 12.5 documental cerrada (2026-10-26).** [Activity Audit Contract / Readiness for CU30](DECISIONS.md#activity-audit-contract--readiness-for-cu30), **0 bloqueantes documentales**. RF25 con productores parciales; CU30 **NO IMPLEMENTADO**. Implementación solo con nueva instrucción. Sin cambios de código, datos, permisos, migraciones o dependencias; OpenAI/Sepolia pendientes independientes.
 
@@ -419,3 +421,7 @@ Baseline funcional conservado: 877 tests/10.217 assertions de Fase 12; no se eje
 ## Implementación RF25/CU30 — Fase 12.6
 
 La instrucción posterior autorizó Fase 12.6, insertada antes de Fase 13: recorder/productores, permiso/consulta/UI, pruebas de integridad/privacidad/concurrencia, QA, medición y documentación. No sustituye la QA integral de todo el sistema: Fase 13 permanece NO INICIADA. Tras cerrar esta entrega, la siguiente instrucción puede autorizar ese endurecimiento global; smokes OpenAI/Sepolia continúan separados. [Implementación, evidencia y límites](ACTIVITY_AUDIT_IMPLEMENTATION.md).
+
+## Revalidación integral — Fase 13
+
+CU30 se completó en Fase 12.6; esta fase lo revalida con los otros 29 CU. El trabajo histórico que decía completar bitácora se satisface por esa implementación previa. Fase 13 ejecuta baseline, esquema, seguridad, UI, rendimiento y regresiones cruzadas. Evidencia final/publicación en PHASE_13_SYSTEM_VALIDATION. Fase 14 requiere nueva instrucción: HTTPS/proxies, sesiones/locks/scheduler/almacenamiento según topología y secretos privados. Sin Dockerfile final, nube, CI/CD de despliegue ni móvil.

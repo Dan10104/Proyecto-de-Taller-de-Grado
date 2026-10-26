@@ -1,6 +1,8 @@
 # Modelo de datos documentado
 
-**Fase 12.6 — RF25/CU30 implementados y validados localmente (2026-10-26).** [Registro de actividad y bitácora](ACTIVITY_AUDIT_IMPLEMENTATION.md): 56 acciones, recorder transaccional, permiso exclusivo de Administrador y consulta individual. Sin nuevas tablas/dependencias. Fase 13 NO iniciada; smokes OpenAI/Sepolia pendientes independientes. Los cierres siguientes conservan su alcance histórico.
+**Estado vigente — Fase 13 completada y validada (2026-10-26).** QA integral de CU01–CU30 y RF1–RF25 web; RF26 móvil diferido. [Informe de seguridad, rendimiento y pruebas](PHASE_13_SYSTEM_VALIDATION.md) y [matriz final por CU](FINAL_USE_CASE_VALIDATION.md). Los estados de fases anteriores que siguen son históricos. OpenAI/Sepolia pendientes independientes; excepción dev Hardhat/Zod explícita. Fase 14 NO iniciada.
+
+**Cierre histórico — Fase 12.6 — RF25/CU30 implementados y validados localmente (2026-10-26).** [Registro de actividad y bitácora](ACTIVITY_AUDIT_IMPLEMENTATION.md): 56 acciones, recorder transaccional, permiso exclusivo de Administrador y consulta individual. Sin nuevas tablas/dependencias. Fase 13 NO iniciada; smokes OpenAI/Sepolia pendientes independientes. Los cierres siguientes conservan su alcance histórico.
 
 **Estado histórico — Fase 12.5 documental cerrada (2026-10-26).** [Activity Audit Contract / Readiness for CU30](DECISIONS.md#activity-audit-contract--readiness-for-cu30), **0 bloqueantes documentales**. RF25 con productores parciales; CU30 **NO IMPLEMENTADO**. Implementación solo con nueva instrucción. Sin cambios de código, datos, permisos, migraciones o dependencias; OpenAI/Sepolia pendientes independientes.
 
@@ -1100,3 +1102,7 @@ Catálogo futuro en aplicación: 18 acciones existentes + 38 nuevas, todas estas
 ## Implementación RF25/CU30 — Fase 12.6
 
 Reutilizado registros_actividad sin modificar columnas/FK/CHECK/enum SQL. Cero migraciones e índices nuevos: medición/EXPLAIN no justifican ampliar el esquema; evidencia en el informe. actividad.ver amplía catálogo a 52 filas mediante seeder incremental, no schema nuevo. Las referencias sin FK continúan como IDs mínimos en plantilla, no índices/columnas derivados de texto. [Implementación, evidencia y límites](ACTIVITY_AUDIT_IMPLEMENTATION.md).
+
+## Revalidación integral — Fase 13
+
+SystemSchemaContractTest contrasta diccionario y MySQL testing: 31 tablas académicas, 211 columnas y 63 FK, más migrations técnica. Compara tipos, NULL, defaults, autoincremento, DELETE/UPDATE y cero huérfanos. Solo siete FK QR y fk_registro_actor usan UPDATE RESTRICT. Sin diferencias ni migraciones/índices nuevos; instalación desde cero bajo TestingDatabaseGuard.

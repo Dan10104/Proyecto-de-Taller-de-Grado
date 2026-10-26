@@ -1,5 +1,7 @@
 # Códigos QR y validaciones — Fase 6
 
+**Estado vigente — Fase 13 completada y validada (2026-10-26).** QA integral de CU01–CU30 y RF1–RF25 web; RF26 móvil diferido. [Informe de seguridad, rendimiento y pruebas](PHASE_13_SYSTEM_VALIDATION.md) y [matriz final por CU](FINAL_USE_CASE_VALIDATION.md). Los estados de fases anteriores que siguen son históricos. OpenAI/Sepolia pendientes independientes; excepción dev Hardhat/Zod explícita. Fase 14 NO iniciada.
+
 **Estado vigente — Fase 8 implementada (2026-10-24).** CU23 consume validaciones persistidas USO_ESPACIO de misma reserva/recurso en [inicio,T], incluidas INVALIDA contextuales; VALIDA aporta uso positivo aun siendo opcional. Rotación no borra historia. QrValidationService se conserva y se prueban ambos órdenes de concurrencia. La revisión de Fase 8 es sintética, sin nueva certificación física de cámara. [Informe de implementación, verificaciones y límites](RELEASE_POLICY_IMPLEMENTATION.md). Las declaraciones de fases anteriores que siguen a continuación se conservan como historia de esos cierres.
 
 **Continuidad documental de Fase 7.5:** [Semántica QR para D-08](DECISIONS.md#evidencia-qr-de-cu23). CU23 futuro consultará USO_ESPACIO de la misma reserva/recurso, desde inicio hasta evaluación; una VALIDA basta y puede vetar aunque el QR sea opcional. INVALIDA solo explica contexto, nunca no uso. Rotación posterior no cambia validez histórica. D-09, CU11 y su aceptación conservan su alcance; no hay código ni nuevos escaneos en esta entrega.

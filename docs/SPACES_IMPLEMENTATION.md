@@ -1,5 +1,7 @@
 # Espacios académicos y disponibilidad base — Fase 3
 
+**Estado vigente — Fase 13 completada y validada (2026-10-26).** QA integral de CU01–CU30 y RF1–RF25 web; RF26 móvil diferido. [Informe de seguridad, rendimiento y pruebas](PHASE_13_SYSTEM_VALIDATION.md) y [matriz final por CU](FINAL_USE_CASE_VALIDATION.md). Los estados de fases anteriores que siguen son históricos. OpenAI/Sepolia pendientes independientes; excepción dev Hardhat/Zod explícita. Fase 14 NO iniciada.
+
 **Estado vigente — Fase 8 implementada (2026-10-24).** El espacio usa su FK politica_liberacion_id existente; asignación/retiro protegidos por APROBADA fin>T. SpaceAvailabilityService se conserva: LIBERADA no bloquea intervalo y permanecen bloqueos/incidencias/estado operativo. No se añade lógica paralela ni se marca DISPONIBLE automáticamente. [Informe de implementación, verificaciones y límites](RELEASE_POLICY_IMPLEMENTATION.md). Las declaraciones de fases anteriores que siguen a continuación se conservan como historia de esos cierres.
 
 **Continuidad documental de Fase 7.5:** [D-08 cerrada](DECISIONS.md#configuración-versiones-y-asignación). Fase 8 usará la FK politica_liberacion_id existente; no se podrá cambiar/asignar/retirar con APROBADA cuyo fin>T. LIBERADA dejará de bloquear el intervalo mediante SpaceAvailabilityService, sin cambiar estado operativo ni ignorar incidencias/mantenimiento/bloqueos. No se modifica código en esta entrega.

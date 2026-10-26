@@ -1,5 +1,7 @@
 # Dashboard, indicadores y reportes — Fase 11
 
+**Estado vigente — Fase 13 completada y validada (2026-10-26).** QA integral de CU01–CU30 y RF1–RF25 web; RF26 móvil diferido. [Informe de seguridad, rendimiento y pruebas](PHASE_13_SYSTEM_VALIDATION.md) y [matriz final por CU](FINAL_USE_CASE_VALIDATION.md). Los estados de fases anteriores que siguen son históricos. OpenAI/Sepolia pendientes independientes; excepción dev Hardhat/Zod explícita. Fase 14 NO iniciada.
+
 Estado: implementada y verificada el 2026-10-26. RF22/CU27 y RF23/CU28, desde main limpio ffbed66. Rama feature/phase-11-dashboard-reports. Referencia: [DR1–DR12](DECISIONS.md#dashboard--reporting-contract--readiness-for-phase-11). CU30 NO IMPLEMENTADO; Fase 12 NO iniciada.
 
 ## Precisiones de la instrucción de Fase 11

@@ -1,5 +1,7 @@
 # Registro de actividad y bitácora — Fase 12.6
 
+**Estado vigente — Fase 13 completada y validada (2026-10-26).** QA integral de CU01–CU30 y RF1–RF25 web; RF26 móvil diferido. [Informe de seguridad, rendimiento y pruebas](PHASE_13_SYSTEM_VALIDATION.md) y [matriz final por CU](FINAL_USE_CASE_VALIDATION.md). Los estados de fases anteriores que siguen son históricos. OpenAI/Sepolia pendientes independientes; excepción dev Hardhat/Zod explícita. Fase 14 NO iniciada.
+
 Implementación de RF25/CU30 conforme al [contrato AC1–AC15](DECISIONS.md#activity-audit-contract--readiness-for-cu30). Autorización posterior a Fase 12.5; Fase 13 no iniciada. Validación local completada el 2026-10-26: 1.030 tests/11.467 assertions, build/Pint, auditorías, medición MySQL y revisión manual. Evidencia y límites debajo.
 
 ## Escritura central y catálogo
