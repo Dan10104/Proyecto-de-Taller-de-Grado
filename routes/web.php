@@ -14,6 +14,7 @@ use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SpaceCatalogController;
 use App\Http\Controllers\SpaceController;
+use App\Http\Controllers\TraceabilityController;
 use App\Http\Controllers\UserController;
 use App\Models\EquipamientoTecnologico;
 use App\Models\IncidenciaMantenimiento;
@@ -102,6 +103,10 @@ Route::middleware(['auth', 'access.session'])->group(function () {
     Route::patch('/espacios/{espacio}/estado', [SpaceController::class, 'state'])->middleware('can:espacios.cambiar_estado')->name('espacios.state');
     Route::post('/espacios/{espacio}/bloqueos', [SpaceController::class, 'block'])->middleware('can:espacios.gestionar_bloqueos')->name('espacios.blocks.store');
     Route::patch('/espacios/{espacio}/bloqueos/{bloqueo}/desactivar', [SpaceController::class, 'deactivate'])->whereNumber('bloqueo')->middleware('can:espacios.gestionar_bloqueos')->name('espacios.blocks.deactivate');
+    Route::get('/trazabilidad', [TraceabilityController::class, 'index'])->middleware('can:trazabilidad.evidencias.ver')->name('trazabilidad.index');
+    Route::get('/trazabilidad/{evidencia}', [TraceabilityController::class, 'show'])->whereNumber('evidencia')->middleware('can:trazabilidad.evidencias.ver')->name('trazabilidad.show');
+    Route::post('/trazabilidad/{evidencia}/verificar', [TraceabilityController::class, 'verify'])->whereNumber('evidencia')->middleware(['can:trazabilidad.evidencias.ver', 'can:trazabilidad.evidencias.verificar'])->name('trazabilidad.verify');
+    Route::post('/trazabilidad/{evidencia}/reintentar', [TraceabilityController::class, 'retry'])->whereNumber('evidencia')->middleware(['can:trazabilidad.evidencias.ver', 'can:trazabilidad.reintentar'])->name('trazabilidad.retry');
     Route::get('/inicio', fn () => Inertia::render('Home'))->name('inicio');
     Route::get('/usuarios', [UserController::class, 'index'])->middleware('can:usuarios.ver')->name('usuarios.index');
     Route::get('/usuarios/crear', [UserController::class, 'create'])->middleware('can:usuarios.crear')->name('usuarios.create');
