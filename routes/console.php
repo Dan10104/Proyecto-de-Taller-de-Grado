@@ -10,3 +10,5 @@ Schedule::command('reservas:evaluar-liberacion')
 
 Schedule::command('notificaciones:reconciliar')->cron(config('notifications.reconcile_schedule'))->withoutOverlapping(10);
 Schedule::command('prestamos:detectar-vencimientos')->cron(config('notifications.overdue_schedule'))->withoutOverlapping(10);
+
+Schedule::command('reportes:limpiar-temporales')->everyMinute()->withoutOverlapping(5);
