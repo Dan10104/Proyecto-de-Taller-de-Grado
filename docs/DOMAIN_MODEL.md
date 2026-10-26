@@ -1,6 +1,6 @@
 # Modelo del dominio
 
-**Estado vigente — Fase 8.5 documental cerrada (2026-10-25).** D-12 RESUELTA PARA FASE 9; [Readiness for Phase 9](DECISIONS.md#readiness-for-phase-9), **0 bloqueantes documentales**. La implementación sigue en Fase 8; Fase 9 no iniciada. El contrato nuevo se distingue de las fotografías históricas que se conservan debajo.
+**Estado vigente — Fase 9 implementada (2026-10-25/26).** RF19/CU24 y RF20/CU25, cuatro actividades críticas, dos tablas y tres permisos implementados conforme a D-12. [Implementación, pruebas offline, excepción temporal dev de Zod y Sepolia pendiente de testETH](BLOCKCHAIN_IMPLEMENTATION.md). CU30 general y Fase 10 permanecen pendientes. Las secciones de cierres anteriores conservan su contexto histórico.
 
 **Estado al cierre funcional de Fase 8 (2026-10-24).** Los enums de modo/resultado y EvaluacionLiberacion materializan el dominio congelado. Una evaluación relaciona reserva/política y Q/E mediante M:N histórica. Solo LIBERAR cambia APROBADA→LIBERADA; no cambia estado del espacio ni crea FINALIZADA. [Informe de implementación, verificaciones y límites](RELEASE_POLICY_IMPLEMENTATION.md). Las declaraciones de fases anteriores que siguen a continuación se conservan como historia de esos cierres.
 
@@ -213,3 +213,7 @@ EvidenciaTrazabilidad se relaciona obligatoriamente con una actividad y esta tie
 Estados persistidos siguen exactamente PENDIENTE y REGISTRADA; resultado de verificación sigue VALIDO, INCONSISTENTE, PENDIENTE y NO_VERIFICABLE. Las acciones críticas son valores exactos de accion VARCHAR, no un enum SQL nuevo. Hash/ref no son credenciales ni confieren autorización. Registry es un componente externo mínimo, no otra entidad MySQL.
 
 LIBERADA/CU23, QR individual, IoT, rechazo, aprobación de préstamo e incidencias/mantenimiento quedan fuera del conjunto externo inicial. Sus historias y estados vigentes se mantienen. Los esquemas por acción y tipos se centralizan en D-12 para evitar variantes; campos de los hitos usados por esos esquemas quedan inmutables tras su confirmación. No se crea snapshot JSON.
+
+## Subconjunto de trazabilidad implementado en Fase 9
+
+RegistroActividad se usa únicamente para RESERVA_APROBADA, RESERVA_CANCELADA, PRESTAMO_ENTREGADO y PRESTAMO_DEVUELTO exitosos/humanos. Cada actividad tiene 0..1 EvidenciaTrazabilidad; los hitos históricos reconstruyen el hash sin depender del estado actual. Pendiente/registrada describe registro externo; válido/inconsistente/pendiente/no verificable describe la última comprobación, conceptos separados. [Schemas y exclusiones](BLOCKCHAIN_IMPLEMENTATION.md#canónico-y-privacidad). No se declara completado el dominio de CU30 general ni notificaciones.

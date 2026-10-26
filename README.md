@@ -2,9 +2,9 @@
 
 Sistema de información para la gestión y control de reservas de espacios académicos y préstamos de equipamiento tecnológico en la FICCT, con monitoreo de ocupación mediante IoT y trazabilidad de operaciones mediante Blockchain.
 
-**Estado: Fase 8.5 documental cerrada; D-12 RESUELTA PARA FASE 9, 0 bloqueantes documentales.** [Contrato y Readiness for Phase 9](docs/DECISIONS.md#readiness-for-phase-9). Cuatro acciones críticas, SHA-256/JCS, Sepolia/11155111, privacidad, recuperación, verificación y RBAC congelados. LIBERADA/CU23 excluida. La excepción ON UPDATE RESTRICT se limita a fk_registro_actor y fue autorizada expresamente. **Fase 9 no iniciada; requiere nueva instrucción.**
+**Estado: Fase 9 implementada; RF19/CU24 y RF20/CU25.** Cuatro operaciones críticas, JCS/SHA-256, evidencia local, Registry, driver Sepolia, reconciliación y administración. [Informe, verificaciones y límites](docs/BLOCKCHAIN_IMPLEMENTATION.md): integración offline completa; Sepolia real pendiente de testETH. Auditorías productivas sin vulnerabilidades; excepción temporal autorizada para cinco entradas altas de Zod exclusivamente dev de Hardhat. CU30 general y Fase 10 no iniciados.
 
-El software permanece en Fase 8: políticas de liberación, CU23, evidencia QR/IoT y scheduler. [Informe funcional de Fase 8](docs/RELEASE_POLICY_IMPLEMENTATION.md). No se crearon migraciones, contrato, wallet, driver, permisos o configuración Blockchain en este cierre. Notificaciones y CU30 general siguen pendientes; la aceptación física QR conserva el límite de su propio informe.
+La implementación conserva políticas de liberación/CU23, evidencia QR/IoT y scheduler de [Fase 8](docs/RELEASE_POLICY_IMPLEMENTATION.md), e incorpora ahora las dos tablas, contrato, wallet dedicada, drivers, permisos y configuración de Fase 9. Notificaciones y CU30 general siguen pendientes; la aceptación física QR conserva el límite de su propio informe.
 
 Fase 7.5 cerró D-08 con cero bloqueantes documentales; la instrucción oficial posterior autorizó la implementación actual. [Contrato congelado](docs/DECISIONS.md#readiness-for-phase-8) y [mapa de los 36 criterios ejecutados](docs/RELEASE_POLICY_IMPLEMENTATION.md#verificación-y-trazabilidad-de-aceptación).
 
@@ -77,7 +77,7 @@ ESPACIO-U/
 ├── resources/
 │   ├── css/app.css
 │   ├── js/app.js
-│   ├── js/Pages/{Auth,Users,Roles,Spaces,Reservations,Equipment,Loans,Incidents,Qr,Iot,Release}/
+│   ├── js/Pages/{Auth,Users,Roles,Spaces,Reservations,Equipment,Loans,Incidents,Qr,Iot,Release,Traceability}/
 │   └── views/app.blade.php
 ├── routes/              # Seguridad, espacios, reservas, equipamiento, préstamos, incidencias, QR, IoT, liberación y /up
 ├── scripts/             # Entorno de terminal, MySQL local y scheduler
@@ -89,7 +89,7 @@ ESPACIO-U/
 └── vite.config.js
 ```
 
-`.tools/`, `.local/`, `.env`, `vendor/`, `node_modules/`, logs y compilados permanecen locales e ignorados. `.env.example` contiene secretos vacíos. MySQL de desarrollo usa `espacio_u` en `127.0.0.1:3308`; 28 tablas académicas están materializadas (25 previas y tres de liberación); las otras tres siguen pendientes. Las siete excepciones QR ON UPDATE RESTRICT fueron autorizadas y están documentadas; CHECK y demás SQL permanecen preservados. `espacio_u_testing` tiene credenciales exclusivas en `.env.testing` local.
+`.tools/`, `.local/`, `.env`, `vendor/`, `node_modules/`, logs y compilados permanecen locales e ignorados. `.env.example` contiene secretos vacíos. MySQL de desarrollo usa `espacio_u` en `127.0.0.1:3308`; 30 tablas académicas están materializadas (28 previas y dos de trazabilidad); notificaciones sigue pendiente. Las siete excepciones QR ON UPDATE RESTRICT fueron autorizadas y están documentadas; CHECK y demás SQL permanecen preservados. `espacio_u_testing` tiene credenciales exclusivas en `.env.testing` local.
 
 ## Continuidad
 
@@ -131,4 +131,23 @@ php artisan reservas:evaluar-liberacion
 
 El scheduler ejecuta CU23 cada minuto mientras su proceso permanece activo; reiniciarlo después de apagar el equipo. `-Action stop` detiene solo ese proceso. Frecuencia configurable mediante `RELEASE_SCHEDULE` y lote mediante `RELEASE_BATCH_SIZE`; ninguna equivale a tolerancia. No requiere login ni usuario Sistema. Administrador/Encargado con permisos gestionan versiones y asignaciones; Docente/Estudiante consultan sus evaluaciones. Las reglas de una versión no se editan. [Operación y límites](docs/RELEASE_POLICY_IMPLEMENTATION.md#comando-y-scheduler).
 
-Siguiente fase: cerrar D-12 mediante nueva instrucción antes de implementar Fase 9. No hay Blockchain, notificaciones funcionales, CU30 ni finalización automática por tiempo.
+D-12 fue cerrado en Fase 8.5 e implementado en Fase 9. Siguiente alcance recomendado, sujeto a nueva instrucción: cerrar el contrato de notificaciones RF21/CU26 antes de Fase 10. No hay notificaciones funcionales, CU30 general ni finalización automática por tiempo.
+
+## Trazabilidad Blockchain
+
+```powershell
+. .\scripts\dev-environment.ps1
+npm ci --prefix blockchain --ignore-scripts
+npm run compile --prefix blockchain
+npm run export:abi --prefix blockchain
+npm run test:runtime --prefix blockchain
+npm test --prefix blockchain
+npm run test:integration --prefix blockchain
+php artisan trazabilidad:reconciliar
+```
+
+Ejecutar la integración local y `php artisan test` secuencialmente: ambas usan exclusivamente MySQL `espacio_u_testing`. Las migraciones de desarrollo son incrementales (`php artisan migrate` y `php artisan db:seed --class=SecuritySeeder`); nunca recrear `espacio_u`. El scheduler Laravel existente ejecuta también reconciliación cada minuto. Administrador autorizado accede a «Trazabilidad» para consultar, verificar y reintentar evidencia pendiente.
+
+Configurar únicamente en `.env` local: `BLOCKCHAIN_ENABLED`, `BLOCKCHAIN_NETWORK`, `BLOCKCHAIN_CHAIN_ID`, `BLOCKCHAIN_RPC_URL`, `BLOCKCHAIN_PRIVATE_KEY`, `BLOCKCHAIN_CONTRACT_ADDRESS`, `BLOCKCHAIN_CONFIRMATIONS`, `BLOCKCHAIN_DEPLOYMENT_BLOCK`, `BLOCKCHAIN_NODE_BINARY`. `.env.example` incluye solo defaults seguros/placeholders. Con integración deshabilitada, las operaciones y evidencias locales funcionan sin red. Sepolia exige wallet dedicada y testETH: [procedimiento, scripts, privacidad y estado real](docs/BLOCKCHAIN_IMPLEMENTATION.md#configuración-y-operación-reproducible). Nunca usar fondos o wallet personal.
+
+Producción del módulo: `npm ci --prefix blockchain --omit=dev --ignore-scripts`, Node compatible y ABI generado previamente; no instalar Hardhat/Zod en el runtime web. Auditar por separado raíz, módulo completo y módulo `--omit=dev`. La excepción temporal de Zod está delimitada en el informe y debe retirarse al existir una actualización compatible.

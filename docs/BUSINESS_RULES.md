@@ -1,6 +1,6 @@
 # Reglas de negocio y controles verificables
 
-**Estado vigente — Fase 8.5 documental cerrada (2026-10-25).** D-12 RESUELTA PARA FASE 9; [Readiness for Phase 9](DECISIONS.md#readiness-for-phase-9), **0 bloqueantes documentales**. La implementación sigue en Fase 8; Fase 9 no iniciada. El contrato nuevo se distingue de las fotografías históricas que se conservan debajo.
+**Estado vigente — Fase 9 implementada (2026-10-25/26).** RF19/CU24 y RF20/CU25, cuatro actividades críticas, dos tablas y tres permisos implementados conforme a D-12. [Implementación, pruebas offline, excepción temporal dev de Zod y Sepolia pendiente de testETH](BLOCKCHAIN_IMPLEMENTATION.md). CU30 general y Fase 10 permanecen pendientes. Las secciones de cierres anteriores conservan su contexto histórico.
 
 **Estado al cierre funcional de Fase 8 (2026-10-24).** BR-14 y T-L01–T-L36 cuentan con implementación/verificación en Fase 8. Se conserva literalmente el contrato D-08 y su matriz. El encabezado «pruebas futuras» identifica el cierre histórico 7.5; el informe nuevo documenta la ejecución posterior. [Informe de implementación, verificaciones y límites](RELEASE_POLICY_IMPLEMENTATION.md). Las declaraciones de fases anteriores que siguen a continuación se conservan como historia de esos cierres.
 
@@ -321,7 +321,7 @@ Estos **36 criterios son especificaciones de pruebas futuras**, no tests ejecuta
 
 ## Aceptación futura Blockchain — Fase 9
 
-Contrato normativo [D-12](DECISIONS.md#contrato-blockchain--cierre-d-12-de-fase-85); **T-B01–T-B40 pendientes de implementar/ejecutar en Fase 9**. No son resultados de Fase 8.5. Cubren RF19/RF20, CU24/CU25, R-PR-03/04 y R-DISP-06. La suite normal será offline, con datos sintéticos y MySQL separado; pruebas live en un grupo independiente. Los tests de concurrencia deben usar procesos/conexiones distintos y barreras controladas, no solamente invocar dos veces en serie.
+Contrato normativo [D-12](DECISIONS.md#contrato-blockchain--cierre-d-12-de-fase-85). Los criterios siguientes se definieron en Fase 8.5 y se implementan en Fase 9: [mapa de pruebas T-B01–T-B39; T-B40 Sepolia pendiente de testETH](BLOCKCHAIN_IMPLEMENTATION.md#trazabilidad-de-aceptación-t-b01t-b40). Cubren RF19/RF20, CU24/CU25, R-PR-03/04 y R-DISP-06. Suite normal offline, datos sintéticos y MySQL separado; pruebas live independientes. Concurrencia verificada con procesos/conexiones distintos y barreras controladas.
 
 | Criterio | Área | Comprobación exigida |
 | --- | --- | --- |

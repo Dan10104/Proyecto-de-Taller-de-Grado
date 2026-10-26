@@ -1,6 +1,6 @@
 # Política de seguridad
 
-**Estado vigente — Fase 8.5 documental cerrada (2026-10-25).** D-12 RESUELTA PARA FASE 9; [Readiness for Phase 9](DECISIONS.md#readiness-for-phase-9), **0 bloqueantes documentales**. La implementación sigue en Fase 8; Fase 9 no iniciada. El contrato nuevo se distingue de las fotografías históricas que se conservan debajo.
+**Estado vigente — Fase 9 implementada (2026-10-25/26).** RF19/CU24 y RF20/CU25, cuatro actividades críticas, dos tablas y tres permisos implementados conforme a D-12. [Implementación, pruebas offline, excepción temporal dev de Zod y Sepolia pendiente de testETH](BLOCKCHAIN_IMPLEMENTATION.md). CU30 general y Fase 10 permanecen pendientes. Las secciones de cierres anteriores conservan su contexto histórico.
 
 **Estado al cierre funcional de Fase 8 (2026-10-24).** Se añaden exactamente cuatro permisos liberacion.*, sin bypass ni usuario Sistema. Autorización humana coordina/revalida RBAC; CU23 interno no toma ese lock. Scope propio obligatorio en servidor y DTO sin actores ni identificadores IoT. QR/HMAC/tokens/credenciales no aparecen en motivos, logs, respuestas ni documentación pública. [Informe de implementación, verificaciones y límites](RELEASE_POLICY_IMPLEMENTATION.md). Las declaraciones de fases anteriores que siguen a continuación se conservan como historia de esos cierres.
 
@@ -155,3 +155,9 @@ Tres permisos exactos: trazabilidad.evidencias.ver, trazabilidad.evidencias.veri
 Actividad obligatoria en la transacción del negocio; fallo local revierte esa transacción. RPC después del commit sin locks de negocio; fallo externo no la revierte. Evidencia/historia inmutables: no reemplazar hash para ocultar alteración. Reintentos idempotentes, consulta antes del envío, exclusión por wallet y validación de pruebas externas. PENDIENTE no equivale a fracaso definitivo; REGISTRADA no retrocede por RPC caído. UI autorizada puede mostrar hash/referencia y metadatos, nunca canónico completo o secretos. CU30 sigue diferido; no se registra una nueva acción crítica por CU25.
 
 Aceptación futura T-B01–T-B40: suite normal offline sin claves activas; integración live separada con fondos de prueba. Las huellas de Word/PDF y el escaneo de secretos/índice se verifican en este cierre documental; ello no acredita seguridad de un contrato aún no escrito.
+
+## Controles aplicados a Blockchain — Fase 9
+
+Solo Administrador con permisos efectivos trazabilidad.evidencias.ver, trazabilidad.evidencias.verificar y trazabilidad.reintentar. Acciones POST requieren ver, sesión y CSRF; revalidación después de RPC. Llave dedicada únicamente en .env ignorado, sin argv/stdin/logs/UI; environment de procesos aislado. Red rígida Sepolia/11155111, chain real, bytecode y owner comprobados; nunca Mainnet. Datos externos limitados a bytes32 y metadatos Ethereum. No procesamiento de datos arbitrarios externos por Hardhat/Zod.
+
+Excepción temporal expresamente autorizada: cinco entradas altas del advisory Zod GHSA-mrhx-c7xc-m3w5 / CVE-2023-54404, solo toolchain de desarrollo blockchain/. Producción debe auditar en cero e instalar --omit=dev. No ampara nuevas vulnerabilidades críticas, RCE, robo de credenciales, supply-chain compromise ni dependencias productivas. [Versiones, controles, deuda y última revisión](BLOCKCHAIN_IMPLEMENTATION.md#excepción-temporal-de-desarrollo-autorizada).

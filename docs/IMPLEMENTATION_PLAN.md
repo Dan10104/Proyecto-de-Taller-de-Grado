@@ -1,6 +1,6 @@
 # Plan de implementación web
 
-**Estado vigente — Fase 8.5 documental cerrada (2026-10-25).** D-12 RESUELTA PARA FASE 9; [Readiness for Phase 9](DECISIONS.md#readiness-for-phase-9), **0 bloqueantes documentales**. La implementación sigue en Fase 8; Fase 9 no iniciada. El contrato nuevo se distingue de las fotografías históricas que se conservan debajo.
+**Estado vigente — Fase 9 implementada (2026-10-25/26).** RF19/CU24 y RF20/CU25, cuatro actividades críticas, dos tablas y tres permisos implementados conforme a D-12. [Implementación, pruebas offline, excepción temporal dev de Zod y Sepolia pendiente de testETH](BLOCKCHAIN_IMPLEMENTATION.md). CU30 general y Fase 10 permanecen pendientes. Las secciones de cierres anteriores conservan su contexto histórico.
 
 **Estado al cierre funcional de Fase 8 (2026-10-24).** Fase 8 implementa RF18/CU23. Fases 9–14 no iniciadas. Siguiente paso: instrucción explícita para cerrar D-12 (operaciones críticas, canonicalización, privacidad, proveedor y recuperación) antes de programar Fase 9. [Informe de implementación, verificaciones y límites](RELEASE_POLICY_IMPLEMENTATION.md). Las declaraciones de fases anteriores que siguen a continuación se conservan como historia de esos cierres.
 
@@ -339,3 +339,9 @@ La nueva instrucción autorizó CU21/CU22 y el complemento IoT de CU06. Dos migr
 La nueva instrucción cerró D-08, sin implementar CU23. [Readiness for Phase 8](DECISIONS.md#readiness-for-phase-8): **0 bloqueantes documentales**. Plan futuro: tres migraciones exactas de evaluación, gestión de versiones/asignación y cuatro permisos, consulta administrativa/propia, servicio transaccional y scheduler interno por lotes. La matriz, ventanas, veto, idempotencia y protocolo NOWAIT están congelados; T-L01–T-L36 especifican aceptación pendiente con regresión de Fase 7.
 
 No se adelantó ningún archivo funcional, interfaz, configuración, permiso DB ni cambio de datos. Fase 8 puede comenzar con otra instrucción expresa. No incluir FINALIZADA natural, liberación manual, notificaciones, Blockchain ni CU30. Esta conclusión sustituye los pendientes D-08 del cierre histórico de Fase 7, sin reescribir su evidencia.
+
+## Entrega de Fase 9 y continuación
+
+RF19/CU24 y RF20/CU25 implementados conforme a D-12, con pruebas Laravel, RFC8785, contrato e integración local separadas. [Resultados y pendientes externos](BLOCKCHAIN_IMPLEMENTATION.md). Sepolia real requiere testETH para wallet dedicada; no se acredita deployment inexistente. Excepciones autorizadas: serializer JCS Node y vulnerabilidades Zod exclusivamente dev, además de la FK ya aprobada. No se amplía a CU30 general.
+
+Recomendación siguiente: una instrucción de cierre documental para RF21/CU26 que concrete eventos y destinatarios de avisos internos, vínculo actividad/notificación, idempotencia después del commit, lectura/acceso propio, recuperación ante fallo y retención. No introducir email/SMS/push sin autorización. No se inició Fase 10.
