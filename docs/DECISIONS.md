@@ -1,6 +1,8 @@
 # Registro de decisiones y auditoría documental
 
-**Estado vigente — Fase 12 implementada y validada offline (2026-10-26).** RF24/CU29: [implementación del asistente](CHATBOT_IMPLEMENTATION.md), conforme a CH1–CH12. Orientación por permisos, OpenAI Responses y contexto mínimo sin datos operativos ni historial persistido. CU30 **NO IMPLEMENTADO**; aplicación móvil diferida; ninguna fase posterior iniciada. Los cierres siguientes conservan su contexto histórico.
+**Estado vigente — Fase 12.5 documental cerrada (2026-10-26).** [Activity Audit Contract / Readiness for CU30](DECISIONS.md#activity-audit-contract--readiness-for-cu30), **0 bloqueantes documentales**. RF25 con productores parciales; CU30 **NO IMPLEMENTADO**. Implementación solo con nueva instrucción. Sin cambios de código, datos, permisos, migraciones o dependencias; OpenAI/Sepolia pendientes independientes.
+
+**Base funcional conservada — Fase 12 implementada y validada offline (2026-10-26).** RF24/CU29: [implementación del asistente](CHATBOT_IMPLEMENTATION.md), conforme a CH1–CH12. Orientación por permisos, OpenAI Responses y contexto mínimo sin datos operativos ni historial persistido. CU30 **NO IMPLEMENTADO**; aplicación móvil diferida; ninguna fase posterior iniciada. Los cierres siguientes conservan su contexto histórico.
 
 **Estado histórico — Fase 11.5 documental cerrada (2026-10-26).** RF24/CU29: [Chatbot Assistance Contract / Readiness for Phase 12](#chatbot-assistance-contract--readiness-for-phase-12), **0 bloqueantes documentales**. Fase 12 NO iniciada; CU30 NO IMPLEMENTADO. No cambios de código, dependencias, configuración o datos.
 
@@ -2338,3 +2340,260 @@ La instrucción de Fase 12 autoriza ejecutar CH1–CH12 cerrado en Fase 11.5, si
 32 fragmentos/16 temas, hasta cuatro textos/800 caracteres cada uno; permisos efectivos y reautorización; ningún acceso a filas operativas ni operación por IA. Una clave desconocida invalida salida según T-CB17; una conocida no autorizada elimina enlace y sustituye texto. Entrada 2.000 puntos de código con cuerpo auxiliar max_input_chars×12+1.024 bytes; UI veinte intercambios efímeros y abort de transporte de 20 s, manteniendo presupuesto backend conjunto de 15 s. Sin cambio de decisiones funcionales, nuevas tablas ni historial.
 
 Verificación offline y evidencia final en el informe. Smoke real OpenAI pendiente por ausencia de credencial/cuota; ninguna inferencia real acreditada. Sepolia pendiente independiente. CU30 NO IMPLEMENTADO, móvil diferida y ninguna fase posterior iniciada.
+
+## Activity Audit Contract / Readiness for CU30
+
+**Fase 12.5 exclusivamente documental, 2026-10-26. Contrato cerrado; bloqueantes documentales para implementar CU30 = 0. CU30 NO IMPLEMENTADO.** Requiere nueva instrucción para programarlo. No se inventa D nuevo: concreta RF25/CU30 y BR-21, conserva D-04/D-07/D-12/D-16/D-17 y contratos N/DR/CH. Base main/origin/main `985df46`, limpia antes de crear `docs/phase-12.5-activity-audit-decisions`.
+
+### AC1. Fuentes y alcance
+
+Fuentes contrastadas: Word final, RF25 tabla 34 p.143 (PDF 144), CU30 tabla 67 p.217 (PDF 218), SQL registros_actividad pp.295–297 (PDF 296–298), tablas 96/127. Huellas originales iguales a las anteriores; sin modificaciones ni copias publicadas. RF25 configura acciones auditables y datos mínimos; CU30 tiene iniciador **Administrador**. La mención general de otros usuarios en RF25 no amplía CU30.
+
+Revisados [constitución](PROJECT_CONSTITUTION.md), [reglas](BUSINESS_RULES.md), [modelo físico](DATA_MODEL.md#registros_actividad), [dominio](DOMAIN_MODEL.md), [matriz CU](USE_CASE_MATRIX.md#cu30--consultar-bitácora-de-actividad), [trazabilidad](REQUIREMENTS_TRACEABILITY.md), [arquitectura](ARCHITECTURE.md), [seguridad](SECURITY_POLICY.md), [plan](IMPLEMENTATION_PLAN.md) e informes de Seguridad, Espacios, Reservas, Equipamiento/Préstamos, QR, IoT, Liberación, Blockchain, Notificaciones, Dashboard/Reporting y Chatbot. Inventario contrastado con servicios, rutas, modelo y migración actuales, sin cambios de negocio.
+
+Bitácora: historia mínima de acciones relevantes realizadas o intentadas; no log técnico ni snapshot de objetos. Implementación futura: escritores auditables y consulta individual CU30. No nuevas operaciones de negocio, tablas, exportaciones propias o acceso del chatbot. Smoke OpenAI pendiente de clave local y Sepolia pendiente de testETH: independientes, no bloqueantes; no se modifica Fase 12 ni se realizan esas pruebas en este cierre.
+
+### AC2. Esquema, responsable e historia
+
+Reutilizar exclusivamente registros_actividad: **id, actor_id, usuario_afectado_id, recurso_id, reserva_id, prestamo_id, incidencia_id, accion, fecha_hora, resultado, descripcion, proceso_responsable, critica**. Trece columnas, seis FK, índices existentes. Sin audit_logs/activity_logs/bitacora, entity_type, JSON before/after, idempotency_key o tabla de catálogo. accion continúa VARCHAR(160); whitelist de aplicación, no nuevo enum SQL.
+
+Resultados exactos: **EXITO, RECHAZO, ERROR**. Mantener `CHECK (actor_id IS NOT NULL OR proceso_responsable IS NOT NULL)`: al menos uno, **no XOR**. Productores definidos: actor humano real y proceso NULL, o actor NULL y proceso conocido. Historia con ambos responsables se muestra de forma segura sin cambiarla; el CHECK la admite. No usuario Sistema. Procesos actuales: **scheduler:vencimientos** y **scheduler:liberacion**, ningún identificador automático inventado.
+
+FK con ON DELETE RESTRICT; fk_registro_actor conserva ON UPDATE RESTRICT autorizado y las otras cinco ON UPDATE CASCADE. Actor posteriormente INACTIVO permanece consultable, sin filtrar historia por su estado actual. RegistroActividad ya bloquea update/delete y mass assignment; eso no acredita inmunidad frente a administrador SQL ni protección criptográfica de toda fila. Sin triggers/migraciones nuevos.
+
+fecha_hora procede del servidor en America/La_Paz, segundos; conservar fechas de hitos existentes. No reescribir, renombrar o completar filas por backfill. No edición, borrado UI, hard delete ni purga automática. Retención académica: conservar; respaldo/recuperación conforme SECURITY_POLICY, sin inventar plazo legal.
+
+### AC3. Dieciocho acciones existentes
+
+Ya se producen con EXITO. No insertar evento equivalente adicional. Solo cuatro críticas D-12; primeras diecisiete conservan avisos de NotificationRuleRegistry/N3. NotificationActivityRecorder normaliza INCIDENCIA_REGISTRADA/CERRADA antes de guardar; no hay que cambiar esos identificadores.
+
+| Acción existente | Hito/productor actual | Responsable y contexto | Crítica |
+| --- | --- | --- | --- |
+| RESERVA_SOLICITADA | ReservationService → NotificationActivityRecorder | Solicitante; U/R/V | No |
+| RESERVA_APROBADA | ReservationService → CriticalActivityRecorder | Resolutor; U/R/V | Sí |
+| RESERVA_RECHAZADA | ReservationService → NotificationActivityRecorder | Resolutor; U/R/V | No |
+| RESERVA_CANCELADA | ReservationService → CriticalActivityRecorder | Cancelador; U/R/V | Sí |
+| PRESTAMO_SOLICITADO | LoanService → NotificationActivityRecorder | Solicitante; U/R/P | No |
+| PRESTAMO_APROBADO | LoanService → NotificationActivityRecorder | Resolutor; U/R/P | No |
+| PRESTAMO_RECHAZADO | LoanService → NotificationActivityRecorder | Resolutor; U/R/P | No |
+| PRESTAMO_ENTREGADO | LoanService → CriticalActivityRecorder; también camino QR | Entregador; U/R/P | Sí |
+| DEVOLUCION_PENDIENTE_REVISION | LoanService → NotificationActivityRecorder | Receptor; U/R/P | No |
+| PRESTAMO_DEVUELTO | LoanService → CriticalActivityRecorder; también revisión/QR | Confirmador; U/R/P | Sí |
+| PRESTAMO_VENCIDO | OverdueLoanService → NotificationActivityRecorder | scheduler:vencimientos; U/R/P | No |
+| INCIDENCIA_REGISTRADA | IncidentMaintenanceService o devolución → NotificationActivityRecorder | Reportante; R/I y U/P solo si deriva de devolución | No |
+| INCIDENCIA_CERRADA | IncidentMaintenanceService → NotificationActivityRecorder | Cerrador; mismo contexto derivado | No |
+| MANTENIMIENTO_REGISTRADO | IncidentMaintenanceService → NotificationActivityRecorder | Reportante; R/I y U/P solo si deriva de devolución | No |
+| MANTENIMIENTO_CERRADO | IncidentMaintenanceService → NotificationActivityRecorder | Cerrador; mismo contexto derivado | No |
+| RESERVA_ALERTADA_LIBERACION | ReleaseEvaluationService → NotificationActivityRecorder | scheduler:liberacion; U/R/V; evaluación/política en descripción | No |
+| RESERVA_LIBERADA | ReleaseEvaluationService → NotificationActivityRecorder | scheduler:liberacion; U/R/V; evaluación/política en descripción | No |
+| REPORTE_EXPORTADO | ReportGenerationService → ReportAuditService | Generador; sin FK de contexto | No |
+
+U=usuario_afectado_id, R=recurso_id, V=reserva_id, P=prestamo_id, I=incidencia_id. U=solicitante en reserva/préstamo; no copiar arbitrariamente actor. FK omitidas NULL. Incidencia manual sin devolución no inventa afectado. Devolución con incidencia puede producir dos actividades de hitos distintos, no dos copias de uno.
+
+RESERVA_RECHAZADA/PRESTAMO_RECHAZADO + EXITO = decisión de rechazo ejecutada correctamente, no resultado RECHAZO. Vencido conserva ENTREGADO y ahora>fin_previsto, una detección por préstamo; ALERTAR no libera. REPORTE_EXPORTADO conserva éxito al tener archivo completo, autorizado y listo para descargar, no confirma recepción física. Falla de auditoría impide descargar; preview/fallo no producen EXITO; otra exportación exitosa puede producir su propia fila.
+
+### AC4. Treinta y ocho acciones adicionales previstas
+
+**Escrituras futuras, no implementadas ahora.** Todo EXITO obligatorio en la transacción, actor autenticado real, proceso NULL, critica=FALSE. FK no indicadas NULL; referencias sin FK mediante ID numérico de servidor y plantilla segura (AC7). No inventar FK a rol, catálogo, sensor, QR, bloqueo o política.
+
+| Acción nueva prevista | Operación existente / disparador efectivo | Contexto mínimo |
+| --- | --- | --- |
+| USUARIO_CREADO | AdministrationService.createUser confirma alta | U=nuevo usuario; sin valores personales |
+| USUARIO_EDITADO | updateUser cambia datos o contraseña administrativa | U=destinatario; nombres de campos y revocación de sesiones, nunca valores/hashes |
+| USUARIO_DESHABILITADO | disableUser, ACTIVO→INACTIVO | U=destinatario; estados |
+| ROL_CREADO | saveRole sin target, rol institucional faltante | Rol #id |
+| ROL_EDITADO | saveRole cambia descripción, no identidad institucional | Rol #id; campo, no texto libre |
+| PERMISOS_ROL_ACTUALIZADOS | setPermissions cambia conjunto | Rol #id y cantidades añadidas/retiradas |
+| ROL_ASIGNADO | assign/assignLocked crea asignación activa | U=destinatario; rol #id y asignación #id |
+| ROL_RETIRADO | withdraw retira asignaciones activas de un par | U=destinatario; rol #id y cantidad |
+| ESPACIO_CREADO | SpaceManagementService.save sin target | R=espacio; estado inicial |
+| ESPACIO_EDITADO | save cambia datos/características sin cambiar estado | R=espacio; campos/cantidad de asociaciones |
+| ESPACIO_ESTADO_CAMBIADO | state o save cambia estado operativo | R=espacio; antes→después y campos adicionales |
+| BLOQUEO_ESPACIO_CREADO | block confirma bloqueo | R=espacio; bloqueo #id, inicio/fin, sin motivo |
+| BLOQUEO_ESPACIO_DESACTIVADO | deactivate, activo→false | R=espacio; bloqueo #id |
+| PISO_CREADO | SpaceCatalogController.save, pisos, alta | Piso #id |
+| PISO_EDITADO | Mismo flujo, edición efectiva | Piso #id; campos |
+| TIPO_ESPACIO_CREADO | Catálogo tipos, alta | Tipo de espacio #id |
+| TIPO_ESPACIO_EDITADO | Catálogo tipos, edición efectiva | Tipo de espacio #id; campos |
+| CARACTERISTICA_ESPACIO_CREADA | Catálogo características, alta | Característica #id |
+| CARACTERISTICA_ESPACIO_EDITADA | Catálogo características, edición efectiva | Característica #id; campos |
+| TIPO_EQUIPAMIENTO_CREADO | EquipmentService.saveType sin target | Tipo de equipamiento #id |
+| TIPO_EQUIPAMIENTO_EDITADO | saveType cambia datos | Tipo de equipamiento #id; campos |
+| EQUIPAMIENTO_CREADO | EquipmentService.save sin target | R=equipo; estado inicial |
+| EQUIPAMIENTO_EDITADO | save cambia datos, no estado | R=equipo; campos, sin serie/textos completos |
+| EQUIPAMIENTO_ESTADO_CAMBIADO | state/save, transición administrativa | R=equipo; estados; no repetir entregas/devoluciones/incidencias |
+| SENSOR_CREADO | IotManagementService.save sin target | R=espacio al crear; sensor #id, sin identificador/credencial |
+| SENSOR_EDITADO | save cambia tipo y conserva espacio | R=espacio; sensor #id, campo tipo sin valor libre |
+| SENSOR_REASIGNADO | save cambia espacio_actual_id | R=destino; sensor #id, espacios anterior→nuevo; campos adicionales |
+| SENSOR_HABILITADO | state, DESHABILITADO→HABILITADO | R=espacio actual; sensor #id |
+| SENSOR_DESHABILITADO | state, HABILITADO→DESHABILITADO | R=espacio actual; sensor #id |
+| SENSOR_CREDENCIAL_CONSULTADA | provision autorizado prepara respuesta | R=espacio actual; sensor #id; sin clave/HMAC/hash, no es rotación |
+| QR_GENERADO | QrManagementService.issue, objetivo sin historia QR | Contexto objetivo AC7; QR #id; sin token/hash/SVG |
+| QR_ROTADO | issue, objetivo con historia QR activa o inactiva | Mismo contexto; anterior #id→nuevo #id; incluye desactivaciones internas |
+| QR_DESACTIVADO | deactivate explícito, activo→false | Mismo contexto; QR #id; no repetir por rotación |
+| POLITICA_LIBERACION_CREADA | ReleasePolicyManagementService.create nueva versión | Política #id y versión técnica; no objeto completo |
+| POLITICA_LIBERACION_ACTIVADA | state, false→true | Política #id, estado |
+| POLITICA_LIBERACION_DESACTIVADA | state, true→false | Política #id, estado |
+| POLITICA_ASIGNADA_ESPACIO | assign, NULL→id o id→otro | R=espacio; política anterior o ninguna→nueva |
+| POLITICA_RETIRADA_ESPACIO | assign, id→NULL | R=espacio; política anterior→ninguna |
+
+Catálogos auxiliares, edición de tipo de sensor, consulta administrativa de credencial y retiro de política cubren operaciones reales de configuración; no crean capacidades de negocio nuevas. **USUARIO_REHABILITADO excluida del catálogo inicial:** no existen ruta, permiso o método de rehabilitación. No crear esa operación para auditarla. Tampoco CRUD de permisos ni eliminación de roles/usuarios inexistentes.
+
+Precedencia: creación emite CREADO con estado inicial, no EDITADO/ESTADO_CAMBIADO; edición con transición emite solo ESTADO_CAMBIADO e incluye nombres de otros campos; SENSOR_REASIGNADO prevalece sobre SENSOR_EDITADO; reemplazo de política una fila; QR_ROTADO engloba desactivaciones internas. Alta de usuario con roles: USUARIO_CREADO y una ROL_ASIGNADO por asignación real, hitos distintos atómicos. Guardado idéntico, retiro/desactivación repetidos y asociaciones sin cambio no generan nuevo EXITO. Cambios físicos automáticos por préstamo/incidencia pertenecen a su hito auditado, sin otro ESTADO_CAMBIADO.
+
+### AC5. Exclusiones y autenticación
+
+No actividad por lecturas IoT (eventos_ocupacion), validaciones QR (validaciones_qr), cada evaluación CU23 (evaluaciones_liberacion; solo ALERTAR/LIBERAR ya cubiertos), abrir/marcar notificaciones, visualizar dashboard, preview de reporte, consultar/listar/detallar CU30, leer catálogos o mensajes de chatbot. No CHATBOT_CONSULTADO ni contenido indirecto de chat; CU29 mantiene sus veinte rutas y cero acceso a auditoría concreta.
+
+Trazabilidad: no evento adicional por reconciliación, retry o verificación CU25 manual/automática. Sus estados en evidencias_trazabilidad y diagnóstico seguro cubren ese seguimiento; no hay necesidad acreditada de otra acción manual. Bitácora no añade notificaciones; solo conserva consumidores N3 existentes.
+
+**Excluir INICIO_SESION_EXITOSO, INICIO_SESION_RECHAZADO y CIERRE_SESION del catálogo inicial.** D-07 ya registra creación, expiración/revocación; credenciales inválidas pueden no identificar actor y generar volumen/abuso. RF25/CU30 no exige duplicar toda autenticación. Mantener seguridad existente, sin nuevo logger ahora, correo/IP/cookie/hash de sesión/contraseña en actividad ni identidad inferida del correo presentado. HTTP genéricos 401/403/404/419/422/429 y validaciones de formularios no son automáticamente actividad de negocio.
+
+### AC6. Resultados y matriz cerrada de fallos
+
+**EXITO:** hito efectivo AC3/AC4. **RECHAZO:** intento autorizado y tipado, objetivo existente resuelto, alcanza una guarda funcional siguiente sin cambiar negocio. **ERROR:** operación AC4 admitida/validada/autorizada y comenzada en su servicio, termina en rollback confirmado por fallo inesperado, incluido agotamiento de retries transaccionales. No convertir toda excepción en ERROR ni usar middleware genérico para auditar fallos HTTP.
+
+| Acciones con RECHAZO obligatorio futuro | Únicas guardas auditables de rechazo |
+| --- | --- |
+| USUARIO_DESHABILITADO, ROL_RETIRADO | Protección del último Administrador activo/capaz |
+| PERMISOS_ROL_ACTUALIZADOS | Protección de permisos de recuperación o selección ajena a elegibilidad detectada por servicio |
+| ESPACIO_ESTADO_CAMBIADO | Habilitar mientras persisten restricciones del recurso |
+| EQUIPAMIENTO_ESTADO_CAMBIADO | Asignar PRESTADO administrativamente o habilitar con custodia/revisión/incidencia pendiente |
+| POLITICA_ASIGNADA_ESPACIO, POLITICA_RETIRADA_ESPACIO, POLITICA_LIBERACION_ACTIVADA | Compromisos APROBADA vigentes/futuros o versión existente inactiva/inválida exigida por operación |
+| SENSOR_CREDENCIAL_CONSULTADA | Actor autorizado para gestionar, pero sensor existente DESHABILITADO |
+
+Son **nueve acciones**. Permisos revocados, IDs inexistentes, sintaxis inválida, nombres duplicados, aptitud no confirmada en formulario, estado ya aplicado o UI obsoleta no entran por sí solos. Las otras 29 AC4 registran EXITO/ERROR, no RECHAZO. Las 18 existentes AC3 conservan **solo EXITO como política de escritura**: no ampliar fallos de reservas, préstamos, incidencias, CU23 o exportaciones. CU30 admite los tres resultados en lectura sin fabricar filas retroactivas.
+
+RECHAZO/ERROR usan la misma accion intentada, resultado distinto y **critica=FALSE**; descripción «Operación rechazada»/«Operación no confirmada» con razón fija, no excepción. Actor real; FK solo de entidades preexistentes resueltas autorizadamente. Creación fallida no conserva ID provisional ni FK del objeto revertido. Alta compuesta fallida produce solo ERROR raíz, no uno por hijo. No afirmar que el cambio ocurrió.
+
+Registrar intento en **transacción nueva después de rollback confirmado**, fuera de locks y del callback reintentable. No es EXITO post-commit. Una petición produce como máximo un resultado terminal por operación lógica, no uno por retry interno. No recursar el recorder para registrar su propio fallo. Si BD impide esa escritura, negocio sigue sin confirmar y respuesta segura; diagnóstico técnico saneado si disponible, sin otra tabla/archivo con payload. No prometer fila durable durante caída total.
+
+COMMIT incierto por desconexión: no insertar ERROR ni repetir ciegamente. Comprobar hito por servicio autorizado o informar estado no confirmado para revisión; no afirmar rollback sin evidencia. Fallo afterCommit de avisos/evidencia/red no es ERROR del negocio confirmado.
+
+### AC7. Descripción y asociaciones
+
+Plantillas de servidor, texto humano plano, máximo previsto **500 caracteres Unicode en nuevas escrituras**. Campos/estados/números acotados antes de componer; listas grandes se resumen por cantidades. Nunca copiar y luego truncar secretos. Cambios personales solo nombres técnicos de campos; sin nombres/correos/CI, contraseña/hash ni before/after personal. No motivos, soluciones, nombres libres o excepción. Ejemplo: «Se cambió el estado del espacio de DISPONIBLE a EN_MANTENIMIENTO.»
+
+Antes→después solo estados, IDs técnicos, fechas de bloqueo y contadores de AC4. No JSON de objeto completo ni request. REPORTE_EXPORTADO conserva resumen tipado de filtros de Fase 11 (pequeño JSON interno permitido por DR10); no reescribirlo. CU23 conserva texto exacto N4 de evaluación/política para correlación RF23; otras existentes pueden mantener descripcion NULL.
+
+| Contexto | Asociación |
+| --- | --- |
+| Usuario afectado | U=destinatario de edición/deshabilitación/asignación/retiro o solicitante de reserva/préstamo; no todos los usuarios de un rol |
+| Espacio/equipo | R=ID compartido de RecursoInstitucional |
+| Reserva/préstamo/incidencia | V/P/I cuando acción corresponde al objeto; combinaciones AC3 válidas |
+| Sensor | R=espacio al evento; reasignación destino, origen en texto mínimo. No reconstruir historia desde sensor actual |
+| QR recurso | R=objetivo; U/V/P/I NULL |
+| QR reserva | V=objetivo, R=espacio, U=solicitante; P/I NULL |
+| QR préstamo | P=objetivo, R=equipo, U=solicitante; V/I NULL |
+| Rol/catálogos/política sin asignación | Sin FK de contexto; referencia técnica en plantilla; actor no se copia a U |
+| Exportación | Todas las FK de contexto NULL conforme DR10 |
+
+Resolver relaciones autorizadas en servicio; cliente no determina actor, resultado, critica, fecha, proceso o FK de actividad. No payload arbitrario de registro. Referencias de descripción son explicativas: **no parsearlas para autorizar, filtrar entity_type o fabricar vínculos**.
+
+### AC8. Permiso, RBAC y scope
+
+Permiso previsto exacto **actividad.ver**, todavía sin DB ni PermissionCatalog. Administrador Sí; Encargado No; Docente No; Estudiante No. Cuenta ACTIVO, sesión D-07 vigente, asignación Administrador vigente y capacidad efectiva del rol elegible D-04. Ni nombre de rol solo ni concesión errónea a Encargado autorizan. No añadir a RECOVERY: debe poder revocarse. Total pasará de 51 a 52 solo al implementar; seeder incremental no restaurará concesiones retiradas.
+
+Scope: Administrador autorizado consulta **registros institucionales de auditoría**, no solo propios; sin ownership personal ni nuevas asignaciones por piso. Permite proyección mínima de actividad, no información completa de módulos relacionados. Otros roles reciben 403 con URL directa, filtros o ID conocido. Autorizar antes de query, conteo, opciones y detalle; respuestas privadas/no-store. Cada petición revalida; enlaces mantienen Policies actuales.
+
+### AC9. Listado y filtros
+
+Lista futura: fecha/hora, acción (etiqueta/código), resultado textual, actor/proceso, referencias relacionadas, criticidad. Solo lectura, sin exportar, editar, borrar o ejecutar negocio. Default **últimos 30 días locales**, hoy incluido, rango visible y modificable. Orden fijo **fecha_hora DESC, id DESC**. **25 registros por página**, configuración servidor; no tamaño ilimitado cliente ni Model::all(). Página entera positiva, filtros conservados; vacío informativo, sin actividad nueva.
+
+| Filtro previsto | Semántica/validación |
+| --- | --- |
+| fecha_desde, fecha_hasta | Ambas Y-m-d o ninguna (default); desde<=hasta; [00:00 primer día, 00:00 siguiente al último), America/La_Paz |
+| actor_id | ID positivo exacto, incluye actor inactivo; opciones acotadas, sin correo/CI |
+| usuario_afectado_id | ID positivo exacto sobre U, independiente del actor |
+| accion | Una de las 56 claves AC3/AC4, sin prefijos que admitan claves futuras |
+| resultado | EXITO/RECHAZO/ERROR |
+| critica | Booleano 0/1, no equivalente a existencia/estado Blockchain |
+| tipo_entidad | Whitelist de FK indicada debajo |
+| reserva_id, prestamo_id, recurso_id, incidencia_id | IDs positivos exactos, nunca objetos/SQL |
+| responsable_tipo / proceso_responsable | Todos/humano/proceso; proceso exacto scheduler:vencimientos o scheduler:liberacion |
+
+responsable_tipo=humano exige actor_id no NULL; proceso exige proceso_responsable no NULL; son condiciones no exclusivas para historia con ambos. Las opciones aplican la misma minimización que AC10: sin usuarios.ver, solo IDs/etiquetas técnicas, también en búsquedas de selección. Filtros combinados por AND; actor y proceso pueden coexistir en historia con ambos responsables. No OR global que amplíe filas. Fechas locales, sin 23:59:59; rechazar extremos cuyo fin exclusivo desborde DATETIME. Sin límite académico arbitrario: otro límite técnico solo configurable y medido posteriormente. No búsqueda libre en descripcion ni SQL/tablas/columnas/select/joins/order del cliente. Parámetros desconocidos rechazados. IDs sintácticamente válidos sin coincidencia dan vacío sin revelar otros datos; opciones por permisos y detalle inexistente 404 seguro.
+
+Tipo inicial: **USUARIO** (U no NULL), **RECURSO** (R no NULL), **ESPACIO** (R con subtipo espacios_academicos), **EQUIPAMIENTO** (R con subtipo equipamientos_tecnologicos), **RESERVA** (V), **PRESTAMO** (P), **INCIDENCIA** (I), **SIN_REFERENCIA** (U/R/V/P/I NULL). Predicados/EXISTS; actor no cuenta como afectado. Un evento puede coincidir con varios tipos; mostrar referencias sin duplicar filas por joins. Roles/catálogos/políticas sin FK se consultan por accion; SIN_REFERENCIA significa sin FK de contexto, no sin entidad real. No derivar SENSOR/ROL/POLITICA del texto.
+
+Paginación sobre datos vivos: orden determinista por consulta; inserciones pueden desplazar páginas. No prometer snapshot estable entre peticiones ni persistirlo. Si mediciones justifican cursor, conservar fecha/id y documentar ajuste antes de implementarlo.
+
+### AC10. Detalle y enlaces seguros
+
+Detalle de **una** actividad: trece campos mediante DTO/proyección segura, descripción permitida y referencias mínimas; nunca serializar modelos/relaciones completos. Actor/afectado «Usuario #id» por defecto; nombres actuales solo con usuarios.ver, sin correo/CI/password_hash. Etiquetas actuales no son snapshot histórico. Actor inactivo conserva historia. Procesos conocidos con etiqueta fija; histórico desconocido «Proceso interno», sin texto arbitrario. Si ambos responsables existen, mostrar ambos; NULL como «—».
+
+Nuevas descripciones solo plantillas AC7. Historia fuera del catálogo/plantilla segura: conservar fila/IDs/fecha/resultado y **suprimir descripción dudosa**, diagnóstico sin copiarla; no confiar solo en regex para redactar secretos. Acción desconocida se representa «Acción histórica no catalogada», ID del registro, sin ejecutar texto ni ampliar selector automáticamente. Escapar salida; no v-html/Markdown/URL del texto. Proyección segura backend también en props Inertia. No alterar historia para sanear la pantalla.
+
+Excluir passwords/hashes, API keys, tokens/hashes QR, HMAC, claves privadas, chatbot, cookies, headers, cuerpos HTTP, SQL, stack traces, motivos/soluciones completos y canónicos. No se agregan copias de esos datos mediante relaciones.
+
+| Enlace opcional | Control adicional vigente |
+| --- | --- |
+| Usuario | usuarios.ver y Policy/ámbito |
+| Espacio | espacios.ver y autorización de objeto |
+| Equipamiento | equipamientos.ver y autorización de objeto |
+| Reserva | Policy de vista: scope propio/administrativo realmente permitido |
+| Préstamo | Policy de vista: scope propio/administrativo realmente permitido |
+| Incidencia | incidencias.ver y autorización de objeto |
+| Ver evidencia | critica=TRUE, evidencia asociada y trazabilidad.evidencias.ver/Policy |
+
+Sin permiso, referencia técnica textual sin enlace/detalles. Rutas nombradas whitelist y objetos comprobados; módulo destino vuelve a autorizar. «Ver evidencia» lleva a CU25; listar CU30 no verifica Blockchain, reintenta RPC ni cambia ultima_verificacion. Evidencia ausente: «Sin evidencia asociada», sin inferir fraude. No links a rol/sensor/QR/política obtenidos parseando descripcion.
+
+### AC11. Escritura central y atomicidad
+
+Diseño futuro **ActivityRecorder** con catálogo/plantillas y contexto tipado; lectura separada **ActivityQueryService** o equivalente, controlador delgado y Form Request. Vue presenta. Nombres adaptables; ninguna clase/ruta creada ahora. Recorder recibe contexto validado, no request completo ni decide transiciones. Escribir depende de los permisos vigentes de la operación de dominio, no de actividad.ver: un Docente puede originar RESERVA_SOLICITADA sin poder consultar CU30. No conceder actividad.ver a productores por necesitar registrar su evento. Evitar observers genéricos de save sin actor o que dupliquen efectos internos.
+
+Adaptar CriticalActivityRecorder, NotificationActivityRecorder y ReportAuditService como delegadores/puntos de llamada conservando firmas, acciones, FK, fechas, NULL, criticidad y semántica. No fila central adicional a antigua. Servicios compartidos cubren HTTP/QR/scheduler, no hooks duplicados por controlador. Callbacks afterCommit una sola vez y exclusivamente sus whitelists.
+
+EXITO obligatorio **en la misma transacción de negocio antes del commit**; falla de inserción revierte todo, incluidos hijos/asignaciones/incidencias. Automatismos con su evento principal. REPORTE_EXPORTADO conserva registro transaccional previo a servir archivo y cleanup si falla. SENSOR_CREDENCIAL_CONSULTADA se inserta en transacción autorizada antes de entregar secreto por su canal existente tras commit; no persistirlo, fallo de auditoría impide revelación. RECHAZO/ERROR usan transacción de intento AC6.
+
+Avisos y Blockchain siguen consumidores independientes posteriores; fallo externo no revierte ni etiqueta ERROR negocio confirmado. Cuatro EXITO críticos D-12 generan evidencia y diecisiete EXITO N3 avisos. Las 38 acciones nuevas, intentos fallidos y REPORTE_EXPORTADO no disparan ninguno. No outbox nueva, dispatcher genérico de avisos o estado mutable en actividad.
+
+### AC12. Concurrencia e idempotencia por operación
+
+Conservar órdenes de locks RBAC/recurso/operación actuales, lecturas tras espera y reautorización. Recorder no toma nuevos locks de negocio en orden inverso; inserta al final de la transición local. Retry de transacción no conserva filas del intento revertido. No RPC bajo locks ni UNIQUE global por acción/actor/fecha/recurso: pueden repetirse legítimamente.
+
+| Operación | Identidad lógica y control |
+| --- | --- |
+| Reserva/préstamo/entrega/devolución/incidencia | Transición real bajo locks existentes; recepción/revisión distintos. Ganador una actividad, repetición sin transición ninguna |
+| Vencimiento | Una por préstamo bajo su lock y comprobación de detección existente |
+| CU23 | Nueva evaluación terminal según reserva/política D-08; reusar evaluación no reaudita |
+| Usuarios/roles/permisos | Comparar antes/después y conjuntos bajo locks; retiro agrupa asignaciones activas del par. Alta con roles atómica; guardado idéntico no audita |
+| Espacios/equipamiento/catálogos/sensores/políticas | Comparar valores normalizados bajo lock, precedencia AC4; UNIQUE actuales resuelven altas duplicadas por clave natural |
+| Bloqueos | Cada alta legítima tiene su bloqueo; desactivar activo→false una vez. Altas distintas solapadas son operaciones permitidas, no colapsarlas |
+| QR | Una actividad por emisión confirmada/nuevo QR; rotaciones concurrentes serializadas pueden ser dos emisiones legítimas, una fila por cada una y último activo. Mantener D-09; retry interno por colisión revierte y no multiplica filas. Desactivación repetida no audita |
+| Credencial sensor | Una por invocación explícita autorizada que prepara respuesta; otra request es otra consulta aunque derive igual clave |
+| Exportación | Una por archivo preparado/autorizado; otra request exitosa es otra exportación DR10 |
+| Rechazo/error | Una fila terminal tras retries internos y rollback confirmado; requests distintas de intento son eventos distintos |
+
+Una actividad lógica no significa una sola por request compuesta ni exactamente una entrega HTTP distribuida. No inventar token persistido/deduplicación global para solicitudes no identificables; no cambiar operaciones previas para satisfacer auditoría. Commit incierto se trata conforme AC6, sin reintento ciego o EXITO/ERROR contradictorios. Probar concurrencia con procesos MySQL reales, no solo mocks.
+
+### AC13. Fronteras RF23, Blockchain y notificaciones
+
+**RF23/CU28:** resumen agregado/exportable, mismas 18 acciones y scopes DR7; nuevas filas administrativas no amplían whitelist ni acceso del Encargado. **CU30:** consulta institucional individual para Administrador, listado/filtros/detalle; no PDF/XLSX propios. ActivityReportQuery no es la query CU30: agrupa y tiene scopes distintos. actividad.ver no concede reportes.ver/exportar ni viceversa.
+
+Consultar CU30 no crea actividad, aviso o evidencia. Agregar fila no implica Blockchain/notificación. D-12 solo RESERVA_APROBADA, RESERVA_CANCELADA, PRESTAMO_ENTREGADO y PRESTAMO_DEVUELTO EXITO/critica=true; sin alterar JCS/builders/hash/versión/contrato. Verificación/retry CU25 sin otra operación auditada. CU29 conserva cero acceso operacional, sin nueva route_key de bitácora.
+
+### AC14. Rendimiento y aceptación futura
+
+Queries parametrizadas, selects explícitos, límites/paginación SQL, joins de cardinalidad única o EXISTS y carga de referencias acotada: sin N+1/duplicados ni historial cargado a PHP para contar. Reusar idx_registro_fecha, idx_registro_actor, idx_registro_recurso, idx_registro_reserva, idx_registro_prestamo, idx_registro_critica y soporte físico FK existente; comprobar SHOW INDEX antes de atribuir índices adicionales a usuario_afectado/incidencia. Sin caché prematura.
+
+Medir futuro listado, conteo y detalle con dataset sintético local: filas, consultas, tiempo/memoria; EXPLAIN para fecha+actor, fecha+acción+resultado, usuario afectado, incidencia y criticidad. Filesort aislado o tabla pequeña no justifican migration; documentar cuello de botella y propuesta antes de crear índice. **Cero índices/migraciones en Fase 12.5.**
+
+Criterios [T-A01–T-A40](BUSINESS_RULES.md#aceptación-prevista-para-rf25cu30--fase-125): cada una de las 56 acciones, fallos selectivos, contexto/actor/crítica, rollback/no-op/concurrencia, seguridad, filtros/páginas, privacidad y regresión D-12/N/DR/CH. **Pruebas futuras, no ejecutadas aquí.** MySQL espacio_u_testing, sin SQLite ni pruebas con escritura en desarrollo. Preservar baseline Fase 12: 877 tests/10.217 assertions; cierre documental no vuelve a certificar runtime/auditorías ni smoke externo.
+
+### AC15. Readiness y verificación documental
+
+| Frente | Decisión cerrada |
+| --- | --- |
+| Productores | 18 existentes + 38 nuevas escrituras de operaciones reales; rehabilitación inexistente excluida |
+| Fallos | 9 acciones con guardas RECHAZO; ERROR de 38 nuevas tras rollback confirmado; resto AC6 |
+| Modelo | 13 columnas/6 FK, CHECK OR, actor/procesos exactos, contexto/plantillas mínimos |
+| Consulta | actividad.ver solo Administrador, alcance institucional mínimo, filtros/detalle, 25 por página y orden fecha/id |
+| Historia | Sin edición/borrado/purge, secretos o reescritura; enlaces reautorizados |
+| Integraciones | RF23 separado, cuatro críticos D-12 y 17 avisos N3; CU29 sin ampliación |
+| Atomicidad | Recorder futuro, rollback/fallos/carreras definidos; índices solo con evidencia |
+| Aceptación | T-A01–T-A40 definidos; ejecución pendiente de autorización |
+
+**Bloqueantes documentales = 0.** RF25 conserva cobertura productora parcial; CU30 **NO IMPLEMENTADO**. Su implementación puede comenzar **solo con nueva instrucción**. No código, endpoints, UI, permiso DB, servicio funcional, migraciones, índices o actividad nueva. No .env/dependencias/entornos de datos/seeders modificados. Los cierres funcionales anteriores conservan su evidencia histórica.
+
+Verificación documental de Fase 12.5: 21 documentos modificados; 520 referencias locales comprobadas sin errores. Se conservaron 217 textos normativos, 30 CU, 17 expedientes D, CH1–CH12, veinte route_key y cincuenta criterios T-CB; añadidos AC1–AC15 y cuarenta criterios T-A. Catálogo AC3 cotejado con NotificationRuleRegistry y REPORTE_EXPORTADO. Huellas Word/PDF intactas; árbol de archivos funcionales/dependencias/migraciones idéntico a 985df46. Diff y staged revisados; escaneo de secretos en worktree/índice/diferencias/historial sin hallazgos; evidencias de comprobación privadas e ignoradas en .local/qa/phase125. No suite funcional, build, nuevas auditorías de dependencias ni smoke externo atribuidos a este cierre documental. Publicación e integración autorizadas por la instrucción; hash y estado remoto definitivos en el informe final.

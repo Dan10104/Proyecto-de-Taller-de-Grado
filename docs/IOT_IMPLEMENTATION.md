@@ -243,3 +243,9 @@ Resumen autorizado distingue con/sin evidencia reciente, sin confundir comunicac
 ## Límite de asistencia previsto — Fase 11.5
 
 Explicar evidencia/frescura/no determinable sin enviar sensores/eventos concretos o inferir asistencia/porcentaje de ocupación. El chatbot no ingiere eventos ni reinterpreta valor genérico; conocimiento administrativo requiere sus permisos. [Contrato CH1–CH12](DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12). Cambio exclusivamente documental; Fase 12 NO iniciada.
+
+## Continuidad documental de RF25/CU30 — Fase 12.5
+
+El [contrato AC1–AC15](DECISIONS.md#activity-audit-contract--readiness-for-cu30) prevé SENSOR_CREADO/EDITADO/REASIGNADO/HABILITADO/DESHABILITADO y SENSOR_CREDENCIAL_CONSULTADA. La última audita preparación autorizada de credencial derivada, no rotación; sin almacenar secreto/HMAC/hash/identificador. Recorder futuro en transacción; fallo de auditoría impide revelación. R conserva espacio al evento, reasignación destino y referencia mínima de origen. Eventos de ocupación y comunicación normal no duplican bitácora; D-10 intacta.
+
+Cambio exclusivamente documental. CU30 **NO IMPLEMENTADO**; implementación requiere nueva instrucción. La evidencia funcional anterior conserva su fecha y no se presenta como verificación nueva.

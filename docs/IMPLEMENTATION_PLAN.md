@@ -1,6 +1,8 @@
 # Plan de implementación web
 
-**Estado vigente — Fase 12 implementada y validada offline (2026-10-26).** RF24/CU29: [implementación del asistente](CHATBOT_IMPLEMENTATION.md), conforme a CH1–CH12. Orientación por permisos, OpenAI Responses y contexto mínimo sin datos operativos ni historial persistido. CU30 **NO IMPLEMENTADO**; aplicación móvil diferida; ninguna fase posterior iniciada. Los cierres siguientes conservan su contexto histórico.
+**Estado vigente — Fase 12.5 documental cerrada (2026-10-26).** [Activity Audit Contract / Readiness for CU30](DECISIONS.md#activity-audit-contract--readiness-for-cu30), **0 bloqueantes documentales**. RF25 con productores parciales; CU30 **NO IMPLEMENTADO**. Implementación solo con nueva instrucción. Sin cambios de código, datos, permisos, migraciones o dependencias; OpenAI/Sepolia pendientes independientes.
+
+**Base funcional conservada — Fase 12 implementada y validada offline (2026-10-26).** RF24/CU29: [implementación del asistente](CHATBOT_IMPLEMENTATION.md), conforme a CH1–CH12. Orientación por permisos, OpenAI Responses y contexto mínimo sin datos operativos ni historial persistido. CU30 **NO IMPLEMENTADO**; aplicación móvil diferida; ninguna fase posterior iniciada. Los cierres siguientes conservan su contexto histórico.
 
 **Estado histórico — Fase 11.5 documental cerrada (2026-10-26).** RF24/CU29: [Chatbot Assistance Contract / Readiness for Phase 12](DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12), **0 bloqueantes documentales**. Fase 12 NO iniciada; CU30 NO IMPLEMENTADO. No cambios de código, dependencias, configuración o datos.
 
@@ -402,3 +404,11 @@ No configurar claves ni realizar smoke antes de Fase 12. No crear código, rutas
 ## Ejecución de Fase 12 y límite de continuación
 
 La instrucción oficial posterior autoriza la implementación RF24/CU29, ahora materializada conforme a CH1–CH12: permiso, provider abstracto/OpenAI/Fake, catálogo/rutas, límites, contexto mínimo, interfaz y pruebas. [Informe y verificación](CHATBOT_IMPLEMENTATION.md). No clave local disponible: smoke real OpenAI pendiente, conforme a sección 126, sin bloquear validación offline ni fingir inferencia. No iniciar fase posterior; CU30 NO IMPLEMENTADO y app móvil diferida. Siguiente acción sugerida: smoke sintético cuando el operador configure credencial/cuota local segura; cualquier ampliación funcional requiere nueva instrucción.
+
+## Fase 12.5 — Cierre documental de RF25/CU30
+
+[Activity Audit Contract / Readiness for CU30](DECISIONS.md#activity-audit-contract--readiness-for-cu30): **cerrada documentalmente, 0 bloqueantes; CU30 NO IMPLEMENTADO**. Incluye 56 acciones (18 existentes/38 nuevas), fallos selectivos, actividad.ver solo Administrador, consulta individual con filtros/detalle/25 por página, inmutabilidad/retención, separación RF23/D-12/N/CH y pruebas T-A01–T-A40.
+
+Implementación futura únicamente tras nueva instrucción: (1) mantener main limpio y revisar AC1–AC15; (2) centralizar escritores conservando los existentes e integrar nuevos hooks transaccionales; (3) permiso incremental y consulta autorizada; (4) pruebas por evento/rollback/concurrencia/privacidad sobre espacio_u_testing y regresión; (5) mediciones/EXPLAIN y QA; (6) documentación/publicación. No atribuir número de fase nuevo ni iniciar esa secuencia ahora. No exportaciones CU30, app móvil o integración de chatbot con auditoría.
+
+Baseline funcional conservado: 877 tests/10.217 assertions de Fase 12; no se ejecutan como si fueran nuevos resultados de esta fase documental. Smoke OpenAI sin clave y Sepolia sin testETH independientes. No cambiar .env, servicios, librerías, permisos DB, índices o datos para cerrar documentos.

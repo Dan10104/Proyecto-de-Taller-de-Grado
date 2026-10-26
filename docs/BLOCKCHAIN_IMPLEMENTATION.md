@@ -328,3 +328,9 @@ No se modifica blockchain/, no se instala ni audita de nuevo el toolchain en est
 ## Límite de asistencia previsto — Fase 11.5
 
 Solo explicación funcional permitida, sin evidencia/canónico/hash/dirección/clave concreta enviada al chatbot ni llamadas de verificación/reintento. Smoke Sepolia pendiente y excepción dev Hardhat/Zod se conservan sin nueva auditoría o prueba externa. [Contrato CH1–CH12](DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12). Cambio exclusivamente documental; Fase 12 NO iniciada.
+
+## Continuidad documental de RF25/CU30 — Fase 12.5
+
+El [contrato AC1–AC15](DECISIONS.md#activity-audit-contract--readiness-for-cu30) mantiene exclusivamente cuatro EXITO críticos D-12, sin cambios de hash/canónico/contrato/builders. Centralizar CriticalActivityRecorder no duplica actividad/evidencia; procesamiento externo posterior al commit sigue independiente. Verificar/reintentar/reconciliar no añade acción de bitácora. CU30 futuro solo enlaza evidencia existente con permiso, no verifica cadena al leer. Excepción dev Hardhat/Zod y smoke Sepolia pendiente independientes; sin nuevas auditorías ni modificación del módulo en Fase 12.5.
+
+Cambio exclusivamente documental. CU30 **NO IMPLEMENTADO**; implementación requiere nueva instrucción. La evidencia funcional anterior conserva su fecha y no se presenta como verificación nueva.

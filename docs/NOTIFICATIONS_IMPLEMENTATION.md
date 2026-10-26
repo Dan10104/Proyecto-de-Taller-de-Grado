@@ -186,3 +186,9 @@ REPORTE_EXPORTADO futuro será actividad no crítica fuera de NotificationRuleRe
 ## Límite de asistencia previsto — Fase 11.5
 
 Solo explicar avisos propios y lectura en el módulo. No enviar notificaciones ni contador del destinatario al proveedor y no marcar lectura desde chat; enlace permitido únicamente a la lista. [Contrato CH1–CH12](DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12). Cambio exclusivamente documental; Fase 12 NO iniciada.
+
+## Continuidad documental de RF25/CU30 — Fase 12.5
+
+El [contrato AC1–AC15](DECISIONS.md#activity-audit-contract--readiness-for-cu30) conserva las 17 acciones N3, nombres exactos y normalización INCIDENCIA_REGISTRADA/CERRADA, EXITO/contextos/whitelist. Recorder central futuro no duplica filas ni callback afterCommit. Las 38 nuevas administrativas, RECHAZO/ERROR y REPORTE_EXPORTADO no generan avisos. Abrir/marcar aviso y consultar CU30 tampoco. No cambiar destinatarios, reconciliación, primera lectura o atomicidad de Fase 10.
+
+Cambio exclusivamente documental. CU30 **NO IMPLEMENTADO**; implementación requiere nueva instrucción. La evidencia funcional anterior conserva su fecha y no se presenta como verificación nueva.

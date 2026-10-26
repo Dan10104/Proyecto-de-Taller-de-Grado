@@ -146,3 +146,9 @@ Rama de trabajo: feature/phase-11-dashboard-reports; base ffbed66. Publicación 
 ## Límite de asistencia previsto — Fase 11.5
 
 Solo orientación sobre tarjetas, filtros, siete reportes y PDF/XLSX según permisos. No enviar métricas/filas ni ejecutar previews/exportaciones desde el chatbot; CU30 sigue NO IMPLEMENTADO. La evidencia funcional Fase 11 conserva su fecha y alcance. [Contrato CH1–CH12](DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12). Cambio exclusivamente documental; Fase 12 NO iniciada.
+
+## Continuidad documental de RF25/CU30 — Fase 12.5
+
+El [contrato AC1–AC15](DECISIONS.md#activity-audit-contract--readiness-for-cu30) separa CU30 individual para Administrador del resumen agregado/exportable RF23. ActivityReportQuery mantiene exactamente 18 acciones/scopes; no incorporar automáticamente las 38 nuevas, seguridad/configuración o todas las exportaciones ajenas. REPORTE_EXPORTADO conserva transacción previa a respuesta, NULL de contexto, descripción tipada segura y ausencia de Blockchain/aviso; falla de auditoría impide descarga. Preview/dashboard sin actividad. CU30 futuro no añade exportación PDF/XLSX propia ni acceso al Encargado.
+
+Cambio exclusivamente documental. CU30 **NO IMPLEMENTADO**; implementación requiere nueva instrucción. La evidencia funcional anterior conserva su fecha y no se presenta como verificación nueva.

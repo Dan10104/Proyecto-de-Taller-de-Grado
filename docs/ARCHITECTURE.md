@@ -1,6 +1,8 @@
 # Arquitectura web de ESPACIO-U
 
-**Estado vigente — Fase 12 implementada y validada offline (2026-10-26).** RF24/CU29: [implementación del asistente](CHATBOT_IMPLEMENTATION.md), conforme a CH1–CH12. Orientación por permisos, OpenAI Responses y contexto mínimo sin datos operativos ni historial persistido. CU30 **NO IMPLEMENTADO**; aplicación móvil diferida; ninguna fase posterior iniciada. Los cierres siguientes conservan su contexto histórico.
+**Estado vigente — Fase 12.5 documental cerrada (2026-10-26).** [Activity Audit Contract / Readiness for CU30](DECISIONS.md#activity-audit-contract--readiness-for-cu30), **0 bloqueantes documentales**. RF25 con productores parciales; CU30 **NO IMPLEMENTADO**. Implementación solo con nueva instrucción. Sin cambios de código, datos, permisos, migraciones o dependencias; OpenAI/Sepolia pendientes independientes.
+
+**Base funcional conservada — Fase 12 implementada y validada offline (2026-10-26).** RF24/CU29: [implementación del asistente](CHATBOT_IMPLEMENTATION.md), conforme a CH1–CH12. Orientación por permisos, OpenAI Responses y contexto mínimo sin datos operativos ni historial persistido. CU30 **NO IMPLEMENTADO**; aplicación móvil diferida; ninguna fase posterior iniciada. Los cierres siguientes conservan su contexto histórico.
 
 **Estado histórico — Fase 11.5 documental cerrada (2026-10-26).** RF24/CU29: [Chatbot Assistance Contract / Readiness for Phase 12](DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12), **0 bloqueantes documentales**. Fase 12 NO iniciada; CU30 NO IMPLEMENTADO. No cambios de código, dependencias, configuración o datos.
 
@@ -266,3 +268,9 @@ GET /asistente y POST /asistente/consultar son rutas futuras, con auth/access.se
 ## Asistencia implementada — Fase 12
 
 RF24/CU29 se materializa mediante ChatbotRequest/Boundary/RateLimit → ChatbotService → ChatbotKnowledgeBase/ChatbotProvider → validador/ChatbotRouteRegistry → página Asistente. OpenAIChatbotProvider usa Laravel HTTP Client/Responses y FakeChatbotProvider queda inyectado en pruebas. Sin dependencia nueva ni consulta a entidades operativas; solo autenticación/sesión/autorización existentes. Contexto procedimental separado del mensaje no confiable, schema estricto, deadline conjunto y salida reautorizada. [Detalle, privacidad y evidencia](CHATBOT_IMPLEMENTATION.md). Sin nueva entidad de conversación, caché de conocimiento, tools, colas, streaming o infraestructura BI. CU30 sigue diferido.
+
+## Arquitectura prevista de auditoría — Fase 12.5
+
+[Activity Audit Contract / Readiness for CU30](DECISIONS.md#activity-audit-contract--readiness-for-cu30), AC11–AC14: ActivityRecorder central futuro para inserción/plantillas/contexto, ActivityQueryService para consulta individual, Form Request y controlador delgado; Vue presenta DTO autorizado. No crear estas piezas en esta fase documental. Servicios existentes CriticalActivityRecorder, NotificationActivityRecorder y ReportAuditService se adaptarán sin segunda fila ni cambio de semántica. No observer genérico que infiera actor o duplique estados internos.
+
+EXITO obligatorio dentro de transacción de negocio; fallo de registro revierte; callbacks Blockchain/notificaciones después del commit y por whitelists vigentes. RECHAZO/ERROR selectivos AC6 en transacción nueva tras rollback confirmado, sin recursión ni falsear commit incierto. Conservar locks/retries de dominio y reglas por operación AC12; no garantía de deduplicación de requests independientes. Consulta paginada SQL con filtros whitelist y referencias reautorizadas. RF23 conserva query agregada distinta; ninguna ruta de CU30 existe todavía.

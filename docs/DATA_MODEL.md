@@ -1,6 +1,8 @@
 # Modelo de datos documentado
 
-**Estado vigente — Fase 12 implementada y validada offline (2026-10-26).** RF24/CU29: [implementación del asistente](CHATBOT_IMPLEMENTATION.md), conforme a CH1–CH12. Orientación por permisos, OpenAI Responses y contexto mínimo sin datos operativos ni historial persistido. CU30 **NO IMPLEMENTADO**; aplicación móvil diferida; ninguna fase posterior iniciada. Los cierres siguientes conservan su contexto histórico.
+**Estado vigente — Fase 12.5 documental cerrada (2026-10-26).** [Activity Audit Contract / Readiness for CU30](DECISIONS.md#activity-audit-contract--readiness-for-cu30), **0 bloqueantes documentales**. RF25 con productores parciales; CU30 **NO IMPLEMENTADO**. Implementación solo con nueva instrucción. Sin cambios de código, datos, permisos, migraciones o dependencias; OpenAI/Sepolia pendientes independientes.
+
+**Base funcional conservada — Fase 12 implementada y validada offline (2026-10-26).** RF24/CU29: [implementación del asistente](CHATBOT_IMPLEMENTATION.md), conforme a CH1–CH12. Orientación por permisos, OpenAI Responses y contexto mínimo sin datos operativos ni historial persistido. CU30 **NO IMPLEMENTADO**; aplicación móvil diferida; ninguna fase posterior iniciada. Los cierres siguientes conservan su contexto histórico.
 
 **Estado histórico — Fase 11.5 documental cerrada (2026-10-26).** RF24/CU29: [Chatbot Assistance Contract / Readiness for Phase 12](DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12), **0 bloqueantes documentales**. Fase 12 NO iniciada; CU30 NO IMPLEMENTADO. No cambios de código, dependencias, configuración o datos.
 
@@ -1085,3 +1087,9 @@ Cero migraciones y cero índices nuevos. Se reutilizan tablas/columnas/índices 
 ## Alcance de datos — Fase 12
 
 No migraciones, índices ni tablas nuevas. SecuritySeeder incorpora únicamente chatbot.consultar (51 permisos totales) mediante esquema RBAC existente. Identidad/sesión/permisos sostienen acceso; ningún registro operativo se consulta para construir respuesta o contexto de IA. Sin tablas de chat, escritura de pregunta/respuesta, REPORTE_EXPORTADO por mensaje, notificación ni evidencia Blockchain. [Pruebas y límites](CHATBOT_IMPLEMENTATION.md).
+
+## Contrato físico de bitácora — Fase 12.5
+
+[Activity Audit Contract / Readiness for CU30](DECISIONS.md#activity-audit-contract--readiness-for-cu30), AC2/AC7/AC9: cero tablas, columnas, índices o migraciones. Reutilizar las 13 columnas y seis FK de registros_actividad. Mantener ENUM EXITO/RECHAZO/ERROR, CHECK responsable OR (admite ambos), ON DELETE RESTRICT y excepción fk_registro_actor ON UPDATE RESTRICT. No entity_type, JSON before/after, idempotency_key, UNIQUE global por accion o usuario Sistema.
+
+Catálogo futuro en aplicación: 18 acciones existentes + 38 nuevas, todas estas últimas no críticas; 500 caracteres como límite aplicativo de nuevas descripciones, sin reducir TEXT ni reescribir historia. Entidades sin FK se referencian solo en plantilla mínima. Datos de consulta y tipos se derivan por FK/EXISTS; no parsear descripcion. Preservar índices idx_registro_fecha/actor/recurso/reserva/prestamo/critica y revisar soporte FK físico antes de proponer otros con EXPLAIN. actividad.ver será una fila futura, no insertada ahora; esquema académico permanece 31 tablas/211 columnas/63 FK.

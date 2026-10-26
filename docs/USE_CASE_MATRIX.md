@@ -1,6 +1,8 @@
 # Matriz CU01–CU30
 
-**Estado vigente — Fase 12 implementada y validada offline (2026-10-26).** RF24/CU29: [implementación del asistente](CHATBOT_IMPLEMENTATION.md), conforme a CH1–CH12. Orientación por permisos, OpenAI Responses y contexto mínimo sin datos operativos ni historial persistido. CU30 **NO IMPLEMENTADO**; aplicación móvil diferida; ninguna fase posterior iniciada. Los cierres siguientes conservan su contexto histórico.
+**Estado vigente — Fase 12.5 documental cerrada (2026-10-26).** [Activity Audit Contract / Readiness for CU30](DECISIONS.md#activity-audit-contract--readiness-for-cu30), **0 bloqueantes documentales**. RF25 con productores parciales; CU30 **NO IMPLEMENTADO**. Implementación solo con nueva instrucción. Sin cambios de código, datos, permisos, migraciones o dependencias; OpenAI/Sepolia pendientes independientes.
+
+**Base funcional conservada — Fase 12 implementada y validada offline (2026-10-26).** RF24/CU29: [implementación del asistente](CHATBOT_IMPLEMENTATION.md), conforme a CH1–CH12. Orientación por permisos, OpenAI Responses y contexto mínimo sin datos operativos ni historial persistido. CU30 **NO IMPLEMENTADO**; aplicación móvil diferida; ninguna fase posterior iniciada. Los cierres siguientes conservan su contexto histórico.
 
 **Estado histórico — Fase 11.5 documental cerrada (2026-10-26).** RF24/CU29: [Chatbot Assistance Contract / Readiness for Phase 12](DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12), **0 bloqueantes documentales**. Fase 12 NO iniciada; CU30 NO IMPLEMENTADO. No cambios de código, dependencias, configuración o datos.
 
@@ -670,7 +672,7 @@ Fuente: tabla 66; p. 216 (PDF 217); figura 57; análisis figura 103.
 
 ## CU30 — Consultar bitácora de actividad
 
-**Estado: NO IMPLEMENTADO.** El resumen agregado CU28 y REPORTE_EXPORTADO de Fase 11 no implementan esta consulta general; no autorizan pantalla /actividad, detalle, búsqueda global ni reconstrucción exhaustiva. [Frontera DR7/DR10](DECISIONS.md#dashboard--reporting-contract--readiness-for-phase-11).
+**Estado: NO IMPLEMENTADO; contrato cerrado en Fase 12.5, 0 bloqueantes documentales.** [Activity Audit Contract / Readiness for CU30](DECISIONS.md#activity-audit-contract--readiness-for-cu30). CU28 agregado/REPORTE_EXPORTADO no acreditan CU30. Consulta individual futura para Administrador con actividad.ver: listado, filtros, detalle, 25 por página, fecha_hora DESC/id DESC, sin exportación específica. Requiere nueva instrucción para implementar. [Frontera DR7/DR10](DECISIONS.md#dashboard--reporting-contract--readiness-for-phase-11).
 
 Fuente: tabla 67; p. 217 (PDF 218); figura 58; análisis figura 104.
 
@@ -687,8 +689,8 @@ Fuente: tabla 67; p. 217 (PDF 218); figura 58; análisis figura 104.
 | RF relacionado | RF25 |
 | Entidades / clases principales | Usuario, RegistroActividad |
 | Tablas directamente relacionadas | `usuarios`, `registros_actividad` |
-| Módulo futuro y fase | Seguridad y Administración; implementación de bitácora pendiente de autorización según Fase 1.5 §15; verificación integral en Fase 13 |
-| Pruebas necesarias | T-CU30: Filtros y paginación; usuario no autorizado; evento humano/automático; secreto ausente; conservación de historia. |
+| Módulo futuro y fase | Seguridad y Administración; contrato AC1–AC15 cerrado en Fase 12.5; implementación pendiente de nueva instrucción |
+| Pruebas necesarias | T-CU30 / T-A01–T-A40: catálogo, fallos/rollback/concurrencia, RBAC, filtros/paginación/detalle, enlaces, privacidad e historia; criterios definidos, no ejecutados. |
 
 
 ## Dependencias transversales de la matriz

@@ -127,3 +127,9 @@ CU06 incorpora lecturas ambientales mínimas. El conjunto de candidatos y las re
 ## Límite de asistencia previsto — Fase 11.5
 
 Solo explicar catálogo, estado operativo y consulta temporal. No enviar espacios concretos, resultados de disponibilidad o evidencia de ocupación; remitir a los módulos autorizados, sin calcular otra disponibilidad. [Contrato CH1–CH12](DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12). Cambio exclusivamente documental; Fase 12 NO iniciada.
+
+## Continuidad documental de RF25/CU30 — Fase 12.5
+
+El [contrato AC1–AC15](DECISIONS.md#activity-audit-contract--readiness-for-cu30) cubre creación/edición/estado de espacios, bloqueo/desactivación y ocho acciones de alta/edición de catálogos (incluye tipo de equipamiento en su módulo). No auditar disponibilidad ni cada lectura. Cambios reales, precedencia de estado sobre edición, R correcto y motivo libre excluido. Hooks futuros en SpaceManagementService y flujo de catálogos dentro de transacción; no alterar reglas de disponibilidad o historial.
+
+Cambio exclusivamente documental. CU30 **NO IMPLEMENTADO**; implementación requiere nueva instrucción. La evidencia funcional anterior conserva su fecha y no se presenta como verificación nueva.

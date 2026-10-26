@@ -170,3 +170,9 @@ Reporte de reservas filtra solapamiento inicio<B y fin>A, orden inicio/id; tende
 ## Límite de asistencia previsto — Fase 11.5
 
 Solo explicar solicitud/seguimiento/resolución/cancelación según permisos y reglas vigentes. No consultar ni transmitir reservas propias/ajenas, aprobar o cancelar desde el chat; enlaces a listas con alcance fijo y autorización actual. [Contrato CH1–CH12](DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12). Cambio exclusivamente documental; Fase 12 NO iniciada.
+
+## Continuidad documental de RF25/CU30 — Fase 12.5
+
+El [contrato AC1–AC15](DECISIONS.md#activity-audit-contract--readiness-for-cu30) conserva RESERVA_SOLICITADA/APROBADA/RECHAZADA/CANCELADA y ALERTADA_LIBERACION/LIBERADA con sus actores/procesos/contextos. No duplicar las cuatro actividades humanas ni sus consumidores al centralizar el recorder. Rechazo de solicitud confirmado sigue EXITO; las fallas de estos productores no adquieren nueva política de registro en AC6. CU30 consultará historia institucional mínima autorizada, sin conceder lectura de reserva por enlace.
+
+Cambio exclusivamente documental. CU30 **NO IMPLEMENTADO**; implementación requiere nueva instrucción. La evidencia funcional anterior conserva su fecha y no se presenta como verificación nueva.

@@ -1,6 +1,8 @@
 # ESPACIO-U
 
-**Estado vigente — Fase 12 implementada y validada offline (2026-10-26).** RF24/CU29: [implementación del asistente](docs/CHATBOT_IMPLEMENTATION.md), conforme a CH1–CH12. Orientación por permisos, OpenAI Responses y contexto mínimo sin datos operativos ni historial persistido. CU30 **NO IMPLEMENTADO**; aplicación móvil diferida; ninguna fase posterior iniciada. Los cierres siguientes conservan su contexto histórico.
+**Fase 12.5 documental cerrada:** [contrato de bitácora / RF25 / CU30](docs/DECISIONS.md#activity-audit-contract--readiness-for-cu30), **0 bloqueantes documentales**. CU30 **NO IMPLEMENTADO**; requiere nueva instrucción. Ninguna ruta/pantalla, permiso DB o escritura nueva se incorpora aquí. Baseline Fase 12 conservado; smokes OpenAI y Sepolia pendientes independientes.
+
+**Base funcional conservada — Fase 12 implementada y validada offline (2026-10-26).** RF24/CU29: [implementación del asistente](docs/CHATBOT_IMPLEMENTATION.md), conforme a CH1–CH12. Orientación por permisos, OpenAI Responses y contexto mínimo sin datos operativos ni historial persistido. CU30 **NO IMPLEMENTADO**; aplicación móvil diferida; ninguna fase posterior iniciada. Los cierres siguientes conservan su contexto histórico.
 
 **Cierre histórico — Fase 11.5 documental.** [Chatbot Assistance Contract / Readiness for Phase 12](docs/DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12): **0 bloqueantes documentales**. OpenAI Responses/Luna configurable, orientación por permisos y sin registros operativos ni historial persistido. **Fase 12 NO iniciada; CU30 NO IMPLEMENTADO.**
 
@@ -202,3 +204,7 @@ Abrir **Asistente** con chatbot.consultar. Orientación sobre procedimientos seg
 3. Habilitar solo cuando el operador configure la key exclusivamente en .env LOCAL, con cuota, y recargue configuración. Nunca pegar claves en chat o copiarlas al frontend.
 
 Sin key el módulo muestra indisponibilidad controlada y el resto funciona. **Smoke real OpenAI pendiente por ausencia de credencial/cuota**; pruebas offline con proveedor/HTTP simulado. Modelo configurado gpt-6-luna, Responses API, store=false (no equivale a retención cero), reasoning none. [Informe, pruebas, límites y fuentes](docs/CHATBOT_IMPLEMENTATION.md). CU30 NO IMPLEMENTADO; móvil diferida; ninguna fase posterior iniciada.
+
+## Bitácora: siguiente implementación, todavía no disponible
+
+Contrato documental [AC1–AC15](docs/DECISIONS.md#activity-audit-contract--readiness-for-cu30): 18 acciones existentes y 38 nuevas previstas, actividad.ver exclusivamente Administrador, filtros y detalle individual, 25 registros por página, historia inmutable y sin exportaciones propias. El reporte agregado de actividad de CU28 sigue disponible con su alcance actual y no concede CU30. Los [40 criterios de aceptación](docs/BUSINESS_RULES.md#aceptación-prevista-para-rf25cu30--fase-125) se ejecutarán cuando se autorice programarlo. Esta fase no requiere setup, comandos Artisan, seeders, librerías o cambios de .env.
