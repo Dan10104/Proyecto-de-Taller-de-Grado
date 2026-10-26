@@ -1,8 +1,8 @@
 # Registro de decisiones y auditoría documental
 
-**Estado documental vigente — Fase 9.5 (2026-10-26).** Contrato RF21/CU26 cerrado; [Readiness for Phase 10](#readiness-for-phase-10), **0 bloqueantes documentales**. Fase 10 no iniciada. La implementación base sigue siendo Fase 9, con validación offline y smoke Sepolia real pendiente de testETH. Los cierres anteriores conservan su contexto histórico.
+**Estado vigente — Fase 10 (2026-10-26).** RF21/CU26 implementados y verificados: 17 reglas, avisos propios, primera lectura y recuperación de 24 h. [Informe y evidencia](NOTIFICATIONS_IMPLEMENTATION.md). CU30 general y Fase 11 no iniciados. Sepolia real sigue pendiente de testETH. Los apartados de cierres anteriores conservan su contexto histórico.
 
-**Estado funcional base — Fase 9 implementada (2026-10-25/26).** D-12 aplicada a RF19/CU24 y RF20/CU25. [Implementación y verificación offline, excepciones autorizadas y Sepolia pendiente de testETH](BLOCKCHAIN_IMPLEMENTATION.md). CU30 general y Fase 10 no iniciados. Los cierres documentales anteriores conservan su contexto histórico.
+**Estado histórico al cierre de Fase 9 implementada (2026-10-25/26).** D-12 aplicada a RF19/CU24 y RF20/CU25. [Implementación y verificación offline, excepciones autorizadas y Sepolia pendiente de testETH](BLOCKCHAIN_IMPLEMENTATION.md). CU30 general y Fase 10 no iniciados. Los cierres documentales anteriores conservan su contexto histórico.
 
 **Estado al cierre funcional de Fase 8 (2026-10-24).** D-08 continúa RESUELTA PARA FASE 8 y ahora aplicada; no se altera su contrato ni Readiness histórico. Las diferencias entre estado documental 7.5 y software actual se registran en RELEASE_POLICY_IMPLEMENTATION. D-12 se cerró posteriormente en Fase 8.5; ver el estado vigente superior. [Informe de implementación, verificaciones y límites](RELEASE_POLICY_IMPLEMENTATION.md). Las declaraciones de fases anteriores que siguen a continuación se conservan como historia de esos cierres.
 
@@ -1877,3 +1877,7 @@ Revisión del 2026-10-26: 14 documentos autorizados modificados; cero cambios de
 Revisión de diferencias/índice y escaneo de secretos sobre los 445 archivos públicos, diff e historial: sin hallazgos de valores privados locales ni de los formatos de secreto comprobados; .env/.env.testing y material local continúan fuera de Git. Esto no equivale a una auditoría nueva de dependencias ni a pruebas funcionales de RF21. No se ejecutaron T-N01–T-N40, cambios en MySQL, smoke Sepolia ni gestiones de testETH.
 
 Documentos del cierre: DECISIONS, BUSINESS_RULES, DOMAIN_MODEL, DATA_MODEL, USE_CASE_MATRIX, REQUIREMENTS_TRACEABILITY, ARCHITECTURE, SECURITY_POLICY, IMPLEMENTATION_PLAN, RESERVATIONS_IMPLEMENTATION, EQUIPMENT_LOANS_IMPLEMENTATION, RELEASE_POLICY_IMPLEMENTATION, BLOCKCHAIN_IMPLEMENTATION y README. Rama de entrega: docs/phase-9.5-notification-decisions; mensaje de commit previsto: «docs: finalize notification generation decisions». El hash y la publicación se verifican en Git y en el informe final, sin insertar un hash autorreferencial en este documento.
+
+## Aplicación del contrato RF21/CU26 — Fase 10
+
+La nueva instrucción autorizó N1–N9. Se conserva el contrato 9.5, cierre administrativo y límite de reconstrucción histórica, sin nuevo expediente D ni excepción SQL. Los 40 criterios tienen evidencia funcional; CU30 general y Fase 11 no iniciados. [Implementación y evidencia](NOTIFICATIONS_IMPLEMENTATION.md).

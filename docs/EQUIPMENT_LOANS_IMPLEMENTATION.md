@@ -1,6 +1,6 @@
 # Equipamiento, préstamos, entrega, devolución e incidencias — Fase 5
 
-**Estado documental vigente — Fase 9.5 (2026-10-26).** Contrato RF21/CU26 cerrado; [Readiness for Phase 10](DECISIONS.md#readiness-for-phase-10), **0 bloqueantes documentales**. Fase 10 no iniciada. La implementación base sigue siendo Fase 9, con validación offline y smoke Sepolia real pendiente de testETH. Los cierres anteriores conservan su contexto histórico.
+**Estado vigente — Fase 10 (2026-10-26).** RF21/CU26 implementados y verificados: 17 reglas, avisos propios, primera lectura y recuperación de 24 h. [Informe y evidencia](NOTIFICATIONS_IMPLEMENTATION.md). CU30 general y Fase 11 no iniciados. Sepolia real sigue pendiente de testETH. Los apartados de cierres anteriores conservan su contexto histórico.
 
 Fecha: 2026-10-23. Núcleo de CU12–CU19 y RF9–RF15 implementado y validado; CU19 amplía CU06 y las revalidaciones de reservas. Se aplica el contrato congelado de Fase 4.5, D-02/D-11 y D-04/D-05, sin cambiar el SQL final. Las obligaciones de QR, Blockchain, notificaciones y bitácora general siguen pendientes de sus fases. **Fase 6 no iniciada.**
 
@@ -216,3 +216,7 @@ Vencimiento: primera detección ENTREGADO y ahora > fin_previsto produce una act
 CU19 distingue INCIDENCIA_REGISTRADA/CERRADA y MANTENIMIENTO_REGISTRADO/CERRADO, siempre tipo INCIDENCIA. AI son cuentas activas con incidencias.ver administrativo, excluyendo actor. El solicitante también recibe apertura/cierre únicamente cuando existe devolución vinculada; no inferir todos los potencialmente afectados del recurso. Mensajes indican revisión/cierre sin acusación ni prometer disponibilidad. La incidencia derivada y sus actividades pertenecen a la misma transacción de devolución.
 
 Conservar jerarquía de locks y estados Fase 5; generar avisos después del commit sin retener locks de equipo/préstamo/incidencia. Lote, privacidad y límites de recuperación N6–N7. T-N05/T-N30–T-N35 y regresiones son futuros; este apartado no crea código, scheduler ni pruebas de Fase 10.
+
+## Extensión RF21 implementada — Fase 10
+
+Solicitud/aprobación/rechazo/revisión pendiente e incidencias/mantenimiento producen actividades no críticas; entrega/devolución final reutilizan críticas. Detector sin nuevo estado, S/AD/AI según contrato. No se alteran custodia, disponibilidad, receptor ni hitos QR. [Implementación y evidencia](NOTIFICATIONS_IMPLEMENTATION.md).

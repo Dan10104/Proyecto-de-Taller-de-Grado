@@ -1,8 +1,8 @@
 # Matriz CU01–CU30
 
-**Estado documental vigente — Fase 9.5 (2026-10-26).** Contrato RF21/CU26 cerrado; [Readiness for Phase 10](DECISIONS.md#readiness-for-phase-10), **0 bloqueantes documentales**. Fase 10 no iniciada. La implementación base sigue siendo Fase 9, con validación offline y smoke Sepolia real pendiente de testETH. Los cierres anteriores conservan su contexto histórico.
+**Estado vigente — Fase 10 (2026-10-26).** RF21/CU26 implementados y verificados: 17 reglas, avisos propios, primera lectura y recuperación de 24 h. [Informe y evidencia](NOTIFICATIONS_IMPLEMENTATION.md). CU30 general y Fase 11 no iniciados. Sepolia real sigue pendiente de testETH. Los apartados de cierres anteriores conservan su contexto histórico.
 
-**Estado funcional base — Fase 9 implementada (2026-10-25/26).** RF19/CU24 y RF20/CU25, cuatro actividades críticas, dos tablas y tres permisos implementados conforme a D-12. [Implementación, pruebas offline, excepción temporal dev de Zod y Sepolia pendiente de testETH](BLOCKCHAIN_IMPLEMENTATION.md). CU30 general y Fase 10 permanecen pendientes. Las secciones de cierres anteriores conservan su contexto histórico.
+**Estado histórico al cierre de Fase 9 implementada (2026-10-25/26).** RF19/CU24 y RF20/CU25, cuatro actividades críticas, dos tablas y tres permisos implementados conforme a D-12. [Implementación, pruebas offline, excepción temporal dev de Zod y Sepolia pendiente de testETH](BLOCKCHAIN_IMPLEMENTATION.md). CU30 general y Fase 10 permanecen pendientes. Las secciones de cierres anteriores conservan su contexto histórico.
 
 **Estado al cierre funcional de Fase 8 (2026-10-24).** CU23 implementado como proceso interno programado, extensión temporal de CU22 sobre evidencia persistida; no requiere actor humano ni evento entrante. Versiones, ventanas, pivotes, matriz, idempotencia y concurrencia comprobados. RegistroActividad de la ficha original y notificaciones continúan pendientes de sus fases. [Informe de implementación, verificaciones y límites](RELEASE_POLICY_IMPLEMENTATION.md). Las declaraciones de fases anteriores que siguen a continuación se conservan como historia de esos cierres.
 
@@ -590,7 +590,7 @@ Fuente: tabla 63; p. 212 (PDF 213); figura 54; análisis figura 100.
 | RF relacionado | RF21 |
 | Entidades / clases principales | Usuario, Notificacion, RegistroActividad |
 | Tablas directamente relacionadas | `usuarios`, `notificaciones`, `registros_actividad` |
-| Módulo futuro y fase | Servicios de Notificación y Asistencia; Fase 10 |
+| Módulo y estado | Servicios de Notificación y Asistencia; Fase 10 implementada y verificada; véase NOTIFICATIONS_IMPLEMENTATION.md |
 | Pruebas necesarias | T-CU26: Aviso propio/ajeno; lectura persistida; sin avisos; fallo de generación no revierte operación confirmada. |
 
 ## CU27 — Visualizar dashboard e indicadores
@@ -860,3 +860,7 @@ La ficha de CU26 conserva la fuente académica; [N1–N9 de DECISIONS](DECISIONS
 | CU30 | Sin implementación general, buscador ni listado de actividades. Ampliar productores estrictamente necesarios para RF21 no satisface CU30. |
 
 Alternativas cerradas: lista vacía comprensible; sin receptor no se fabrica aviso; sin regla se omite; fallo de generación post-commit conserva negocio y permite recuperación N6. ID ajeno/inexistente 404, sin permiso de módulo 403. Administrador carece de bypass de propiedad. Sin marcar todas, borrar ni volver a no leída. [T-N01–T-N40](BUSINESS_RULES.md#aceptación-de-notificaciones-prevista-para-fase-10) amplía T-CU26 como aceptación futura, sin acreditar pruebas ejecutadas.
+
+## CU26 implementado — Fase 10
+
+RF21/CU26 genera avisos para 17 acciones; cuatro roles consultan solo propios. Contador, 15 por página, filtros, detalle y primera lectura POST implementados. CU27/CU28 y CU30 general siguen sin implementar. [Implementación y evidencia](NOTIFICATIONS_IMPLEMENTATION.md).

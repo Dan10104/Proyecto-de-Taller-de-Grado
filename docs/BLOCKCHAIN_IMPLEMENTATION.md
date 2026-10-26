@@ -1,6 +1,6 @@
 # Blockchain y trazabilidad verificable — Fase 9
 
-**Estado documental vigente — Fase 9.5 (2026-10-26).** Contrato RF21/CU26 cerrado; [Readiness for Phase 10](DECISIONS.md#readiness-for-phase-10), **0 bloqueantes documentales**. Fase 10 no iniciada. La implementación base sigue siendo Fase 9, con validación offline y smoke Sepolia real pendiente de testETH. Los cierres anteriores conservan su contexto histórico.
+**Estado vigente — Fase 10 (2026-10-26).** RF21/CU26 implementados y verificados: 17 reglas, avisos propios, primera lectura y recuperación de 24 h. [Informe y evidencia](NOTIFICATIONS_IMPLEMENTATION.md). CU30 general y Fase 11 no iniciados. Sepolia real sigue pendiente de testETH. Los apartados de cierres anteriores conservan su contexto histórico.
 
 **Fase 9 implementada y validada offline, 2026-10-25/26.** Rama `feature/phase-9-blockchain` desde main limpio `a7731994f9a7339a8398739721af043c83ede6fc`. El contrato D-12 sigue vigente. Sepolia real pendiente de testETH; excepción temporal dev de Zod autorizada. No se inicia Fase 10 ni CU30 general. Se distinguen resultados ejecutados offline de la integración pública pendiente.
 

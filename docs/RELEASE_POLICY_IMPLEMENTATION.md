@@ -1,6 +1,6 @@
 # Políticas de liberación de reservas — Fase 8
 
-**Estado documental vigente — Fase 9.5 (2026-10-26).** Contrato RF21/CU26 cerrado; [Readiness for Phase 10](DECISIONS.md#readiness-for-phase-10), **0 bloqueantes documentales**. Fase 10 no iniciada. La implementación base sigue siendo Fase 9, con validación offline y smoke Sepolia real pendiente de testETH. Los cierres anteriores conservan su contexto histórico.
+**Estado vigente — Fase 10 (2026-10-26).** RF21/CU26 implementados y verificados: 17 reglas, avisos propios, primera lectura y recuperación de 24 h. [Informe y evidencia](NOTIFICATIONS_IMPLEMENTATION.md). CU30 general y Fase 11 no iniciados. Sepolia real sigue pendiente de testETH. Los apartados de cierres anteriores conservan su contexto histórico.
 
 Fecha: 2026-10-24. RF18 → CU23 implementado bajo el [contrato D-08 congelado](DECISIONS.md#contrato-de-liberación-de-reservas--cierre-d-08-de-fase-75), sin reinterpretar sus 24 filas × dos modos. Workspace único y remoto oficial conservados. La implementación parte de `08b6b08bcdba423ec1d2b1a519da3b9d6c4f16cd`; rama `feature/phase-8-release-policies`. Este informe actualiza el estado de ejecución de las fotografías documentales anteriores, que conservan su alcance histórico.
 
@@ -163,3 +163,7 @@ La matriz, ventanas, evidencia, locks/NOWAIT e idempotencia D-08 de CU23 permane
 Un ciclo terminal/reintento que omite evaluación no genera actividad ni aviso adicionales. MANTENER_POR_USO y NO_DETERMINABLE no notifican en el alcance inicial. ALERTAR no cambia APROBADA ni comunica liberación; LIBERADA sí informa del cambio confirmado. Destinatarios de ambas: titular y usuarios activos con liberacion.evaluaciones.ver_administrativas, por permiso efectivo. Tipo LIBERACION, no evidencia Blockchain crítica.
 
 Las filas notificaciones se generan después del commit, sin locks CU23, por el servicio común e independientemente de Blockchain. Fallo de aviso no deshace evaluación/liberación. Texto histórico con fecha del evento; recuperación N6 de 24 h y sin backfill de evaluaciones previas a habilitación RF21. Enlace a evaluación/reserva exige permiso actual y no filtra evidencias QR/IoT. T-N36–T-N38 probarán integración/concurrencia; no se implementa ahora ningún hook ni se modifica el scheduler vigente.
+
+## Extensión RF21 implementada — Fase 10
+
+ALERTAR/LIBERAR producen actividad no crítica en la misma transacción de evaluación/transición/pivotes. MANTENER_POR_USO/NO_DETERMINABLE no producen avisos. Referencia CU23 estructurada en descripcion sin nueva columna/FK; matriz y D-08 intactas. [Implementación y evidencia](NOTIFICATIONS_IMPLEMENTATION.md).

@@ -1,8 +1,8 @@
 # Plan de implementación web
 
-**Estado documental vigente — Fase 9.5 (2026-10-26).** Contrato RF21/CU26 cerrado; [Readiness for Phase 10](DECISIONS.md#readiness-for-phase-10), **0 bloqueantes documentales**. Fase 10 no iniciada. La implementación base sigue siendo Fase 9, con validación offline y smoke Sepolia real pendiente de testETH. Los cierres anteriores conservan su contexto histórico.
+**Estado vigente — Fase 10 (2026-10-26).** RF21/CU26 implementados y verificados: 17 reglas, avisos propios, primera lectura y recuperación de 24 h. [Informe y evidencia](NOTIFICATIONS_IMPLEMENTATION.md). CU30 general y Fase 11 no iniciados. Sepolia real sigue pendiente de testETH. Los apartados de cierres anteriores conservan su contexto histórico.
 
-**Estado funcional base — Fase 9 implementada (2026-10-25/26).** RF19/CU24 y RF20/CU25, cuatro actividades críticas, dos tablas y tres permisos implementados conforme a D-12. [Implementación, pruebas offline, excepción temporal dev de Zod y Sepolia pendiente de testETH](BLOCKCHAIN_IMPLEMENTATION.md). CU30 general y Fase 10 permanecen pendientes. Las secciones de cierres anteriores conservan su contexto histórico.
+**Estado histórico al cierre de Fase 9 implementada (2026-10-25/26).** RF19/CU24 y RF20/CU25, cuatro actividades críticas, dos tablas y tres permisos implementados conforme a D-12. [Implementación, pruebas offline, excepción temporal dev de Zod y Sepolia pendiente de testETH](BLOCKCHAIN_IMPLEMENTATION.md). CU30 general y Fase 10 permanecen pendientes. Las secciones de cierres anteriores conservan su contexto histórico.
 
 **Estado al cierre funcional de Fase 8 (2026-10-24).** Fase 8 implementa RF18/CU23. Fases 9–14 no iniciadas. Siguiente paso: instrucción explícita para cerrar D-12 (operaciones críticas, canonicalización, privacidad, proveedor y recuperación) antes de programar Fase 9. [Informe de implementación, verificaciones y límites](RELEASE_POLICY_IMPLEMENTATION.md). Las declaraciones de fases anteriores que siguen a continuación se conservan como historia de esos cierres.
 
@@ -362,3 +362,7 @@ Secuencia futura verificable, sin ejecutarla en este cierre:
 6. Ejecutar T-N01–T-N40, regresiones pertinentes, verificaciones de seguridad/rendimiento y aceptación visual. Documentar resultados reales y límites; publicar/integrar solo bajo la instrucción de Fase 10.
 
 No implementar email/SMS/WhatsApp/push/Firebase, infraestructura realtime, tabla outbox/snapshot, UNIQUE adicional, avisos técnicos Blockchain ni CU30 general. La recuperación no garantiza reconstruir un conjunto administrativo perdido tras un lote confirmado: el esquema y la estrategia N6 lo delimitan. El smoke Sepolia real continúa pendiente por testETH, independiente y fuera de 9.5; no usar wallet personal ni fondos reales. No reabrir auditorías/dependencias como parte de este cierre documental.
+
+## Cierre y continuación — Fase 10
+
+RF21/CU26 implementados según N1–N9: SQL exacto, 17 acciones, destinatarios efectivos, lote atómico, reconciliación 24 h, detector y UI. Total 656 / 8721 en 788,96 s. CU30 general diferido. Fase 11 no iniciada: cerrar primero RF22/CU27 y RF23/CU28 (fórmulas, permisos, filtros, PDF/Excel, privacidad, vacíos y rendimiento); implementar solo tras nueva instrucción. [Implementación y evidencia](NOTIFICATIONS_IMPLEMENTATION.md).

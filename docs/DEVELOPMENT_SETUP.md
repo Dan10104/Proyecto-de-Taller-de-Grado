@@ -1,6 +1,6 @@
-# Entorno de desarrollo — Fases 1 y 2
+# Entorno de desarrollo — ESPACIO-U
 
-**Estado vigente: Fase 5 implementada y validada (CU12–CU19), con incidencias integradas en CU06/CU07/CU09.** Los cierres anteriores conservan su contexto histórico. [Implementación, pruebas y límites actuales](EQUIPMENT_LOANS_IMPLEMENTATION.md). Fase 6 no iniciada.
+**Estado vigente — Fase 10 (2026-10-26).** RF21/CU26 implementados y verificados: 17 reglas, avisos propios, primera lectura y recuperación de 24 h. [Informe y evidencia](NOTIFICATIONS_IMPLEMENTATION.md). CU30 general y Fase 11 no iniciados. Sepolia real sigue pendiente de testETH. Los apartados de cierres anteriores conservan su contexto histórico.
 
 Fecha de verificación: 2026-10-23. Único workspace: `C:\Users\BlackMaster69\Desktop\ESPACIO-U`, raíz de Visual Studio Code. La aplicación es una sola instalación convencional Laravel con Vue/Inertia; no existen proyectos backend/frontend separados.
 
@@ -250,3 +250,23 @@ Fase 7 agrega dos migraciones incrementales y tres permisos al seed idempotente.
 ## Actualización de Fase 9
 
 Dos migraciones incrementales y tres permisos nuevos de Administrador, sin recrear desarrollo. El scheduler existente ejecuta CU23 y trazabilidad:reconciliar. Instalar blockchain/ con npm ci --ignore-scripts para compilar/probar; runtime productivo usa --omit=dev, Node compatible y ABI generado. Suites Laravel/integración secuenciales en espacio_u_testing, nunca sobre desarrollo. [Configuración, scripts, wallet, auditorías, excepción dev temporal y límite Sepolia](BLOCKCHAIN_IMPLEMENTATION.md#configuración-y-operación-reproducible). No se implementa Docker ni Fase 10.
+
+## Habilitar notificaciones internas — Fase 10
+
+Desde el workspace oficial, cargar scripts/dev-environment.ps1 e iniciar MySQL del proyecto. Aplicar `php artisan migrate --force` (incremental; nunca migrate:fresh en desarrollo) y `php artisan db:seed --class=SecuritySeeder --force` para incorporar el único permiso nuevo. Compilar con `npm run build`.
+
+Antes de habilitar RF21, establecer **una sola vez** en .env LOCAL `NOTIFICATIONS_EVENTS_FROM` con fecha/hora real de activación, formato `YYYY-MM-DD HH:mm:ss`, America/La_Paz. Vacío/inválido deshabilita generación. No usar hora de cada arranque ni retroceder para backfill. La instalación local ya tiene su corte fijo. .env.example contiene variable vacía, sin configuración privada de despliegue.
+
+`NOTIFICATIONS_RECONCILE_SCHEDULE` y `NOTIFICATIONS_OVERDUE_SCHEDULE` admiten cron; ambos por defecto `* * * * *`. Tras cambiar configuración, ejecutar `php artisan config:clear` en desarrollo. Mantener scheduler existente mediante scripts/release-scheduler.ps1 -Action start, sin duplicarlo. Deferred atiende avisos después del commit/respuesta; no requiere servicio HTTP adicional, Redis ni WebSocket.
+
+```powershell
+php artisan notificaciones:reconciliar
+php artisan prestamos:detectar-vencimientos
+php artisan schedule:list
+```
+
+Los comandos muestran conteos sin datos sensibles. Repetir reconciliación no duplica; explora EXITO/allowlist desde el mayor entre activación y ahora−24 h. Generador vuelve a comprobar ventana tras esperar lock. Ante fallo recuperar dentro de ventana y revisar IDs saneados; no borrar avisos ni forzar ampliación administrativa histórica.
+
+Abrir **Notificaciones** o campana: avisos propios, badge, filtros y primera lectura al abrir detalle. Sin canales externos/realtime. Credenciales QA permanecen solo .env local. Testing destructivo solo espacio_u_testing con guardas.
+
+Fase 10: 656 tests / 8721 aserciones; Pint/build/Composer/frontend/runtime correctos. [Informe y límites](NOTIFICATIONS_IMPLEMENTATION.md). Excepción dev Blockchain/Zod persiste; smoke Sepolia pendiente de testETH.

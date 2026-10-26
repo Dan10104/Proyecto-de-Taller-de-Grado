@@ -1,8 +1,8 @@
 # Arquitectura web de ESPACIO-U
 
-**Estado documental vigente — Fase 9.5 (2026-10-26).** Contrato RF21/CU26 cerrado; [Readiness for Phase 10](DECISIONS.md#readiness-for-phase-10), **0 bloqueantes documentales**. Fase 10 no iniciada. La implementación base sigue siendo Fase 9, con validación offline y smoke Sepolia real pendiente de testETH. Los cierres anteriores conservan su contexto histórico.
+**Estado vigente — Fase 10 (2026-10-26).** RF21/CU26 implementados y verificados: 17 reglas, avisos propios, primera lectura y recuperación de 24 h. [Informe y evidencia](NOTIFICATIONS_IMPLEMENTATION.md). CU30 general y Fase 11 no iniciados. Sepolia real sigue pendiente de testETH. Los apartados de cierres anteriores conservan su contexto histórico.
 
-**Estado funcional base — Fase 9 implementada (2026-10-25/26).** RF19/CU24 y RF20/CU25, cuatro actividades críticas, dos tablas y tres permisos implementados conforme a D-12. [Implementación, pruebas offline, excepción temporal dev de Zod y Sepolia pendiente de testETH](BLOCKCHAIN_IMPLEMENTATION.md). CU30 general y Fase 10 permanecen pendientes. Las secciones de cierres anteriores conservan su contexto histórico.
+**Estado histórico al cierre de Fase 9 implementada (2026-10-25/26).** RF19/CU24 y RF20/CU25, cuatro actividades críticas, dos tablas y tres permisos implementados conforme a D-12. [Implementación, pruebas offline, excepción temporal dev de Zod y Sepolia pendiente de testETH](BLOCKCHAIN_IMPLEMENTATION.md). CU30 general y Fase 10 permanecen pendientes. Las secciones de cierres anteriores conservan su contexto histórico.
 
 **Estado al cierre funcional de Fase 8 (2026-10-24).** ReleasePolicyManagementService administra versiones/asignación; ReleaseEvaluationService ejecuta la transacción CU23; ReleaseDecision aplica la matriz; ReleaseScanService y Artisan/Scheduler coordinan lotes. HTTP/Inertia tiene proyecciones propias/administrativas. La ingestión IoT y las consultas CU22 no disparan liberación. [Informe de implementación, verificaciones y límites](RELEASE_POLICY_IMPLEMENTATION.md). Las declaraciones de fases anteriores que siguen a continuación se conservan como historia de esos cierres.
 
@@ -215,3 +215,7 @@ El comando interno futuro notificaciones:reconciliar usará ese mismo servicio, 
 El detector de vencimientos es un productor separado: revalida ENTREGADO/fin_previsto y actividad previa bajo lock de préstamo, inserta una actividad como máximo y despacha tras commit; no modifica estado ni toma equipo/RBAC después de préstamo. CU23 mantiene su orden/NOWAIT e idempotencia, incorporando actividad al mismo commit de evaluación ALERTAR/LIBERAR.
 
 HTTP/Inertia futuro: consultas limitadas al propietario y permiso notificaciones.ver_propias; DTO de notificación sin serializar actividad ni motivos libres. Lista/contador mediante consultas paginadas; GET sin efectos. Tras abrir detalle, POST/PATCH con CSRF registra primera lectura. Los enlaces a negocio se calculan/autorizan en servidor. Navegación Inertia normal, sin WebSockets/Reverb/Pusher/polling agresivo. No infraestructura de mensajería externa, CU30 general ni tablas auxiliares. No se crean aquí clases, jobs, rutas, vistas ni configuración.
+
+## Componente de notificaciones implementado — Fase 10
+
+Actividad EXITO dentro de negocio, callback afterCommit/deferred, Registry y GenerationService con lock por actividad y snapshot posterior. Lote atómico, Reconciler 24 h y CU26 propio. Consumidor independiente de Blockchain. [Implementación y evidencia](NOTIFICATIONS_IMPLEMENTATION.md).

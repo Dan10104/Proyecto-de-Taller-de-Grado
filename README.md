@@ -2,11 +2,11 @@
 
 Sistema de información para la gestión y control de reservas de espacios académicos y préstamos de equipamiento tecnológico en la FICCT, con monitoreo de ocupación mediante IoT y trazabilidad de operaciones mediante Blockchain.
 
-**Estado documental: Fase 9.5 completada; contrato RF21/CU26 cerrado y 0 bloqueantes documentales para Fase 10.** [Decisiones y límites de recuperación](docs/DECISIONS.md#notification-contract--readiness-for-phase-10), [Readiness](docs/DECISIONS.md#readiness-for-phase-10) y [40 criterios de aceptación futuros](docs/BUSINESS_RULES.md#aceptación-de-notificaciones-prevista-para-fase-10). Fase 10 requiere nueva instrucción y **no está iniciada**. Solo documentación; sin migración, modelo, permisos DB, UI, hooks, servicios ni scheduler nuevos.
+**Estado vigente: Fase 10 implementada y verificada — RF21/CU26.** Diecisiete reglas, destinatarios por permisos efectivos, centro propio de avisos, primera lectura, contador y recuperación de 24 h. [Informe, pruebas y límites](docs/NOTIFICATIONS_IMPLEMENTATION.md). CU30 general y Fase 11 no iniciados.
 
-**Estado funcional base: Fase 9 implementada; RF19/CU24 y RF20/CU25.** Cuatro operaciones críticas, JCS/SHA-256, evidencia local, Registry, driver Sepolia, reconciliación y administración. [Informe, verificaciones y límites](docs/BLOCKCHAIN_IMPLEMENTATION.md): integración offline completa; Sepolia real pendiente de testETH. Auditorías productivas sin vulnerabilidades; excepción temporal autorizada para cinco entradas altas de Zod exclusivamente dev de Hardhat. CU30 general y Fase 10 no iniciados.
+Blockchain conserva su validación offline de Fase 9; Sepolia real sigue pendiente de testETH. Auditorías productivas sin vulnerabilidades; excepción temporal autorizada para cinco entradas altas de Zod exclusivamente dev de Hardhat, sin modificar ese módulo en Fase 10. [Evidencia y controles](docs/BLOCKCHAIN_IMPLEMENTATION.md).
 
-La implementación conserva políticas de liberación/CU23, evidencia QR/IoT y scheduler de [Fase 8](docs/RELEASE_POLICY_IMPLEMENTATION.md), e incorpora ahora las dos tablas, contrato, wallet dedicada, drivers, permisos y configuración de Fase 9. Notificaciones y CU30 general siguen pendientes; la aceptación física QR conserva el límite de su propio informe.
+Se mantienen CU23, QR/IoT y scheduler. Eventos de reserva, préstamo, devolución, vencimiento, incidencia/mantenimiento y ALERTAR/LIBERAR generan avisos después del commit. La aceptación física QR conserva el límite de su informe.
 
 Fase 7.5 cerró D-08 con cero bloqueantes documentales; la instrucción oficial posterior autorizó la implementación actual. [Contrato congelado](docs/DECISIONS.md#readiness-for-phase-8) y [mapa de los 36 criterios ejecutados](docs/RELEASE_POLICY_IMPLEMENTATION.md#verificación-y-trazabilidad-de-aceptación).
 
@@ -41,12 +41,13 @@ composer audit
 npm audit
 ```
 
-La suite usa exclusivamente `espacio_u_testing` en MySQL real, con cuenta separada y guarda previa a migraciones/limpieza. La suite de Fase 8 conserva las 371 pruebas previas y añade 166 casos de liberación: 537 pruebas. El informe de liberación registra aserciones, duración y evidencia final, incluidas carreras con procesos/conexiones MySQL independientes. Los 63 casos QR de Fase 6 se conservan. La aceptación física confirmada por el usuario se distingue de las lecturas sintéticas del navegador en QR_IMPLEMENTATION.md. No certifica CU30, módulos posteriores, carga ni despliegue.
+La suite usa exclusivamente `espacio_u_testing` en MySQL real, con cuenta separada y guarda previa a migraciones/limpieza. La suite final conserva las 570 pruebas previas y añade 86 casos: 656 pruebas / 8721 aserciones en 788,96 s. El informe de notificaciones registra evidencia final, incluidas carreras con procesos/conexiones MySQL independientes. Los 63 casos QR de Fase 6 se conservan. La aceptación física confirmada por el usuario se distingue de las lecturas sintéticas del navegador en QR_IMPLEMENTATION.md. No certifica CU30, módulos posteriores, carga ni despliegue.
 
 ## Documentación
 
 | Documento | Propósito |
 | --- | --- |
+| [Notificaciones internas](docs/NOTIFICATIONS_IMPLEMENTATION.md) | RF21/CU26, 17 reglas, destinatarios, lectura, recuperación y concurrencia |
 | [Constitución](docs/PROJECT_CONSTITUTION.md) | Alcance, stack, reglas permanentes y organización |
 | [Arquitectura](docs/ARCHITECTURE.md) | Capas, paquetes, integraciones y despliegue previsto |
 | [Dominio](docs/DOMAIN_MODEL.md) | Conceptos, actores y estados exactos |
@@ -73,13 +74,13 @@ ESPACIO-U/
 ├── app/                 # Modelos, servicios, solicitudes validadas, Gates y middleware
 ├── bootstrap/           # Arranque Laravel
 ├── config/              # Configuración sin secretos
-├── database/            # Veintiocho migraciones, catálogo RBAC y factories sintéticas
+├── database/            # Treinta y una migraciones, catálogo RBAC y factories sintéticas
 ├── docs/                # Contratos y procedimiento de desarrollo
 ├── public/              # Punto de entrada; build generado e ignorado
 ├── resources/
 │   ├── css/app.css
 │   ├── js/app.js
-│   ├── js/Pages/{Auth,Users,Roles,Spaces,Reservations,Equipment,Loans,Incidents,Qr,Iot,Release,Traceability}/
+│   ├── js/Pages/{Auth,Users,Roles,Spaces,Reservations,Equipment,Loans,Incidents,Qr,Iot,Release,Traceability,Notifications}/
 │   └── views/app.blade.php
 ├── routes/              # Seguridad, espacios, reservas, equipamiento, préstamos, incidencias, QR, IoT, liberación y /up
 ├── scripts/             # Entorno de terminal, MySQL local y scheduler
@@ -91,7 +92,7 @@ ESPACIO-U/
 └── vite.config.js
 ```
 
-`.tools/`, `.local/`, `.env`, `vendor/`, `node_modules/`, logs y compilados permanecen locales e ignorados. `.env.example` contiene secretos vacíos. MySQL de desarrollo usa `espacio_u` en `127.0.0.1:3308`; 30 tablas académicas están materializadas (28 previas y dos de trazabilidad); notificaciones sigue pendiente. Las siete excepciones QR ON UPDATE RESTRICT fueron autorizadas y están documentadas; CHECK y demás SQL permanecen preservados. `espacio_u_testing` tiene credenciales exclusivas en `.env.testing` local.
+`.tools/`, `.local/`, `.env`, `vendor/`, `node_modules/`, logs y compilados permanecen locales e ignorados. `.env.example` contiene secretos vacíos. MySQL de desarrollo usa `espacio_u` en `127.0.0.1:3308`; 31 tablas académicas están materializadas (211 columnas, 63 FK), incluida notificaciones. Las siete excepciones QR ON UPDATE RESTRICT fueron autorizadas y están documentadas; CHECK y demás SQL permanecen preservados. `espacio_u_testing` tiene credenciales exclusivas en `.env.testing` local.
 
 ## Continuidad
 
@@ -154,10 +155,16 @@ Configurar únicamente en `.env` local: `BLOCKCHAIN_ENABLED`, `BLOCKCHAIN_NETWOR
 
 Producción del módulo: `npm ci --prefix blockchain --omit=dev --ignore-scripts`, Node compatible y ABI generado previamente; no instalar Hardhat/Zod en el runtime web. Auditar por separado raíz, módulo completo y módulo `--omit=dev`. La excepción temporal de Zod está delimitada en el informe y debe retirarse al existir una actualización compatible.
 
-## Contrato de notificaciones cerrado en Fase 9.5
+## Cierre histórico del contrato de notificaciones — Fase 9.5
 
 Centro interno RF21/CU26 previsto, con ocho tipos oficiales y 17 acciones. Se reutilizan las cuatro actividades críticas de Fase 9; trece productores no críticos cubrirán solicitudes, decisiones, revisión pendiente, vencimiento, incidencias/mantenimiento y ALERTAR/LIBERADA. Solo cuentas activas y permisos efectivos; CU26 propio para los cuatro roles con notificaciones.ver_propias, todavía no creado.
 
 Actividad y negocio en una transacción; avisos después del commit. Clave lógica actividad+destinatario+tipo, lock por actividad y lote atómico sin nueva UNIQUE. Recuperación automática de 24 h: primer lote persistido cierra el conjunto administrativo; los faltantes directos se reconstruyen y los límites sin snapshot quedan expresos en N6. Plantillas históricas planas, lectura idempotente y enlaces reautorizados. Sin canales externos, realtime complejo, avisos técnicos Blockchain ni CU30 general.
 
 Los originales Word/PDF se conservaron y no se publican. La revisión de 9.5 es documental; no presenta T-N01–T-N40 como pruebas ejecutadas ni vuelve a acreditar auditorías de Fase 9. Smoke Sepolia real pendiente por testETH, independiente y sin gestiones de financiación/despliegue en esta fase.
+
+## Notificaciones internas
+
+Abrir **Notificaciones** o la campana. Cuatro roles consultan solo propios; 15 por página, filtros por lectura/tipo y contador. Abrir detalle registra primera lectura mediante POST protegido; recargar conserva fecha.
+
+[Habilitación y scheduler](docs/DEVELOPMENT_SETUP.md#habilitar-notificaciones-internas--fase-10): fijar una vez NOTIFICATIONS_EVENTS_FROM local, migración incremental y SecuritySeeder, compilar y mantener scheduler. Recuperación cada minuto, ventana 24 h sin redistribución administrativa histórica. Sin canales externos ni realtime. Fase 11 requiere nueva instrucción.
