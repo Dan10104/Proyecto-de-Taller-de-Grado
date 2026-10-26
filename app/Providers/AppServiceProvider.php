@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use App\Models\Usuario;
 use App\Services\AuthorizationService;
+use App\Services\Chatbot\ChatbotProvider;
+use App\Services\Chatbot\OpenAIChatbotProvider;
 use App\Services\Traceability\BlockchainDriver;
 use App\Services\Traceability\EthereumSepoliaDriver;
 use App\Support\CheckedFileSessionHandler;
@@ -18,6 +20,7 @@ class AppServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+        $this->app->bind(ChatbotProvider::class, OpenAIChatbotProvider::class);
         $this->app->bind(BlockchainDriver::class, EthereumSepoliaDriver::class);
     }
 

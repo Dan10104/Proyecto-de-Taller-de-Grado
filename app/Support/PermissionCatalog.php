@@ -7,6 +7,7 @@ use App\Enums\RolInstitucional;
 class PermissionCatalog
 {
     public const DEFINITIONS = [
+        'chatbot.consultar' => ['nombre' => 'Consultar asistente de orientación', 'fuente' => 'RF24 / CU29 / CH1–CH12'],
         'dashboard.ver' => ['nombre' => 'Visualizar dashboard autorizado', 'fuente' => 'RF22 / CU27'],
         'reportes.ver' => ['nombre' => 'Consultar reportes administrativos', 'fuente' => 'RF23 / CU28'],
         'reportes.exportar' => ['nombre' => 'Exportar reportes autorizados', 'fuente' => 'RF23 / CU28'],
@@ -64,7 +65,7 @@ class PermissionCatalog
         if (! array_key_exists($code, self::DEFINITIONS)) {
             return [];
         }
-        if (in_array($code, ['dashboard.ver', 'notificaciones.ver_propias', 'qr.validar_uso_espacio', 'reservas.ver_propias', 'reservas.cancelar_propias', 'espacios.ver', 'equipamientos.ver'], true)) {
+        if (in_array($code, ['chatbot.consultar', 'dashboard.ver', 'notificaciones.ver_propias', 'qr.validar_uso_espacio', 'reservas.ver_propias', 'reservas.cancelar_propias', 'espacios.ver', 'equipamientos.ver'], true)) {
             return array_column(RolInstitucional::cases(), 'value');
         }
         if (in_array($code, ['liberacion.evaluaciones.ver_propias', 'reservas.solicitar', 'prestamos.solicitar', 'prestamos.ver_propios'], true)) {
