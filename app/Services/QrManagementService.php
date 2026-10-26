@@ -2,8 +2,11 @@
 
 namespace App\Services;
 
+use App\Enums\ActivityAction as Action;
 use App\Models\CodigoQr;
 use App\Models\Usuario;
+use App\Services\Activity\ActivityAttempt;
+use App\Services\Activity\ActivityRecorder;
 use BaconQrCode\Renderer\Image\SvgImageBackEnd;
 use BaconQrCode\Renderer\ImageRenderer;
 use BaconQrCode\Renderer\RendererStyle\RendererStyle;
@@ -20,9 +23,11 @@ class QrManagementService
     public function issue(Usuario $actor, string $type, int $id, ?string $expiry = null, ?string $sessionHash = null): array
     {
         Validator::make(['vence_en' => $expiry], ['vence_en' => 'nullable|date_format:Y-m-d\TH:i|after_or_equal:1000-01-01T00:00|before_or_equal:9999-12-31T23:59'])->validate();
+        $audit = new ActivityAttempt($actor);
         for ($attempt = 0; $attempt < 3; $attempt++) {
+            $audit->duplicateExhausted = $attempt === 2;
             try {
-                return $this->contexts->transaction($actor, 'qr.gestionar', function ($fresh) use ($type, $id, $expiry) {
+                return $this->contexts->transaction($actor, 'qr.gestionar', function ($fresh) use ($type, $id, $expiry, $audit) {
                     $target = $this->contexts->target($fresh, $type, $id, true);
                     $previous = CodigoQr::where($target['field'], $id)->orderBy('id')->lockForUpdate()->get();
                     $generated = now()->startOfSecond();
@@ -30,6 +35,7 @@ class QrManagementService
                     if ($expires && ! $expires->isAfter($generated)) {
                         throw ValidationException::withMessages(['vence_en' => 'El vencimiento debe ser posterior a la generación.']);
                     }
+                    $audit->admit($previous->isEmpty() ? Action::QR_GENERADO : Action::QR_ROTADO, $this->auditContext($target));
                     $token = $this->tokens->generate();
                     $hash = $this->tokens->hash($token);
                     foreach ($previous->where('activo', true) as $old) {
@@ -40,9 +46,10 @@ class QrManagementService
                     // Render before commit: a renderer failure also restores the previous code.
                     $svg = $this->render($token);
                     unset($token);
+                    app(ActivityRecorder::class)->success($audit->action, $fresh, $audit->context, ['id' => (int) $code->id, 'anterior_id' => (int) ($previous->last()?->id ?? 0)]);
 
                     return ['id' => $code->id, 'svg' => $svg];
-                }, $sessionHash);
+                }, $sessionHash, $audit);
             } catch (QueryException $e) {
                 if (($e->errorInfo[1] ?? null) !== 1062 || ! str_contains($e->getMessage(), 'uq_codigo_qr_token_hash')) {
                     throw $e;
@@ -59,10 +66,27 @@ class QrManagementService
 
     public function deactivate(Usuario $actor, string $type, int $id, int $codeId, ?string $sessionHash = null): void
     {
-        $this->contexts->transaction($actor, 'qr.gestionar', function ($fresh) use ($type, $id, $codeId) {
+        $audit = new ActivityAttempt($actor);
+        $this->contexts->transaction($actor, 'qr.gestionar', function ($fresh) use ($type, $id, $codeId, $audit) {
             $target = $this->contexts->target($fresh, $type, $id, true);
             $code = CodigoQr::where($target['field'], $id)->whereKey($codeId)->lockForUpdate()->firstOrFail();
+            if (! $code->activo) {
+                return;
+            }
+            $audit->admit(Action::QR_DESACTIVADO, $this->auditContext($target));
             $code->forceFill(['activo' => false])->save();
-        }, $sessionHash);
+            app(ActivityRecorder::class)->success(Action::QR_DESACTIVADO, $fresh, $audit->context, ['id' => (int) $code->id]);
+        }, $sessionHash, $audit);
+    }
+
+    private function auditContext(array $target): array
+    {
+        $context = ['recurso_id' => (int) $target['resource']->getKey()];
+        if ($target['operation']) {
+            $context[$target['field']] = (int) $target['operation']->id;
+            $context['usuario_afectado_id'] = (int) $target['operation']->solicitante_id;
+        }
+
+        return $context;
     }
 }

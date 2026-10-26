@@ -55,6 +55,7 @@ onUnmounted(() => document.removeEventListener('keydown', keydown));
         </Link>
         <Link v-if="can('chatbot.consultar')" href="/asistente" :class="{active:page.url.startsWith('/asistente')}" @click="drawer=false"><Icon name="search"/>Asistente</Link>
         <Link v-if="can('dashboard.ver')" href="/dashboard" :class="{active:page.url.startsWith('/dashboard')}" @click="drawer=false"><Icon name="home"/>Dashboard</Link>
+        <Link v-if="can('actividad.ver')" href="/actividad" :class="{active:page.url.startsWith('/actividad')}" @click="drawer=false"><Icon name="search"/>Bitácora</Link>
         <Link v-if="can('reportes.ver')" href="/reportes" :class="{active:page.url.startsWith('/reportes')}" @click="drawer=false"><Icon name="search"/>Reportes</Link>
         <Link v-if="can('notificaciones.ver_propias')" href="/notificaciones" :class="{active:page.url.startsWith('/notificaciones')}" @click="drawer=false"><Icon name="bell"/>Notificaciones</Link>
         <Link v-if="can('espacios.ver')" href="/disponibilidad" :class="{active:page.url.startsWith('/disponibilidad')}" @click="drawer=false">

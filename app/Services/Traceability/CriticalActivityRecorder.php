@@ -3,7 +3,7 @@
 namespace App\Services\Traceability;
 
 use App\Jobs\RegisterTraceabilityEvidence;
-use App\Models\RegistroActividad;
+use App\Services\Activity\ActivityRecorder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -29,8 +29,7 @@ final class CriticalActivityRecorder
         if (DB::transactionLevel() < 1) {
             throw new \LogicException('La actividad requiere la transacción del hito.');
         }
-        $activity = new RegistroActividad;
-        $activity->forceFill($attributes + ['incidencia_id' => null, 'descripcion' => null, 'proceso_responsable' => null, 'critica' => true, 'resultado' => 'EXITO'])->save();
+        $activity = app(ActivityRecorder::class)->record($attributes + ['incidencia_id' => null, 'descripcion' => null, 'proceso_responsable' => null, 'critica' => true, 'resultado' => 'EXITO']);
         $id = (int) $activity->id;
         DB::afterCommit(static function () use ($id) {
             try {

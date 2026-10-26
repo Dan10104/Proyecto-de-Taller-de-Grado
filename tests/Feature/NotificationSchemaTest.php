@@ -33,7 +33,7 @@ class NotificationSchemaTest extends SecurityTestCase
             $this->assertSame('RESTRICT', $f->d);
         }
         $this->assertCount(8, TipoNotificacion::cases());
-        $this->assertCount(51, PermissionCatalog::DEFINITIONS);
+        $this->assertCount(52, PermissionCatalog::DEFINITIONS);
         $this->assertSame(1, Permiso::where('codigo', 'like', 'notificaciones.%')->count());
     }
 

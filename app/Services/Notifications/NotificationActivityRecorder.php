@@ -5,6 +5,7 @@ namespace App\Services\Notifications;
 use App\Models\EvaluacionLiberacion;
 use App\Models\IncidenciaMantenimiento;
 use App\Models\RegistroActividad;
+use App\Services\Activity\ActivityRecorder;
 use Illuminate\Support\Facades\DB;
 
 class NotificationActivityRecorder
@@ -52,9 +53,8 @@ class NotificationActivityRecorder
         if (DB::transactionLevel() < 1 || ! isset(NotificationRuleRegistry::RULES[$attributes['accion']]) || in_array($attributes['accion'], ['RESERVA_APROBADA', 'RESERVA_CANCELADA', 'PRESTAMO_ENTREGADO', 'PRESTAMO_DEVUELTO'], true)) {
             throw new \LogicException('La nueva actividad notificable requiere el hito no crítico en su transacción.');
         }
-        $a = new RegistroActividad;
-        $a->forceFill($attributes + ['actor_id' => null, 'usuario_afectado_id' => null, 'recurso_id' => null, 'reserva_id' => null, 'prestamo_id' => null, 'incidencia_id' => null,
-            'descripcion' => null, 'proceso_responsable' => null, 'critica' => false, 'resultado' => 'EXITO', 'fecha_hora' => now()])->save();
+        $a = app(ActivityRecorder::class)->record($attributes + ['actor_id' => null, 'usuario_afectado_id' => null, 'recurso_id' => null, 'reserva_id' => null, 'prestamo_id' => null, 'incidencia_id' => null,
+            'descripcion' => null, 'proceso_responsable' => null, 'critica' => false, 'resultado' => 'EXITO', 'fecha_hora' => now()]);
 
         return $a;
     }

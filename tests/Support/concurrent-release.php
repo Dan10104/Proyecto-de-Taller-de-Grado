@@ -3,15 +3,19 @@
 use App\Exceptions\IotException;
 use App\Exceptions\ReleaseDeferredException;
 use App\Exceptions\ReservationConflictException;
+use App\Models\EspacioAcademico;
 use App\Models\Reserva;
+use App\Models\Rol;
 use App\Models\SensorIot;
 use App\Models\Usuario;
+use App\Services\AdministrationService;
 use App\Services\IotIngestionService;
 use App\Services\IotManagementService;
 use App\Services\QrValidationService;
 use App\Services\ReleaseEvaluationService;
 use App\Services\ReleasePolicyManagementService;
 use App\Services\ReservationService;
+use App\Services\SpaceManagementService;
 use App\Support\TestingDatabaseGuard;
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
@@ -91,6 +95,12 @@ try {
     } elseif (in_array($action, ['cancel', 'approve'])) {
         $result = app(ReservationService::class)->$action($actor, Reserva::findOrFail($input['reservation']));
         $status = $result->estado->value;
+    } elseif ($action === 'audit_space_state') {
+        app(SpaceManagementService::class)->state($actor, EspacioAcademico::findOrFail($input['space']), 'BLOQUEADO');
+        $status = 'ok';
+    } elseif ($action === 'audit_withdraw') {
+        app(AdministrationService::class)->withdraw($actor, Usuario::findOrFail($input['user']), Rol::findOrFail($input['role']));
+        $status = 'ok';
     } elseif ($action === 'assign') {
         app(ReleasePolicyManagementService::class)->assign($actor, $input['space'], $input['policy']);
         $status = 'ok';

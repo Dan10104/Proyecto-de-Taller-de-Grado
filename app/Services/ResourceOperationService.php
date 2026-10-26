@@ -11,6 +11,8 @@ use App\Models\IncidenciaMantenimiento;
 use App\Models\Prestamo;
 use App\Models\Rol;
 use App\Models\Usuario;
+use App\Services\Activity\ActivityAttempt;
+use App\Services\Activity\ActivityTransaction;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
@@ -19,16 +21,16 @@ use LogicException;
 
 class ResourceOperationService
 {
-    public function transaction(Usuario $actor, string $permission, callable $operation): mixed
+    public function transaction(Usuario $actor, string $permission, callable $operation, ?ActivityAttempt $audit = null): mixed
     {
         try {
-            return DB::transaction(function () use ($actor, $permission, $operation) {
+            return app(ActivityTransaction::class)->run(function () use ($actor, $permission, $operation) {
                 Rol::where('nombre', 'Administrador')->lockForUpdate()->firstOrFail();
                 $fresh = $actor->fresh();
                 Gate::forUser($fresh)->authorize($permission);
 
                 return $operation($fresh);
-            }, 3);
+            }, $audit);
         } catch (QueryException $e) {
             if (in_array($e->errorInfo[1] ?? null, [1205, 1213], true)) {
                 throw new EquipmentConflictException('Otra operación está modificando el recurso. Actualice la página e inténtelo nuevamente.');
