@@ -192,3 +192,10 @@ Solo explicar avisos propios y lectura en el módulo. No enviar notificaciones n
 El [contrato AC1–AC15](DECISIONS.md#activity-audit-contract--readiness-for-cu30) conserva las 17 acciones N3, nombres exactos y normalización INCIDENCIA_REGISTRADA/CERRADA, EXITO/contextos/whitelist. Recorder central futuro no duplica filas ni callback afterCommit. Las 38 nuevas administrativas, RECHAZO/ERROR y REPORTE_EXPORTADO no generan avisos. Abrir/marcar aviso y consultar CU30 tampoco. No cambiar destinatarios, reconciliación, primera lectura o atomicidad de Fase 10.
 
 Cambio exclusivamente documental. CU30 **NO IMPLEMENTADO**; implementación requiere nueva instrucción. La evidencia funcional anterior conserva su fecha y no se presenta como verificación nueva.
+
+
+## Integración de auditoría — Fase 12.6
+
+NotificationActivityRecorder delega una única inserción al ActivityRecorder, conservando los diecisiete identificadores de NotificationRuleRegistry, contexto, resultado y afterCommit. No se amplían destinatarios/reglas ni se duplican notificaciones. Las 38 nuevas acciones, sus RECHAZO/ERROR y REPORTE_EXPORTADO no notifican. Abrir/marcar avisos no produce actividad, verificado por regresión y recorrido manual con conteo antes/después. Consultar CU30 tampoco genera avisos ni actividad.
+
+[Implementación RF25/CU30, pruebas y resultados de integración](ACTIVITY_AUDIT_IMPLEMENTATION.md). Los cierres de fases anteriores conservan su alcance histórico. Fase 13 no iniciada.

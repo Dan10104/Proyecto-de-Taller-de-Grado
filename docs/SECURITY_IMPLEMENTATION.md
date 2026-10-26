@@ -134,3 +134,10 @@ Se añade chatbot.consultar, elegible para los cuatro roles institucionales. Cat
 El [contrato AC1–AC15](DECISIONS.md#activity-audit-contract--readiness-for-cu30) prevé auditoría de alta/edición/deshabilitación, roles/permisos/asignaciones/retiros, sin cambiar D-04/D-07. No existe rehabilitación implementada, no añadirla para auditar. Inicio/rechazo/cierre de sesión fuera del catálogo inicial; sesiones_acceso conserva su función. actividad.ver futuro solo Administrador y revocable; no se crea ahora. Rechazos de último administrador/recuperación se limitan por AC6; secretos/valores personales excluidos. Integración futura en AdministrationService con rollback común, no una segunda tabla.
 
 Cambio exclusivamente documental. CU30 **NO IMPLEMENTADO**; implementación requiere nueva instrucción. La evidencia funcional anterior conserva su fecha y no se presenta como verificación nueva.
+
+
+## Integración de auditoría — Fase 12.6
+
+AdministrationService registra ocho acciones: alta/edición/deshabilitación de usuarios y alta/edición/permisos/asignación/retiro de roles. Plantillas sin valores personales, contraseñas o sesiones; conserva locks RBAC, elegibilidad y última administración. actividad.ver es el permiso número 52, solo elegible para Administrador, revocable y fuera de RECOVERY. SecuritySeeder incremental conserva revocaciones. EXITO obligatorio comparte la transacción y las guardas RECHAZO siguen AC6; autenticación continúa excluida.
+
+[Implementación RF25/CU30, pruebas y resultados de integración](ACTIVITY_AUDIT_IMPLEMENTATION.md). Los cierres de fases anteriores conservan su alcance histórico. Fase 13 no iniciada.

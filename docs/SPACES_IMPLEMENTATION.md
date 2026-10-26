@@ -133,3 +133,10 @@ Solo explicar catálogo, estado operativo y consulta temporal. No enviar espacio
 El [contrato AC1–AC15](DECISIONS.md#activity-audit-contract--readiness-for-cu30) cubre creación/edición/estado de espacios, bloqueo/desactivación y ocho acciones de alta/edición de catálogos (incluye tipo de equipamiento en su módulo). No auditar disponibilidad ni cada lectura. Cambios reales, precedencia de estado sobre edición, R correcto y motivo libre excluido. Hooks futuros en SpaceManagementService y flujo de catálogos dentro de transacción; no alterar reglas de disponibilidad o historial.
 
 Cambio exclusivamente documental. CU30 **NO IMPLEMENTADO**; implementación requiere nueva instrucción. La evidencia funcional anterior conserva su fecha y no se presenta como verificación nueva.
+
+
+## Integración de auditoría — Fase 12.6
+
+SpaceManagementService registra cinco acciones de espacio/bloqueo y seis de pisos/tipos/características. saveCatalog concentra ahora la escritura antes alojada en el callback del controlador. Alta/estado/edición siguen precedencia AC4; no-op no duplica actividad, motivo libre no se copia y fallo de auditoría revierte negocio. Disponibilidad y consultas no generan actividad; las reglas existentes permanecen.
+
+[Implementación RF25/CU30, pruebas y resultados de integración](ACTIVITY_AUDIT_IMPLEMENTATION.md). Los cierres de fases anteriores conservan su alcance histórico. Fase 13 no iniciada.

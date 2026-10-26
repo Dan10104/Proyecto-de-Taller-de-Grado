@@ -223,3 +223,10 @@ Orientación sobre el flujo del módulo y validación contextual; no recibir/gen
 El [contrato AC1–AC15](DECISIONS.md#activity-audit-contract--readiness-for-cu30) prevé QR_GENERADO sin historia previa, QR_ROTADO con historia y QR_DESACTIVADO explícito. Rotación engloba desactivaciones internas; emisiones confirmadas distintas conservan D-09/concurrencia. FK según objetivo real, identificadores QR mínimos, jamás token/token_hash/SVG. No fila por validaciones_qr ni duplicado de entrega/devolución mediante QR. No se modifica aceptación física ni implementación QR en Fase 12.5.
 
 Cambio exclusivamente documental. CU30 **NO IMPLEMENTADO**; implementación requiere nueva instrucción. La evidencia funcional anterior conserva su fecha y no se presenta como verificación nueva.
+
+
+## Integración de auditoría — Fase 12.6
+
+QrManagementService registra QR_GENERADO, QR_ROTADO y QR_DESACTIVADO. Rotación incluye desactivaciones internas y se reconoce con cualquier historia previa, aun inactiva; contexto U/R/V/P procede del objetivo autorizado. Tres intentos por colisión conservan un único resultado final, sin token/hash/SVG en descripción. ActivityQrVolumeTest realiza veinte validaciones sin actividad por lectura; carreras y semántica se cubren en ActivityConcurrencyTest/ActivitySemanticsTest.
+
+[Implementación RF25/CU30, pruebas y resultados de integración](ACTIVITY_AUDIT_IMPLEMENTATION.md). Los cierres de fases anteriores conservan su alcance histórico. Fase 13 no iniciada.

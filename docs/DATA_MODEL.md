@@ -1,6 +1,8 @@
 # Modelo de datos documentado
 
-**Estado vigente — Fase 12.5 documental cerrada (2026-10-26).** [Activity Audit Contract / Readiness for CU30](DECISIONS.md#activity-audit-contract--readiness-for-cu30), **0 bloqueantes documentales**. RF25 con productores parciales; CU30 **NO IMPLEMENTADO**. Implementación solo con nueva instrucción. Sin cambios de código, datos, permisos, migraciones o dependencias; OpenAI/Sepolia pendientes independientes.
+**Fase 12.6 — RF25/CU30 implementados y validados localmente (2026-10-26).** [Registro de actividad y bitácora](ACTIVITY_AUDIT_IMPLEMENTATION.md): 56 acciones, recorder transaccional, permiso exclusivo de Administrador y consulta individual. Sin nuevas tablas/dependencias. Fase 13 NO iniciada; smokes OpenAI/Sepolia pendientes independientes. Los cierres siguientes conservan su alcance histórico.
+
+**Estado histórico — Fase 12.5 documental cerrada (2026-10-26).** [Activity Audit Contract / Readiness for CU30](DECISIONS.md#activity-audit-contract--readiness-for-cu30), **0 bloqueantes documentales**. RF25 con productores parciales; CU30 **NO IMPLEMENTADO**. Implementación solo con nueva instrucción. Sin cambios de código, datos, permisos, migraciones o dependencias; OpenAI/Sepolia pendientes independientes.
 
 **Base funcional conservada — Fase 12 implementada y validada offline (2026-10-26).** RF24/CU29: [implementación del asistente](CHATBOT_IMPLEMENTATION.md), conforme a CH1–CH12. Orientación por permisos, OpenAI Responses y contexto mínimo sin datos operativos ni historial persistido. CU30 **NO IMPLEMENTADO**; aplicación móvil diferida; ninguna fase posterior iniciada. Los cierres siguientes conservan su contexto histórico.
 
@@ -1093,3 +1095,8 @@ No migraciones, índices ni tablas nuevas. SecuritySeeder incorpora únicamente 
 [Activity Audit Contract / Readiness for CU30](DECISIONS.md#activity-audit-contract--readiness-for-cu30), AC2/AC7/AC9: cero tablas, columnas, índices o migraciones. Reutilizar las 13 columnas y seis FK de registros_actividad. Mantener ENUM EXITO/RECHAZO/ERROR, CHECK responsable OR (admite ambos), ON DELETE RESTRICT y excepción fk_registro_actor ON UPDATE RESTRICT. No entity_type, JSON before/after, idempotency_key, UNIQUE global por accion o usuario Sistema.
 
 Catálogo futuro en aplicación: 18 acciones existentes + 38 nuevas, todas estas últimas no críticas; 500 caracteres como límite aplicativo de nuevas descripciones, sin reducir TEXT ni reescribir historia. Entidades sin FK se referencian solo en plantilla mínima. Datos de consulta y tipos se derivan por FK/EXISTS; no parsear descripcion. Preservar índices idx_registro_fecha/actor/recurso/reserva/prestamo/critica y revisar soporte FK físico antes de proponer otros con EXPLAIN. actividad.ver será una fila futura, no insertada ahora; esquema académico permanece 31 tablas/211 columnas/63 FK.
+
+
+## Implementación RF25/CU30 — Fase 12.6
+
+Reutilizado registros_actividad sin modificar columnas/FK/CHECK/enum SQL. Cero migraciones e índices nuevos: medición/EXPLAIN no justifican ampliar el esquema; evidencia en el informe. actividad.ver amplía catálogo a 52 filas mediante seeder incremental, no schema nuevo. Las referencias sin FK continúan como IDs mínimos en plantilla, no índices/columnas derivados de texto. [Implementación, evidencia y límites](ACTIVITY_AUDIT_IMPLEMENTATION.md).

@@ -1,6 +1,8 @@
 # Política de seguridad
 
-**Estado vigente — Fase 12.5 documental cerrada (2026-10-26).** [Activity Audit Contract / Readiness for CU30](DECISIONS.md#activity-audit-contract--readiness-for-cu30), **0 bloqueantes documentales**. RF25 con productores parciales; CU30 **NO IMPLEMENTADO**. Implementación solo con nueva instrucción. Sin cambios de código, datos, permisos, migraciones o dependencias; OpenAI/Sepolia pendientes independientes.
+**Fase 12.6 — RF25/CU30 implementados y validados localmente (2026-10-26).** [Registro de actividad y bitácora](ACTIVITY_AUDIT_IMPLEMENTATION.md): 56 acciones, recorder transaccional, permiso exclusivo de Administrador y consulta individual. Sin nuevas tablas/dependencias. Fase 13 NO iniciada; smokes OpenAI/Sepolia pendientes independientes. Los cierres siguientes conservan su alcance histórico.
+
+**Estado histórico — Fase 12.5 documental cerrada (2026-10-26).** [Activity Audit Contract / Readiness for CU30](DECISIONS.md#activity-audit-contract--readiness-for-cu30), **0 bloqueantes documentales**. RF25 con productores parciales; CU30 **NO IMPLEMENTADO**. Implementación solo con nueva instrucción. Sin cambios de código, datos, permisos, migraciones o dependencias; OpenAI/Sepolia pendientes independientes.
 
 **Base funcional conservada — Fase 12 implementada y validada offline (2026-10-26).** RF24/CU29: [implementación del asistente](CHATBOT_IMPLEMENTATION.md), conforme a CH1–CH12. Orientación por permisos, OpenAI Responses y contexto mínimo sin datos operativos ni historial persistido. CU30 **NO IMPLEMENTADO**; aplicación móvil diferida; ninguna fase posterior iniciada. Los cierres siguientes conservan su contexto histórico.
 
@@ -230,3 +232,8 @@ Heurísticas no prometen invulnerabilidad semántica; los controles de servidor 
 [Activity Audit Contract / Readiness for CU30](DECISIONS.md#activity-audit-contract--readiness-for-cu30): actividad.ver elegible solo para Administrador vigente/ACTIVO y sesión D-07 válida, permiso efectivo sin bypass y revocable (no RECOVERY). Encargado/Docente/Estudiante sin CU30; reportes.ver no lo concede. Alcance institucional de auditoría mínima; nombres actuales solo con usuarios.ver y enlaces según Policy del destino. Autorización antes de consultas, opciones, conteos y detalle; DTO cerrado, privado/no-store.
 
 No secretos, hashes de credenciales/QR, HMAC, cookies, cuerpos HTTP, SQL, excepciones completas, motivos/soluciones libres ni textos de chatbot en actividad/props. Plantillas nuevas <=500 caracteres; historia desconocida o sospechosa se conserva en DB y su descripción se omite en presentación segura, sin confiar solo en regex. No mass assignment, edición/borrado/purge o reconstrucción de identidad histórica inexistente. Autenticación y 403/validaciones genéricos fuera de catálogo; nueve rechazos funcionales concretos y ERROR admitido según AC6. No logging recursivo ni datos de request como respaldo ante fallo. Estos controles son contrato futuro, no implementación ni nueva auditoría de dependencias.
+
+
+## Implementación RF25/CU30 — Fase 12.6
+
+actividad.ver elegible solo Administrador ACTIVO con asignación/sesión/permiso efectivos; revocable y fuera de RECOVERY. Scopes de destino se verifican al enlazar, datos personales minimizados. DTO privado/no-store, filtros whitelist, consulta parametrizada y salida escapada. Plantillas cerradas <=500; historia dudosa suprimida en proyección, no modificada en DB. No rutas de escritura/exportación de CU30. [Implementación, evidencia y límites](ACTIVITY_AUDIT_IMPLEMENTATION.md).

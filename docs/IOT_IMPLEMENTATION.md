@@ -249,3 +249,10 @@ Explicar evidencia/frescura/no determinable sin enviar sensores/eventos concreto
 El [contrato AC1–AC15](DECISIONS.md#activity-audit-contract--readiness-for-cu30) prevé SENSOR_CREADO/EDITADO/REASIGNADO/HABILITADO/DESHABILITADO y SENSOR_CREDENCIAL_CONSULTADA. La última audita preparación autorizada de credencial derivada, no rotación; sin almacenar secreto/HMAC/hash/identificador. Recorder futuro en transacción; fallo de auditoría impide revelación. R conserva espacio al evento, reasignación destino y referencia mínima de origen. Eventos de ocupación y comunicación normal no duplican bitácora; D-10 intacta.
 
 Cambio exclusivamente documental. CU30 **NO IMPLEMENTADO**; implementación requiere nueva instrucción. La evidencia funcional anterior conserva su fecha y no se presenta como verificación nueva.
+
+
+## Integración de auditoría — Fase 12.6
+
+IotManagementService registra las seis acciones SENSOR_* de AC4: alta, edición de tipo, reasignación, habilitación, deshabilitación y consulta de credencial. Reasignación conserva recurso destino y referencias técnicas del origen; prevalece sobre edición. Provisionamiento audita dentro de transacción antes de revelar credencial: si falla, no hay revelación. No guarda identificador libre, secreto, firma o HMAC. ActivityVolumeTest ingiere veinte eventos firmados sin producir filas de actividad por lectura.
+
+[Implementación RF25/CU30, pruebas y resultados de integración](ACTIVITY_AUDIT_IMPLEMENTATION.md). Los cierres de fases anteriores conservan su alcance histórico. Fase 13 no iniciada.

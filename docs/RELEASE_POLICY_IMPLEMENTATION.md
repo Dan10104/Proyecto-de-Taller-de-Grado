@@ -190,3 +190,10 @@ Explicar políticas y resultados autorizados sin evaluar reservas o enviar sus e
 El [contrato AC1–AC15](DECISIONS.md#activity-audit-contract--readiness-for-cu30) prevé alta/activación/desactivación de versiones y asignación/retiro de política del espacio, incluidas guardas de compromisos en AC6. No nueva operación ni edición de versión. ALERTAR/LIBERAR conservan actividades, scheduler:liberacion, texto evaluación/política e idempotencia N4/D-08. Evaluaciones ordinarias no crean otra actividad; sin cambio de evidencia, locks o política efectiva.
 
 Cambio exclusivamente documental. CU30 **NO IMPLEMENTADO**; implementación requiere nueva instrucción. La evidencia funcional anterior conserva su fecha y no se presenta como verificación nueva.
+
+
+## Integración de auditoría — Fase 12.6
+
+ReleasePolicyManagementService registra cinco acciones de versión/estado/asignación/retiro; reemplazo es una asignación lógica, no retiro más asignación. Conserva locks, validación y guardas de compromisos, sin actividad por no-op o política inexistente. ALERTAR/LIBERAR retienen sus hitos y scheduler:liberacion; MANTENER_POR_USO/NO_DETERMINABLE no añaden filas. Regresión dirigida comprobó que una política inexistente conserva ValidationException, sin auditoría de ID no resuelto.
+
+[Implementación RF25/CU30, pruebas y resultados de integración](ACTIVITY_AUDIT_IMPLEMENTATION.md). Los cierres de fases anteriores conservan su alcance histórico. Fase 13 no iniciada.
