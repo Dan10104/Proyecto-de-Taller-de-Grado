@@ -34,10 +34,15 @@ try {
     app(LoanService::class)->approve($admin, $p);
     app(LoanService::class)->deliver($admin, $p, ['condicion_entrega' => 'Sintético', 'equipo_verificado' => true, 'receptor_verificado' => true]);
     app(LoanService::class)->receive($admin, $p, ['condicion' => 'ADECUADA']);
-    if (RegistroActividad::count() !== 4 || DB::transactionLevel() !== 0) {
+    $critical = RegistroActividad::where('critica', true)->orderBy('id')->get();
+    // CU26 also records the noncritical approval; only D-12's four milestones reach the chain.
+    if ($critical->pluck('accion')->all() !== ['RESERVA_APROBADA', 'RESERVA_CANCELADA', 'PRESTAMO_ENTREGADO', 'PRESTAMO_DEVUELTO']
+        || RegistroActividad::count() !== 5
+        || RegistroActividad::where('accion', 'PRESTAMO_APROBADO')->where('critica', false)->count() !== 1
+        || DB::transactionLevel() !== 0) {
         throw new RuntimeException;
     }
-    foreach (RegistroActividad::all() as $a) {
+    foreach ($critical as $a) {
         $stage = 'local';
         $e = app(LocalEvidenceService::class)->ensure($a->id);
         $stage = 'broadcast';
