@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ChatbotController;
 use App\Http\Controllers\DashboardController;
@@ -35,6 +36,8 @@ Route::get('/login', [AuthController::class, 'create'])->name('login');
 Route::post('/login', [AuthController::class, 'store'])->name('login.store');
 Route::post('/logout', [AuthController::class, 'destroy'])->name('logout');
 Route::middleware(['auth', 'access.session'])->group(function () {
+    Route::get('/actividad', [ActivityController::class, 'index'])->middleware('can:actividad.ver')->name('activity.index');
+    Route::get('/actividad/{actividad}', [ActivityController::class, 'show'])->whereNumber('actividad')->middleware('can:actividad.ver')->name('activity.show');
     Route::get('/asistente', [ChatbotController::class, 'index'])->middleware('can:chatbot.consultar')->name('chatbot.index');
     Route::post('/asistente/consultar', [ChatbotController::class, 'consult'])->middleware(['can:chatbot.consultar', ChatbotRateLimit::class])->name('chatbot.consult');
     Route::get('/reportes', [ReportController::class, 'index'])->middleware('can:reportes.ver')->name('reports.index');

@@ -7,6 +7,7 @@ use App\Enums\RolInstitucional;
 class PermissionCatalog
 {
     public const DEFINITIONS = [
+        'actividad.ver' => ['nombre' => 'Consultar bitácora de actividad', 'fuente' => 'RF25 / CU30 / AC1–AC15'],
         'chatbot.consultar' => ['nombre' => 'Consultar asistente de orientación', 'fuente' => 'RF24 / CU29 / CH1–CH12'],
         'dashboard.ver' => ['nombre' => 'Visualizar dashboard autorizado', 'fuente' => 'RF22 / CU27'],
         'reportes.ver' => ['nombre' => 'Consultar reportes administrativos', 'fuente' => 'RF23 / CU28'],

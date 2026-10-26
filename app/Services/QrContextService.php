@@ -8,13 +8,14 @@ use App\Models\Prestamo;
 use App\Models\Reserva;
 use App\Models\SesionAcceso;
 use App\Models\Usuario;
+use App\Services\Activity\ActivityAttempt;
 use Illuminate\Support\Facades\Gate;
 
 class QrContextService
 {
     public function __construct(private ResourceOperationService $operations) {}
 
-    public function transaction(Usuario $actor, string $permission, callable $work, ?string $sessionHash = null): mixed
+    public function transaction(Usuario $actor, string $permission, callable $work, ?string $sessionHash = null, ?ActivityAttempt $audit = null): mixed
     {
         return $this->operations->transaction($actor, $permission, function ($fresh) use ($work, $sessionHash, $permission) {
             // Web identity is checked again after waiting for RBAC, and held through commit.
@@ -27,7 +28,7 @@ class QrContextService
             Gate::forUser($fresh)->authorize($permission);
 
             return $work($fresh);
-        });
+        }, $audit);
     }
 
     public function target(Usuario $actor, string $type, int $id, bool $lock = false): array

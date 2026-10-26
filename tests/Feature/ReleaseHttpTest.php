@@ -25,7 +25,7 @@ class ReleaseHttpTest extends SecurityTestCase
     {
         $codes = ['liberacion.politicas.ver', 'liberacion.politicas.gestionar', 'liberacion.evaluaciones.ver_administrativas', 'liberacion.evaluaciones.ver_propias'];
         $this->assertEqualsCanonicalizing($codes, Permiso::where('codigo', 'like', 'liberacion.%')->pluck('codigo')->all());
-        $this->assertSame(51, Permiso::count());
+        $this->assertSame(52, Permiso::count());
         foreach (['Administrador', 'Encargado de Laboratorio', 'Docente', 'Estudiante'] as $role) {
             $user = $this->user($role);
             foreach ($codes as $code) {

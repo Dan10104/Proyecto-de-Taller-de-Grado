@@ -136,9 +136,12 @@ class NotificationHttpTest extends SecurityTestCase
     public function test_no_delete_unread_all_or_global_activity_routes_exist(): void
     {
         $this->login($this->user('Administrador'));
-        foreach (['/actividad', '/notificaciones/todas', '/notificaciones/1/no-leida'] as $url) {
+        foreach (['/notificaciones/todas', '/notificaciones/1/no-leida'] as $url) {
             $this->get($url)->assertNotFound();
         }
         $this->delete('/notificaciones/1')->assertStatus(405);
+        // CU30 is now independently authorized; notifications do not grant it.
+        Rol::where('nombre', 'Administrador')->sole()->permisos()->detach(Permiso::where('codigo', 'actividad.ver')->value('id'));
+        $this->get('/actividad')->assertForbidden();
     }
 }

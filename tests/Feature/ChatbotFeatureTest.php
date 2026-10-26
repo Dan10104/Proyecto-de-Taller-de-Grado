@@ -103,7 +103,7 @@ class ChatbotFeatureTest extends SecurityTestCase
     {
         $this->revoke('chatbot.consultar');
         $this->seed(SecuritySeeder::class);
-        $this->assertSame(51, Permiso::count());
+        $this->assertSame(52, Permiso::count());
         $this->assertFalse(app(AuthorizationService::class)->allows($this->user('Docente'), 'chatbot.consultar'));
     }
 

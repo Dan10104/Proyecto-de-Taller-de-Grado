@@ -43,9 +43,7 @@ class SpaceCatalogController extends Controller
         }
         $rules[$uniqueField][] = Rule::unique($record->getTable(), $uniqueField)->ignore($record->getKey());
         $data = $request->validate($rules);
-        $service->change($request->user(), 'espacios.gestionar', function () use ($record, $data) {
-            $record->fill($data)->save();
-        }, $uniqueField);
+        $service->saveCatalog($request->user(), $catalogo, $registro, $data);
 
         return redirect()->route('espacios.catalogos', $catalogo)->with('success', 'Catálogo actualizado correctamente.');
     }

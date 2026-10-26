@@ -1,0 +1,18 @@
+<script setup>
+import { Link } from '@inertiajs/vue3';
+import AppLayout from '../../Layouts/AppLayout.vue';
+import { dateLabel } from '../../security';
+defineProps({ actividad: Object });
+</script>
+<template>
+  <AppLayout title="Detalle de actividad">
+    <div class="page-heading"><div><span class="eyebrow">BITÁCORA · REGISTRO #{{ actividad.id }}</span><h1>{{ actividad.accion_label }}</h1><p>Registro de solo lectura. No modifica la operación ni verifica Blockchain.</p></div><Link href="/actividad" class="btn btn-secondary">Volver a bitácora</Link></div>
+    <div class="audit-detail-grid">
+      <section class="panel audit-detail"><h2>Actividad registrada</h2><dl><div><dt>ID técnico</dt><dd>{{ actividad.id }}</dd></div><div><dt>Fecha y hora · America/La_Paz</dt><dd><time :datetime="actividad.fecha_hora">{{ dateLabel(actividad.fecha_hora) }}</time></dd></div><div v-if="actividad.accion"><dt>Acción</dt><dd class="audit-code">{{ actividad.accion }}</dd></div><div><dt>Resultado</dt><dd>{{ actividad.resultado }}</dd></div><div><dt>Criticidad</dt><dd>{{ actividad.critica ? 'Crítica' : 'No crítica' }}</dd></div></dl><h3>Descripción</h3><p>{{ actividad.descripcion || 'Sin descripción disponible para consulta segura.' }}</p></section>
+      <section class="panel audit-detail"><h2>Responsables y referencias</h2><dl><div v-if="actividad.actor"><dt>Actor</dt><dd><Link v-if="actividad.actor.url" :href="actividad.actor.url">{{ actividad.actor.label }}</Link><span v-else>{{ actividad.actor.label }}</span></dd></div><div v-if="actividad.proceso_responsable"><dt>Proceso responsable</dt><dd>{{ actividad.proceso_responsable }}</dd></div><div v-if="actividad.usuario_afectado"><dt>Usuario afectado</dt><dd><Link v-if="actividad.usuario_afectado.url" :href="actividad.usuario_afectado.url">{{ actividad.usuario_afectado.label }}</Link><span v-else>{{ actividad.usuario_afectado.label }}</span></dd></div></dl><p class="audit-note">Los IDs conservan la referencia histórica. Los nombres, cuando están autorizados, corresponden a los datos actuales.</p><h3>Contexto de la operación</h3><ul v-if="actividad.referencias.length" class="audit-links"><li v-for="ref in actividad.referencias" :key="ref.campo"><Link v-if="ref.url" :href="ref.url">{{ ref.label }}</Link><span v-else>{{ ref.label }}</span></li></ul><p v-else>Sin FK de contexto. La plantilla puede incluir una referencia técnica adicional.</p><div v-if="actividad.evidencia" class="audit-evidence"><h3>Trazabilidad</h3><Link v-if="actividad.evidencia.url" :href="actividad.evidencia.url" class="btn btn-secondary">Ver evidencia de trazabilidad</Link><p v-else>{{ actividad.evidencia.existe ? 'Evidencia asociada. El acceso requiere permiso vigente de trazabilidad.' : 'Sin evidencia asociada.' }}</p></div></section>
+    </div>
+  </AppLayout>
+</template>
+<style scoped>
+.audit-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}.audit-detail{padding:1.5rem;min-width:0}.audit-detail h2{font-size:1.1rem;margin:0 0 1.25rem}.audit-detail h3{font-size:.95rem;margin:1.4rem 0 .65rem}.audit-detail dl{margin:0}.audit-detail dl>div{padding:.7rem 0;border-bottom:1px solid #e3e9ed}.audit-detail dt{font-size:.8rem;color:#586c77;margin-bottom:.3rem}.audit-detail dd{margin:0;overflow-wrap:anywhere}.audit-detail p{line-height:1.65;overflow-wrap:anywhere}.audit-note{font-size:.85rem;color:#586c77;margin-top:1rem}.audit-code{font-size:.85rem}.audit-links{padding-left:1.2rem;line-height:2}.audit-evidence{border-top:1px solid #e3e9ed;margin-top:1rem}.audit-detail a{color:#12617d}@media(max-width:950px){.audit-detail-grid{grid-template-columns:1fr}}@media(max-width:600px){.audit-detail{padding:1rem}}
+</style>
