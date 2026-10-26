@@ -1,6 +1,8 @@
 # Modelo del dominio
 
-**Estado vigente — Fase 9 implementada (2026-10-25/26).** RF19/CU24 y RF20/CU25, cuatro actividades críticas, dos tablas y tres permisos implementados conforme a D-12. [Implementación, pruebas offline, excepción temporal dev de Zod y Sepolia pendiente de testETH](BLOCKCHAIN_IMPLEMENTATION.md). CU30 general y Fase 10 permanecen pendientes. Las secciones de cierres anteriores conservan su contexto histórico.
+**Estado documental vigente — Fase 9.5 (2026-10-26).** Contrato RF21/CU26 cerrado; [Readiness for Phase 10](DECISIONS.md#readiness-for-phase-10), **0 bloqueantes documentales**. Fase 10 no iniciada. La implementación base sigue siendo Fase 9, con validación offline y smoke Sepolia real pendiente de testETH. Los cierres anteriores conservan su contexto histórico.
+
+**Estado funcional base — Fase 9 implementada (2026-10-25/26).** RF19/CU24 y RF20/CU25, cuatro actividades críticas, dos tablas y tres permisos implementados conforme a D-12. [Implementación, pruebas offline, excepción temporal dev de Zod y Sepolia pendiente de testETH](BLOCKCHAIN_IMPLEMENTATION.md). CU30 general y Fase 10 permanecen pendientes. Las secciones de cierres anteriores conservan su contexto histórico.
 
 **Estado al cierre funcional de Fase 8 (2026-10-24).** Los enums de modo/resultado y EvaluacionLiberacion materializan el dominio congelado. Una evaluación relaciona reserva/política y Q/E mediante M:N histórica. Solo LIBERAR cambia APROBADA→LIBERADA; no cambia estado del espacio ni crea FINALIZADA. [Informe de implementación, verificaciones y límites](RELEASE_POLICY_IMPLEMENTATION.md). Las declaraciones de fases anteriores que siguen a continuación se conservan como historia de esos cierres.
 
@@ -217,3 +219,11 @@ LIBERADA/CU23, QR individual, IoT, rechazo, aprobación de préstamo e incidenci
 ## Subconjunto de trazabilidad implementado en Fase 9
 
 RegistroActividad se usa únicamente para RESERVA_APROBADA, RESERVA_CANCELADA, PRESTAMO_ENTREGADO y PRESTAMO_DEVUELTO exitosos/humanos. Cada actividad tiene 0..1 EvidenciaTrazabilidad; los hitos históricos reconstruyen el hash sin depender del estado actual. Pendiente/registrada describe registro externo; válido/inconsistente/pendiente/no verificable describe la última comprobación, conceptos separados. [Schemas y exclusiones](BLOCKCHAIN_IMPLEMENTATION.md#canónico-y-privacidad). No se declara completado el dominio de CU30 general ni notificaciones.
+
+## Contrato de Notificacion — cierre documental de Fase 9.5
+
+[RF21/CU26, N1–N9](DECISIONS.md#notification-contract--readiness-for-phase-10) define Notificacion como mensaje histórico interno: pertenece a un Usuario destinatario y obligatoriamente a un RegistroActividad. Una actividad puede originar cero o varias notificaciones y, si es una de las cuatro críticas D-12, su evidencia independiente. La notificación no cambia el evento, concede permisos ni sustituye el objeto de negocio.
+
+Tipos exactos: SOLICITUD, DECISION, CANCELACION, ENTREGA, DEVOLUCION, VENCIMIENTO, INCIDENCIA y LIBERACION. Las 17 acciones N3 distinguen hechos del dominio de tipos de presentación: MANTENIMIENTO_* se presenta como INCIDENCIA; ALERTAR y LIBERADA como LIBERACION; recepción pendiente de revisión y devolución confirmada como DEVOLUCION, con semánticas distintas. VENCIDO sigue siendo condición calculada de ENTREGADO/fin_previsto, nunca estado adicional. Un rechazo confirmado tiene resultado de actividad EXITO.
+
+La identidad de destinatarios directos deriva del evento (solicitante/receptor/afectado por devolución). Los grupos administrativos son una regla de permisos efectivos, no una entidad nueva ni un snapshot de usuarios. El cierre del conjunto y la ventana de recuperación están definidos en N6. leida_en NULL/con fecha expresa no leída/leída; título y mensaje son snapshot humano inmutable. No añadir estados de entrega/procesamiento, preferencia de canal, conversación, inbox global o usuario Sistema. CU30 general y toda implementación de Fase 10 siguen diferidos.

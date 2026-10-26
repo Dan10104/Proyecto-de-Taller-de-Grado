@@ -1,5 +1,7 @@
 # Políticas de liberación de reservas — Fase 8
 
+**Estado documental vigente — Fase 9.5 (2026-10-26).** Contrato RF21/CU26 cerrado; [Readiness for Phase 10](DECISIONS.md#readiness-for-phase-10), **0 bloqueantes documentales**. Fase 10 no iniciada. La implementación base sigue siendo Fase 9, con validación offline y smoke Sepolia real pendiente de testETH. Los cierres anteriores conservan su contexto histórico.
+
 Fecha: 2026-10-24. RF18 → CU23 implementado bajo el [contrato D-08 congelado](DECISIONS.md#contrato-de-liberación-de-reservas--cierre-d-08-de-fase-75), sin reinterpretar sus 24 filas × dos modos. Workspace único y remoto oficial conservados. La implementación parte de `08b6b08bcdba423ec1d2b1a519da3b9d6c4f16cd`; rama `feature/phase-8-release-policies`. Este informe actualiza el estado de ejecución de las fotografías documentales anteriores, que conservan su alcance histórico.
 
 ## Esquema y dominio
@@ -153,3 +155,11 @@ Blockchain/CU24/CU25, canonicalización y hashing de operaciones críticas **no 
 [D-12 y Readiness for Phase 9](DECISIONS.md#readiness-for-phase-9) quedaron cerrados documentalmente el 2026-10-25. **APROBADA→LIBERADA/CU23 no es una acción crítica Blockchain del alcance inicial.** CU24 extiende únicamente CU09/CU10/CU17/CU18; evaluaciones_liberacion, eventos IoT y validaciones QR mantienen la evidencia completa de CU23. No se añade actividad crítica, hash, envío ni hook Blockchain a la liberación.
 
 La aprobación previa conserva su evidencia y sus campos históricos; CU25 podrá verificarla después de LIBERADA sin usar estado actual en el canónico. Incorporar liberación a la cadena exigiría una nueva decisión/versionado. D-08, políticas, scheduler, locks y criterios T-L se conservan; T-B10/T-B29 verificarán esta exclusión y la historia en Fase 9. Las cifras de pruebas de Fase 8 son históricas; no se repitieron ni se modificó código durante Fase 8.5.
+
+## Integración RF21 prevista — cierre de Fase 9.5
+
+La matriz, ventanas, evidencia, locks/NOWAIT e idempotencia D-08 de CU23 permanecen intactos. [N3/N4](DECISIONS.md#notification-contract--readiness-for-phase-10) fija dos productores futuros: evaluación nueva ALERTAR → RESERVA_ALERTADA_LIBERACION; evaluación nueva LIBERAR y transición real APROBADA→LIBERADA → RESERVA_LIBERADA. Ambas actividades EXITO/critica=FALSE, actor_id NULL, proceso_responsable scheduler:liberacion, contexto reserva/espacio/solicitante; misma transacción que evaluación y pivotes. Referencia humana segura de evaluación/política en descripcion, sin columna nueva ni snapshot de destinatarios.
+
+Un ciclo terminal/reintento que omite evaluación no genera actividad ni aviso adicionales. MANTENER_POR_USO y NO_DETERMINABLE no notifican en el alcance inicial. ALERTAR no cambia APROBADA ni comunica liberación; LIBERADA sí informa del cambio confirmado. Destinatarios de ambas: titular y usuarios activos con liberacion.evaluaciones.ver_administrativas, por permiso efectivo. Tipo LIBERACION, no evidencia Blockchain crítica.
+
+Las filas notificaciones se generan después del commit, sin locks CU23, por el servicio común e independientemente de Blockchain. Fallo de aviso no deshace evaluación/liberación. Texto histórico con fecha del evento; recuperación N6 de 24 h y sin backfill de evaluaciones previas a habilitación RF21. Enlace a evaluación/reserva exige permiso actual y no filtra evidencias QR/IoT. T-N36–T-N38 probarán integración/concurrencia; no se implementa ahora ningún hook ni se modifica el scheduler vigente.

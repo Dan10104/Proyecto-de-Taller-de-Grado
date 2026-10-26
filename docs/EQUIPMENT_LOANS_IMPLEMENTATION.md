@@ -1,5 +1,7 @@
 # Equipamiento, préstamos, entrega, devolución e incidencias — Fase 5
 
+**Estado documental vigente — Fase 9.5 (2026-10-26).** Contrato RF21/CU26 cerrado; [Readiness for Phase 10](DECISIONS.md#readiness-for-phase-10), **0 bloqueantes documentales**. Fase 10 no iniciada. La implementación base sigue siendo Fase 9, con validación offline y smoke Sepolia real pendiente de testETH. Los cierres anteriores conservan su contexto histórico.
+
 Fecha: 2026-10-23. Núcleo de CU12–CU19 y RF9–RF15 implementado y validado; CU19 amplía CU06 y las revalidaciones de reservas. Se aplica el contrato congelado de Fase 4.5, D-02/D-11 y D-04/D-05, sin cambiar el SQL final. Las obligaciones de QR, Blockchain, notificaciones y bitácora general siguen pendientes de sus fases. **Fase 6 no iniciada.**
 
 ## Persistencia y dominio
@@ -202,3 +204,15 @@ La Fase 6 posterior implementa CU11/CU20 y las extensiones opcionales de CU17/CU
 La entrega usa identidad de préstamo/equipo/hito, entregador, receptor, fecha y hashes secundarios de condición/observación. La devolución usa préstamo/equipo/hito, recibido_por_id, confirmado_por_id, registrada_en, confirmada_en, condición y hashes de descripción/observación. Esquemas exactos, JCS y tipos en D-12. recepcion_confirmada_en sigue con su contrato vigente y no entra al canónico.
 
 PENDIENTE_REVISION/NO_DETERMINABLE no produce evidencia de devolución. La confirmación posterior actualiza el mismo hito, conserva responsable de recepción inicial/fecha y crea una sola actividad al pasar ENTREGADO→DEVUELTO; desde ahí los campos del hito son inmutables. Incidencia derivada no genera una segunda evidencia Blockchain. Fallo local de actividad revierte negocio; fallo externo no. Sin cambios funcionales en esta fase; T-B08/09/11/29 especifican futuras pruebas/regresiones.
+
+## Integración RF21 prevista — cierre de Fase 9.5
+
+[Contrato N2–N8](DECISIONS.md#notification-contract--readiness-for-phase-10): PRESTAMO_SOLICITADO a AP (prestamos.resolver + prestamos.ver_administrativos); aprobado/rechazado a solicitante, tipo DECISION; entrega a solicitante/receptor D-11, tipo ENTREGA; devolución final a solicitante, tipo DEVOLUCION. Se reutilizan las actividades críticas de entrega y devolución de Fase 9, también desde QR, sin duplicarlas. Nuevas actividades de solicitud/decisión son no críticas.
+
+Se adopta DEVOLUCION_PENDIENTE_REVISION, tipo DEVOLUCION, solo para recepción inicial NO_DETERMINABLE/PENDIENTE_REVISION y dirigida a AD (prestamos.registrar_devolucion + prestamos.ver_administrativos), excluyendo al actor redundante. No crea PRESTAMO_DEVUELTO ni avisos repetidos al solicitante; confirmación posterior conserva el hito y genera el evento final crítico normal.
+
+Vencimiento: primera detección ENTREGADO y ahora > fin_previsto produce una actividad PRESTAMO_VENCIDO/EXITO/no crítica con actor NULL y proceso scheduler:vencimientos, dirigida a S y AD. Como máximo una por préstamo bajo su lock; no cambia estado, custodia ni disponibilidad. Relectura tras espera y carrera con devolución definidas en N5; scheduler configurable cada minuto por defecto, sin incorporarlo aún.
+
+CU19 distingue INCIDENCIA_REGISTRADA/CERRADA y MANTENIMIENTO_REGISTRADO/CERRADO, siempre tipo INCIDENCIA. AI son cuentas activas con incidencias.ver administrativo, excluyendo actor. El solicitante también recibe apertura/cierre únicamente cuando existe devolución vinculada; no inferir todos los potencialmente afectados del recurso. Mensajes indican revisión/cierre sin acusación ni prometer disponibilidad. La incidencia derivada y sus actividades pertenecen a la misma transacción de devolución.
+
+Conservar jerarquía de locks y estados Fase 5; generar avisos después del commit sin retener locks de equipo/préstamo/incidencia. Lote, privacidad y límites de recuperación N6–N7. T-N05/T-N30–T-N35 y regresiones son futuros; este apartado no crea código, scheduler ni pruebas de Fase 10.

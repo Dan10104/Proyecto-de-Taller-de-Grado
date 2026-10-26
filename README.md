@@ -2,7 +2,9 @@
 
 Sistema de información para la gestión y control de reservas de espacios académicos y préstamos de equipamiento tecnológico en la FICCT, con monitoreo de ocupación mediante IoT y trazabilidad de operaciones mediante Blockchain.
 
-**Estado: Fase 9 implementada; RF19/CU24 y RF20/CU25.** Cuatro operaciones críticas, JCS/SHA-256, evidencia local, Registry, driver Sepolia, reconciliación y administración. [Informe, verificaciones y límites](docs/BLOCKCHAIN_IMPLEMENTATION.md): integración offline completa; Sepolia real pendiente de testETH. Auditorías productivas sin vulnerabilidades; excepción temporal autorizada para cinco entradas altas de Zod exclusivamente dev de Hardhat. CU30 general y Fase 10 no iniciados.
+**Estado documental: Fase 9.5 completada; contrato RF21/CU26 cerrado y 0 bloqueantes documentales para Fase 10.** [Decisiones y límites de recuperación](docs/DECISIONS.md#notification-contract--readiness-for-phase-10), [Readiness](docs/DECISIONS.md#readiness-for-phase-10) y [40 criterios de aceptación futuros](docs/BUSINESS_RULES.md#aceptación-de-notificaciones-prevista-para-fase-10). Fase 10 requiere nueva instrucción y **no está iniciada**. Solo documentación; sin migración, modelo, permisos DB, UI, hooks, servicios ni scheduler nuevos.
+
+**Estado funcional base: Fase 9 implementada; RF19/CU24 y RF20/CU25.** Cuatro operaciones críticas, JCS/SHA-256, evidencia local, Registry, driver Sepolia, reconciliación y administración. [Informe, verificaciones y límites](docs/BLOCKCHAIN_IMPLEMENTATION.md): integración offline completa; Sepolia real pendiente de testETH. Auditorías productivas sin vulnerabilidades; excepción temporal autorizada para cinco entradas altas de Zod exclusivamente dev de Hardhat. CU30 general y Fase 10 no iniciados.
 
 La implementación conserva políticas de liberación/CU23, evidencia QR/IoT y scheduler de [Fase 8](docs/RELEASE_POLICY_IMPLEMENTATION.md), e incorpora ahora las dos tablas, contrato, wallet dedicada, drivers, permisos y configuración de Fase 9. Notificaciones y CU30 general siguen pendientes; la aceptación física QR conserva el límite de su propio informe.
 
@@ -62,7 +64,7 @@ La suite usa exclusivamente `espacio_u_testing` en MySQL real, con cuenta separa
 | [Seguridad](docs/SECURITY_POLICY.md) | Secretos, datos, controles y revisión antes de cada push |
 | [Plan](docs/IMPLEMENTATION_PLAN.md) | Inventario real del entorno y Fases 1–14 |
 | [Entorno de desarrollo](docs/DEVELOPMENT_SETUP.md) | Versiones, instalación, MySQL aislado, ejecución y verificaciones |
-| [Decisiones](docs/DECISIONS.md) | 17 decisiones clasificadas, contratos congelados y detalles diferidos |
+| [Decisiones](docs/DECISIONS.md) | 17 decisiones clasificadas y contrato RF21/CU26 cerrado sin inventar un nuevo D |
 
 ## Estructura actual
 
@@ -151,3 +153,11 @@ Ejecutar la integración local y `php artisan test` secuencialmente: ambas usan 
 Configurar únicamente en `.env` local: `BLOCKCHAIN_ENABLED`, `BLOCKCHAIN_NETWORK`, `BLOCKCHAIN_CHAIN_ID`, `BLOCKCHAIN_RPC_URL`, `BLOCKCHAIN_PRIVATE_KEY`, `BLOCKCHAIN_CONTRACT_ADDRESS`, `BLOCKCHAIN_CONFIRMATIONS`, `BLOCKCHAIN_DEPLOYMENT_BLOCK`, `BLOCKCHAIN_NODE_BINARY`. `.env.example` incluye solo defaults seguros/placeholders. Con integración deshabilitada, las operaciones y evidencias locales funcionan sin red. Sepolia exige wallet dedicada y testETH: [procedimiento, scripts, privacidad y estado real](docs/BLOCKCHAIN_IMPLEMENTATION.md#configuración-y-operación-reproducible). Nunca usar fondos o wallet personal.
 
 Producción del módulo: `npm ci --prefix blockchain --omit=dev --ignore-scripts`, Node compatible y ABI generado previamente; no instalar Hardhat/Zod en el runtime web. Auditar por separado raíz, módulo completo y módulo `--omit=dev`. La excepción temporal de Zod está delimitada en el informe y debe retirarse al existir una actualización compatible.
+
+## Contrato de notificaciones cerrado en Fase 9.5
+
+Centro interno RF21/CU26 previsto, con ocho tipos oficiales y 17 acciones. Se reutilizan las cuatro actividades críticas de Fase 9; trece productores no críticos cubrirán solicitudes, decisiones, revisión pendiente, vencimiento, incidencias/mantenimiento y ALERTAR/LIBERADA. Solo cuentas activas y permisos efectivos; CU26 propio para los cuatro roles con notificaciones.ver_propias, todavía no creado.
+
+Actividad y negocio en una transacción; avisos después del commit. Clave lógica actividad+destinatario+tipo, lock por actividad y lote atómico sin nueva UNIQUE. Recuperación automática de 24 h: primer lote persistido cierra el conjunto administrativo; los faltantes directos se reconstruyen y los límites sin snapshot quedan expresos en N6. Plantillas históricas planas, lectura idempotente y enlaces reautorizados. Sin canales externos, realtime complejo, avisos técnicos Blockchain ni CU30 general.
+
+Los originales Word/PDF se conservaron y no se publican. La revisión de 9.5 es documental; no presenta T-N01–T-N40 como pruebas ejecutadas ni vuelve a acreditar auditorías de Fase 9. Smoke Sepolia real pendiente por testETH, independiente y sin gestiones de financiación/despliegue en esta fase.

@@ -1,6 +1,8 @@
 # Trazabilidad de requisitos
 
-**Estado vigente — Fase 9 implementada (2026-10-25/26).** RF19/CU24 y RF20/CU25, cuatro actividades críticas, dos tablas y tres permisos implementados conforme a D-12. [Implementación, pruebas offline, excepción temporal dev de Zod y Sepolia pendiente de testETH](BLOCKCHAIN_IMPLEMENTATION.md). CU30 general y Fase 10 permanecen pendientes. Las secciones de cierres anteriores conservan su contexto histórico.
+**Estado documental vigente — Fase 9.5 (2026-10-26).** Contrato RF21/CU26 cerrado; [Readiness for Phase 10](DECISIONS.md#readiness-for-phase-10), **0 bloqueantes documentales**. Fase 10 no iniciada. La implementación base sigue siendo Fase 9, con validación offline y smoke Sepolia real pendiente de testETH. Los cierres anteriores conservan su contexto histórico.
+
+**Estado funcional base — Fase 9 implementada (2026-10-25/26).** RF19/CU24 y RF20/CU25, cuatro actividades críticas, dos tablas y tres permisos implementados conforme a D-12. [Implementación, pruebas offline, excepción temporal dev de Zod y Sepolia pendiente de testETH](BLOCKCHAIN_IMPLEMENTATION.md). CU30 general y Fase 10 permanecen pendientes. Las secciones de cierres anteriores conservan su contexto histórico.
 
 **Estado al cierre funcional de Fase 8 (2026-10-24).** RF18 → CU23 → PoliticaLiberacion → EvaluacionLiberacion + pivotes QR/IoT → ReleaseEvaluationService/ReleaseDecision → ReleaseScanService/Artisan/Scheduler → suites Release*. Los 217 textos normativos se preservan; T-L01–T-L36 tienen mapa de evidencia en el informe. No se acredita notificación funcional, Blockchain ni CU30. [Informe de implementación, verificaciones y límites](RELEASE_POLICY_IMPLEMENTATION.md). Las declaraciones de fases anteriores que siguen a continuación se conservan como historia de esos cierres.
 
@@ -50,7 +52,7 @@ La restricción conserva el contenido normativo del identificador; el criterio l
 | RF18 — Aplicación de políticas de liberación de reservas | Importante | El sistema deberá utilizar la información de las reservas, validaciones mediante QR y eventos de ocupación IoT para apoyar la aplicación de políticas de liberación de espacios reservados que no estén siendo utilizados. | CU23 | 8 | CU23 implementado y probado en Fase 8; notificaciones diferidas a 10 | T-L01–T-L36: 48 resultados de matriz, versiones, ventanas, evidencia, idempotencia y carreras. Notificación funcional diferida a 10. |
 | RF19 — Generación de evidencias de trazabilidad mediante Blockchain | Esencial | El sistema deberá generar hashes y evidencias verificables de las operaciones definidas como críticas y registrar una referencia de dichas evidencias mediante el mecanismo Blockchain seleccionado, sin publicar datos personales u operativos completos. | CU24 | 9 | Implementado Fase 9; pruebas offline verificadas, Sepolia pendiente de testETH | T-B01–T-B39 cubiertos por pruebas offline y QA Fase 9; T-B40 pendiente de testETH; ver BLOCKCHAIN_IMPLEMENTATION. |
 | RF20 — Verificación de evidencias de trazabilidad | Esencial | El sistema deberá permitir a los usuarios autorizados verificar la integridad de una operación crítica recalculando su hash y comparándolo con la evidencia de trazabilidad registrada. | CU25 | 9 | Implementado Fase 9; pruebas offline verificadas, Sepolia pendiente de testETH | T-B01–T-B39 cubiertos por pruebas offline y QA Fase 9; T-B40 pendiente de testETH; ver BLOCKCHAIN_IMPLEMENTATION. |
-| RF21 — Generación de notificaciones y avisos | Importante | El sistema deberá generar notificaciones internas para informar a los usuarios sobre eventos relevantes relacionados con reservas, préstamos, devoluciones, vencimientos, incidencias y otras operaciones que requieran su atención. | CU26 | 10 | Planificado web | T-CU26 — Aviso propio/ajeno; lectura persistida; sin avisos; fallo de generación no revierte operación confirmada. |
+| RF21 — Generación de notificaciones y avisos | Importante | El sistema deberá generar notificaciones internas para informar a los usuarios sobre eventos relevantes relacionados con reservas, préstamos, devoluciones, vencimientos, incidencias y otras operaciones que requieran su atención. | CU26 | 10 | Contrato cerrado en 9.5; implementación pendiente | T-CU26 / T-N01–T-N40 — Contrato N1–N9; esquema, eventos, propiedad, lectura, post-commit, recuperación acotada y concurrencia (pruebas futuras). |
 | RF22 — Visualización de dashboard e indicadores | Importante | El sistema deberá presentar paneles de control con indicadores relacionados con reservas, espacios académicos, equipamiento tecnológico, préstamos, ocupación e incidencias, mostrando únicamente la información autorizada para cada rol. | CU27 | 11 | Planificado web | T-CU27 — Indicadores por rol y filtros consistentes; sin datos; cambios de permisos; <=5 s con carga piloto. |
 | RF23 — Generación y exportación de reportes | Importante | El sistema deberá permitir a los usuarios autorizados generar reportes sobre reservas, espacios académicos, equipamiento tecnológico, préstamos, incidencias y actividad del sistema, con filtros y opciones de exportación en formatos definidos como PDF y Excel. | CU28 | 11 | Planificado web | T-CU28 — PDF/Excel coherentes con filtros/permisos; 10.000 filas <=30 s; reporte vacío; fallo de exportación sin bloquear a otros. |
 | RF24 — Chatbot de asistencia al usuario | Importante | El sistema deberá ofrecer un chatbot de asistencia que oriente a los usuarios sobre el funcionamiento de la plataforma, reservas, préstamos, códigos QR, reportes y demás procedimientos habilitados, sin ejecutar de forma autónoma operaciones que requieran autorización. | CU29 | 12 | Planificado web | T-CU29 — Petición de aprobar/cancelar no modifica nada; contexto ajeno excluido; proveedor caído; respuesta/aviso objetivo <=15 s. |
@@ -498,3 +500,22 @@ La excepción ON UPDATE RESTRICT solo para fk_registro_actor fue autorizada el 2
 | IS-09, IC-09 / integración pública | Driver real Sepolia/11155111 y scripts seguros implementados | Validación local completa; T-B40/red Sepolia pendiente de testETH, no acreditada con fake |
 
 [Informe y resultados de Fase 9](BLOCKCHAIN_IMPLEMENTATION.md). Los textos oficiales de requisitos y las secciones históricas se conservan. RF19 se limita al conjunto cerrado de cuatro acciones; no se amplía configuración dinámica. RF25/CU30 general y RF21/CU26 siguen pendientes.
+
+## Cierre documental de RF21/CU26 — Fase 9.5
+
+Se conserva el texto normativo de RF21 y el inventario de 217 requisitos. El estado de RF21 pasa a **contrato cerrado / implementación pendiente**; no se declara satisfecho mediante documentación. [DECISIONS N1–N9](DECISIONS.md#notification-contract--readiness-for-phase-10) es la especificación de implementación; [T-N01–T-N40](BUSINESS_RULES.md#aceptación-de-notificaciones-prevista-para-fase-10) es aceptación futura.
+
+| Requisito / flujo | Decisión contractual | Evidencia exigida en Fase 10 |
+| --- | --- | --- |
+| RF21 / CU26 | Centro interno, ocho tipos, solo propios, lectura y contador | T-N01–T-N06, T-N22–T-N29, T-N40 |
+| RF6–7 / CU07–CU10 | Eventos de solicitud/decisión/cancelación y actores; críticos reutilizados | T-N02–T-N04, T-N07–T-N09 |
+| RF11–14 / CU14–CU18 | Solicitud, decisión, entrega, devolución pendiente/final y vencimiento calculado | T-N02–T-N06, T-N30–T-N32 |
+| RF15 / CU19 | Incidencia/mantenimiento, apertura/cierre y devolución vinculada | T-N33–T-N35 |
+| RF18 / CU23 | ALERTAR/LIBERAR; sin MANTENER/NO_DETERMINABLE | T-N36–T-N38 |
+| RF19–20 / CU24–CU25 | Cuatro actividades compartidas; consumidor Blockchain independiente, sin avisos técnicos | T-N02, T-N09, T-N40 |
+| DB-08/09/28 y propiedad | SQL exacto, relación obligatoria, snapshot humano y autorizaciones | T-N01, T-N22–T-N29 |
+| R-PR-07 / separación del negocio | Actividad transaccional; avisos post-commit y recuperación acotada | T-N07–T-N21 |
+| Concurrencia y rendimiento | Clave lógica/lock, lote atómico, ventana, índices y paginación | T-N10–T-N21, T-N24, T-N30–T-N31, T-N38–T-N39 |
+| RF25 / CU30 | Solo productores mínimos de RF21; bitácora general sigue diferida | No declarar RF25/CU30 completos por incorporar estas actividades |
+
+Sin pruebas funcionales nuevas en 9.5. Sepolia real pendiente por testETH permanece como pendiente separado de Fase 9, no bloquea el contrato ni la implementación futura de RF21.

@@ -1,6 +1,8 @@
 # Registro de decisiones y auditoría documental
 
-**Estado vigente — Fase 9 implementada (2026-10-25/26).** D-12 aplicada a RF19/CU24 y RF20/CU25. [Implementación y verificación offline, excepciones autorizadas y Sepolia pendiente de testETH](BLOCKCHAIN_IMPLEMENTATION.md). CU30 general y Fase 10 no iniciados. Los cierres documentales anteriores conservan su contexto histórico.
+**Estado documental vigente — Fase 9.5 (2026-10-26).** Contrato RF21/CU26 cerrado; [Readiness for Phase 10](#readiness-for-phase-10), **0 bloqueantes documentales**. Fase 10 no iniciada. La implementación base sigue siendo Fase 9, con validación offline y smoke Sepolia real pendiente de testETH. Los cierres anteriores conservan su contexto histórico.
+
+**Estado funcional base — Fase 9 implementada (2026-10-25/26).** D-12 aplicada a RF19/CU24 y RF20/CU25. [Implementación y verificación offline, excepciones autorizadas y Sepolia pendiente de testETH](BLOCKCHAIN_IMPLEMENTATION.md). CU30 general y Fase 10 no iniciados. Los cierres documentales anteriores conservan su contexto histórico.
 
 **Estado al cierre funcional de Fase 8 (2026-10-24).** D-08 continúa RESUELTA PARA FASE 8 y ahora aplicada; no se altera su contrato ni Readiness histórico. Las diferencias entre estado documental 7.5 y software actual se registran en RELEASE_POLICY_IMPLEMENTATION. D-12 se cerró posteriormente en Fase 8.5; ver el estado vigente superior. [Informe de implementación, verificaciones y límites](RELEASE_POLICY_IMPLEMENTATION.md). Las declaraciones de fases anteriores que siguen a continuación se conservan como historia de esos cierres.
 
@@ -1679,3 +1681,199 @@ Rama docs/phase-8.5-blockchain-decisions desde main/origin/main limpio f3c38ea2f
 D-12 permanece RESUELTA PARA FASE 9. Su implementación está descrita en [BLOCKCHAIN_IMPLEMENTATION](BLOCKCHAIN_IMPLEMENTATION.md). La instrucción posterior §11 fija proceso_responsable NULL para las cuatro actividades humanas. ON UPDATE RESTRICT solo fk_registro_actor conserva la autorización 8.5 y el CHECK.
 
 El usuario autorizó canonicalize 5.1.0 por proceso Node local tras fallos RFC8785 de los candidatos PHP; builders, servicios y orquestación permanecen PHP. También autorizó temporalmente cinco entradas altas transitivas Zod exclusivamente dev del toolchain Hardhat, con runtime productivo en cero, controles y deuda D-12-DEV-ZOD. Ambas decisiones y sus límites se documentan en el informe. Ninguna autoriza vulnerabilidades productivas ni ampliar operaciones críticas. Sepolia pendiente de testETH es una dependencia externa permitida por §62/157, sin falsificar resultados.
+
+## Notification Contract / Readiness for Phase 10
+
+Cierre exclusivamente documental de **Fase 9.5, 2026-10-26**. No existe un identificador D pendiente específico de notificaciones en el registro: se utiliza este nombre, **sin crear D-13 ni renumerar decisiones**. D-13 conserva su significado original. Contrato RF21/CU26 RESUELTO PARA FASE 10; implementarlo requiere una nueva instrucción. Las decisiones siguientes concretan la petición oficial de Fase 9.5, no atribuyen al informe académico parámetros técnicos que este no fija.
+
+### N1. Fuentes, alcance y precedencia
+
+Se contrastaron Word/PDF finales: RF21, tabla 30, p. 139 (PDF 140); CU26, tabla 63, p. 212 (PDF 213); CU07–CU10, tablas 44–47, pp. 183–189; CU14–CU19, tablas 51–56, pp. 194–202; CU23, tabla 60, pp. 207–208; SQL de registros_actividad, pp. 295–297, y notificaciones, pp. 298–299 (PDF 299–300). Word y PDF contienen el mismo contrato operativo; la numeración automática de CU26 no altera su flujo. Se revisaron también las reglas, dominio, datos, matrices RF/CU, arquitectura, seguridad, plan e informes de reservas, préstamos, liberación y Blockchain. Los originales conservan las huellas de «Fuentes verificadas» y no se modifican ni publican.
+
+RF21 genera avisos internos a partir de eventos confirmados; CU26 permite a los cuatro roles consultar exclusivamente sus propios avisos y registrar lectura. No incluye envío arbitrario entre usuarios, email, SMS, WhatsApp, push móvil, Firebase ni servicios externos. No hay tipos nuevos SISTEMA, ERROR, BLOCKCHAIN, QR o IOT. No se notifica evidencia Blockchain PENDIENTE/REGISTRADA, verificaciones ni caída RPC. CU30 general sigue diferido: sin listado global, buscador, filtros de bitácora ni auditoría administrativa completa.
+
+### N2. Destinatarios, permisos y punto de observación
+
+En las tablas siguientes **S** es el solicitante/usuario_afectado_id del evento; en entrega también es el receptor, por D-11. Los conjuntos administrativos se calculan con permisos efectivos de un rol activo y elegible conforme a D-04, nunca solo con rol.nombre. Todos los destinatarios, incluidos S, deben estar ACTIVO en la lectura de resolución. El ámbito administrativo vigente es por módulo/acción, sin inventar asignaciones finas a recursos.
+
+| Conjunto | Permisos efectivos requeridos conjuntamente | Finalidad |
+| --- | --- | --- |
+| AR | reservas.resolver + reservas.ver_administrativas | Resolver y seguir reservas |
+| AP | prestamos.resolver + prestamos.ver_administrativos | Resolver solicitudes de préstamo |
+| AD | prestamos.registrar_devolucion + prestamos.ver_administrativos | Gestionar devolución, revisión y vencimiento |
+| AI | incidencias.ver, con elegibilidad administrativa D-04 | Supervisar incidencias y mantenimiento |
+| AL | liberacion.evaluaciones.ver_administrativas | Supervisar alertas y liberaciones |
+
+Regla uniforme: excluir actor_id de los conjuntos administrativos por redundancia; la condición de autor nunca agrega destinatarios. Una regla directa S sí se conserva aunque S coincida con el actor, **excepto autocancelación**, que expresamente no genera aviso propio. La unión se deduplica por usuario, incluso con varios roles o reglas; si coincide S con un grupo administrativo, prevalece la plantilla directa y hay una sola fila. No se exige notificaciones.ver_propias para producir el evento: ese permiso controla la consulta posterior; no existe un permiso humano de generación ni una cuenta Sistema.
+
+El momento normal de resolución es el procesamiento inmediatamente posterior al commit, no un supuesto snapshot histórico de permisos dentro de la transacción de negocio. El primer snapshot de lectura de la transacción, abierto solo después de adquirir el lock de actividad, fija el corte de resolución; las consultas de usuarios activos, asignaciones/roles vigentes y permisos efectivos usan ese mismo corte. La revocación/desactivación confirmada **antes** de ese corte excluye; la confirmada **después** no borra avisos ni invalida el corte ya tomado. El servidor vuelve a autorizar cada lectura/enlace. Esta regla evita prometer orden por reloj o IDs frente a commits concurrentes. No retener locks de recursos ni el mutex RBAC exclusivo para resolver avisos. La limitación de recuperación administrativa se fija en N6.
+
+### N3. Matriz congelada de eventos, acciones y tipos
+
+Todas las filas requieren resultado EXITO. «Rechazar correctamente» es accion RESERVA_RECHAZADA/PRESTAMO_RECHAZADO + resultado EXITO, nunca resultado técnico RECHAZO. ERROR/RECHAZO técnico no genera avisos. Cualquier acción no incluida se omite. Las abreviaturas de destinatario están definidas en N2.
+
+| Acción | Tipo | Evento confirmado / origen | Destinatarios | Actividad crítica |
+| --- | --- | --- | --- | --- |
+| RESERVA_SOLICITADA | SOLICITUD | CU07: nueva PENDIENTE | AR | No, nueva |
+| RESERVA_APROBADA | DECISION | CU09: PENDIENTE → APROBADA | S | Sí, reutilizar Fase 9 |
+| RESERVA_RECHAZADA | DECISION | CU09: PENDIENTE → RECHAZADA | S | No, nueva |
+| RESERVA_CANCELADA | CANCELACION | CU10: cancelación válida | Si actor ≠ S: S; si actor = S: AR, sin S | Sí, reutilizar Fase 9 |
+| PRESTAMO_SOLICITADO | SOLICITUD | CU14: nuevo PENDIENTE | AP | No, nueva |
+| PRESTAMO_APROBADO | DECISION | CU16: PENDIENTE → APROBADO | S | No, nueva |
+| PRESTAMO_RECHAZADO | DECISION | CU16: PENDIENTE → RECHAZADO | S | No, nueva |
+| PRESTAMO_ENTREGADO | ENTREGA | CU17: entrega confirmada | S, igual a receptor | Sí, reutilizar Fase 9 |
+| DEVOLUCION_PENDIENTE_REVISION | DEVOLUCION | CU18: recepción inicial NO_DETERMINABLE/PENDIENTE_REVISION | AD | No, nueva |
+| PRESTAMO_DEVUELTO | DEVOLUCION | CU18: confirmación final, directa o tras revisión | S | Sí, reutilizar Fase 9 |
+| PRESTAMO_VENCIDO | VENCIMIENTO | Primera detección ENTREGADO y ahora > fin_previsto | S ∪ AD | No, nueva |
+| INCIDENCIA_REGISTRADA | INCIDENCIA | CU19 o extensión CU18: nueva INCIDENCIA | AI; además S si deriva de devolución | No, nueva |
+| INCIDENCIA_CERRADA | INCIDENCIA | CU19: INCIDENCIA ABIERTA → CERRADA | AI; además S si deriva de devolución | No, nueva |
+| MANTENIMIENTO_REGISTRADO | INCIDENCIA | CU19: nuevo MANTENIMIENTO | AI; además S solo si existe vínculo de devolución | No, nueva |
+| MANTENIMIENTO_CERRADO | INCIDENCIA | CU19: MANTENIMIENTO ABIERTA → CERRADA | AI; además S solo si existe vínculo de devolución | No, nueva |
+| RESERVA_ALERTADA_LIBERACION | LIBERACION | CU23: nueva evaluación ALERTAR | S ∪ AL | No, nueva |
+| RESERVA_LIBERADA | LIBERACION | CU23: evaluación LIBERAR y APROBADA → LIBERADA | S ∪ AL | No, nueva |
+
+Se adopta expresamente DEVOLUCION_PENDIENTE_REVISION para asignar atención a AD. No avisa al solicitante en cada ciclo ni crea PRESTAMO_DEVUELTO antes de confirmar. Se adoptan las dos acciones de mantenimiento, con tipo INCIDENCIA porque no existe enum MANTENIMIENTO. La cancelación propia siempre informa a AR para seguimiento de la retirada de una solicitud/compromiso; la ajena informa solo a S. El cierre de incidencia/mantenimiento informa siempre a AI y, si está vinculada a devolución, también al solicitante de ese préstamo. No se infiere afectación de todos los usuarios con reservas/préstamos futuros del recurso.
+
+ALERTAR conserva APROBADA y comunica posible no utilización/requiere atención; jamás dice que se liberó. LIBERADA informa siempre a S y AL. CU23 MANTENER_POR_USO y NO_DETERMINABLE no son eventos notificables iniciales. El NO_DETERMINABLE físico de CU18 es otro contexto y sí produce el aviso de revisión adoptado arriba. Cerrar una incidencia no significa que el recurso quedó disponible: se conservan todas las guardas de Fase 5.
+
+### N4. Actividad durable, contexto y atomicidad del negocio
+
+No hay nueva outbox: registros_actividad es la fuente durable existente. Cada nueva actividad se inserta en la misma transacción que el evento de negocio; si falla esa escritura local obligatoria, la operación no se confirma parcialmente. **Después del commit**, generación de avisos y Blockchain son consumidores independientes. Fallos al despachar, crear avisos, crear evidencia local o contactar RPC no revierten ni presentan como fallida una operación de negocio ya confirmada. Un fallo en un consumidor no impide intentar el otro. La confirmación HTTP no depende del éxito de los avisos; diagnóstico técnico saneado e intento posterior.
+
+Las cuatro actividades críticas de Fase 9 conservan su identidad, contexto, inmutabilidad y critica=TRUE. Una aprobación, por ejemplo, produce **una actividad → una evidencia Blockchain + las notificaciones aplicables**, sin otra actividad equivalente ni cambio de canonicalización. Las trece acciones nuevas tienen critica=FALSE; no amplían el allowlist D-12. No se escriben actividades por leer/listar avisos ni por marcar lectura; eso anticiparía CU30 sin necesidad de RF21.
+
+| Familia | Campos de actividad y responsabilidad |
+| --- | --- |
+| Reserva humana | actor_id = solicitante al solicitar, responsable real al resolver/cancelar; usuario_afectado_id = solicitante; recurso_id = espacio_id; reserva_id; prestamo_id/incidencia_id NULL; proceso_responsable NULL |
+| Préstamo humano | actor_id = solicitante al solicitar, responsable real al resolver/entregar/recibir/confirmar; usuario_afectado_id = solicitante; recurso_id = equipamiento_id; prestamo_id; reserva_id/incidencia_id NULL; proceso_responsable NULL |
+| Incidencia/mantenimiento | actor_id = quien registra/cierra; recurso_id e incidencia_id; si devolucion_id existe, prestamo_id y usuario_afectado_id derivados de devolución → préstamo; si no, ambos NULL; reserva_id NULL; proceso_responsable NULL |
+| Vencimiento | actor_id NULL; proceso_responsable = scheduler:vencimientos; usuario_afectado_id = solicitante; recurso_id = equipamiento_id; prestamo_id; reserva_id/incidencia_id NULL |
+| Liberación/alerta | actor_id NULL; proceso_responsable = scheduler:liberacion; usuario_afectado_id = solicitante; recurso_id = espacio_id; reserva_id; prestamo_id/incidencia_id NULL |
+
+fecha_hora conserva el instante del evento confirmado, con reloj de servidor en America/La_Paz y precisión SQL de segundos. Los hitos humanos existentes conservan sus fechas; para alta de incidencia sin fecha de creación específica se toma el reloj de registro, no su inicio programado. Todas las filas cumplen chk_registro_responsable; no se crea usuario Sistema. descripcion de nuevas actividades permanece NULL salvo CU23, que guarda texto técnico humano seguro: `Evaluación CU23 #{evaluacion_id}; política #{politica_id}.`. Es una referencia explicativa inmutable, no una FK, snapshot de destinatarios ni estado del procesador; no se modifica una actividad para marcarla procesada. Los avisos no copian esa descripción ni los motivos libres.
+
+La actividad CU23 se crea únicamente al insertar la evaluación nueva ALERTAR/LIBERAR, en el mismo commit que evaluación, pivotes y transición cuando corresponda. Se conserva la idempotencia D-08 por reserva/política, resultados terminales y locks/NOWAIT vigentes. Un reintento que devuelve/omite una evaluación existente no vuelve a registrar actividad. La referencia de descripcion permite localizar la evaluación exacta sin columna nueva ni unión ambigua por fecha. No se hace backfill de evaluaciones antiguas.
+
+Los hooks futuros pertenecen a servicios transaccionales compartidos, incluidos caminos QR de entrega/devolución, no a controladores separados. Un rollback de solicitud/decisión/hito/incidencia/evaluación no deja actividad ni aviso. No alterar orden de locks de Fases 4–8; actividad nueva al final del trabajo local, despacho solo después de liberar esos locks.
+
+### N5. Vencimiento único por préstamo
+
+VENCIDO sigue siendo condición calculada: estado ENTREGADO y ahora estrictamente mayor que fin_previsto. En igualdad no vence. No agregar estado, cambiar custodia ni liberar equipamiento. El scheduler futuro podrá barrer cada minuto por defecto (frecuencia técnica configurable, no regla académica), en lotes de 100 candidatos por clave. La consulta inicial es una ayuda; bajo lock se revalida estado, límite y ausencia de PRESTAMO_VENCIDO/EXITO para ese préstamo.
+
+Transacción nueva por préstamo: bloquear exclusivamente su fila; tomar tiempo actual después de esperar; leer la actividad existente mediante lectura actual; si no existe y sigue vencido, insertar una sola actividad. No tomar después locks de equipo, devolución, incidencia o RBAC, lo que invertiría el orden de operaciones humanas. La devolución utiliza el mismo lock de préstamo en su orden vigente: si confirma primero, el detector omite; si el detector confirma primero, el evento histórico de vencimiento permanece aunque luego se devuelva. La generación/reparación del aviso no vuelve a exigir ENTREGADO: comunica el hecho pasado y no inventa otro evento. Dos detectores no producen dos actividades, sin nuevo UNIQUE. Una recepción pendiente que aún conserva ENTREGADO sigue sujeta a la condición literal; no se inventa una excepción de estado. Un conflicto/deadlock del detector revierte su transacción completa; reintentar como máximo tres veces fuera de la transacción y, si persiste, dejar el candidato para el siguiente barrido con diagnóstico saneado. Los locks internos de FK no justifican invertir el orden explícito de recursos.
+
+### N6. Generación, idempotencia y reconciliación acotada
+
+Contratos futuros: NotificationRuleRegistry centraliza únicamente las 17 reglas; NotificationGenerationService recibe un ID de actividad durable y resuelve acción, tipo, destinatarios y plantilla. Solo admite EXITO y contexto coherente. Un evento sin regla no genera avisos. No aceptar título, texto, destinatario o tipo arbitrarios desde HTTP.
+
+**Clave lógica: registro_actividad_id + destinatario_id + tipo.** No agregar UNIQUE, columna procesada_en ni tabla snapshot. Toda vía de inserción pasa por el mismo servicio y transacción. Protocolo:
+
+1. Iniciar una transacción nueva después del commit de negocio; sin snapshot previo. Bloquear la fila registros_actividad por PK con FOR UPDATE.
+2. Leer sus notificaciones en el primer snapshot consistente abierto después del lock, por lo que incorpora el commit del worker anterior tras cualquier espera. No usar FOR UPDATE sobre rangos vacíos de notificaciones: el coordinador es la actividad y evita locks de hueco que acoplen actividades distintas. Aplicar las guardas de inicio/ventana y cierre administrativo descritas abajo.
+3. Obtener el conjunto permitido de destinatarios con estado/permisos del mismo snapshot posterior al lock, con exclusión del actor y unión de identidades. Recalcular actuales solo cuando la regla de recuperación lo permite.
+4. Ordenar destinatarios por ID, comprobar la clave lógica e insertar exclusivamente faltantes. Insertar **todo el conjunto en una sola transacción**, sin commits por destinatario. Cualquier error revierte todas las nuevas filas del lote; no continuar parcialmente tras un error.
+5. Commit. Un segundo worker que esperaba ve las filas confirmadas y no duplica. No hay lock global, mutex exclusivo RBAC ni locks de reserva/préstamo/equipo/incidencia durante este trabajo. Actividades distintas pueden avanzar concurrentemente.
+
+La garantía es de aplicación entre escritores que respetan el protocolo; SQL directo fuera del servicio no queda protegido por una UNIQUE inexistente. Mantener pequeña la transacción, sin red ni trabajo Blockchain. La fila de actividad protegida y la prohibición de escritores alternativos permiten comprobar faltantes con lecturas consistentes sin bloquear rangos de notificaciones; no cambiar el aislamiento global de MySQL. Conflictos/deadlocks permiten hasta tres reintentos completos; agotamiento deja la actividad recuperable y no altera negocio.
+
+**Estrategia temporal elegida:** ventana automática fija de 24 horas desde fecha_hora, intervalo inclusivo [evento, evento + 24 h]; es una convención técnica de este cierre, no un requisito numérico del Word/PDF. El mismo límite rige generación normal, trabajo retrasado y reconciliación. Se fijará además en configuración de despliegue el instante de habilitación inicial de RF21; solo eventos iguales/posteriores son elegibles, sin mover ese instante en reinicios ni hacer backfill de Fase 9. No se añade configuración funcional en 9.5. Dentro de la ventana:
+
+| Evidencia persistida bajo lock | Conducta determinista |
+| --- | --- |
+| Ningún aviso de la actividad | Resolver S y grupos administrativos con estado/permisos actuales y crear el lote completo; es primer intento o recuperación técnica de fallo total |
+| Existe al menos un aviso de la actividad | El conjunto administrativo queda cerrado: **no incorporar otros administradores** por nuevos permisos, ni siquiera dentro de la ventana. Reintentos conservan filas existentes; reparar únicamente destinatarios directos S faltantes, reconstruibles del evento y activos ahora |
+| Ningún destinatario válido | No insertar fila ficticia ni aviso sin receptor. Sin marca persistente de procesamiento, permanece elegible para reintento hasta vencer la ventana; al vencer deja de explorarse |
+| Evento sin regla, contexto incoherente, resultado distinto de EXITO o anterior a habilitación | Omitir; incoherencia produce diagnóstico técnico sin secretos y sin alterar actividad/negocio |
+| Fuera de las 24 h o fecha futura respecto del reloj | No generar filas; las antiguas permanecen. Fuera de ventana, registrar diagnóstico acotado de recuperación no automática; reloj futuro se difiere |
+
+Esto congela expresamente el límite del esquema: no hay snapshot histórico de permisos ni marca para distinguir «sin destinatarios» de «falló antes de insertar». Si el primer intento no dejó filas, un administrador que adquirió permiso **dentro de las 24 h** puede recibir al recuperarse; quien lo perdió antes del nuevo corte no recibe. Tras el primer lote persistido no se abre el grupo a nuevos administradores, y nunca se reconstruye por permisos adquiridos semanas después. Las cuentas que pasan a INACTIVO conservan avisos previos, pero no reciben nuevas filas; una reactivación no dispara backfill fuera de ventana.
+
+**Reparación parcial y límite verificable:** un fallo ordinario durante generación no deja un subconjunto confirmado porque el lote es atómico. Si se detecta un conjunto persistido parcial (por ejemplo, aviso administrativo existente y S faltante), se repara S dentro de la ventana sin duplicar el administrativo. Un supuesto administrador faltante de un lote ya confirmado no puede distinguirse de un nuevo administrador sin un snapshot que el SQL no permite; **no se promete reconstruir ni ampliar ese conjunto**. No borrar avisos ni fabricar un estado de entrega para disimular esta limitación. Una pérdida/corrupción externa de filas administrativas requiere revisión técnica de datos, fuera del reconciliador automático inicial. Estos límites concretan las secciones 68–70 de la instrucción y son parte del contrato, no funcionalidades pendientes por decidir.
+
+El comando futuro interno `notificaciones:reconciliar` se ejecutará cada minuto por defecto, con frecuencia configurable, lotes de 100 por clave y horizonte de 24 h, consultando actividades de la allowlist/EXITO desde la habilitación. Reintenta sin filas y reparaciones directas detectables; invoca el mismo servicio, nunca un insert alternativo. Ejecutarlo una o diez veces con el mismo corte de elegibilidad conserva el conjunto y leida_en. No escanea ni redistribuye todo el historial. No depende de visitar CU26, de tener testETH ni de éxito de Blockchain. Diagnósticos técnicos solo incluyen IDs/categoría y conteos, no mensajes ni motivos personales; no generan notificaciones técnicas recursivas.
+
+### N7. Plantillas e información histórica
+
+Plantillas fijas en texto plano. titulo y mensaje se guardan una vez; leer/reconciliar no reescribe textos existentes ni su creada_en. creada_en es el instante real de inserción; el evento mantiene fecha_hora. Todas las plantillas siguientes se completan con el sufijo común «Evento registrado: {fecha_evento} (America/La_Paz).», incluso cuando se recuperan después. {fecha_evento} proviene de actividad; {reserva}/{prestamo} de códigos inmutables del negocio; {incidencia} del ID estable, nunca de una descripción editable. No usar nombre actual del recurso, estado actual ni motivo libre para reconstruir mensajes pasados.
+
+| Acción | Título fijo (≤160 caracteres) | Mensaje base |
+| --- | --- | --- |
+| RESERVA_SOLICITADA | Nueva solicitud de reserva | La solicitud de reserva {reserva} fue registrada y requiere resolución. |
+| RESERVA_APROBADA | Reserva aprobada | Tu solicitud de reserva {reserva} fue aprobada. |
+| RESERVA_RECHAZADA | Reserva rechazada | Tu solicitud de reserva {reserva} fue rechazada. Consulta el detalle autorizado para más información. |
+| RESERVA_CANCELADA | Reserva cancelada | S: Tu reserva {reserva} fue cancelada por un responsable autorizado. / AR: El titular canceló la reserva {reserva}. |
+| PRESTAMO_SOLICITADO | Nueva solicitud de préstamo | La solicitud de préstamo {prestamo} fue registrada y requiere resolución. |
+| PRESTAMO_APROBADO | Préstamo aprobado | Tu solicitud de préstamo {prestamo} fue aprobada. |
+| PRESTAMO_RECHAZADO | Préstamo rechazado | Tu solicitud de préstamo {prestamo} fue rechazada. Consulta el detalle autorizado para más información. |
+| PRESTAMO_ENTREGADO | Equipamiento entregado | Se confirmó la entrega del equipamiento de tu préstamo {prestamo}. |
+| DEVOLUCION_PENDIENTE_REVISION | Devolución pendiente de revisión | La recepción del préstamo {prestamo} quedó pendiente de revisión de su condición física. |
+| PRESTAMO_DEVUELTO | Devolución confirmada | Se confirmó la devolución de tu préstamo {prestamo}. |
+| PRESTAMO_VENCIDO | Préstamo vencido | S: Tu préstamo {prestamo} fue detectado como vencido. / AD: El préstamo {prestamo} fue detectado como vencido y requiere seguimiento. |
+| INCIDENCIA_REGISTRADA | Incidencia registrada | AI: Se registró la incidencia #{incidencia}; consulta el detalle autorizado. / S: El equipamiento de tu préstamo {prestamo} requiere revisión; se registró una incidencia. |
+| INCIDENCIA_CERRADA | Incidencia cerrada | AI: Se cerró la incidencia #{incidencia}. / S: Se cerró la incidencia vinculada a la devolución de tu préstamo {prestamo}. |
+| MANTENIMIENTO_REGISTRADO | Mantenimiento registrado | AI: Se registró el mantenimiento #{incidencia}. / S: El equipamiento de tu préstamo {prestamo} requiere revisión; se registró mantenimiento. |
+| MANTENIMIENTO_CERRADO | Mantenimiento cerrado | AI: Se cerró el mantenimiento #{incidencia}. / S: Se cerró el mantenimiento vinculado a la devolución de tu préstamo {prestamo}. |
+| RESERVA_ALERTADA_LIBERACION | Reserva requiere atención | S: Se detectó posible no utilización de tu reserva {reserva}; requiere atención. Esta alerta no liberó la reserva. / AL: La reserva {reserva} presenta posible no utilización; requiere atención. Esta alerta no liberó la reserva. |
+| RESERVA_LIBERADA | Reserva liberada | S: Tu reserva {reserva} fue liberada conforme a la política aplicable. / AL: La reserva {reserva} fue liberada conforme a la política aplicable. |
+
+La notificación describe lo sucedido en ese instante: una aprobación histórica no cambia a cancelación, y un aviso de vencimiento puede coexistir con otro de devolución posterior. No acusa al solicitante de causar daño ni afirma disponibilidad tras cerrar mantenimiento. No copiar observaciones, solución ni motivos completos; el detalle protegido conserva su propia política. No incluir passwords, tokens, QR token/hash, HMAC, claves privadas, RPC key, CI, correos innecesarios, nombres de terceros ni payloads de sensores. Escapar texto en Vue; sin HTML arbitrario, markdown ejecutable, URL almacenada o contenido del usuario interpretado. El límite de título se valida también en aplicación.
+
+### N8. CU26, lectura, propiedad y RBAC previsto
+
+Único permiso nuevo previsto: **notificaciones.ver_propias**, suficiente para listar, contar, ver detalle y marcar lectura de avisos propios. No permisos administrativos globales, notificaciones.enviar ni gestión de avisos ajenos. No se crea permiso/seed en esta fase. Generación automática no necesita ese permiso ni un actor humano.
+
+| Capacidad inicial de CU26 | Administrador | Encargado de Laboratorio | Docente | Estudiante |
+| --- | --- | --- | --- | --- |
+| notificaciones.ver_propias: listado, contador, detalle y lectura propios | Sí | Sí | Sí | Sí |
+| Consultar o marcar avisos ajenos | No | No | No | No |
+| Enviar, borrar, marcar todas o volver a no leída | No | No | No | No |
+
+«Sí» expresa elegibilidad/asignación inicial prevista; exige cuenta activa, rol/asignación vigentes y permiso efectivo actual. La consulta siempre filtra destinatario_id = usuario autenticado en servidor, antes de resolver IDs, paginar, contar o exponer datos. ID ajeno e inexistente responden igual (404); ausencia del permiso de módulo, 403. Ser Administrador no omite propiedad. Deshabilitar una cuenta bloquea acceso y conserva historia.
+
+leida_en NULL = no leída; con fecha = leída. La única escritura es condicional, por ID y propietario, **WHERE leida_en IS NULL**, con fecha/hora del servidor; si ya estaba leída se devuelve/conserva la primera fecha. Dos peticiones concurrentes no la reemplazan. El cliente no decide destinatario ni fecha. Sin enum de lectura, borrado, marcar todas ni retorno a no leída en el alcance inicial.
+
+Se adopta lectura al **abrir expresamente el detalle**: GET obtiene datos sin mutar; una vez mostrado al propietario, la UI solicita POST/PATCH de lectura con CSRF al mismo control autorizado. Una precarga/prefetch o listado no dispara esa petición. También puede ofrecer «Marcar como leída» mediante esa misma operación; un fallo no muestra éxito ficticio ni afecta negocio. Abrir URL de detalle directamente usa el mismo flujo de lectura posterior al render. Permiso revocado entre GET y POST impide la escritura. No mutar en GET ni registrar lectura por cargar el contador.
+
+Centro futuro: acceso desde navegación con nombre accesible, contador de **leida_en IS NULL propio**, lista paginada de 15 por defecto con creada_en DESC, id DESC como desempate, filtros todas/no leídas/leídas y tipo oficial. Detalle: título, mensaje, tipo, creada_en, estado/fecha de lectura y enlace contextual permitido. Consulta vacía tiene estado comprensible. El contador representa todas las propias no leídas, no solo la página/filtro. Actualizar con navegación Inertia normal y tras marcar; sin WebSockets, Reverb, Pusher, Firebase ni polling agresivo. Teclado, foco y presentación responsive forman parte de aceptación futura, sin implementar UI aquí.
+
+El enlace se deriva en servidor de la actividad y se reautoriza en cada respuesta y al entrar al destino. Reserva → CU08; préstamo/entrega/devolución/vencimiento → CU15; incidencia → CU19 únicamente con permiso; el afectado sin incidencias.ver puede enlazar su préstamo propio si tiene acceso. Liberación → evaluación autorizada CU23 o reserva propia autorizada. No exponer IDs de terceros ni el modelo completo de actividad; no inventar acceso a CU30. Si perdió permiso del objeto, conserva lectura del mensaje histórico propio pero no enlace ni detalles protegidos. El aviso **no concede permisos** y no se regenera con el estado actual.
+
+### N9. Esquema, rendimiento y aceptación futura
+
+Implementación futura exacta de notificaciones: ocho columnas id, destinatario_id, registro_actividad_id, titulo, mensaje, tipo, creada_en, leida_en; tipos/defaults/nulabilidad/PK/FK/índices en DATA_MODEL. Ambos FK ON UPDATE CASCADE / ON DELETE RESTRICT. Ninguna UNIQUE extra, updated_at, read_at, deleted_at, metadata JSON ni tabla de framework alternativa. registros_actividad conserva trece columnas, seis FK y CHECK; se mantiene la excepción autorizada ON UPDATE RESTRICT solo en fk_registro_actor. Esta fase no cambia ninguna migración ni modelo.
+
+Aprovechar idx_notificacion_destinatario(destinatario_id, leida_en) para contador/no leídas y idx_notificacion_fecha(creada_en) cuando el optimizador lo elija para fechas/orden. No prometer que un único índice cubre a la vez todos los filtros y ORDER BY; comprobar EXPLAIN con carga sintética y usuario acotado. Paginación en BD y DTO mínimo; generación/reconciliación en lotes sin cargar el historial completo, sin N+1 por permisos ni llamadas a red. Los índices FK existentes apoyan actividad/préstamo; no añadir índices por conveniencia fuera del SQL.
+
+Los criterios **T-N01–T-N40** de [BUSINESS_RULES](BUSINESS_RULES.md#aceptación-de-notificaciones-prevista-para-fase-10) son pruebas futuras obligatorias, no resultados de 9.5. Incluyen esquema, matriz de 17 acciones, permisos/actor, fallos antes/después del commit, límites de recuperación, concurrencia MySQL real entre procesos, lectura, privacidad, vencimiento, liberación, incidencia/mantenimiento y planes de consulta. CU30, carga final y despliegue no se acreditan con estas decisiones.
+
+## Readiness for Phase 10
+
+| Contrato | Cierre documental |
+| --- | --- |
+| RF21/CU26 e identificador | Notification Contract / Readiness for Phase 10; sin nuevo D; N1 |
+| Acciones, ocho tipos y destinatarios | 17 filas cerradas; S/AR/AP/AD/AI/AL y exclusiones de actor; N2–N3 |
+| Permisos efectivos y RBAC | notificaciones.ver_propias para los cuatro roles, solo propios; N2/N8 |
+| Actividad/outbox y criticidad | Una actividad del evento; cuatro críticas reutilizadas, trece nuevas no críticas; N4 |
+| Post-commit y fallo | Consumidores de avisos/Blockchain independientes, negocio conservado; N4 |
+| Idempotencia y locks | Clave actividad+destinatario+tipo; lock por actividad y lote atómico; N6 |
+| Reconciliación | Ventana de 24 h, inicio RF21 estable, cierre administrativo tras primer lote, reparación directa y límites expresos; N6 |
+| Vencimiento y revisión | Una actividad por préstamo, comparación estricta, revisión inicial distinta de devolución final; N3/N5 |
+| Incidencias/mantenimiento | Apertura/cierre, grupos y afectado por devolución sin imputar culpa; N3/N7 |
+| Liberación | ALERTAR y LIBERAR atómicos con evaluación; MANTENER/NO_DETERMINABLE excluidos; N3/N4 |
+| Lectura, propiedad y enlaces | Primer timestamp, sin GET mutante, sin bypass de Administrador, reautorización del objeto; N8 |
+| Privacidad y plantillas | Snapshot plano y determinista, sin datos sensibles/motivos libres; N7 |
+| Concurrencia y pruebas | T-N01–T-N40 futuros, incluidos permisos en el corte y reparación parcial limitada; N9 |
+| Exclusiones | Canales externos, realtime complejo, avisos técnicos Blockchain, nuevos enums/esquema y CU30 general; N1/N8/N9 |
+| Sepolia | Smoke real pendiente por testETH, independiente de RF21; no se intenta resolver en 9.5 |
+| Bloqueantes documentales para Fase 10 | **0**; límites de recuperación definidos, no promesas de snapshot histórico inexistente |
+| Autorización de siguiente fase | **Fase 10 puede comenzar con una nueva instrucción; no iniciada ni autorizada por este cierre** |
+
+Fase 9.5 solo modifica documentación. El estado funcional base continúa en 30 tablas académicas, 203 columnas, 61 FK y 46 permisos. La futura tabla completaría el modelo de 31 tablas/211 columnas/63 FK y el permiso previsto elevaría el catálogo a 47; esas cifras futuras no describen la base actual. La excepción temporal dev Hardhat/Zod y la validación offline de Fase 9 conservan su informe, sin declararse nuevas auditorías o pruebas funcionales en esta fase.
+
+### Verificación documental de Fase 9.5
+
+Revisión del 2026-10-26: 14 documentos autorizados modificados; cero cambios de código funcional, migraciones, permisos DB o configuración. Matriz comprobada: 17 acciones, 8 tipos, 4 actividades críticas reutilizadas y 13 nuevas no críticas; 17 plantillas con títulos dentro de 160 caracteres; 40 criterios T-N futuros. Los enlaces nuevos resuelven a archivos/encabezados existentes. SQL original de notificaciones y registros_actividad equivalente entre Word/PDF; huellas SHA-256 de ambos originales sin cambio. Se conservan los identificadores D y textos normativos de requisitos.
+
+Revisión de diferencias/índice y escaneo de secretos sobre los 445 archivos públicos, diff e historial: sin hallazgos de valores privados locales ni de los formatos de secreto comprobados; .env/.env.testing y material local continúan fuera de Git. Esto no equivale a una auditoría nueva de dependencias ni a pruebas funcionales de RF21. No se ejecutaron T-N01–T-N40, cambios en MySQL, smoke Sepolia ni gestiones de testETH.
+
+Documentos del cierre: DECISIONS, BUSINESS_RULES, DOMAIN_MODEL, DATA_MODEL, USE_CASE_MATRIX, REQUIREMENTS_TRACEABILITY, ARCHITECTURE, SECURITY_POLICY, IMPLEMENTATION_PLAN, RESERVATIONS_IMPLEMENTATION, EQUIPMENT_LOANS_IMPLEMENTATION, RELEASE_POLICY_IMPLEMENTATION, BLOCKCHAIN_IMPLEMENTATION y README. Rama de entrega: docs/phase-9.5-notification-decisions; mensaje de commit previsto: «docs: finalize notification generation decisions». El hash y la publicación se verifican en Git y en el informe final, sin insertar un hash autorreferencial en este documento.

@@ -1,6 +1,8 @@
 # Plan de implementación web
 
-**Estado vigente — Fase 9 implementada (2026-10-25/26).** RF19/CU24 y RF20/CU25, cuatro actividades críticas, dos tablas y tres permisos implementados conforme a D-12. [Implementación, pruebas offline, excepción temporal dev de Zod y Sepolia pendiente de testETH](BLOCKCHAIN_IMPLEMENTATION.md). CU30 general y Fase 10 permanecen pendientes. Las secciones de cierres anteriores conservan su contexto histórico.
+**Estado documental vigente — Fase 9.5 (2026-10-26).** Contrato RF21/CU26 cerrado; [Readiness for Phase 10](DECISIONS.md#readiness-for-phase-10), **0 bloqueantes documentales**. Fase 10 no iniciada. La implementación base sigue siendo Fase 9, con validación offline y smoke Sepolia real pendiente de testETH. Los cierres anteriores conservan su contexto histórico.
+
+**Estado funcional base — Fase 9 implementada (2026-10-25/26).** RF19/CU24 y RF20/CU25, cuatro actividades críticas, dos tablas y tres permisos implementados conforme a D-12. [Implementación, pruebas offline, excepción temporal dev de Zod y Sepolia pendiente de testETH](BLOCKCHAIN_IMPLEMENTATION.md). CU30 general y Fase 10 permanecen pendientes. Las secciones de cierres anteriores conservan su contexto histórico.
 
 **Estado al cierre funcional de Fase 8 (2026-10-24).** Fase 8 implementa RF18/CU23. Fases 9–14 no iniciadas. Siguiente paso: instrucción explícita para cerrar D-12 (operaciones críticas, canonicalización, privacidad, proveedor y recuperación) antes de programar Fase 9. [Informe de implementación, verificaciones y límites](RELEASE_POLICY_IMPLEMENTATION.md). Las declaraciones de fases anteriores que siguen a continuación se conservan como historia de esos cierres.
 
@@ -199,9 +201,9 @@ Implementación disponible, 325 pruebas/4984 aserciones aprobadas. [Evidencia y 
 | Módulos afectados | Servicios de Notificación y Asistencia |
 | Carpetas principales futuras | app/Services/; app/Models/; app/Http/; database/; recursos de interfaz Vue; tests/ |
 | Requisitos relacionados | RF21; DB-08/09/28; R-PR-07 |
-| Casos de uso | CU26 y eventos de reservas/préstamos |
-| Trabajo previsto | Aplicar cardinalidad D-06 resuelta; generación interna tras operación confirmada; destinatario/actividad; listado, detalle y lectura. |
-| Pruebas requeridas | Acceso propio/ajeno; lectura; vacío; fallo de notificación conserva operación; enlace a evento correcto. |
+| Casos de uso | CU26 y productores CU07–CU10, CU14–CU19, CU23; detector de vencimientos RF21 |
+| Trabajo previsto | Contrato N1–N9 cerrado en Fase 9.5: 17 acciones, 8 tipos, SQL exacto, grupos por permisos, lote post-commit, recuperación de 24 h y CU26 propio. |
+| Pruebas requeridas | T-N01–T-N40 y regresiones; carreras MySQL, límites de recuperación, privacidad, lectura y enlaces. |
 | Riesgos / puertas | Enviar antes de commit; fuga por destinatario; introducir email/SMS no especificados. |
 | Condición de finalización | Avisos internos consistentes y aislados; consulta personal y estado de lectura probados. |
 | Commit esperado | `feat: add internal operation notifications` |
@@ -345,3 +347,18 @@ No se adelantó ningún archivo funcional, interfaz, configuración, permiso DB 
 RF19/CU24 y RF20/CU25 implementados conforme a D-12, con pruebas Laravel, RFC8785, contrato e integración local separadas. [Resultados y pendientes externos](BLOCKCHAIN_IMPLEMENTATION.md). Sepolia real requiere testETH para wallet dedicada; no se acredita deployment inexistente. Excepciones autorizadas: serializer JCS Node y vulnerabilidades Zod exclusivamente dev, además de la FK ya aprobada. No se amplía a CU30 general.
 
 Recomendación siguiente: una instrucción de cierre documental para RF21/CU26 que concrete eventos y destinatarios de avisos internos, vínculo actividad/notificación, idempotencia después del commit, lectura/acceso propio, recuperación ante fallo y retención. No introducir email/SMS/push sin autorización. No se inició Fase 10.
+
+## Cierre de Fase 9.5 y puerta de Fase 10
+
+**Fase 9.5 documental completada:** [Notification Contract / Readiness for Phase 10](DECISIONS.md#notification-contract--readiness-for-phase-10). No había D específico de notificaciones; no se crea D-13. Bloqueantes documentales para Fase 10: **0**. El siguiente trabajo requiere nueva instrucción; Fase 10 no está iniciada.
+
+Secuencia futura verificable, sin ejecutarla en este cierre:
+
+1. Materializar exactamente notificaciones (8 columnas, 2 FK y los índices oficiales) y el permiso notificaciones.ver_propias para los cuatro roles; conservar esquema de actividad y D-12.
+2. Incorporar solo trece productores no críticos N3, reutilizando las cuatro actividades críticas; cubrir camino QR/normal y atomicidad de incidencia derivada/CU23. Añadir detector de vencimiento único sin nuevo estado.
+3. Implementar registro central de reglas y servicio de lote atómico por actividad, plantillas, destinatarios efectivos y generación post-commit independiente de Blockchain.
+4. Fijar corte inicial de habilitación RF21 en configuración de despliegue; reconciliación cada minuto configurable, lotes de 100 y ventana de 24 h. Probar cierre administrativo, cero receptores y reparación directa limitada antes de declarar recuperación correcta.
+5. Implementar CU26 propio: contador, listado de 15 por página, filtros, detalle, primera lectura POST/PATCH y enlaces reautorizados; navegación Inertia, responsive y teclado.
+6. Ejecutar T-N01–T-N40, regresiones pertinentes, verificaciones de seguridad/rendimiento y aceptación visual. Documentar resultados reales y límites; publicar/integrar solo bajo la instrucción de Fase 10.
+
+No implementar email/SMS/WhatsApp/push/Firebase, infraestructura realtime, tabla outbox/snapshot, UNIQUE adicional, avisos técnicos Blockchain ni CU30 general. La recuperación no garantiza reconstruir un conjunto administrativo perdido tras un lote confirmado: el esquema y la estrategia N6 lo delimitan. El smoke Sepolia real continúa pendiente por testETH, independiente y fuera de 9.5; no usar wallet personal ni fondos reales. No reabrir auditorías/dependencias como parte de este cierre documental.
