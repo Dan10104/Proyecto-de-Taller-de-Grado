@@ -3,3 +3,5 @@
 @media(max-width:1200px){.dashboard-cards{grid-template-columns:repeat(3,minmax(0,1fr))}.report-filter-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:900px){.dashboard-cards{grid-template-columns:repeat(2,minmax(0,1fr))}.dashboard-charts{grid-template-columns:1fr}}
 @media(max-width:540px){.dashboard-cards{grid-template-columns:1fr}.report-filter-grid{grid-template-columns:1fr}.report-form,.report-results,.dashboard-chart{padding:18px}.report-filters{padding:18px}.dashboard-upcoming li{align-items:start;flex-direction:column}.report-pagination{flex-wrap:wrap}.report-results-heading .report-actions{margin-top:8px}.dashboard-card h2{min-height:0}.report-actions .btn{flex:1 1 auto}}
+
+.report-filter-lock { display: contents; }
