@@ -1,6 +1,8 @@
 # Matriz CU01–CU30
 
-**Estado vigente — Fase 11 implementada y verificada (2026-10-26).** RF22/CU27 y RF23/CU28: 747 tests / 9111 assertions; QA y auditorías productivas aprobadas. [Implementación, scopes, formatos y evidencia](DASHBOARD_REPORTING_IMPLEMENTATION.md). Sin nuevas tablas ni índices; CU30 NO IMPLEMENTADO y Fase 12 NO iniciada. Los cierres anteriores son históricos.
+**Estado vigente — Fase 11.5 documental cerrada (2026-10-26).** RF24/CU29: [Chatbot Assistance Contract / Readiness for Phase 12](DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12), **0 bloqueantes documentales**. Fase 12 NO iniciada; CU30 NO IMPLEMENTADO. No cambios de código, dependencias, configuración o datos.
+
+**Base funcional conservada — Fase 11 implementada y verificada (2026-10-26).** RF22/CU27 y RF23/CU28: 747 tests / 9111 assertions; QA y auditorías productivas aprobadas. [Implementación, scopes, formatos y evidencia](DASHBOARD_REPORTING_IMPLEMENTATION.md). Sin nuevas tablas ni índices; CU30 NO IMPLEMENTADO y Fase 12 NO iniciada. Los cierres anteriores son históricos.
 
 **Estado histórico — Fase 10.5 documental (2026-10-26).** RF22/CU27 y RF23/CU28: [contrato de dashboard y reportes cerrado](DECISIONS.md#dashboard--reporting-contract--readiness-for-phase-11), **0 bloqueantes documentales**. Fase 11 NO iniciada; CU30 NO IMPLEMENTADO. Fase 10 funcional se conserva, sin cambios de código, datos, permisos o dependencias. Los cierres anteriores mantienen su contexto histórico.
 
@@ -658,9 +660,11 @@ Fuente: tabla 66; p. 216 (PDF 217); figura 57; análisis figura 103.
 | RF relacionado | RF24 |
 | Entidades / clases principales | Usuario, Rol, Permiso, Asociación Rol–Permiso, AsignacionRol |
 | Tablas directamente relacionadas | `usuarios`, `roles`, `permisos`, `roles_permisos`, `asignaciones_roles` |
-| Persistencia de conversación | No definida en el modelo; no crear tabla de chat. Las tablas listadas sustentan identidad/permisos; el contexto adicional solo se consulta si se autoriza. |
+| Persistencia de conversación | No crear tabla/historial de chat (D-14/CH10). Las tablas listadas sustentan identidad/permisos; solo snippets procedimentales locales como contexto, sin consultar filas operativas. |
 | Módulo futuro y fase | Servicios de Notificación y Asistencia; Fase 12 |
 | Pruebas necesarias | T-CU29: Petición de aprobar/cancelar no modifica nada; contexto ajeno excluido; proveedor caído; respuesta/aviso objetivo <=15 s. |
+
+**Contrato vigente CU29:** cerrado documentalmente en Fase 11.5, [CH1–CH12 / Readiness for Phase 12](DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12), 0 bloqueantes. OpenAI Responses/Luna configurable, chatbot.consultar para cuatro roles, orientación por permisos efectivos, sin tools/datos operativos/historial persistido; salida y rutas validadas. T-CB01–T-CB50 son pruebas previstas. **Fase 12 NO iniciada; CU29 NO IMPLEMENTADO por este cierre.**
 
 ## CU30 — Consultar bitácora de actividad
 

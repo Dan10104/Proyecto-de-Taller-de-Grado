@@ -181,3 +181,8 @@ REPORTE_EXPORTADO futuro será actividad no crítica fuera de NotificationRuleRe
 ## Integración con Fase 11
 
 [Dashboard y reportes](DASHBOARD_REPORTING_IMPLEMENTATION.md) reutilizan las reglas, consultas y scopes de este dominio. No modifican sus estados, decisiones o productores. REPORTE_EXPORTADO no se añade a la whitelist de notificaciones ni a eventos críticos Blockchain. CU30 sigue NO IMPLEMENTADO; las limitaciones históricas de este informe conservan su alcance.
+
+
+## Límite de asistencia previsto — Fase 11.5
+
+Solo explicar avisos propios y lectura en el módulo. No enviar notificaciones ni contador del destinatario al proveedor y no marcar lectura desde chat; enlace permitido únicamente a la lista. [Contrato CH1–CH12](DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12). Cambio exclusivamente documental; Fase 12 NO iniciada.

@@ -323,3 +323,8 @@ No se modifica blockchain/, no se instala ni audita de nuevo el toolchain en est
 ## Integración con Fase 11
 
 [Dashboard y reportes](DASHBOARD_REPORTING_IMPLEMENTATION.md) reutilizan las reglas, consultas y scopes de este dominio. No modifican sus estados, decisiones o productores. REPORTE_EXPORTADO no se añade a la whitelist de notificaciones ni a eventos críticos Blockchain. CU30 sigue NO IMPLEMENTADO; las limitaciones históricas de este informe conservan su alcance.
+
+
+## Límite de asistencia previsto — Fase 11.5
+
+Solo explicación funcional permitida, sin evidencia/canónico/hash/dirección/clave concreta enviada al chatbot ni llamadas de verificación/reintento. Smoke Sepolia pendiente y excepción dev Hardhat/Zod se conservan sin nueva auditoría o prueba externa. [Contrato CH1–CH12](DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12). Cambio exclusivamente documental; Fase 12 NO iniciada.

@@ -141,3 +141,8 @@ Responsive: 1440×900, 1366×768, 768×1024 y 390×844; ancho de documento no ex
 - Sin migración, índice o tabla nuevos. Sin fondos reales ni llamada Sepolia nueva; smoke real pendiente por testETH permanece independiente. **CU30 NO IMPLEMENTADO; Fase 12 NO iniciada.**
 
 Rama de trabajo: feature/phase-11-dashboard-reports; base ffbed66. Publicación de commits y fast-forward a main se verifican como paso final de entrega, sin force push. No se crean repositorios/copias/ZIP paralelos. Bloqueantes funcionales de Fase 11: 0 tras las verificaciones anteriores. Para Fase 12 se recomienda cerrar proveedor, contexto autorizado, privacidad y fallos del chatbot orientativo conforme D-14/RF24/CU29, mediante una nueva instrucción; este cierre no la inicia.
+
+
+## Límite de asistencia previsto — Fase 11.5
+
+Solo orientación sobre tarjetas, filtros, siete reportes y PDF/XLSX según permisos. No enviar métricas/filas ni ejecutar previews/exportaciones desde el chatbot; CU30 sigue NO IMPLEMENTADO. La evidencia funcional Fase 11 conserva su fecha y alcance. [Contrato CH1–CH12](DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12). Cambio exclusivamente documental; Fase 12 NO iniciada.

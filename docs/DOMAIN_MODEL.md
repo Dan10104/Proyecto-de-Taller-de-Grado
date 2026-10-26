@@ -1,6 +1,8 @@
 # Modelo del dominio
 
-**Estado vigente — Fase 11 implementada y verificada (2026-10-26).** RF22/CU27 y RF23/CU28: 747 tests / 9111 assertions; QA y auditorías productivas aprobadas. [Implementación, scopes, formatos y evidencia](DASHBOARD_REPORTING_IMPLEMENTATION.md). Sin nuevas tablas ni índices; CU30 NO IMPLEMENTADO y Fase 12 NO iniciada. Los cierres anteriores son históricos.
+**Estado vigente — Fase 11.5 documental cerrada (2026-10-26).** RF24/CU29: [Chatbot Assistance Contract / Readiness for Phase 12](DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12), **0 bloqueantes documentales**. Fase 12 NO iniciada; CU30 NO IMPLEMENTADO. No cambios de código, dependencias, configuración o datos.
+
+**Base funcional conservada — Fase 11 implementada y verificada (2026-10-26).** RF22/CU27 y RF23/CU28: 747 tests / 9111 assertions; QA y auditorías productivas aprobadas. [Implementación, scopes, formatos y evidencia](DASHBOARD_REPORTING_IMPLEMENTATION.md). Sin nuevas tablas ni índices; CU30 NO IMPLEMENTADO y Fase 12 NO iniciada. Los cierres anteriores son históricos.
 
 **Estado histórico — Fase 10.5 documental (2026-10-26).** RF22/CU27 y RF23/CU28: [contrato de dashboard y reportes cerrado](DECISIONS.md#dashboard--reporting-contract--readiness-for-phase-11), **0 bloqueantes documentales**. Fase 11 NO iniciada; CU30 NO IMPLEMENTADO. Fase 10 funcional se conserva, sin cambios de código, datos, permisos o dependencias. Los cierres anteriores mantienen su contexto histórico.
 
@@ -249,3 +251,10 @@ Siete reportes: reservas, disponibilidad/espacios (dos vistas), equipamiento, pr
 ## Lecturas operacionales de Fase 11
 
 CU27/CU28 consultan las entidades existentes con scopes/permisos, sin entidad persistida Dashboard/Reporte/Métrica. ReportDefinition y ReportPeriod son objetos de consulta. Vencido, disponibilidad y NO_DETERMINABLE continúan derivados. REPORTE_EXPORTADO agrega un valor de acción al catálogo de productores de RegistroActividad (columna textual existente), no un estado de reserva/préstamo ni evidencia Blockchain. [Implementación](DASHBOARD_REPORTING_IMPLEMENTATION.md).
+
+
+## Contrato de orientación RF24/CU29 — Fase 11.5
+
+[CH1–CH12](DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12) no añade entidades persistentes ni estados de reserva/préstamo/IoT. ChatbotProvider, ChatbotKnowledgeBase, ChatbotRouteRegistry y ChatbotService son responsabilidades técnicas futuras. ANSWER/OUT_OF_SCOPE/RESTRICTED pertenecen a un DTO efímero de asistencia, no a enums del dominio ni a tablas nuevas. El catálogo local tiene entradas procedimentales con topic/text/required_permissions/allowed_route_keys, id/versión/fuente; no registros de usuarios o recursos.
+
+El usuario ACTIVO con sesión vigente y chatbot.consultar puede solicitar orientación. Capabilities deriva de permisos efectivos D-04; rol no concede bypass. El modelo no obtiene identidad, propiedad ni filas de operaciones. «Mis reservas» significa orientar a la lista autorizada, no establecer una relación consulta-chat→Reserva. Se conservan conocimiento de estados y reglas de módulos existentes, sin evaluar disponibilidad, vencimientos, políticas o Blockchain desde el asistente. D-14 prohíbe conversación persistida; el historial visual es memoria de la página. CU30 sigue NO IMPLEMENTADO.

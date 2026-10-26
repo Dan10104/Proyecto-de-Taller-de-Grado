@@ -1,5 +1,7 @@
 # ESPACIO-U
 
+**Fase 11.5 documental cerrada.** [Chatbot Assistance Contract / Readiness for Phase 12](docs/DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12): **0 bloqueantes documentales**. OpenAI Responses/Luna configurable, orientación por permisos y sin registros operativos ni historial persistido. **Fase 12 NO iniciada; CU30 NO IMPLEMENTADO.**
+
 **Fase 11 completada: dashboard y reportes.** 747 tests / 9.111 assertions. [Informe de implementación](docs/DASHBOARD_REPORTING_IMPLEMENTATION.md). Navegación: Dashboard para cuatro roles; Reportes para Admin/Encargado según permisos de dominio. PDF/XLSX locales. CU30 NO IMPLEMENTADO; Fase 12 NO iniciada.
 
 Sistema de información para la gestión y control de reservas de espacios académicos y préstamos de equipamiento tecnológico en la FICCT, con monitoreo de ocupación mediante IoT y trazabilidad de operaciones mediante Blockchain.
@@ -181,3 +183,10 @@ En el cierre histórico de Fase 10.5, Fase 11 quedó lista para una nueva instru
 ## Habilitar dashboard y reportes — Fase 11
 
 Ejecutar composer install y npm ci con los runtimes oficiales; php artisan db:seed --class=SecuritySeeder --force incorpora los tres permisos nuevos sin restaurar permisos retirados. Compilar con npm run build y mantener scheduler para reportes:limpiar-temporales cada minuto. No hay migración nueva. Límites opcionales en .env local: 10.000 filas, 30 s, 64 MiB; temporales privados con máximo de una hora. [Procedimiento, dependencias y seguridad](docs/DASHBOARD_REPORTING_IMPLEMENTATION.md#verificación-y-operación).
+
+
+## Continuación tras Fase 11.5
+
+El contrato RF24/CU29 está definido en CH1–CH12; [50 criterios de aceptación futuros](docs/BUSINESS_RULES.md#aceptación-prevista-para-fase-12) y [plan Fase 12](docs/IMPLEMENTATION_PLAN.md#fase-12--chatbot). Fase 12 puede comenzar con una nueva instrucción. El asistente previsto solo orientará; no consultará registros ni ejecutará operaciones. La pregunta del usuario sí se enviará al proveedor, con snippets mínimos autorizados; store=false no implica retención cero.
+
+Este cierre solo modifica documentación: no instalar SDK, configurar API keys, editar .env/.env.example, crear rutas/servicios/UI, permisos DB o migraciones. Modelo/SDK/política se revalidarán antes de implementar; smoke real solo con clave local válida y cuota, independiente de los tests fake. La baseline 747 tests/9.111 assertions pertenece a Fase 11 y no se reejecutó aquí. Los límites físicos QR, smoke Sepolia y excepción dev Hardhat/Zod mantienen su alcance documentado. Word/PDF fuente intactos y privados.

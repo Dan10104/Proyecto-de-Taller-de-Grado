@@ -212,3 +212,8 @@ Rama feature/phase-6-qr desde main/origin/main 08baa06. Commits de implementaci�
 ## Continuidad documental IoT — Fase 6.5
 
 D-09 y la aceptación de Fase 6 se conservan, incluido su límite de corroboración física. D-10 cierra REST/HMAC, fechas/frescura y deduplicación ambiental sin modificar QR ni crear sensores/eventos. Un QR contextual y un evento ambiental no prueban identidad de ocupantes ni asistencia individual. Fase 7 no libera reservas; Fase 8 combinará QR, IoT, reserva y política según D-08, conservando max_antiguedad_lectura_min independiente de la ventana de monitoreo.
+
+
+## Límite de asistencia previsto — Fase 11.5
+
+Orientación sobre el flujo del módulo y validación contextual; no recibir/generar/escanear tokens en chat ni enlazar objetos por ID del modelo. No añade prueba física ni altera la aceptación y su límite de corroboración existentes. [Contrato CH1–CH12](DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12). Cambio exclusivamente documental; Fase 12 NO iniciada.

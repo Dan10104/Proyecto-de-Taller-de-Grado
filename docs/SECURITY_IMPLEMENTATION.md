@@ -119,3 +119,8 @@ El catálogo vigente tiene 33 códigos: los 21 existentes y los 12 documentados 
 ## Permiso de CU26 — Fase 10
 
 Solo notificaciones.ver_propias nuevo para Administrador, Encargado de Laboratorio, Docente y Estudiante. Catálogo total 47; por rol 43/29/10/10. Sin bypass de propiedad ni acceso a avisos ajenos. [Implementación y evidencia](NOTIFICATIONS_IMPLEMENTATION.md).
+
+
+## Límite de asistencia previsto — Fase 11.5
+
+El permiso chatbot.consultar se prevé para cuatro roles y se añadirá recién en Fase 12. Reutilizar D-04/D-07, ACTIVO y revalidación; no convertir el bot en administración de usuarios ni exponer identidad/sesión al proveedor. [Contrato CH1–CH12](DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12). Cambio exclusivamente documental; Fase 12 NO iniciada.

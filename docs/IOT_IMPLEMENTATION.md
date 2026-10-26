@@ -238,3 +238,8 @@ Resumen autorizado distingue con/sin evidencia reciente, sin confundir comunicac
 ## Integración con Fase 11
 
 [Dashboard y reportes](DASHBOARD_REPORTING_IMPLEMENTATION.md) reutilizan las reglas, consultas y scopes de este dominio. No modifican sus estados, decisiones o productores. REPORTE_EXPORTADO no se añade a la whitelist de notificaciones ni a eventos críticos Blockchain. CU30 sigue NO IMPLEMENTADO; las limitaciones históricas de este informe conservan su alcance.
+
+
+## Límite de asistencia previsto — Fase 11.5
+
+Explicar evidencia/frescura/no determinable sin enviar sensores/eventos concretos o inferir asistencia/porcentaje de ocupación. El chatbot no ingiere eventos ni reinterpreta valor genérico; conocimiento administrativo requiere sus permisos. [Contrato CH1–CH12](DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12). Cambio exclusivamente documental; Fase 12 NO iniciada.
