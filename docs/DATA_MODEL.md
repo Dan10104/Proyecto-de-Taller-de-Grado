@@ -1,6 +1,8 @@
 # Modelo de datos documentado
 
-**Estado vigente — Fase 11 implementada y verificada (2026-10-26).** RF22/CU27 y RF23/CU28: 747 tests / 9111 assertions; QA y auditorías productivas aprobadas. [Implementación, scopes, formatos y evidencia](DASHBOARD_REPORTING_IMPLEMENTATION.md). Sin nuevas tablas ni índices; CU30 NO IMPLEMENTADO y Fase 12 NO iniciada. Los cierres anteriores son históricos.
+**Estado vigente — Fase 11.5 documental cerrada (2026-10-26).** RF24/CU29: [Chatbot Assistance Contract / Readiness for Phase 12](DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12), **0 bloqueantes documentales**. Fase 12 NO iniciada; CU30 NO IMPLEMENTADO. No cambios de código, dependencias, configuración o datos.
+
+**Base funcional conservada — Fase 11 implementada y verificada (2026-10-26).** RF22/CU27 y RF23/CU28: 747 tests / 9111 assertions; QA y auditorías productivas aprobadas. [Implementación, scopes, formatos y evidencia](DASHBOARD_REPORTING_IMPLEMENTATION.md). Sin nuevas tablas ni índices; CU30 NO IMPLEMENTADO y Fase 12 NO iniciada. Los cierres anteriores son históricos.
 
 **Estado histórico — Fase 10.5 documental (2026-10-26).** RF22/CU27 y RF23/CU28: [contrato de dashboard y reportes cerrado](DECISIONS.md#dashboard--reporting-contract--readiness-for-phase-11), **0 bloqueantes documentales**. Fase 11 NO iniciada; CU30 NO IMPLEMENTADO. Fase 10 funcional se conserva, sin cambios de código, datos, permisos o dependencias. Los cierres anteriores mantienen su contexto histórico.
 
@@ -1072,3 +1074,8 @@ REPORTE_EXPORTADO futuro usa actor_id, accion textual existente, fecha_hora, res
 ## Esquema de Fase 11
 
 Cero migraciones y cero índices nuevos. Se reutilizan tablas/columnas/índices operacionales y registros_actividad; SecuritySeeder añade tres filas de permisos y asociaciones elegibles. No métricas, snapshots, reportes persistidos o caché de negocio. JSONL/PDF/XLSX son temporales privados fuera del esquema y se eliminan. EXPLAIN/mediciones no justifican un índice adicional. [Informe](DASHBOARD_REPORTING_IMPLEMENTATION.md#mediciones-locales-y-explain).
+
+
+## Persistencia del chatbot — cierre documental Fase 11.5
+
+[Contrato CH3/CH10](DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12): cero tablas, columnas, índices o migraciones previstos para contenido de chat. Identidad/sesión/RBAC reutilizan sus tablas existentes; ninguna consulta del chatbot carga reservas/préstamos/notificaciones/incidencias/eventos/evidencias/indicadores. No filas de conversación ni mensajes, snapshots, registros_actividad.descripcion, sesión o caché con preguntas/respuestas. Solo se prevé añadir chatbot.consultar al catálogo de permisos en Fase 12; ahora no se siembra. Rate limit usa contador/expiración del store existente sin contenido. Logs técnicos sin prompts no convierten CU29 en CU30. El diccionario físico permanece intacto.

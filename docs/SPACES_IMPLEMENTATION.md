@@ -122,3 +122,8 @@ IoT no cambia estado operativo, reserva, bloqueo o incidencia, ni aprueba/cancel
 ## Actualización de Fase 7
 
 CU06 incorpora lecturas ambientales mínimas. El conjunto de candidatos y las reglas de estados, bloqueos, reservas e incidencias permanecen intactos; ausencia o falla IoT produce NO_DETERMINABLE. La evidencia histórica de Fase 3 conserva su alcance. [Implementación y verificación](IOT_IMPLEMENTATION.md).
+
+
+## Límite de asistencia previsto — Fase 11.5
+
+Solo explicar catálogo, estado operativo y consulta temporal. No enviar espacios concretos, resultados de disponibilidad o evidencia de ocupación; remitir a los módulos autorizados, sin calcular otra disponibilidad. [Contrato CH1–CH12](DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12). Cambio exclusivamente documental; Fase 12 NO iniciada.

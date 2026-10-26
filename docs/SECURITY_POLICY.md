@@ -1,6 +1,8 @@
 # Política de seguridad
 
-**Estado vigente — Fase 11 implementada y verificada (2026-10-26).** RF22/CU27 y RF23/CU28: 747 tests / 9111 assertions; QA y auditorías productivas aprobadas. [Implementación, scopes, formatos y evidencia](DASHBOARD_REPORTING_IMPLEMENTATION.md). Sin nuevas tablas ni índices; CU30 NO IMPLEMENTADO y Fase 12 NO iniciada. Los cierres anteriores son históricos.
+**Estado vigente — Fase 11.5 documental cerrada (2026-10-26).** RF24/CU29: [Chatbot Assistance Contract / Readiness for Phase 12](DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12), **0 bloqueantes documentales**. Fase 12 NO iniciada; CU30 NO IMPLEMENTADO. No cambios de código, dependencias, configuración o datos.
+
+**Base funcional conservada — Fase 11 implementada y verificada (2026-10-26).** RF22/CU27 y RF23/CU28: 747 tests / 9111 assertions; QA y auditorías productivas aprobadas. [Implementación, scopes, formatos y evidencia](DASHBOARD_REPORTING_IMPLEMENTATION.md). Sin nuevas tablas ni índices; CU30 NO IMPLEMENTADO y Fase 12 NO iniciada. Los cierres anteriores son históricos.
 
 **Estado histórico — Fase 10.5 documental (2026-10-26).** RF22/CU27 y RF23/CU28: [contrato de dashboard y reportes cerrado](DECISIONS.md#dashboard--reporting-contract--readiness-for-phase-11), **0 bloqueantes documentales**. Fase 11 NO iniciada; CU30 NO IMPLEMENTADO. Fase 10 funcional se conserva, sin cambios de código, datos, permisos o dependencias. Los cierres anteriores mantienen su contexto histórico.
 
@@ -199,3 +201,14 @@ Actividad de exportación no crítica EXITO solo para archivo generado y autoriz
 ## Controles de dashboard y reportes — Fase 11
 
 Sesión vigente, dashboard.ver/reportes.ver/reportes.exportar, roles elegibles y permisos de dominio acumulativos. Ownership SQL en panel personal; no IDs arbitrarios del actor. Opciones y columnas autorizadas; serie restringida, datos libres excluidos, actor de actividad sin nombre salvo usuarios.ver. Revalidar permisos al finalizar; firma de preview no contiene filas. XLSX StringCell inerte incluso ante prefijos/control chars; PDF literal local sin HTML/recursos remotos. Parámetros tipados/whitelist, temporales privados no públicos, limpieza y presupuestos; EXITO de exportación no crítico/no Blockchain/no avisos. [Pruebas y operación](DASHBOARD_REPORTING_IMPLEMENTATION.md).
+
+
+## Seguridad prevista de asistencia — Fase 11.5
+
+[CH1–CH12](DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12) congela usuario autenticado/ACTIVO/sesión vigente/chatbot.consultar, contexto por permisos efectivos y revalidación al entregar. Ningún rol tiene bypass; permisos revocados eliminan snippets/rutas y, si cambian durante generación, descartan la respuesta. El modelo no autoriza ni ejecuta negocio. No herramientas, consulta de filas operativas, identidad anexada, SQL, fetch de URLs, archivos, embeddings o contexto del repositorio.
+
+La pregunta libre sí se transmite junto con snippets mínimos; el aviso de privacidad debe preceder al envío y no prometer anonimización heurística completa. store=false no promete retención cero; la revisión fechada de política estándar, entrenamiento por defecto y ZDR está en CH3. OPENAI_API_KEY solo servidor y cabecera HTTPS hacia el endpoint oficial, nunca contenido, cliente, Git, DB, logs o capturas; .env.example futura vacía. No introducir estas variables en esta fase.
+
+Entrada y salida no confiables, schema estricto, statuses cerrados, ruta simbólica allowlisted, texto plano escapado y ninguna URL generada visible/activa. Descartar output inválido/incompleto, HTML/código/enlaces y afirmaciones de operación completada; plantillas locales para rechazo/fuera de alcance. Prompt y heurísticas no son garantía semántica universal: ausencia de ejecución/contexto sensible, validación y reautorización son controles de servidor. Probar attacks, rutas no autorizadas y revocación concurrente.
+
+CSRF permanece activo; no proxy público. Sin persistencia en DB/sesión/logs/browser storage/history ni withInput. Auditar también excepciones HTTP, trazas, APM y errores de validación para que no copien contenido o Authorization. Logs solo metadatos saneados; no actividad, notificación ni Blockchain por mensaje. Límites por usuario, tamaño y plazo total protegen disponibilidad; no retry oculto que multiplique llamadas. Las pruebas normales usan fake y bloquean Internet; smoke real separado, sintético y condicionado a configuración/cuota. Ninguna de estas pruebas se ejecuta por el mero cierre documental.

@@ -179,3 +179,8 @@ La primera entrega de dashboard tiene diez tarjetas y excluye la ampliación opc
 ## Integración con Fase 11
 
 [Dashboard y reportes](DASHBOARD_REPORTING_IMPLEMENTATION.md) reutilizan las reglas, consultas y scopes de este dominio. No modifican sus estados, decisiones o productores. REPORTE_EXPORTADO no se añade a la whitelist de notificaciones ni a eventos críticos Blockchain. CU30 sigue NO IMPLEMENTADO; las limitaciones históricas de este informe conservan su alcance.
+
+
+## Límite de asistencia previsto — Fase 11.5
+
+Explicar políticas y resultados autorizados sin evaluar reservas o enviar sus evidencias. ALERTAR no equivale a LIBERAR; la semántica de CU23 no redefine el monitoreo CU22. No activar ni ejecutar liberación desde chat. [Contrato CH1–CH12](DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12). Cambio exclusivamente documental; Fase 12 NO iniciada.

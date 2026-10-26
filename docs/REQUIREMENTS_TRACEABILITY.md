@@ -1,6 +1,8 @@
 # Trazabilidad de requisitos
 
-**Estado vigente — Fase 11 implementada y verificada (2026-10-26).** RF22/CU27 y RF23/CU28: 747 tests / 9111 assertions; QA y auditorías productivas aprobadas. [Implementación, scopes, formatos y evidencia](DASHBOARD_REPORTING_IMPLEMENTATION.md). Sin nuevas tablas ni índices; CU30 NO IMPLEMENTADO y Fase 12 NO iniciada. Los cierres anteriores son históricos.
+**Estado vigente — Fase 11.5 documental cerrada (2026-10-26).** RF24/CU29: [Chatbot Assistance Contract / Readiness for Phase 12](DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12), **0 bloqueantes documentales**. Fase 12 NO iniciada; CU30 NO IMPLEMENTADO. No cambios de código, dependencias, configuración o datos.
+
+**Base funcional conservada — Fase 11 implementada y verificada (2026-10-26).** RF22/CU27 y RF23/CU28: 747 tests / 9111 assertions; QA y auditorías productivas aprobadas. [Implementación, scopes, formatos y evidencia](DASHBOARD_REPORTING_IMPLEMENTATION.md). Sin nuevas tablas ni índices; CU30 NO IMPLEMENTADO y Fase 12 NO iniciada. Los cierres anteriores son históricos.
 
 **Estado histórico — Fase 10.5 documental (2026-10-26).** RF22/CU27 y RF23/CU28: [contrato de dashboard y reportes cerrado](DECISIONS.md#dashboard--reporting-contract--readiness-for-phase-11), **0 bloqueantes documentales**. Fase 11 NO iniciada; CU30 NO IMPLEMENTADO. Fase 10 funcional se conserva, sin cambios de código, datos, permisos o dependencias. Los cierres anteriores mantienen su contexto histórico.
 
@@ -59,7 +61,7 @@ La restricción conserva el contenido normativo del identificador; el criterio l
 | RF21 — Generación de notificaciones y avisos | Importante | El sistema deberá generar notificaciones internas para informar a los usuarios sobre eventos relevantes relacionados con reservas, préstamos, devoluciones, vencimientos, incidencias y otras operaciones que requieran su atención. | CU26 | 10 | Implementado y verificado — Fase 10 | T-CU26 / T-N01–T-N40 ejecutados; 86 casos nuevos. Ver NOTIFICATIONS_IMPLEMENTATION.md. |
 | RF22 — Visualización de dashboard e indicadores | Importante | El sistema deberá presentar paneles de control con indicadores relacionados con reservas, espacios académicos, equipamiento tecnológico, préstamos, ocupación e incidencias, mostrando únicamente la información autorizada para cada rol. | CU27 | 11 | Implementado y verificado Fase 11 | T-CU27 / T-DR01–T-DR18: DashboardService → queries SQL/IotMonitoringService/NotificationReadService → Dashboard/Index/AccessibleChart → DashboardReportingTest/ReportContractTest; medición local 0,032 s. |
 | RF23 — Generación y exportación de reportes | Importante | El sistema deberá permitir a los usuarios autorizados generar reportes sobre reservas, espacios académicos, equipamiento tecnológico, préstamos, incidencias y actividad del sistema, con filtros y opciones de exportación en formatos definidos como PDF y Excel. | CU28 | 11 | Implementado y verificado Fase 11 | T-CU28 / T-DR19–T-DR48: ReportRegistry/QueryService/GenerationService/ExportService → Reports/Index → PDF/XLSX → ReportQueriesTest/ReportExportsTest/ReportContractTest; 10.000 filas PDF 6,300 s/XLSX 5,522 s locales. |
-| RF24 — Chatbot de asistencia al usuario | Importante | El sistema deberá ofrecer un chatbot de asistencia que oriente a los usuarios sobre el funcionamiento de la plataforma, reservas, préstamos, códigos QR, reportes y demás procedimientos habilitados, sin ejecutar de forma autónoma operaciones que requieran autorización. | CU29 | 12 | Planificado web | T-CU29 — Petición de aprobar/cancelar no modifica nada; contexto ajeno excluido; proveedor caído; respuesta/aviso objetivo <=15 s. |
+| RF24 — Chatbot de asistencia al usuario | Importante | El sistema deberá ofrecer un chatbot de asistencia que oriente a los usuarios sobre el funcionamiento de la plataforma, reservas, préstamos, códigos QR, reportes y demás procedimientos habilitados, sin ejecutar de forma autónoma operaciones que requieran autorización. | CU29 | 12 | Contrato cerrado Fase 11.5; implementación Fase 12 pendiente | T-CU29 / T-CB01–T-CB50 — Contexto procedimental por permisos, sin tools/filas, output/rutas estrictos, privacidad, fallos y plazo total <=15 s; pruebas futuras. |
 | RF25 — Registro de actividad y bitácora del sistema | Importante | El sistema deberá registrar las acciones relevantes realizadas sobre usuarios, espacios académicos, reservas, equipamiento tecnológico, préstamos, incidencias, configuraciones y otros elementos definidos para fines de control y auditoría interna. | CU30 | Pendiente de autorización de bitácora | Planificado web | T-CU30 — Filtros y paginación; usuario no autorizado; evento humano/automático; secreto ausente; conservación de historia. |
 | RF26 — Acceso desde aplicación móvil | Importante | El sistema deberá permitir a los usuarios acceder desde una aplicación móvil orientada inicialmente a Android para consultar información, gestionar las operaciones habilitadas para su rol y realizar validaciones mediante códigos QR. | Sin CU exclusivo de app; reutiliza CU por funcionalidad | Fuera de fases 1–14 | Diferido móvil | No crear cliente nativo en estas fases; validar alcance RF26 cuando se autorice. |
 
@@ -556,3 +558,21 @@ Se preservan las 217 filas normativas y el texto de los requisitos fuente. RF22�
 | T-DR40–48 | Límites 9.999/10.000/10.001, presupuestos, cleanup/sendContent/huérfanos, SQL whitelist, RBAC y privacidad; mediciones/EXPLAIN y QA responsive/teclado/console en informe |
 | RF25/CU30 | NO IMPLEMENTADO: ningún navegador general de actividad ni detalle universal; resumen CU28 no acredita CU30 |
 | RF24/CU29 | Fase 12 NO iniciada |
+
+
+## Trazabilidad documental del chatbot — Fase 11.5
+
+[CH1–CH12](DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12) cierra el diseño, no acredita software. Cadena futura: RF24 → CU29 → Form Request/ChatbotService → autorización y ChatbotKnowledgeBase → ChatbotProvider/OpenAIChatbotProvider → validador/ChatbotRouteRegistry → Asistente Vue → FakeChatbotProvider/HTTP fake/T-CB. No controles de datos operativos delegados al modelo.
+
+| Requisito / decisión | Contrato y evidencia futura |
+| --- | --- |
+| RF24/CU29; BR-20 | Orientación sin operaciones ni datos concretos; CH1/CH4–CH8; T-CB01–30 |
+| RNF-10–15; D-04/D-07; IS-14 | ACTIVO/sesión/RBAC/CSRF, no identidad anexa ni credencial cliente, revocación; T-CB01–10/19/41–45 |
+| IS-07/08; IC-08; RD-15/18 | Backend→Responses HTTPS, provider abstracto y fake, sin frontend→proveedor; CH2; T-CB36–42/49 |
+| IU-09/10; D-14 | UI efímera accesible, sin nueva entidad/historial; CH10; T-CB43/44/47/48 |
+| R-TR-07; RNF-19/20/27; RD-42; R-UR-06 | 15 s totales, como máximo un retry, límites individuales y fallo aislado; CH9; T-CB31–40/48 |
+| IS-14; política de privacidad | Pregunta libre se transmite, contexto mínimo, store=false sin prometer ZDR; CH3; T-CB08–10/41–45/50 |
+| RF25/CU30 | NO IMPLEMENTADO; sin actividad ni historial indirecto por mensaje |
+| RF26 / cliente móvil | Diferido; UI web responsiva no acredita aplicación Flutter |
+
+Los 217 textos normativos y 30 CU se conservan; solo el estado/criterio derivado de RF24 se precisa. Baseline funcional Fase 11: 747 tests / 9.111 assertions; ninguna prueba nueva o auditoría funcional se atribuye al cierre exclusivamente documental.

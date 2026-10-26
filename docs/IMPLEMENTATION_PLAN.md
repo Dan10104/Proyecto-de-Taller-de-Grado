@@ -1,6 +1,8 @@
 # Plan de implementación web
 
-**Estado vigente — Fase 11 implementada y verificada (2026-10-26).** RF22/CU27 y RF23/CU28: 747 tests / 9111 assertions; QA y auditorías productivas aprobadas. [Implementación, scopes, formatos y evidencia](DASHBOARD_REPORTING_IMPLEMENTATION.md). Sin nuevas tablas ni índices; CU30 NO IMPLEMENTADO y Fase 12 NO iniciada. Los cierres anteriores son históricos.
+**Estado vigente — Fase 11.5 documental cerrada (2026-10-26).** RF24/CU29: [Chatbot Assistance Contract / Readiness for Phase 12](DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12), **0 bloqueantes documentales**. Fase 12 NO iniciada; CU30 NO IMPLEMENTADO. No cambios de código, dependencias, configuración o datos.
+
+**Base funcional conservada — Fase 11 implementada y verificada (2026-10-26).** RF22/CU27 y RF23/CU28: 747 tests / 9111 assertions; QA y auditorías productivas aprobadas. [Implementación, scopes, formatos y evidencia](DASHBOARD_REPORTING_IMPLEMENTATION.md). Sin nuevas tablas ni índices; CU30 NO IMPLEMENTADO y Fase 12 NO iniciada. Los cierres anteriores son históricos.
 
 **Estado histórico — Fase 10.5 documental (2026-10-26).** RF22/CU27 y RF23/CU28: [contrato de dashboard y reportes cerrado](DECISIONS.md#dashboard--reporting-contract--readiness-for-phase-11), **0 bloqueantes documentales**. Fase 11 NO iniciada; CU30 NO IMPLEMENTADO. Fase 10 funcional se conserva, sin cambios de código, datos, permisos o dependencias. Los cierres anteriores mantienen su contexto histórico.
 
@@ -235,15 +237,17 @@ Implementación disponible, 325 pruebas/4984 aserciones aprobadas. [Evidencia y 
 
 ### Fase 12 — Chatbot
 
+**Lista para comenzar mediante nueva instrucción; NO iniciada.** [Contrato CH1–CH12 cerrado en Fase 11.5, 0 bloqueantes documentales](DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12).
+
 | Campo | Plan |
 | --- | --- |
 | Módulos afectados | Servicios de Notificación y Asistencia |
 | Carpetas principales futuras | app/Services/; app/Http/; config/; resources/js/Pages/ y Components/; tests/ |
 | Requisitos relacionados | RF24; IU-09; IS-07/08; IC-08; RD-15/42; R-TR-07 |
 | Casos de uso | CU29 |
-| Trabajo previsto | Aplicar límite de alcance D-14 y seleccionar proveedor permitido; integración backend, contexto autorizado y mensajes de error; únicamente orientación. |
-| Pruebas requeridas | Solicitar acciones protegidas no cambia estado; datos ajenos excluidos; claves no llegan al cliente; fallo/timeout objetivo <=15 s. |
-| Riesgos / puertas | Alucinación de permisos; ejecución de acciones; filtración al proveedor; tabla de historial no autorizada. |
+| Trabajo previsto | Ejecutar CH1–CH12: OpenAI Responses/Luna configurable, provider/fake, conocimiento local por permisos, salida/rutas estrictas y UI efímera; solo orientación. |
+| Pruebas requeridas | T-CB01–T-CB50; fake provider y fake HTTP sin Internet; MySQL espacio_u_testing y baseline 747 conservada; smoke externo separado/condicional. |
+| Riesgos / puertas | Verificar modelo/SDK/política oficial al iniciar; minimizar texto libre; injection/alucinación y fallo externo; clave/cuota solo para smoke real, no para tests. |
 | Condición de finalización | Asistencia acotada, proveedor aislado y navegación operativa durante caída; sin funciones protegidas ejecutadas por el bot. |
 | Commit esperado | `feat: add scoped advisory chatbot` |
 
@@ -384,4 +388,11 @@ RF22/CU27 y RF23/CU28 cuentan con catálogo, fórmulas, RBAC, filtros/columnas, 
 
 ## Ejecución Fase 11
 
-Dashboard por cuatro roles y siete reportes implementados según DR1–DR12 y precisiones explícitas de la instrucción Fase 11. [Servicios, trazabilidad, controles y pruebas](DASHBOARD_REPORTING_IMPLEMENTATION.md). Sin nuevas migraciones/tablas; índice no justificado por mediciones. CU30 sigue NO IMPLEMENTADO; Fase 12 NO iniciada. Próximo paso recomendado, solo con nueva autorización: cerrar proveedor/privacidad/contexto del chatbot orientativo D-14/RF24/CU29 antes de integrarlo.
+Dashboard por cuatro roles y siete reportes implementados según DR1–DR12 y precisiones explícitas de la instrucción Fase 11. [Servicios, trazabilidad, controles y pruebas](DASHBOARD_REPORTING_IMPLEMENTATION.md). Sin nuevas migraciones/tablas; índice no justificado por mediciones. CU30 sigue NO IMPLEMENTADO; Fase 12 NO iniciada. El contrato orientativo D-14/RF24/CU29 quedó cerrado posteriormente en Fase 11.5; implementar Fase 12 requiere nueva instrucción.
+
+
+## Cierre documental de Fase 11.5 y continuación
+
+Contrato completo en [Readiness for Phase 12](DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12), 0 bloqueantes documentales. Orden futuro: revalidar fuentes oficiales/modelo/SDK/política; incorporar chatbot.consultar y configuración deshabilitada por defecto; provider abstracto/fake y contrato HTTP; conocimiento y rutas autorizados; entrada/salida segura, límites y errores; UI sin persistencia; T-CB/regresión/QA/auditorías/secret scan; smoke real sintético solo con clave/cuota; publicación autorizada. Preferir HTTP Client Laravel sin SDK nuevo salvo justificación actualizada.
+
+No configurar claves ni realizar smoke antes de Fase 12. No crear código, rutas, UI, permisos DB, configuración, dependencias o migraciones en este cierre. CU30 NO IMPLEMENTADO, app móvil diferida y smoke Sepolia pendiente independiente. El cierre documental no reejecuta ni renombra como nuevas las pruebas/auditorías de Fase 11, ni elimina la excepción temporal dev Hardhat/Zod de Fase 9.

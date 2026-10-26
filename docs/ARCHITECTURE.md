@@ -1,6 +1,8 @@
 # Arquitectura web de ESPACIO-U
 
-**Estado vigente — Fase 11 implementada y verificada (2026-10-26).** RF22/CU27 y RF23/CU28: 747 tests / 9111 assertions; QA y auditorías productivas aprobadas. [Implementación, scopes, formatos y evidencia](DASHBOARD_REPORTING_IMPLEMENTATION.md). Sin nuevas tablas ni índices; CU30 NO IMPLEMENTADO y Fase 12 NO iniciada. Los cierres anteriores son históricos.
+**Estado vigente — Fase 11.5 documental cerrada (2026-10-26).** RF24/CU29: [Chatbot Assistance Contract / Readiness for Phase 12](DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12), **0 bloqueantes documentales**. Fase 12 NO iniciada; CU30 NO IMPLEMENTADO. No cambios de código, dependencias, configuración o datos.
+
+**Base funcional conservada — Fase 11 implementada y verificada (2026-10-26).** RF22/CU27 y RF23/CU28: 747 tests / 9111 assertions; QA y auditorías productivas aprobadas. [Implementación, scopes, formatos y evidencia](DASHBOARD_REPORTING_IMPLEMENTATION.md). Sin nuevas tablas ni índices; CU30 NO IMPLEMENTADO y Fase 12 NO iniciada. Los cierres anteriores son históricos.
 
 **Estado histórico — Fase 10.5 documental (2026-10-26).** RF22/CU27 y RF23/CU28: [contrato de dashboard y reportes cerrado](DECISIONS.md#dashboard--reporting-contract--readiness-for-phase-11), **0 bloqueantes documentales**. Fase 11 NO iniciada; CU30 NO IMPLEMENTADO. Fase 10 funcional se conserva, sin cambios de código, datos, permisos o dependencias. Los cierres anteriores mantienen su contexto histórico.
 
@@ -76,7 +78,7 @@ Una vez confirmada la operación, generar los efectos complementarios sin deshac
 | IoT | D-10 cerrada en Fase 6.5 e implementada en 7: REST/HMAC, evento ambiental, historia, frescura y deduplicación por sensor | MQTT opcional futuro. CU22 genérico; interpretación exclusiva de CU23 cerrada documentalmente por D-08 en 7.5 |
 | QR | D-09 cerrada: token/hash, ciclo, contexto y correlación atómica definidos en Fase 5.5 | Implementación Fase 6 y pruebas automatizadas disponibles; aceptación física por confirmación del usuario (sin corroboración independiente nueva); obligatoriedad global diferida |
 | Blockchain | Hash local con algoritmo/versión canónica, operación de origen y referencia externa; privacidad previa al envío | D-12 cerrada en Fase 8.5; falta implementación y validación en Fase 9 |
-| Chatbot | Backend con credenciales privadas, alcance por usuario y respuesta/error comprensible | Proveedor/modelo, contenido de orientación autorizado y límites de contexto; sin persistencia adicional asumida |
+| Chatbot | Backend con credencial privada y orientación por capacidades | Contrato CH1–CH12 cerrado en Fase 11.5: OpenAI Responses/Luna configurable, snippets locales y sin filas operativas ni persistencia de chat; implementación Fase 12 pendiente |
 
 No se añaden contratos de proveedores imaginarios. Sustituir un proveedor no debe cambiar las reglas operativas. Los fallos se registran con datos sanitizados y se presentan sin revelar secretos.
 
@@ -249,3 +251,12 @@ Actualización por carga/filtros/navegación o botón, sin WebSocket/polling agr
 ## Arquitectura ejecutada de Fase 11
 
 DashboardService agrega en MySQL, delega IoT/notificaciones y conserva scopes de reservas/préstamos. ReportRegistry fija siete ReportDefinition; Request/ReportFilters validan whitelist; QueryService aplica autorización/proyección/orden común. GenerationService coordina snapshot privado, renderizado y revalidación; ExportService solo formato, writers locales; AuditService registra salida no crítica. Temporales privados con lease y cleanup cada minuto. [Detalle y límites](DASHBOARD_REPORTING_IMPLEMENTATION.md). No BI/cache/tabla nueva ni cálculo crítico Vue.
+
+
+## Arquitectura prevista de asistencia — Fase 11.5
+
+[Contrato vinculante CH1–CH12](DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12). Flujo previsto: Vue/Inertia → endpoint web Laravel → autorización/validación/rate limit → ChatbotService → ChatbotKnowledgeBase/ChatbotRouteRegistry → ChatbotProvider → OpenAIChatbotProvider por HTTPS. La respuesta atraviesa validación estricta y reautorización antes del texto plano y enlace local. FakeChatbotProvider y fake HTTP permiten pruebas sin Internet. Ningún componente se crea en este cierre.
+
+ChatbotProvider intercambia DTO propios (instrucciones específicas, pregunta actual, capacidades relevantes y snippets; salida status/answer/route_key), no modelos Eloquent ni objetos del SDK. Solo autorización lee cuenta/sesión/roles/permisos; no dependencia de servicios que consulten registros operativos o ejecuten negocio. Adaptador inicial preferido: HTTP Client Laravel existente, sujeto a revisar SDK/documentación antes de instalar nada. No frontend→OpenAI, tools, llamadas SQL del modelo ni proveedor secundario automático.
+
+GET /asistente y POST /asistente/consultar son rutas futuras, con auth/access.session/chatbot.consultar/CSRF. POST JSON sin echo/flash del input, página Inertia sin mensajes en props. No streaming, history remember, conversaciones remotas, tablas, colas con prompts, cache de respuestas ni embedding store. Plazo monotónico único de 15 s, como máximo dos intentos dentro de él; nunca locks operativos o de sesión durante red. Rate limit atómico por usuario en store existente, separado de operaciones principales. Fallo del proveedor retorna aviso y no interrumpe otros módulos. Detalle de validación, memoria efímera y límites en CH8–CH10.
