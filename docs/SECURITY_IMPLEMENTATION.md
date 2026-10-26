@@ -124,3 +124,7 @@ Solo notificaciones.ver_propias nuevo para Administrador, Encargado de Laborator
 ## Límite de asistencia previsto — Fase 11.5
 
 El permiso chatbot.consultar se prevé para cuatro roles y se añadirá recién en Fase 12. Reutilizar D-04/D-07, ACTIVO y revalidación; no convertir el bot en administración de usuarios ni exponer identidad/sesión al proveedor. [Contrato CH1–CH12](DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12). Cambio exclusivamente documental; Fase 12 NO iniciada.
+
+## Permiso de asistencia — Fase 12
+
+Se añade chatbot.consultar, elegible para los cuatro roles institucionales. Catálogo total: 51 permisos. SecuritySeeder incremental no restaura concesiones revocadas. GET/POST Asistente exigen permiso efectivo, ACTIVO y sesión; POST mantiene CSRF. Contexto y rutas se reautorizan tras red. [Pruebas de acceso, revocación, privacidad y límites](CHATBOT_IMPLEMENTATION.md). CU30 sigue NO IMPLEMENTADO.

@@ -1,6 +1,8 @@
 # Registro de decisiones y auditoría documental
 
-**Estado vigente — Fase 11.5 documental cerrada (2026-10-26).** RF24/CU29: [Chatbot Assistance Contract / Readiness for Phase 12](#chatbot-assistance-contract--readiness-for-phase-12), **0 bloqueantes documentales**. Fase 12 NO iniciada; CU30 NO IMPLEMENTADO. No cambios de código, dependencias, configuración o datos.
+**Estado vigente — Fase 12 implementada y validada offline (2026-10-26).** RF24/CU29: [implementación del asistente](CHATBOT_IMPLEMENTATION.md), conforme a CH1–CH12. Orientación por permisos, OpenAI Responses y contexto mínimo sin datos operativos ni historial persistido. CU30 **NO IMPLEMENTADO**; aplicación móvil diferida; ninguna fase posterior iniciada. Los cierres siguientes conservan su contexto histórico.
+
+**Estado histórico — Fase 11.5 documental cerrada (2026-10-26).** RF24/CU29: [Chatbot Assistance Contract / Readiness for Phase 12](#chatbot-assistance-contract--readiness-for-phase-12), **0 bloqueantes documentales**. Fase 12 NO iniciada; CU30 NO IMPLEMENTADO. No cambios de código, dependencias, configuración o datos.
 
 **Base funcional conservada — Fase 11 implementada y verificada (2026-10-26).** RF22/CU27 y RF23/CU28: 747 tests / 9111 assertions; QA y auditorías productivas aprobadas. [Implementación, scopes, formatos y evidencia](DASHBOARD_REPORTING_IMPLEMENTATION.md). Sin nuevas tablas ni índices; CU30 NO IMPLEMENTADO y Fase 12 NO iniciada. Los cierres anteriores son históricos.
 
@@ -2328,3 +2330,11 @@ Smoke OpenAI real separado, manual y opt-in al implementar Fase 12: requiere ins
 Fuentes oficiales consultadas el 2026-10-26: [modelo](https://developers.openai.com/api/docs/models/gpt-6-luna), [Responses y mensajes](https://developers.openai.com/api/docs/guides/text), [Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs?api-mode=responses), [controles de datos](https://developers.openai.com/api/docs/guides/your-data), [SDKs](https://developers.openai.com/api/docs/libraries). En Fase 12 se revalidarán; una política futura diferente debe reflejarse en documentación y pruebas. No se promete disponibilidad externa ni calidad absoluta a partir de estas fuentes.
 
 Verificación documental de este cierre: base main/origin/main e328c06 limpia, rama docs/phase-11.5-chatbot-decisions, 20 documentos modificados; 217 textos normativos conservados, 30 CU y 17 decisiones D existentes sin nuevas numeraciones. CH1–CH12 contienen 20 rutas contrastadas con Laravel y 50 criterios futuros T-CB. Se revisaron las 117 secciones de la instrucción y los enlaces internos; Word/PDF conservan sus huellas. El diff no cambia aplicación, dependencias, configuración ni permisos. El escaneo previo a publicación abarca archivos públicos, índice, diff e historial sin imprimir secretos. No se repitieron tests/auditorías funcionales ni se hizo inferencia OpenAI en esta fase documental.
+
+## Ejecución del contrato de asistencia — Fase 12
+
+La instrucción de Fase 12 autoriza ejecutar CH1–CH12 cerrado en Fase 11.5, sin nuevo expediente D. Se conserva el texto de ese cierre como historia y se materializa RF24/CU29 mediante [ChatbotService, proveedores, conocimiento, registro de veinte rutas y UI](CHATBOT_IMPLEMENTATION.md). Modelo gpt-6-luna confirmado en documentación oficial el 2026-10-26, Responses/Structured Outputs/store=false/reasoning none; HTTP Client Laravel sin SDK ni otra dependencia.
+
+32 fragmentos/16 temas, hasta cuatro textos/800 caracteres cada uno; permisos efectivos y reautorización; ningún acceso a filas operativas ni operación por IA. Una clave desconocida invalida salida según T-CB17; una conocida no autorizada elimina enlace y sustituye texto. Entrada 2.000 puntos de código con cuerpo auxiliar max_input_chars×12+1.024 bytes; UI veinte intercambios efímeros y abort de transporte de 20 s, manteniendo presupuesto backend conjunto de 15 s. Sin cambio de decisiones funcionales, nuevas tablas ni historial.
+
+Verificación offline y evidencia final en el informe. Smoke real OpenAI pendiente por ausencia de credencial/cuota; ninguna inferencia real acreditada. Sepolia pendiente independiente. CU30 NO IMPLEMENTADO, móvil diferida y ninguna fase posterior iniciada.

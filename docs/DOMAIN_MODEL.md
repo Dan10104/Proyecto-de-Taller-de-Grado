@@ -1,6 +1,8 @@
 # Modelo del dominio
 
-**Estado vigente — Fase 11.5 documental cerrada (2026-10-26).** RF24/CU29: [Chatbot Assistance Contract / Readiness for Phase 12](DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12), **0 bloqueantes documentales**. Fase 12 NO iniciada; CU30 NO IMPLEMENTADO. No cambios de código, dependencias, configuración o datos.
+**Estado vigente — Fase 12 implementada y validada offline (2026-10-26).** RF24/CU29: [implementación del asistente](CHATBOT_IMPLEMENTATION.md), conforme a CH1–CH12. Orientación por permisos, OpenAI Responses y contexto mínimo sin datos operativos ni historial persistido. CU30 **NO IMPLEMENTADO**; aplicación móvil diferida; ninguna fase posterior iniciada. Los cierres siguientes conservan su contexto histórico.
+
+**Estado histórico — Fase 11.5 documental cerrada (2026-10-26).** RF24/CU29: [Chatbot Assistance Contract / Readiness for Phase 12](DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12), **0 bloqueantes documentales**. Fase 12 NO iniciada; CU30 NO IMPLEMENTADO. No cambios de código, dependencias, configuración o datos.
 
 **Base funcional conservada — Fase 11 implementada y verificada (2026-10-26).** RF22/CU27 y RF23/CU28: 747 tests / 9111 assertions; QA y auditorías productivas aprobadas. [Implementación, scopes, formatos y evidencia](DASHBOARD_REPORTING_IMPLEMENTATION.md). Sin nuevas tablas ni índices; CU30 NO IMPLEMENTADO y Fase 12 NO iniciada. Los cierres anteriores son históricos.
 
@@ -258,3 +260,7 @@ CU27/CU28 consultan las entidades existentes con scopes/permisos, sin entidad pe
 [CH1–CH12](DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12) no añade entidades persistentes ni estados de reserva/préstamo/IoT. ChatbotProvider, ChatbotKnowledgeBase, ChatbotRouteRegistry y ChatbotService son responsabilidades técnicas futuras. ANSWER/OUT_OF_SCOPE/RESTRICTED pertenecen a un DTO efímero de asistencia, no a enums del dominio ni a tablas nuevas. El catálogo local tiene entradas procedimentales con topic/text/required_permissions/allowed_route_keys, id/versión/fuente; no registros de usuarios o recursos.
 
 El usuario ACTIVO con sesión vigente y chatbot.consultar puede solicitar orientación. Capabilities deriva de permisos efectivos D-04; rol no concede bypass. El modelo no obtiene identidad, propiedad ni filas de operaciones. «Mis reservas» significa orientar a la lista autorizada, no establecer una relación consulta-chat→Reserva. Se conservan conocimiento de estados y reglas de módulos existentes, sin evaluar disponibilidad, vencimientos, políticas o Blockchain desde el asistente. D-14 prohíbe conversación persistida; el historial visual es memoria de la página. CU30 sigue NO IMPLEMENTADO.
+
+## Orientación implementada — Fase 12
+
+ChatbotContext es efímero y no relaciona consultas con registros operativos. ChatbotService/Provider/KnowledgeBase/RouteRegistry implementados sin tablas ni enums nuevos. ANSWER/OUT_OF_SCOPE/RESTRICTED solo describen respuesta de asistencia; no modifican negocio. 32 fragmentos y 20 destinos autorizados orientan sobre los módulos existentes. [Implementación RF24/CU29](CHATBOT_IMPLEMENTATION.md). CU30 NO IMPLEMENTADO; D-14 conserva ausencia de conversación persistida.

@@ -1,6 +1,8 @@
 # Reglas de negocio y controles verificables
 
-**Estado vigente — Fase 11.5 documental cerrada (2026-10-26).** RF24/CU29: [Chatbot Assistance Contract / Readiness for Phase 12](DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12), **0 bloqueantes documentales**. Fase 12 NO iniciada; CU30 NO IMPLEMENTADO. No cambios de código, dependencias, configuración o datos.
+**Estado vigente — Fase 12 implementada y validada offline (2026-10-26).** RF24/CU29: [implementación del asistente](CHATBOT_IMPLEMENTATION.md), conforme a CH1–CH12. Orientación por permisos, OpenAI Responses y contexto mínimo sin datos operativos ni historial persistido. CU30 **NO IMPLEMENTADO**; aplicación móvil diferida; ninguna fase posterior iniciada. Los cierres siguientes conservan su contexto histórico.
+
+**Estado histórico — Fase 11.5 documental cerrada (2026-10-26).** RF24/CU29: [Chatbot Assistance Contract / Readiness for Phase 12](DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12), **0 bloqueantes documentales**. Fase 12 NO iniciada; CU30 NO IMPLEMENTADO. No cambios de código, dependencias, configuración o datos.
 
 **Base funcional conservada — Fase 11 implementada y verificada (2026-10-26).** RF22/CU27 y RF23/CU28: 747 tests / 9111 assertions; QA y auditorías productivas aprobadas. [Implementación, scopes, formatos y evidencia](DASHBOARD_REPORTING_IMPLEMENTATION.md). Sin nuevas tablas ni índices; CU30 NO IMPLEMENTADO y Fase 12 NO iniciada. Los cierres anteriores son históricos.
 
@@ -39,7 +41,7 @@ Estas reglas sintetizan el informe. Los identificadores BR son internos para org
 | BR-17 | Verificación | RF20; CU25 | Recalcular con mismo algoritmo/versión canónica y comparar evidencia; distinguir VALIDO, INCONSISTENTE, PENDIENTE y NO_VERIFICABLE. | Alteración detectada; referencia faltante; proveedor caído; usuario no autorizado. |
 | BR-18 | Notificación | RF21; CU26; R-PR-07 | Generar aviso interno después de confirmar el evento; vincular actividad/destinatario; listar solo propios y marcar leída según interacción. | Usuario ajeno no lee aviso; error al notificar conserva operación; lectura actualiza leida_en. |
 | BR-19 | Indicadores y reportes | RF22–23; CU27–28 | Consultar datos reales permitidos y filtros válidos; diferenciar sin datos de error; PDF y Excel respetan alcance de consulta. | Exportación y pantalla con mismo filtro/permisos; vacío comprensible; descarga ajena denegada. |
-| BR-20 | Chatbot de orientación | RF24; CU29; RD-15; CH1–CH12 | Contrato Fase 11.5 cerrado: backend OpenAI Responses, contexto procedimental por permisos, sin filas operativas/tools/persistencia de chat; no ejecuta negocio; fallo aislado. | T-CB01–T-CB50 previstos para Fase 12; aún no implementados. |
+| BR-20 | Chatbot de orientación | RF24; CU29; RD-15; CH1–CH12 | Contrato Fase 11.5 cerrado: backend OpenAI Responses, contexto procedimental por permisos, sin filas operativas/tools/persistencia de chat; no ejecuta negocio; fallo aislado. | T-CB01–T-CB50 materializados mediante pruebas/QA; ver CHATBOT_IMPLEMENTATION.md. |
 | BR-21 | Bitácora | RF25; CU30; DB-22 | Operación, fecha, resultado y responsable humano o proceso; contexto suficiente para seguimiento; consulta restringida y sin secretos. | Rechazo/error registrado sin contraseña/token; filtros autorizados; evento automático identifica proceso. |
 | BR-22 | Configuración y privacidad | RNF-14/17; IS-14; RD-19/20/23/43/44 | Datos operativos completos en MySQL; secretos solo configuración segura; clientes y evidencia externa sin credenciales/datos sensibles. | Inspeccionar bundles, logs y payloads con valores sintéticos; verificar ausencia de secretos reales. |
 | BR-23 | Rendimiento y continuidad | R-TR/R-CC/R-UR/R-DISP/R-ESC/R-PR | Cumplir límites cuantificados de trazabilidad con carga representativa, fallo de dependencias y recuperación real. | Medir extremos máximos, concurrencia, eventos aceptados, respaldo diario y restauración <=4 h. |
@@ -512,7 +514,7 @@ Las fórmulas, siete reportes, scopes y columnas DR1–DR12 están implementados
 
 ## Aceptación prevista para Fase 12
 
-[Chatbot Assistance Contract / Readiness for Phase 12](DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12), CH1–CH12. Estos **50 criterios son futuros**; Fase 11.5 no crea ni ejecuta tests funcionales. La baseline verificada de Fase 11 es 747 tests / 9.111 assertions y no se sustituye por esta matriz. El modelo solo orienta: no consultar datos concretos aunque sean propios ni ejecutar ninguna operación.
+[Chatbot Assistance Contract / Readiness for Phase 12](DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12), CH1–CH12. Estos **50 criterios se definieron en Fase 11.5** y su evidencia de implementación Fase 12 está en [CHATBOT_IMPLEMENTATION](CHATBOT_IMPLEMENTATION.md#verificación-y-trazabilidad-t-cb). El cierre documental original no creó ni ejecutó tests funcionales. La baseline verificada de Fase 11 es 747 tests / 9.111 assertions y no se sustituye por esta matriz. El modelo solo orienta: no consultar datos concretos aunque sean propios ni ejecutar ninguna operación.
 
 | ID | Criterio verificable de aceptación |
 | --- | --- |

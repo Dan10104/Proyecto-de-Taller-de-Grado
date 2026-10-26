@@ -270,3 +270,9 @@ Los comandos muestran conteos sin datos sensibles. Repetir reconciliación no du
 Abrir **Notificaciones** o campana: avisos propios, badge, filtros y primera lectura al abrir detalle. Sin canales externos/realtime. Credenciales QA permanecen solo .env local. Testing destructivo solo espacio_u_testing con guardas.
 
 Fase 10: 656 tests / 8721 aserciones; Pint/build/Composer/frontend/runtime correctos. [Informe y límites](NOTIFICATIONS_IMPLEMENTATION.md). Excepción dev Blockchain/Zod persiste; smoke Sepolia pendiente de testETH.
+
+## Habilitar asistente — Fase 12
+
+[Procedimiento y pruebas](CHATBOT_IMPLEMENTATION.md#operación-y-smoke-real). Runtimes existentes, sin composer/npm install adicional ni migración. Ejecutar SecuritySeeder incremental y npm run build; revisar permiso chatbot.consultar. Configuración en config/chatbot.php y placeholders seguros de .env.example. Mantener CHATBOT_ENABLED=false sin credencial; para activar, key exclusivamente en .env LOCAL y config:clear en desarrollo, nunca chat/Vue/Git. Cache compartida con locks para cuota entre procesos; no array en producción.
+
+La suite fuerza modo sin clave y bloquea HTTP no simulado; usar espacio_u_testing, nunca desarrollo. QA manual con actor sintético y FakeProvider se mantiene fuera de runtime productivo. Smoke real separado solo con configuración/cuota local, sin datos reales; la falta de key no se suplanta con un fake presentado como OpenAI.
