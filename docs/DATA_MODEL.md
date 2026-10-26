@@ -1,6 +1,6 @@
 # Modelo de datos documentado
 
-**Estado vigente — Fase 8.5 documental cerrada (2026-10-25).** D-12 RESUELTA PARA FASE 9; [Readiness for Phase 9](DECISIONS.md#readiness-for-phase-9), **0 bloqueantes documentales**. La implementación sigue en Fase 8; Fase 9 no iniciada. El contrato nuevo se distingue de las fotografías históricas que se conservan debajo.
+**Estado vigente — Fase 9 implementada (2026-10-25/26).** RF19/CU24 y RF20/CU25, cuatro actividades críticas, dos tablas y tres permisos implementados conforme a D-12. [Implementación, pruebas offline, excepción temporal dev de Zod y Sepolia pendiente de testETH](BLOCKCHAIN_IMPLEMENTATION.md). CU30 general y Fase 10 permanecen pendientes. Las secciones de cierres anteriores conservan su contexto histórico.
 
 ## Compatibilidad MySQL para Fase 9 — excepción autorizada
 
@@ -1021,3 +1021,9 @@ Referencia: eip155:11155111/contrato/tx, 125 caracteres; puede ser candidata en 
 Sin columna JSON canónico, payload en descripcion, tabla auxiliar, timestamps Laravel adicionales ni persistencia de claves/RPC/nonce. Se reconstruye con campos históricos protegidos; NULL y string vacío no son equivalentes. Las fechas canónicas son UTC aunque el DATETIME siga local. La integridad de contexto, inmutabilidad histórica y transición única corresponden a servicios/locks además del SQL; no se atribuyen a constraints inexistentes.
 
 Estado instalado conservado: **28 tablas académicas, 179 columnas y 54 FK**. Fase 9 agregará únicamente estas dos: proyección 30 tablas, 203 columnas, 61 FK; el modelo completo permanece 31/211/63. Estos son conteos del contrato, no migraciones ejecutadas ni una nueva inspección de BD en Fase 8.5. Los tres permisos futuros no se insertan ahora.
+
+## Materialización de Fase 9
+
+Migraciones 000029/000030: registros_actividad (13 columnas, 6 FK) y evidencias_trazabilidad (11 columnas, 1 FK), fieles al SQL salvo ON UPDATE RESTRICT autorizado en fk_registro_actor. chk_registro_responsable, defaults y UNIQUE actividad/hash conservados. Ninguna de las 28 tablas previas se modifica. Resultado: 30 tablas académicas / 203 columnas / 61 FK; migrations es técnica. El modelo documental completo sigue conteniendo 31 tablas: notificaciones aún no se materializa. Sin columna canónica, outbox ni backfill.
+
+[Pruebas de esquema e historia inmutable](BLOCKCHAIN_IMPLEMENTATION.md#esquema-actividades-y-atomicidad). Fase 9 §11 precisa actor humano real y proceso_responsable NULL en las cuatro actividades; la tabla de decisión histórica 8.5 se interpreta con esta instrucción posterior.

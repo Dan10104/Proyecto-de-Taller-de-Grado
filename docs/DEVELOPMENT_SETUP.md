@@ -246,3 +246,7 @@ Desarrollo recibió solo seis migraciones incrementales, sin limpiar espacio_u. 
 ## Actualización de Fase 7
 
 Fase 7 agrega dos migraciones incrementales y tres permisos al seed idempotente. Inicializar un maestro distinto por entorno con scripts/iot/initialize-secret.php, que escribe directamente sin mostrar secretos. Usar .env/.env.testing ignorados; no config:cache local. Servidor local en 8000 y MySQL aislado 3308 conservados; no cambios en los servicios 3306/3307. [Implementación y verificación](IOT_IMPLEMENTATION.md).
+
+## Actualización de Fase 9
+
+Dos migraciones incrementales y tres permisos nuevos de Administrador, sin recrear desarrollo. El scheduler existente ejecuta CU23 y trazabilidad:reconciliar. Instalar blockchain/ con npm ci --ignore-scripts para compilar/probar; runtime productivo usa --omit=dev, Node compatible y ABI generado. Suites Laravel/integración secuenciales en espacio_u_testing, nunca sobre desarrollo. [Configuración, scripts, wallet, auditorías, excepción dev temporal y límite Sepolia](BLOCKCHAIN_IMPLEMENTATION.md#configuración-y-operación-reproducible). No se implementa Docker ni Fase 10.

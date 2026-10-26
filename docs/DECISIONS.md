@@ -1,6 +1,6 @@
 # Registro de decisiones y auditoría documental
 
-**Estado vigente — Fase 8.5 documental cerrada (2026-10-25).** D-12 RESUELTA PARA FASE 9; [Readiness for Phase 9](#readiness-for-phase-9), **0 bloqueantes documentales**. La implementación sigue en Fase 8; Fase 9 no iniciada. El contrato nuevo se distingue de las fotografías históricas que se conservan debajo.
+**Estado vigente — Fase 9 implementada (2026-10-25/26).** D-12 aplicada a RF19/CU24 y RF20/CU25. [Implementación y verificación offline, excepciones autorizadas y Sepolia pendiente de testETH](BLOCKCHAIN_IMPLEMENTATION.md). CU30 general y Fase 10 no iniciados. Los cierres documentales anteriores conservan su contexto histórico.
 
 **Estado al cierre funcional de Fase 8 (2026-10-24).** D-08 continúa RESUELTA PARA FASE 8 y ahora aplicada; no se altera su contrato ni Readiness histórico. Las diferencias entre estado documental 7.5 y software actual se registran en RELEASE_POLICY_IMPLEMENTATION. D-12 se cerró posteriormente en Fase 8.5; ver el estado vigente superior. [Informe de implementación, verificaciones y límites](RELEASE_POLICY_IMPLEMENTATION.md). Las declaraciones de fases anteriores que siguen a continuación se conservan como historia de esos cierres.
 
@@ -1673,3 +1673,9 @@ Escaneo de 389 archivos públicos, índice, historial Git y material temporal de
 No se ejecutaron migraciones, seeders, pruebas funcionales, llamadas RPC, generación de wallet/clave, compilación Solidity ni cambios de configuración/BD. T-B01–T-B40 son obligaciones futuras. Las pruebas de Fase 8 conservan su evidencia histórica y no se atribuyen a esta fase documental.
 
 Rama docs/phase-8.5-blockchain-decisions desde main/origin/main limpio f3c38ea2f2093b79941e29b5d71fe97860f1a67b. Commit documental, push e integración fast-forward autorizados, sin force push. El informe final confirma el SHA, igualdad remota y árbol limpio una vez realizadas esas operaciones.
+
+## Aplicación D-12 en Fase 9 y excepciones autorizadas
+
+D-12 permanece RESUELTA PARA FASE 9. Su implementación está descrita en [BLOCKCHAIN_IMPLEMENTATION](BLOCKCHAIN_IMPLEMENTATION.md). La instrucción posterior §11 fija proceso_responsable NULL para las cuatro actividades humanas. ON UPDATE RESTRICT solo fk_registro_actor conserva la autorización 8.5 y el CHECK.
+
+El usuario autorizó canonicalize 5.1.0 por proceso Node local tras fallos RFC8785 de los candidatos PHP; builders, servicios y orquestación permanecen PHP. También autorizó temporalmente cinco entradas altas transitivas Zod exclusivamente dev del toolchain Hardhat, con runtime productivo en cero, controles y deuda D-12-DEV-ZOD. Ambas decisiones y sus límites se documentan en el informe. Ninguna autoriza vulnerabilidades productivas ni ampliar operaciones críticas. Sepolia pendiente de testETH es una dependencia externa permitida por §62/157, sin falsificar resultados.

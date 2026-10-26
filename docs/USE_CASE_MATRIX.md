@@ -1,6 +1,6 @@
 # Matriz CU01–CU30
 
-**Estado vigente — Fase 8.5 documental cerrada (2026-10-25).** D-12 RESUELTA PARA FASE 9; [Readiness for Phase 9](DECISIONS.md#readiness-for-phase-9), **0 bloqueantes documentales**. La implementación sigue en Fase 8; Fase 9 no iniciada. El contrato nuevo se distingue de las fotografías históricas que se conservan debajo.
+**Estado vigente — Fase 9 implementada (2026-10-25/26).** RF19/CU24 y RF20/CU25, cuatro actividades críticas, dos tablas y tres permisos implementados conforme a D-12. [Implementación, pruebas offline, excepción temporal dev de Zod y Sepolia pendiente de testETH](BLOCKCHAIN_IMPLEMENTATION.md). CU30 general y Fase 10 permanecen pendientes. Las secciones de cierres anteriores conservan su contexto histórico.
 
 **Estado al cierre funcional de Fase 8 (2026-10-24).** CU23 implementado como proceso interno programado, extensión temporal de CU22 sobre evidencia persistida; no requiere actor humano ni evento entrante. Versiones, ventanas, pivotes, matriz, idempotencia y concurrencia comprobados. RegistroActividad de la ficha original y notificaciones continúan pendientes de sus fases. [Informe de implementación, verificaciones y límites](RELEASE_POLICY_IMPLEMENTATION.md). Las declaraciones de fases anteriores que siguen a continuación se conservan como historia de esos cierres.
 
@@ -835,3 +835,9 @@ Las tablas fuente de CU24/CU25 conservan sus actores y flujos; [D-12](DECISIONS.
 CU25 no asigna Encargado por la referencia genérica de RF20 a supervisión. Administrador tampoco evita permisos efectivos, sesión/CSRF y guardas. Docente/Estudiante no acceden a administración de evidencia. No se crea actividad recursiva por una verificación; CU30 y su consulta general siguen diferidos.
 
 CU23 no extiende CU24 en este alcance: APROBADA→LIBERADA excluida explícitamente. Validaciones QR/IoT e incidencias tampoco generan evidencia individual. Fuente RF/CU y textos originales de los requisitos permanecen sin alteración; [matriz de pruebas futuras](BUSINESS_RULES.md#aceptación-futura-blockchain--fase-9).
+
+## Estado de implementación CU24/CU25 — Fase 9
+
+CU24 implementado como extensión exclusiva de aprobación/cancelación de reserva y entrega/devolución final de préstamo. Negocio y actividad atómicos; JCS/SHA-256 y evidencia posterior al commit, envío diferido y reconciliación recuperable. CU25 implementado con verificación local primero, prueba externa y cuatro resultados, sin modificar identidad histórica. Tres permisos exclusivos de Administrador, vistas paginadas/detalle y POST de verificación/reintento con CSRF.
+
+[Cadena RF19/RF20, criterios T-B01–T-B40 y resultados](BLOCKCHAIN_IMPLEMENTATION.md). La integración EVM local pasó; smoke Sepolia pendiente de testETH. Las descripciones futuras originales permanecen como contrato; no implican que se haya ejecutado la red pública. CU30 general no se implementa por incorporar registros_actividad.
