@@ -1,6 +1,8 @@
 # ESPACIO-U
 
-**Fase 12.6 — RF25/CU30 implementados y validados localmente (2026-10-26).** [Registro de actividad y bitácora](docs/ACTIVITY_AUDIT_IMPLEMENTATION.md): 56 acciones, recorder transaccional, permiso exclusivo de Administrador y consulta individual. Sin nuevas tablas/dependencias. Fase 13 NO iniciada; smokes OpenAI/Sepolia pendientes independientes. Los cierres siguientes conservan su alcance histórico.
+**Estado vigente — Fase 13 completada y validada (2026-10-26).** QA integral de CU01–CU30 y RF1–RF25 web; RF26 móvil diferido. [Informe de seguridad, rendimiento y pruebas](docs/PHASE_13_SYSTEM_VALIDATION.md) y [matriz final por CU](docs/FINAL_USE_CASE_VALIDATION.md). Los estados de fases anteriores que siguen son históricos. OpenAI/Sepolia pendientes independientes; excepción dev Hardhat/Zod explícita. Fase 14 NO iniciada.
+
+**Cierre histórico — Fase 12.6 — RF25/CU30 implementados y validados localmente (2026-10-26).** [Registro de actividad y bitácora](docs/ACTIVITY_AUDIT_IMPLEMENTATION.md): 56 acciones, recorder transaccional, permiso exclusivo de Administrador y consulta individual. Sin nuevas tablas/dependencias. Fase 13 NO iniciada; smokes OpenAI/Sepolia pendientes independientes. Los cierres siguientes conservan su alcance histórico.
 
 **Cierre histórico — Fase 12.5 documental:** [contrato de bitácora / RF25 / CU30](docs/DECISIONS.md#activity-audit-contract--readiness-for-cu30), **0 bloqueantes documentales**. CU30 **NO IMPLEMENTADO**; requiere nueva instrucción. Ninguna ruta/pantalla, permiso DB o escritura nueva se incorpora aquí. Baseline Fase 12 conservado; smokes OpenAI y Sepolia pendientes independientes.
 
@@ -219,3 +221,7 @@ Navegación **Bitácora** para Administrador con actividad.ver: /actividad, filt
 Setup incremental del permiso (entorno oficial activado): `php artisan db:seed --class=SecuritySeeder --force`. Solo añade el permiso nuevo y sus concesiones elegibles; no restaura revocaciones ni crea cuentas. No requiere migration ni biblioteca adicional. Nunca ejecutar migrate:fresh en desarrollo; fixtures y pruebas solo en espacio_u_testing.
 
 Pruebas específicas: `php artisan test --filter=Activity`; regresión completa: `php artisan test`. Fase 13 permanece sin iniciar; no se certifican despliegue, aplicación móvil ni los smokes reales OpenAI/Sepolia pendientes.
+
+## Repetir QA integral
+
+Desde el entorno del workspace: `php artisan test`, `php vendor/bin/pint --test`, `npm run build` y `node --test tests/Browser/dialog-focus.test.mjs`. La suite carga .env.testing y exige espacio_u_testing mediante TestingDatabaseGuard. Nunca ejecutar migrate:fresh en desarrollo. La integración Blockchain offline `npm --prefix blockchain run test:integration` también reinicia testing: no debe coincidir con PHPUnit ni QA de navegador. Auditorías de blockchain/ desarrollo y runtime siempre separadas. [Informe Fase 13](docs/PHASE_13_SYSTEM_VALIDATION.md).

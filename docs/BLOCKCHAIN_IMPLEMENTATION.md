@@ -1,5 +1,7 @@
 # Blockchain y trazabilidad verificable — Fase 9
 
+**Estado vigente — Fase 13 completada y validada (2026-10-26).** QA integral de CU01–CU30 y RF1–RF25 web; RF26 móvil diferido. [Informe de seguridad, rendimiento y pruebas](PHASE_13_SYSTEM_VALIDATION.md) y [matriz final por CU](FINAL_USE_CASE_VALIDATION.md). Los estados de fases anteriores que siguen son históricos. OpenAI/Sepolia pendientes independientes; excepción dev Hardhat/Zod explícita. Fase 14 NO iniciada.
+
 **Estado vigente — Fase 10.5 documental (2026-10-26).** RF22/CU27 y RF23/CU28: [contrato de dashboard y reportes cerrado](DECISIONS.md#dashboard--reporting-contract--readiness-for-phase-11), **0 bloqueantes documentales**. Fase 11 NO iniciada; CU30 NO IMPLEMENTADO. Fase 10 funcional se conserva, sin cambios de código, datos, permisos o dependencias. Los cierres anteriores mantienen su contexto histórico.
 
 **Estado histórico funcional — Fase 10 (2026-10-26).** RF21/CU26 implementados y verificados: 17 reglas, avisos propios, primera lectura y recuperación de 24 h. [Informe y evidencia](NOTIFICATIONS_IMPLEMENTATION.md). CU30 general y Fase 11 no iniciados. Sepolia real sigue pendiente de testETH. Los apartados de cierres anteriores conservan su contexto histórico.
@@ -341,3 +343,9 @@ Cambio exclusivamente documental. CU30 **NO IMPLEMENTADO**; implementación requ
 CriticalActivityRecorder delega la inserción única al ActivityRecorder y conserva las cuatro acciones D-12, canonicalización, contexto y callbacks posteriores al commit. Las 38 acciones administrativas siguen no críticas. CU30 solo enlaza evidencia existente con trazabilidad.evidencias.ver: consultar listado/detalle no ejecuta CU25 ni RPC. Retry/reconcile/verify no producen nuevas actividades. Auditoría actual del módulo: cinco vulnerabilidades altas dev Hardhat/Zod bajo la excepción temporal documentada; runtime --omit=dev cero. Smoke Sepolia continúa pendiente; no se cambian dependencias ni se amplía D-12.
 
 [Implementación RF25/CU30, pruebas y resultados de integración](ACTIVITY_AUDIT_IMPLEMENTATION.md). Los cierres de fases anteriores conservan su alcance histórico. Fase 13 no iniciada.
+
+## Revalidación offline y dependencia dev — Fase 13
+
+2026-10-26: contrato 1 test y runtime 3 tests aprobados; integración PHP→ethers→contrato local repetida y aprobada después de corregir el harness antiguo que omitía PRESTAMO_APROBADO no crítica. Se comprueban cinco actividades y solo los cuatro hitos críticos enviados a cadena. Cuatro operaciones, recovery, duplicados, receipt/reorg, referencias y privacidad conservados.
+
+Auditoría final: frontend 0, Composer 0/abandonados 0, blockchain --omit=dev 0; blockchain completo **5 altas dev**. Consulta final npm: Hardhat latest 3.21.1 todavía requiere zod ^3.23.8 y hardhat-zod-utils ^3.0.5; no existe combinación compatible corregida según advisory/audit. Instalación conservada Hardhat 3.21.0 / ethers plugin 4.2.1 / node-test-runner 3.1.2 / utils 3.0.8 / Zod 3.25.76; lockfiles sin cambios. La deuda D-12-DEV-ZOD y sus controles siguen vigentes, sin ampliar excepción. RPC Sepolia consultado, saldo dedicado 0 testETH; no transacción ni dinero real. [QA integral](PHASE_13_SYSTEM_VALIDATION.md).

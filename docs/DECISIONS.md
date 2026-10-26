@@ -1,6 +1,8 @@
 # Registro de decisiones y auditoría documental
 
-**Fase 12.6 — RF25/CU30 implementados y validados localmente (2026-10-26).** [Registro de actividad y bitácora](ACTIVITY_AUDIT_IMPLEMENTATION.md): 56 acciones, recorder transaccional, permiso exclusivo de Administrador y consulta individual. Sin nuevas tablas/dependencias. Fase 13 NO iniciada; smokes OpenAI/Sepolia pendientes independientes. Los cierres siguientes conservan su alcance histórico.
+**Estado vigente — Fase 13 completada y validada (2026-10-26).** QA integral de CU01–CU30 y RF1–RF25 web; RF26 móvil diferido. [Informe de seguridad, rendimiento y pruebas](PHASE_13_SYSTEM_VALIDATION.md) y [matriz final por CU](FINAL_USE_CASE_VALIDATION.md). Los estados de fases anteriores que siguen son históricos. OpenAI/Sepolia pendientes independientes; excepción dev Hardhat/Zod explícita. Fase 14 NO iniciada.
+
+**Cierre histórico — Fase 12.6 — RF25/CU30 implementados y validados localmente (2026-10-26).** [Registro de actividad y bitácora](ACTIVITY_AUDIT_IMPLEMENTATION.md): 56 acciones, recorder transaccional, permiso exclusivo de Administrador y consulta individual. Sin nuevas tablas/dependencias. Fase 13 NO iniciada; smokes OpenAI/Sepolia pendientes independientes. Los cierres siguientes conservan su alcance histórico.
 
 **Estado histórico — Fase 12.5 documental cerrada (2026-10-26).** [Activity Audit Contract / Readiness for CU30](DECISIONS.md#activity-audit-contract--readiness-for-cu30), **0 bloqueantes documentales**. RF25 con productores parciales; CU30 **NO IMPLEMENTADO**. Implementación solo con nueva instrucción. Sin cambios de código, datos, permisos, migraciones o dependencias; OpenAI/Sepolia pendientes independientes.
 
@@ -2604,3 +2606,7 @@ Verificación documental de Fase 12.5: 21 documentos modificados; 520 referencia
 ## Implementación RF25/CU30 — Fase 12.6
 
 La instrucción posterior de Fase 12.6 autoriza implementar AC1–AC15; el cierre documental anterior permanece histórico. Catálogo/matriz/fallos/privacidad no se reinterpretan. Implementación y trazabilidad de T-A se detallan en el informe enlazado. No nuevo D, tablas, acciones 57 o acceso de chatbot; Fase 13 no iniciada. [Implementación, evidencia y límites](ACTIVITY_AUDIT_IMPLEMENTATION.md).
+
+## Revalidación integral — Fase 13
+
+La instrucción Fase 13 autoriza QA/correcciones sin reinterpretar D-01–D-17 ni DR/CH/AC. Los 30 CU web están implementados; RF26 sigue diferido. Modelo 31/211/63, exactamente ocho RESTRICT autorizados. No necesidad demostrada de índices ni nuevas dependencias. Correcciones de logger/cabeceras/CORS/errores, foco/contraste, filtros durante carga y etiquetas constan en el registro de defectos. OpenAI sin clave y Sepolia sin testETH siguen pendientes independientes; excepción dev Zod revisada. Fase 14 no iniciada; no nuevo expediente D.

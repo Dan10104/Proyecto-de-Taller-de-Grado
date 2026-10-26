@@ -1,6 +1,8 @@
 # Política de seguridad
 
-**Fase 12.6 — RF25/CU30 implementados y validados localmente (2026-10-26).** [Registro de actividad y bitácora](ACTIVITY_AUDIT_IMPLEMENTATION.md): 56 acciones, recorder transaccional, permiso exclusivo de Administrador y consulta individual. Sin nuevas tablas/dependencias. Fase 13 NO iniciada; smokes OpenAI/Sepolia pendientes independientes. Los cierres siguientes conservan su alcance histórico.
+**Estado vigente — Fase 13 completada y validada (2026-10-26).** QA integral de CU01–CU30 y RF1–RF25 web; RF26 móvil diferido. [Informe de seguridad, rendimiento y pruebas](PHASE_13_SYSTEM_VALIDATION.md) y [matriz final por CU](FINAL_USE_CASE_VALIDATION.md). Los estados de fases anteriores que siguen son históricos. OpenAI/Sepolia pendientes independientes; excepción dev Hardhat/Zod explícita. Fase 14 NO iniciada.
+
+**Cierre histórico — Fase 12.6 — RF25/CU30 implementados y validados localmente (2026-10-26).** [Registro de actividad y bitácora](ACTIVITY_AUDIT_IMPLEMENTATION.md): 56 acciones, recorder transaccional, permiso exclusivo de Administrador y consulta individual. Sin nuevas tablas/dependencias. Fase 13 NO iniciada; smokes OpenAI/Sepolia pendientes independientes. Los cierres siguientes conservan su alcance histórico.
 
 **Estado histórico — Fase 12.5 documental cerrada (2026-10-26).** [Activity Audit Contract / Readiness for CU30](DECISIONS.md#activity-audit-contract--readiness-for-cu30), **0 bloqueantes documentales**. RF25 con productores parciales; CU30 **NO IMPLEMENTADO**. Implementación solo con nueva instrucción. Sin cambios de código, datos, permisos, migraciones o dependencias; OpenAI/Sepolia pendientes independientes.
 
@@ -237,3 +239,9 @@ No secretos, hashes de credenciales/QR, HMAC, cookies, cuerpos HTTP, SQL, excepc
 ## Implementación RF25/CU30 — Fase 12.6
 
 actividad.ver elegible solo Administrador ACTIVO con asignación/sesión/permiso efectivos; revocable y fuera de RECOVERY. Scopes de destino se verifican al enlazar, datos personales minimizados. DTO privado/no-store, filtros whitelist, consulta parametrizada y salida escapada. Plantillas cerradas <=500; historia dudosa suprimida en proyección, no modificada en DB. No rutas de escritura/exportación de CU30. [Implementación, evidencia y límites](ACTIVITY_AUDIT_IMPLEMENTATION.md).
+
+## Revalidación integral — Fase 13
+
+No-store/private, nosniff y DENY también en errores y /up. Referrer-Policy same-origin, salvo no-referrer de IoT. CSP mínima base-uri/self, object-src/none y frame-ancestors/none; no se declara script-src ni eliminación universal de XSS. HSTS max-age=31536000 solo production + HTTPS fiable, sin preload/subdominios. CORS api/*: POST/cabeceras IoT, allowed_origins vacío y supports_credentials=false; no sustituye HMAC.
+
+Excepciones inesperadas sin mensaje, traza, previous, URL, request ni bindings: solo clase y huella SHA-256 truncada de archivo/línea. 500 genérico en español con APP_DEBUG=false. Las cinco altas dev Hardhat/Zod son la única excepción autorizada; runtime auditado por separado.

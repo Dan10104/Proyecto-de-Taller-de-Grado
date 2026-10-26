@@ -1,5 +1,7 @@
 # Chatbot de asistencia — Fase 12
 
+**Estado vigente — Fase 13 completada y validada (2026-10-26).** QA integral de CU01–CU30 y RF1–RF25 web; RF26 móvil diferido. [Informe de seguridad, rendimiento y pruebas](PHASE_13_SYSTEM_VALIDATION.md) y [matriz final por CU](FINAL_USE_CASE_VALIDATION.md). Los estados de fases anteriores que siguen son históricos. OpenAI/Sepolia pendientes independientes; excepción dev Hardhat/Zod explícita. Fase 14 NO iniciada.
+
 RF24 → CU29 implementados bajo [CH1–CH12](DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12), instrucción oficial de Fase 12 y D-04/D-07/D-14. Fecha de verificación: 2026-10-26. Workspace único ESPACIO-U; base main/origin/main `1105d41`; rama `feature/phase-12-chatbot`. Validación offline completada: 877 pruebas / 10.217 assertions, QA y controles de publicación aprobados; smoke OpenAI real pendiente por falta de credencial.
 
 El asistente orienta sobre procedimientos autorizados. No ejecuta operaciones, consulta registros operativos, adjunta identidad, realiza búsquedas, abre herramientas ni conserva conversación. CU30 continúa **NO IMPLEMENTADO**, aplicación móvil diferida y ninguna fase posterior iniciada. El smoke Sepolia pendiente de testETH es independiente.
