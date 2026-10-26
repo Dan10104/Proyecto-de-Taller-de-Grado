@@ -1,5 +1,7 @@
 # Implementación de notificaciones internas — Fase 10
 
+**Estado vigente — Fase 10.5 documental (2026-10-26).** RF22/CU27 y RF23/CU28: [contrato de dashboard y reportes cerrado](DECISIONS.md#dashboard--reporting-contract--readiness-for-phase-11), **0 bloqueantes documentales**. Fase 11 NO iniciada; CU30 NO IMPLEMENTADO. Fase 10 funcional se conserva, sin cambios de código, datos, permisos o dependencias. Los cierres anteriores mantienen su contexto histórico.
+
 Fecha: 2026-10-26. RF21/CU26 implementados en el workspace oficial. Contrato vinculante: [N1–N9](DECISIONS.md#notification-contract--readiness-for-phase-10). No se reabren D-04/D-08/D-12 ni se implementan CU30, CU27, CU28 o Fase 11.
 
 ## Esquema, dominio y permiso
@@ -169,3 +171,9 @@ Trazabilidad: **RF21 → CU26 → registros_actividad → notificaciones → Not
 Rama de trabajo: feature/phase-10-notifications, desde main/origin/main f262ed9. Commit funcional: e445d16; documentación en commit separado. Publicación e integración autorizadas mediante fast-forward, sin force push. La comprobación final de hashes y árbol se comunica al concluir la entrega.
 
 Escaneo privado previo al commit: 479 archivos públicos, índice, diferencias e historial; cero hallazgos de valores sensibles locales o patrones de credenciales. .env/.env.testing, .local/.tools, dependencias, logs y compilados siguen ignorados; .env.example sin secretos. Enlaces documentales: 319 revisados sin errores; git diff --check correcto. No se publican originales Word/PDF, datos privados, cuentas ni credenciales de QA. El servidor web, MySQL aislado y scheduler se conservan activos.
+
+## Consumo documental por CU27/CU28 — Fase 10.5
+
+[DR5/DR10](DECISIONS.md#dashboard--reporting-contract--readiness-for-phase-11) reutiliza NotificationReadService para P7, solo destinatario autenticado y leida_en NULL, independiente de filtros/página. Cargar dashboard no marca lectura ni duplica reglas/consulta de contador. Las diecisiete reglas, fuentes, recuperación y destinatarios permanecen intactos.
+
+REPORTE_EXPORTADO futuro será actividad no crítica fuera de NotificationRuleRegistry: no notificación, no evidencia Blockchain. Preview no produce actividad; el resumen operacional solo puede incluir exportaciones anteriores propias conforme DR7, sin ciclo. Fase 10.5 no crea actividades, permisos ni notificaciones; las 656 pruebas/8721 aserciones de este informe son evidencia histórica de Fase 10, no una nueva ejecución ni certificación de RF22/RF23.

@@ -1,6 +1,8 @@
 # Arquitectura web de ESPACIO-U
 
-**Estado vigente — Fase 10 (2026-10-26).** RF21/CU26 implementados y verificados: 17 reglas, avisos propios, primera lectura y recuperación de 24 h. [Informe y evidencia](NOTIFICATIONS_IMPLEMENTATION.md). CU30 general y Fase 11 no iniciados. Sepolia real sigue pendiente de testETH. Los apartados de cierres anteriores conservan su contexto histórico.
+**Estado vigente — Fase 10.5 documental (2026-10-26).** RF22/CU27 y RF23/CU28: [contrato de dashboard y reportes cerrado](DECISIONS.md#dashboard--reporting-contract--readiness-for-phase-11), **0 bloqueantes documentales**. Fase 11 NO iniciada; CU30 NO IMPLEMENTADO. Fase 10 funcional se conserva, sin cambios de código, datos, permisos o dependencias. Los cierres anteriores mantienen su contexto histórico.
+
+**Estado histórico funcional — Fase 10 (2026-10-26).** RF21/CU26 implementados y verificados: 17 reglas, avisos propios, primera lectura y recuperación de 24 h. [Informe y evidencia](NOTIFICATIONS_IMPLEMENTATION.md). CU30 general y Fase 11 no iniciados. Sepolia real sigue pendiente de testETH. Los apartados de cierres anteriores conservan su contexto histórico.
 
 **Estado histórico al cierre de Fase 9 implementada (2026-10-25/26).** RF19/CU24 y RF20/CU25, cuatro actividades críticas, dos tablas y tres permisos implementados conforme a D-12. [Implementación, pruebas offline, excepción temporal dev de Zod y Sepolia pendiente de testETH](BLOCKCHAIN_IMPLEMENTATION.md). CU30 general y Fase 10 permanecen pendientes. Las secciones de cierres anteriores conservan su contexto histórico.
 
@@ -219,3 +221,25 @@ HTTP/Inertia futuro: consultas limitadas al propietario y permiso notificaciones
 ## Componente de notificaciones implementado — Fase 10
 
 Actividad EXITO dentro de negocio, callback afterCommit/deferred, Registry y GenerationService con lock por actividad y snapshot posterior. Lote atómico, Reconciler 24 h y CU26 propio. Consumidor independiente de Blockchain. [Implementación y evidencia](NOTIFICATIONS_IMPLEMENTATION.md).
+
+## Arquitectura prevista de dashboard y reportes — Fase 10.5
+
+[DR1–DR12](DECISIONS.md#dashboard--reporting-contract--readiness-for-phase-11) fija responsabilidades para Fase 11; no existen nuevos componentes implementados por este cierre. Backend MySQL autoritativo, sin persistencia analítica ni cache compleja inicial. DashboardService coordina queries agregadas especializadas y scopes por actor; Vue presenta los resultados. Reutilizar SpaceAvailabilityService, IotMonitoringService, NotificationReadService y consultas autorizadas de dominios; no repetir sus reglas en gráficos/reportes.
+
+ReportRegistry contiene siete ReportDefinition whitelist; cada definición concentra filtros tipados, fecha de referencia, autorización/scope, columnas y orden. ReportQueryService la consume para preview paginada e iteración de exportación. ReportExportService renderiza localmente PDF/XLSX, gestiona límites y temporales, reautoriza y registra el éxito no crítico. Controladores delgados; formatos no construyen SQL ni aceptan filas del navegador. No se instalan librerías hasta evaluar compatibilidad PHP 8.5/Laravel/Vue, mantenimiento, licencia, auditoría, memoria y bundle.
+
+```mermaid
+flowchart LR
+  U[Actor y filtros validados] --> A[RBAC y scope actual]
+  A --> D[Definición whitelist]
+  D --> Q[Consulta operacional consistente]
+  Q --> P[Preview autorizada]
+  Q --> I[Iterador y temporal privado acotado]
+  I --> E[PDF o XLSX local]
+  E --> R[Reautorizar y registrar exportación exitosa]
+  R --> F[Descarga privada y limpieza]
+```
+
+El flujo conceptual no crea endpoints ahora. Preview y exportación son peticiones separadas con cortes visibles; cada una comparte semántica y un snapshot interno coherente. Cerrar lectura antes de renderizado prolongado; reautorizar fuera del snapshot antes de respuesta. No locks de escritura durante generación. REPORTE_EXPORTADO se registra después de completar el archivo y antes de ponerlo a disposición; fallo de inserción impide descarga. Ninguna dependencia de Blockchain/avisos, ninguna ruta de bitácora CU30.
+
+Actualización por carga/filtros/navegación o botón, sin WebSocket/polling agresivo. Consultas agregadas y exportación por lotes/iteradores; 10.000 filas, 30 s y 64 MiB son límites técnicos iniciales configurables del contrato, pendientes de medición. Objetivo dashboard <=5 s. Temporales privados y eliminación también ante error/desconexión/huérfanos; sin URL pública ni archivos persistidos por defecto.

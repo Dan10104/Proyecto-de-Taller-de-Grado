@@ -1,6 +1,8 @@
 # Política de seguridad
 
-**Estado vigente — Fase 10 (2026-10-26).** RF21/CU26 implementados y verificados: 17 reglas, avisos propios, primera lectura y recuperación de 24 h. [Informe y evidencia](NOTIFICATIONS_IMPLEMENTATION.md). CU30 general y Fase 11 no iniciados. Sepolia real sigue pendiente de testETH. Los apartados de cierres anteriores conservan su contexto histórico.
+**Estado vigente — Fase 10.5 documental (2026-10-26).** RF22/CU27 y RF23/CU28: [contrato de dashboard y reportes cerrado](DECISIONS.md#dashboard--reporting-contract--readiness-for-phase-11), **0 bloqueantes documentales**. Fase 11 NO iniciada; CU30 NO IMPLEMENTADO. Fase 10 funcional se conserva, sin cambios de código, datos, permisos o dependencias. Los cierres anteriores mantienen su contexto histórico.
+
+**Estado histórico funcional — Fase 10 (2026-10-26).** RF21/CU26 implementados y verificados: 17 reglas, avisos propios, primera lectura y recuperación de 24 h. [Informe y evidencia](NOTIFICATIONS_IMPLEMENTATION.md). CU30 general y Fase 11 no iniciados. Sepolia real sigue pendiente de testETH. Los apartados de cierres anteriores conservan su contexto histórico.
 
 **Estado histórico al cierre de Fase 9 implementada (2026-10-25/26).** RF19/CU24 y RF20/CU25, cuatro actividades críticas, dos tablas y tres permisos implementados conforme a D-12. [Implementación, pruebas offline, excepción temporal dev de Zod y Sepolia pendiente de testETH](BLOCKCHAIN_IMPLEMENTATION.md). CU30 general y Fase 10 permanecen pendientes. Las secciones de cierres anteriores conservan su contexto histórico.
 
@@ -179,3 +181,15 @@ El aviso propio permanece si cambia el permiso del objeto. El enlace se reautori
 ## Seguridad aplicada a CU26 — Fase 10
 
 notificaciones.ver_propias para cuatro roles, sin bypass administrativo. Query por destinatario antes de listar/contar/abrir; ajeno/inexistente 404, sin permiso 403. Primera lectura POST con CSRF y hora servidor, GET sin mutación. Enlaces reautorizados, DTO mínimo y snapshots sin texto libre/secreto. [Implementación y evidencia](NOTIFICATIONS_IMPLEMENTATION.md).
+
+## Seguridad prevista de CU27/CU28 — Fase 10.5
+
+[Contrato DR3/DR6–DR11](DECISIONS.md#dashboard--reporting-contract--readiness-for-phase-11). Nuevos permisos solo previstos: dashboard.ver para cuatro roles, reportes.ver y reportes.exportar para Admin/Encargado. Exigen identidad ACTIVO, sesión vigente, rol elegible y permiso efectivo; los permisos de dominio y el scope siguen siendo obligatorios. No bypass, reportes personales ni métrica institucional oculta en payload de Docente/Estudiante. Ownership en SQL, no solo en Vue; selectores, agregados, columnas y exportaciones se autorizan también.
+
+Revalidar al generar y antes de entregar archivo; una revocación invalida el resultado. Proyección mínima idéntica en preview/PDF/XLSX: excluir correo, CI, credenciales, tokens, datos QR/HMAC, canónicos y textos libres de motivos/descripción/solución. Número de serie exige equipamientos.gestionar; reportante exige consulta de la incidencia autorizada; actor de actividad sin usuarios.ver se reduce a referencia técnica. CU28 no habilita búsqueda global ni detalle de CU30; solo whitelist de negocio y exportaciones anteriores propias.
+
+Query Builder/Eloquent parametrizado; catálogo fijo de slugs, filtros, columnas y orden. Rechazar claves desconocidas, IDs fuera de scope, SQL/ORDER BY/tabla aportados por cliente y payload de filas. CSRF para generación con efecto de auditoría; respuestas sensibles no-store, descarga attachment/MIME/nosniff. Filename público seguro del catálogo; temporal impredecible privado, sin path de cliente/URL permanente ni acceso de otro usuario. Limpieza inmediata tras servir/fallar y huérfanos en <=1 hora, limitada a carpeta del módulo.
+
+XLSX: todas las cadenas se escriben con tipo explícito string, sin detección de fórmulas/hipervínculos. Probar prefijos =,+,-,@ incluidos espacios/controles iniciales; no basta escapar CSV/HTML ni aplicar formato visual. Datos numéricos validados mantienen su tipo. Sin macros, fórmulas de usuario ni relaciones externas. PDF: escapar contenido y limitar recursos a assets locales autorizados; impedir HTML/URL/file arbitrarios. Librerías locales, sin CDN/servicios externos, evaluadas antes de instalar en Fase 11.
+
+Actividad de exportación no crítica EXITO solo para archivo generado y autorizado listo para servir; descripción mínima segura, sin payload. Fallos/preview no producen REPORTE_EXPORTADO EXITO; no agregar notificación ni evidencia Blockchain. Poner a disposición no acredita recepción física completa en el navegador. Estos controles son requisitos futuros T-DR01–T-DR48, no funcionalidad implementada por Fase 10.5.

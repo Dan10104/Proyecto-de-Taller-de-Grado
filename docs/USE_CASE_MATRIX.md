@@ -1,6 +1,8 @@
 # Matriz CU01–CU30
 
-**Estado vigente — Fase 10 (2026-10-26).** RF21/CU26 implementados y verificados: 17 reglas, avisos propios, primera lectura y recuperación de 24 h. [Informe y evidencia](NOTIFICATIONS_IMPLEMENTATION.md). CU30 general y Fase 11 no iniciados. Sepolia real sigue pendiente de testETH. Los apartados de cierres anteriores conservan su contexto histórico.
+**Estado vigente — Fase 10.5 documental (2026-10-26).** RF22/CU27 y RF23/CU28: [contrato de dashboard y reportes cerrado](DECISIONS.md#dashboard--reporting-contract--readiness-for-phase-11), **0 bloqueantes documentales**. Fase 11 NO iniciada; CU30 NO IMPLEMENTADO. Fase 10 funcional se conserva, sin cambios de código, datos, permisos o dependencias. Los cierres anteriores mantienen su contexto histórico.
+
+**Estado histórico funcional — Fase 10 (2026-10-26).** RF21/CU26 implementados y verificados: 17 reglas, avisos propios, primera lectura y recuperación de 24 h. [Informe y evidencia](NOTIFICATIONS_IMPLEMENTATION.md). CU30 general y Fase 11 no iniciados. Sepolia real sigue pendiente de testETH. Los apartados de cierres anteriores conservan su contexto histórico.
 
 **Estado histórico al cierre de Fase 9 implementada (2026-10-25/26).** RF19/CU24 y RF20/CU25, cuatro actividades críticas, dos tablas y tres permisos implementados conforme a D-12. [Implementación, pruebas offline, excepción temporal dev de Zod y Sepolia pendiente de testETH](BLOCKCHAIN_IMPLEMENTATION.md). CU30 general y Fase 10 permanecen pendientes. Las secciones de cierres anteriores conservan su contexto histórico.
 
@@ -613,6 +615,8 @@ Fuente: tabla 64; p. 213 (PDF 214); figura 55; análisis figura 101.
 | Módulo futuro y fase | Reportes e Indicadores; Fase 11 |
 | Pruebas necesarias | T-CU27: Indicadores por rol y filtros consistentes; sin datos; cambios de permisos; <=5 s con carga piloto. |
 
+**Contrato vigente:** Contrato RF22 cerrado en Fase 10.5, DR1–DR5/DR8–DR12. dashboard.ver para cuatro roles; 10 tarjetas y 6 gráficos administrativos según permisos; 7 tarjetas personales propias. T-DR01–T-DR18 y criterios transversales futuros. **Implementación Fase 11 pendiente.** [Readiness](DECISIONS.md#dashboard--reporting-contract--readiness-for-phase-11).
+
 ## CU28 — Generar y exportar reportes
 
 Fuente: tabla 65; p. 214 (PDF 215); figura 56; análisis figura 102.
@@ -632,6 +636,8 @@ Fuente: tabla 65; p. 214 (PDF 215); figura 56; análisis figura 102.
 | Tablas directamente relacionadas | `usuarios`, `recursos_institucionales`, `espacios_academicos`, `reservas`, `equipamientos_tecnologicos`, `prestamos`, `entregas_prestamo`, `devoluciones_prestamo`, `incidencias_mantenimiento`, `eventos_ocupacion`, `registros_actividad` |
 | Módulo futuro y fase | Reportes e Indicadores; Fase 11 |
 | Pruebas necesarias | T-CU28: PDF/Excel coherentes con filtros/permisos; 10.000 filas <=30 s; reporte vacío; fallo de exportación sin bloquear a otros. |
+
+**Contrato vigente:** Contrato RF23 cerrado en Fase 10.5, DR6–DR12. Siete reportes solo Admin/Encargado con reportes.ver/exportar y permisos de dominio. Preview/PDF/XLSX comunes, exportación exitosa no crítica, sin CU30. T-DR19–T-DR48 futuros. **Implementación Fase 11 pendiente.** [Readiness](DECISIONS.md#dashboard--reporting-contract--readiness-for-phase-11).
 
 ## CU29 — Consultar chatbot de asistencia
 
@@ -655,6 +661,8 @@ Fuente: tabla 66; p. 216 (PDF 217); figura 57; análisis figura 103.
 | Pruebas necesarias | T-CU29: Petición de aprobar/cancelar no modifica nada; contexto ajeno excluido; proveedor caído; respuesta/aviso objetivo <=15 s. |
 
 ## CU30 — Consultar bitácora de actividad
+
+**Estado: NO IMPLEMENTADO.** El resumen agregado CU28 y REPORTE_EXPORTADO previstos para Fase 11 no implementan esta consulta general; no autorizan pantalla /actividad, detalle, búsqueda global ni reconstrucción exhaustiva. [Frontera DR7/DR10](DECISIONS.md#dashboard--reporting-contract--readiness-for-phase-11).
 
 Fuente: tabla 67; p. 217 (PDF 218); figura 58; análisis figura 104.
 

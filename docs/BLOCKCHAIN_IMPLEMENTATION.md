@@ -1,6 +1,8 @@
 # Blockchain y trazabilidad verificable — Fase 9
 
-**Estado vigente — Fase 10 (2026-10-26).** RF21/CU26 implementados y verificados: 17 reglas, avisos propios, primera lectura y recuperación de 24 h. [Informe y evidencia](NOTIFICATIONS_IMPLEMENTATION.md). CU30 general y Fase 11 no iniciados. Sepolia real sigue pendiente de testETH. Los apartados de cierres anteriores conservan su contexto histórico.
+**Estado vigente — Fase 10.5 documental (2026-10-26).** RF22/CU27 y RF23/CU28: [contrato de dashboard y reportes cerrado](DECISIONS.md#dashboard--reporting-contract--readiness-for-phase-11), **0 bloqueantes documentales**. Fase 11 NO iniciada; CU30 NO IMPLEMENTADO. Fase 10 funcional se conserva, sin cambios de código, datos, permisos o dependencias. Los cierres anteriores mantienen su contexto histórico.
+
+**Estado histórico funcional — Fase 10 (2026-10-26).** RF21/CU26 implementados y verificados: 17 reglas, avisos propios, primera lectura y recuperación de 24 h. [Informe y evidencia](NOTIFICATIONS_IMPLEMENTATION.md). CU30 general y Fase 11 no iniciados. Sepolia real sigue pendiente de testETH. Los apartados de cierres anteriores conservan su contexto histórico.
 
 **Fase 9 implementada y validada offline, 2026-10-25/26.** Rama `feature/phase-9-blockchain` desde main limpio `a7731994f9a7339a8398739721af043c83ede6fc`. El contrato D-12 sigue vigente. Sepolia real pendiente de testETH; excepción temporal dev de Zod autorizada. No se inicia Fase 10 ni CU30 general. Se distinguen resultados ejecutados offline de la integración pública pendiente.
 
@@ -311,3 +313,9 @@ Secuencia coherente desde `a773199`: `29b6ce3 feat: implement critical traceabil
 Las trece acciones RF21 nuevas serán no críticas y no amplían el allowlist D-12. No generar avisos por evidencia PENDIENTE/REGISTRADA, verificaciones, RPC caído, QR o IoT aislados. registros_actividad mantiene su esquema e inmutabilidad; ampliarlo solo para los eventos RF21 no implementa CU30 general. El reconciliador de avisos será independiente del de trazabilidad y tendrá la ventana/límites N6; no se incorpora ahora.
 
 Esta fase es documental: no ejecuta nuevos tests Blockchain ni auditorías, no modifica dependencias, contratos o configuración. La excepción temporal dev Hardhat/Zod conserva las condiciones y deuda técnica de este informe; auditorías productivas sin vulnerabilidades corresponden al cierre de Fase 9, no a una nueva medición. El smoke real de Sepolia sigue pendiente exclusivamente de testETH y separado de RF21; no se intenta financiar ni desplegar en 9.5. Fase 10 puede comenzar con nueva instrucción según Readiness, sin que ese pendiente externo la bloquee.
+
+## Frontera documental de reportes — Fase 10.5
+
+[DR7/DR10](DECISIONS.md#dashboard--reporting-contract--readiness-for-phase-11) conserva las cuatro acciones críticas, builders y evidencia. REPORTE_EXPORTADO futuro tendrá critica=FALSE; no invoca Blockchain, no requiere Sepolia/RPC/fondos y no genera avisos. Resumen de actividad no exporta canónicos, hashes de contenido sensible, payloads ni detalle de evidencia; no implementa CU30. No se añade estado Blockchain como tarjeta general.
+
+No se modifica blockchain/, no se instala ni audita de nuevo el toolchain en esta fase documental. La excepción temporal conocida de cinco entradas altas exclusivamente dev de Hardhat/Zod y Sepolia pendiente de testETH conservan el alcance de sus apartados anteriores; no se afirman auditorías nuevas ni cero vulnerabilidades de desarrollo. Las futuras bibliotecas de PDF/XLSX se evalúan por separado; esta excepción no cubre su runtime.

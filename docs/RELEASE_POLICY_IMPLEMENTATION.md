@@ -1,6 +1,8 @@
 # Políticas de liberación de reservas — Fase 8
 
-**Estado vigente — Fase 10 (2026-10-26).** RF21/CU26 implementados y verificados: 17 reglas, avisos propios, primera lectura y recuperación de 24 h. [Informe y evidencia](NOTIFICATIONS_IMPLEMENTATION.md). CU30 general y Fase 11 no iniciados. Sepolia real sigue pendiente de testETH. Los apartados de cierres anteriores conservan su contexto histórico.
+**Estado vigente — Fase 10.5 documental (2026-10-26).** RF22/CU27 y RF23/CU28: [contrato de dashboard y reportes cerrado](DECISIONS.md#dashboard--reporting-contract--readiness-for-phase-11), **0 bloqueantes documentales**. Fase 11 NO iniciada; CU30 NO IMPLEMENTADO. Fase 10 funcional se conserva, sin cambios de código, datos, permisos o dependencias. Los cierres anteriores mantienen su contexto histórico.
+
+**Estado histórico funcional — Fase 10 (2026-10-26).** RF21/CU26 implementados y verificados: 17 reglas, avisos propios, primera lectura y recuperación de 24 h. [Informe y evidencia](NOTIFICATIONS_IMPLEMENTATION.md). CU30 general y Fase 11 no iniciados. Sepolia real sigue pendiente de testETH. Los apartados de cierres anteriores conservan su contexto histórico.
 
 Fecha: 2026-10-24. RF18 → CU23 implementado bajo el [contrato D-08 congelado](DECISIONS.md#contrato-de-liberación-de-reservas--cierre-d-08-de-fase-75), sin reinterpretar sus 24 filas × dos modos. Workspace único y remoto oficial conservados. La implementación parte de `08b6b08bcdba423ec1d2b1a519da3b9d6c4f16cd`; rama `feature/phase-8-release-policies`. Este informe actualiza el estado de ejecución de las fotografías documentales anteriores, que conservan su alcance histórico.
 
@@ -167,3 +169,9 @@ Las filas notificaciones se generan después del commit, sin locks CU23, por el 
 ## Extensión RF21 implementada — Fase 10
 
 ALERTAR/LIBERAR producen actividad no crítica en la misma transacción de evaluación/transición/pivotes. MANTENER_POR_USO/NO_DETERMINABLE no producen avisos. Referencia CU23 estructurada en descripcion sin nueva columna/FK; matriz y D-08 intactas. [Implementación y evidencia](NOTIFICATIONS_IMPLEMENTATION.md).
+
+## Consumo documental por CU27/CU28 — Fase 10.5
+
+[DR4/DR7](DECISIONS.md#dashboard--reporting-contract--readiness-for-phase-11) preserva evaluación, matriz y scheduler. Reservas liberadas del periodo = COUNT de reservas actualmente LIBERADA con EXISTS evaluación LIBERAR cuya fecha_hora esté en [A,B). No usar resuelta_en/cancelada_en ni eventos de notificación como sustitutos; no multiplicar por pivotes o reevaluaciones.
+
+La primera entrega de dashboard tiene diez tarjetas y excluye la ampliación opcional de alertas. ALERTAR no significa pendiente ni libera; una extensión necesitaría definición explícita del periodo desde evaluaciones_liberacion. El resumen operacional puede agrupar RESERVA_ALERTADA_LIBERACION/RESERVA_LIBERADA ya registradas con permisos de reservas y evaluaciones administrativas; no reconstruye CU23 ni expone evidencia completa. Fase 10.5 no ejecuta evaluaciones ni implementa Fase 11.

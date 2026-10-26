@@ -2,7 +2,9 @@
 
 Sistema de información para la gestión y control de reservas de espacios académicos y préstamos de equipamiento tecnológico en la FICCT, con monitoreo de ocupación mediante IoT y trazabilidad de operaciones mediante Blockchain.
 
-**Estado vigente: Fase 10 implementada y verificada — RF21/CU26.** Diecisiete reglas, destinatarios por permisos efectivos, centro propio de avisos, primera lectura, contador y recuperación de 24 h. [Informe, pruebas y límites](docs/NOTIFICATIONS_IMPLEMENTATION.md). CU30 general y Fase 11 no iniciados.
+**Estado vigente: Fase 10.5 documental cerrada.** [Contrato de dashboard/reportes y Readiness for Phase 11](docs/DECISIONS.md#dashboard--reporting-contract--readiness-for-phase-11): **0 bloqueantes documentales**, 10 tarjetas/6 gráficos administrativos, 7 tarjetas personales y 7 reportes PDF/XLSX definidos. Fase 11 NO iniciada; CU30 NO IMPLEMENTADO. Solo se actualizó documentación.
+
+**Base funcional conservada: Fase 10 implementada y verificada — RF21/CU26.** Diecisiete reglas, destinatarios por permisos efectivos, centro propio de avisos, primera lectura, contador y recuperación de 24 h. [Informe, pruebas y límites](docs/NOTIFICATIONS_IMPLEMENTATION.md). CU30 general y Fase 11 no iniciados.
 
 Blockchain conserva su validación offline de Fase 9; Sepolia real sigue pendiente de testETH. Auditorías productivas sin vulnerabilidades; excepción temporal autorizada para cinco entradas altas de Zod exclusivamente dev de Hardhat, sin modificar ese módulo en Fase 10. [Evidencia y controles](docs/BLOCKCHAIN_IMPLEMENTATION.md).
 
@@ -47,6 +49,7 @@ La suite usa exclusivamente `espacio_u_testing` en MySQL real, con cuenta separa
 
 | Documento | Propósito |
 | --- | --- |
+| [Contrato de dashboard y reportes](docs/DECISIONS.md#dashboard--reporting-contract--readiness-for-phase-11) | Fase 10.5: fórmulas, roles, siete reportes, formatos, privacidad, auditoría y preparación de Fase 11 |
 | [Notificaciones internas](docs/NOTIFICATIONS_IMPLEMENTATION.md) | RF21/CU26, 17 reglas, destinatarios, lectura, recuperación y concurrencia |
 | [Constitución](docs/PROJECT_CONSTITUTION.md) | Alcance, stack, reglas permanentes y organización |
 | [Arquitectura](docs/ARCHITECTURE.md) | Capas, paquetes, integraciones y despliegue previsto |
@@ -168,3 +171,7 @@ Los originales Word/PDF se conservaron y no se publican. La revisión de 9.5 es 
 Abrir **Notificaciones** o la campana. Cuatro roles consultan solo propios; 15 por página, filtros por lectura/tipo y contador. Abrir detalle registra primera lectura mediante POST protegido; recargar conserva fecha.
 
 [Habilitación y scheduler](docs/DEVELOPMENT_SETUP.md#habilitar-notificaciones-internas--fase-10): fijar una vez NOTIFICATIONS_EVENTS_FROM local, migración incremental y SecuritySeeder, compilar y mantener scheduler. Recuperación cada minuto, ventana 24 h sin redistribución administrativa histórica. Sin canales externos ni realtime. Fase 11 requiere nueva instrucción.
+
+## Continuación tras Fase 10.5
+
+Fase 11 puede comenzar con una nueva instrucción. [48 criterios de aceptación previstos](docs/BUSINESS_RULES.md#aceptación-prevista-para-fase-11) y [plan](docs/IMPLEMENTATION_PLAN.md#fase-11--dashboard-indicadores-y-reportes). La documentación no acredita implementación, nuevas pruebas funcionales ni nuevas auditorías: los resultados Fase 10 y las limitaciones de QR/Blockchain mantienen su alcance histórico. No hay cambio de código, esquema, dependencias ni permisos en este cierre; los Word/PDF fuente permanecen intactos y privados.

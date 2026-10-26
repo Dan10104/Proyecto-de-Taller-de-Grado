@@ -1,6 +1,8 @@
 # Reglas de negocio y controles verificables
 
-**Estado vigente — Fase 10 (2026-10-26).** RF21/CU26 implementados y verificados: 17 reglas, avisos propios, primera lectura y recuperación de 24 h. [Informe y evidencia](NOTIFICATIONS_IMPLEMENTATION.md). CU30 general y Fase 11 no iniciados. Sepolia real sigue pendiente de testETH. Los apartados de cierres anteriores conservan su contexto histórico.
+**Estado vigente — Fase 10.5 documental (2026-10-26).** RF22/CU27 y RF23/CU28: [contrato de dashboard y reportes cerrado](DECISIONS.md#dashboard--reporting-contract--readiness-for-phase-11), **0 bloqueantes documentales**. Fase 11 NO iniciada; CU30 NO IMPLEMENTADO. Fase 10 funcional se conserva, sin cambios de código, datos, permisos o dependencias. Los cierres anteriores mantienen su contexto histórico.
+
+**Estado histórico funcional — Fase 10 (2026-10-26).** RF21/CU26 implementados y verificados: 17 reglas, avisos propios, primera lectura y recuperación de 24 h. [Informe y evidencia](NOTIFICATIONS_IMPLEMENTATION.md). CU30 general y Fase 11 no iniciados. Sepolia real sigue pendiente de testETH. Los apartados de cierres anteriores conservan su contexto histórico.
 
 **Estado histórico al cierre de Fase 9 implementada (2026-10-25/26).** RF19/CU24 y RF20/CU25, cuatro actividades críticas, dos tablas y tres permisos implementados conforme a D-12. [Implementación, pruebas offline, excepción temporal dev de Zod y Sepolia pendiente de testETH](BLOCKCHAIN_IMPLEMENTATION.md). CU30 general y Fase 10 permanecen pendientes. Las secciones de cierres anteriores conservan su contexto histórico.
 
@@ -437,3 +439,64 @@ RF21/CU26 queda cerrado documentalmente en [Notification Contract / Readiness fo
 ## Evidencia posterior T-N01–T-N40 — Fase 10
 
 Los criterios anteriores conservan su estado histórico en 9.5. Ahora están implementados y cubiertos por 86 casos nuevos dentro de 656 pruebas / 8721 aserciones. El informe contiene mapa a suites, carreras reales y revisión interactiva. No se amplía recuperación administrativa histórica. [Implementación y evidencia](NOTIFICATIONS_IMPLEMENTATION.md).
+
+## Dashboard y reportes — contrato documental de Fase 10.5
+
+Referencia normativa: [Dashboard & Reporting Contract / Readiness for Phase 11](DECISIONS.md#dashboard--reporting-contract--readiness-for-phase-11), DR1–DR12. RF22/CU27 y RF23/CU28 quedan definidos; Fase 11 no se implementa aquí. No se cambian los estados, disponibilidad, vencimiento, interpretación IoT, liberación ni incidencias ya congelados.
+
+Invariantes: permisos y scope antes de consultar/agregar/proyectar; ownership en backend para Docente/Estudiante; un corte local coherente por petición; estado actual separado del periodo; liberadas desde evaluación LIBERAR; no sumas duplicadas por joins; disponibilidad exclusivamente central; sin estado VENCIDO ni porcentaje IoT universal. Preview y exportaciones usan una definición común, autorización actual, filtros y orden idénticos; datos vivos pueden variar entre peticiones. No hay exportación vacía, notificación de exportación ni evidencia Blockchain de REPORTE_EXPORTADO. Actividad operacional es resumen acotado; CU30 permanece NO IMPLEMENTADO.
+
+### Aceptación prevista para Fase 11
+
+Los siguientes **48 criterios no se ejecutan en Fase 10.5**. Usar datos sintéticos, MySQL real de testing protegido, reloj controlado y roles/permisos revocados en casos negativos. No atribuir estos resultados a las 656 pruebas históricas de Fase 10.
+
+| ID | Verificación exigida |
+| --- | --- |
+| T-DR01 | dashboard.ver permite entrada a cuatro roles, sin consultar/enviar dominios no autorizados; ausencia del permiso deniega incluso URL directa. |
+| T-DR02 | Admin y Encargado siguen permisos efectivos por tarjeta/gráfico; retirar permiso elimina consulta/props, no basta ocultar UI. |
+| T-DR03 | Multirrol exige elegibilidad y permiso en rol vigente; cambio de vista y retiro de rol no combinan privilegios indebidamente. |
+| T-DR04 | Docente/Estudiante solo solicitante propio y destinatario propio; IDs/filtros manipulados no exponen terceros ni comparativas. |
+| T-DR05 | Hoy/7/30 incluyen fechas locales exactas; rango de un día, fin de mes/año y bisiesto; inicio inclusivo y siguiente medianoche exclusiva. |
+| T-DR06 | Fecha inválida/invertida se rechaza; disponibilidad exige fin>inicio; estados actuales no se filtran inadvertidamente por periodo. |
+| T-DR07 | A1/A2: pendientes actuales; APROBADA futura, en inicio, interior, en fin y pasada. No FINALIZADA automática. |
+| T-DR08 | A3: actual LIBERADA y LIBERAR en rango; excluir ALERTAR/fecha inferida; múltiples evaluaciones/pivotes no duplican reserva. |
+| T-DR09 | A4/espacios: estado operativo difiere de disponibilidad; reserva APROBADA, bloqueo, incidencia abierta incluso futura y mantenimiento usan servicio central. |
+| T-DR10 | A5/A6/A7: estados exactos; t=fin_previsto no vencido; t>fin sí solo ENTREGADO; PENDIENTE_REVISION mantiene custodia. |
+| T-DR11 | A8/A9: cuatro estados de equipo; abiertas INCIDENCIA/MANTENIMIENTO, sin ocultar abiertas futuras ni incluir cerradas. |
+| T-DR12 | A10: espacios distintos monitorizados; sin sensor, deshabilitado/reasignado; NO_DETERMINABLE aun con lectura reciente; no inferir libre. |
+| T-DR13 | IoT: bordes de frescura configurada, ambas fechas, futuro, contradicción y fallo; comunicación reciente no equivale a evidencia/ocupación. |
+| T-DR14 | G1/G2: cohortes por solicitada_en/solicitado_en y estado actual; no confundir periodo de uso del reporte con fecha de solicitud. |
+| T-DR15 | G3/G4 reutilizan agregados A8/A9; seis gráficos iniciales, sin finanzas, Blockchain o porcentaje IoT. |
+| T-DR16 | G5/G6: 31 fechas por día y 32 por mes; meses parciales, buckets cero solo interiores, orden temporal y conjunto totalmente vacío. |
+| T-DR17 | P1–P6: fórmulas propias exactas; próximas inicio>=t, orden inicio/id, lista de cinco sin limitar conteo; APROBADO antiguo no vencido. |
+| T-DR18 | P7 reutiliza NotificationReadService; leida_en NULL, todo el scope propio independientemente de página, ninguna lectura/mutación por dashboard. |
+| T-DR19 | reportes.ver/exportar solo roles administrativos elegibles; dominio adicional exigido; sin reportes personales ni bypass de Admin. |
+| T-DR20 | Siete slugs/vistas whitelist; IDs/options en scope; filtros AND; no filas, tabla, SQL, columnas u orden arbitrario del cliente. |
+| T-DR21 | Reservas: solapamiento estricto con [A,B), seis estados, piso/espacio/solicitante, orden, nueve columnas; motivos/propósito fuera. |
+| T-DR22 | Espacios: inventario sin rango; disponibilidad inicio/fin obligatorios, mismo servicio central y booleano calculado, sin datos de terceros. |
+| T-DR23 | Equipamiento: tipos/estado/base, null base; columna serie solo con gestionar en preview/ambos formatos; sin referencia libre. |
+| T-DR24 | Préstamos: solapamiento previsto, vencido todos/sí/no; no+ENTREGADO vigentes, no sin estado incluye otros; campos/orden exactos. |
+| T-DR25 | Incidencias: rango por inicio, tipo/estado/recurso; cerrada_en nullable, reportante autorizado, descripción/solución excluidas. |
+| T-DR26 | IoT: filtro por fecha_evento y espacio histórico, reasignación conserva contexto; sensores deshabilitados no borran historia; sin identidad personal. |
+| T-DR27 | Actividad: whitelist 17+exportación, filtros/grano y COUNT; permisos por familia; solo exportaciones propias; actor sin usuarios.ver minimizado. |
+| T-DR28 | Acciones desconocidas/seguridad/contexto inválido excluidos; no /actividad, detalle individual, búsqueda global ni reconstrucción CU30. |
+| T-DR29 | Orden determinista y columnas iguales en preview/PDF/XLSX; nulos, enums, código/recurso y relaciones sin duplicación. |
+| T-DR30 | Mismos filtros/scope/proyección en tres consumidores; preview paginada y exportación completa; backend ignora/rechaza filas preparadas por cliente. |
+| T-DR31 | Cambios de datos entre peticiones muestran cortes actuales; cambios durante iteración no mezclan snapshot ni duplican/omiten filas; fin vencimiento coherente. |
+| T-DR32 | Cambio de filtros obliga a renovar preview; revocación/cambio de scope/columna antes o durante exportación impide entregar datos más amplios. |
+| T-DR33 | PDF con ESPACIO-U/FICCT, generador, filtros, hora/zona, páginas numeradas y encabezados repetidos; renderizar y verificar sin recortes. |
+| T-DR34 | XLSX abre como libro válido de una hoja, filtros claros, tipos correctos, fechas locales, nulos, ceros iniciales y orden; sin macros. |
+| T-DR35 | =,+,-,@ y variantes con controles/espacios se exportan como string en todas las zonas del XLSX; XML sin fórmulas/relaciones externas de usuario. |
+| T-DR36 | Archivo completo válido produce exactamente una actividad actor/fecha/acción/EXITO/no crítica con resumen seguro; FK no pertinentes nulas. |
+| T-DR37 | Fallo de generación/límite/archivo/permiso/inserción de actividad: sin descarga ni REPORTE_EXPORTADO EXITO; rollback del registro y limpieza. |
+| T-DR38 | Desconexión después de puesta a disposición no afirma recepción física ni elimina actividad; nuevo éxito de reintento genera su registro propio. |
+| T-DR39 | Preview no audita; exportación de actividad incluye anteriores propias y no a sí misma; no Blockchain/notificación ni ampliación de CU30. |
+| T-DR40 | Sin datos: 0 correcto, insuficiencia/error diferenciados, tablas/gráficos vacíos legibles y exportación vacía rechazada también después de preview. |
+| T-DR41 | Filtros parametrizados; SQL injection, nombre tabla/ORDER BY, CSRF, sesión inválida, datos ajenos y proyecciones ocultas bloqueados. |
+| T-DR42 | PDF escapa texto y bloquea HTML/URL/file arbitrarios; XLSX sin macros/enlaces externos; headers seguros y no-store. |
+| T-DR43 | Filename whitelist y temporal aleatorio privado; traversal/IDOR, URL pública y descarga por otra sesión/usuario impedidos. |
+| T-DR44 | Temporales se limpian tras éxito, fallo, desconexión y proceso terminado; huérfanos <=TTL; ningún archivo público/permanente o versionado. |
+| T-DR45 | 0/1/10.000/10.001 filas, límites configurables filas/bytes/tiempo, Unicode/textos largos; exceso informa, sin truncamiento ni RAM ilimitada. |
+| T-DR46 | EXPLAIN, consultas COUNT/GROUP BY/EXISTS, ausencia N+1/Model::all; cualquier índice propuesto sustentado antes de migración; sin cache/tablas BI. |
+| T-DR47 | Medir dashboard <=5 s y PDF/XLSX <=30 s hasta 10.000 filas con otros usuarios operando; registrar entorno, dataset, máximos y recursos. |
+| T-DR48 | Revisar licencia/compatibilidad PHP 8.5/Laravel/Vue, auditorías y bundle antes de instalar; paquete local, sin CDN/servicio externo; regresiones existentes. |
