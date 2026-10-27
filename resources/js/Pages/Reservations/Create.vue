@@ -10,12 +10,12 @@ const form = useForm({ espacio_id: props.espacio.id, inicio: props.periodo.inici
 <template>
   <AppLayout title="Solicitar reserva" section="Reservas">
     <div class="page-heading">
-      <div><span class="eyebrow">NUEVA SOLICITUD</span><h1 tabindex="-1">Solicitar reserva</h1><p>Indique el propósito de su actividad y revise el horario. Hora de Bolivia.</p></div>
+      <div><h1 tabindex="-1">Solicitar reserva</h1><p>Indique el propósito de su actividad y revise el horario. Hora de Bolivia.</p></div>
       <Link href="/disponibilidad" class="btn btn-secondary">Elegir otro espacio</Link>
     </div>
     <form class="panel form-panel" @submit.prevent="form.post('/reservas', { onError: focusError })">
       <FormErrors :errors="form.errors"/>
-      <div class="reservation-space-summary"><span class="eyebrow">{{ espacio.codigo }}</span><h2>{{ espacio.nombre }}</h2><p>{{ espacio.tipo }} · {{ espacio.piso }} · {{ espacio.capacidad }} personas</p></div>
+      <div class="reservation-space-summary"><span class="section-context">{{ espacio.codigo }}</span><h2>{{ espacio.nombre }}</h2><p>{{ espacio.tipo }} · {{ espacio.piso }} · {{ espacio.capacidad }} personas</p></div>
       <div class="form-grid">
         <InputField id="reserva-inicio" label="Inicio" v-model="form.inicio" type="datetime-local" required min="1000-01-01T00:00" max="9999-12-31T23:59" :error="form.errors.inicio"/>
         <InputField id="reserva-fin" label="Fin" v-model="form.fin" type="datetime-local" required min="1000-01-01T00:00" max="9999-12-31T23:59" :error="form.errors.fin"/>

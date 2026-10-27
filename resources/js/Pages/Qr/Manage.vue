@@ -23,7 +23,7 @@ onBeforeUnmount(()=>{clear();window.removeEventListener('pagehide',clear);docume
 </script>
 <template>
  <AppLayout title="Gestionar QR" section="QR">
-  <div class="page-heading"><div><span class="eyebrow">QR DE {{objetivo.tipo.toUpperCase()}}</span><h1>{{objetivo.nombre}}</h1><p class="reservation-code">{{objetivo.codigo}}</p></div><Link href="/qr" class="btn btn-secondary">Elegir otro objetivo</Link></div>
+  <div class="page-heading"><div><span class="section-context">QR DE {{objetivo.tipo.toUpperCase()}}</span><h1>{{objetivo.nombre}}</h1><p class="reservation-code">{{objetivo.codigo}}</p></div><Link href="/qr" class="btn btn-secondary">Elegir otro objetivo</Link></div>
   <p role="status" aria-live="polite" class="alert" v-if="message">{{message}}</p>
   <section class="panel form-panel"><h2>Emitir o rotar código</h2><p>El nuevo código reemplazará los códigos activos de este objetivo. El historial se conserva.</p>
    <OperationForm label="Generar nuevo QR" message="Se desactivarán los códigos anteriores de este objetivo. Imprima la nueva etiqueta antes de abandonar esta vista." :disabled="busy" @confirm="issue">

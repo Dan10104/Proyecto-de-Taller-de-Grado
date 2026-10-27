@@ -11,7 +11,7 @@ async function validate(token){busy.value=true;result.value='';let data={qr_toke
 </script>
 <template>
  <AppLayout title="Validar uso mediante QR" section="Reservas">
-  <div class="page-heading"><div><span class="eyebrow">VALIDACIÓN DE USO</span><h1>{{reserva.espacio}}</h1><p class="reservation-code">{{reserva.codigo}}</p></div><Link :href="`/reservas/${reserva.id}`" class="btn btn-secondary">Volver a la reserva</Link></div>
+  <div class="page-heading"><div><h1>{{reserva.espacio}}</h1><p class="reservation-code">{{reserva.codigo}}</p></div><Link :href="`/reservas/${reserva.id}`" class="btn btn-secondary">Volver a la reserva</Link></div>
   <section class="panel detail-panel"><h2>Validar uso mediante QR</h2><p>{{dateLabel(reserva.inicio)}} — {{dateLabel(reserva.fin)}}</p><p>Estado de reserva: <strong>{{reserva.estado}}</strong>. Escanee la etiqueta del espacio o el código de esta reserva.</p><p class="hint">Solo una reserva aprobada dentro de su periodo permite validar el uso.</p><QrScanner :disabled="busy" @decoded="validate"/><p class="alert" role="status" aria-live="polite" v-if="result">{{result}}</p></section>
   <QrHistory :validaciones="validaciones"/>
  </AppLayout>

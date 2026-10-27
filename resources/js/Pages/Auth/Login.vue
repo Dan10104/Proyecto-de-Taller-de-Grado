@@ -19,12 +19,12 @@ function submit() {
     <section class="login-story">
       <Brand light/>
       <div class="login-story-main">
-        <span class="eyebrow">TECNOLOGÍA AL SERVICIO DE LA FACULTAD</span>
-        <h1>
+
+        <h2>
           Un espacio para
           <br>
           conectar posibilidades.
-        </h1>
+        </h2>
         <p>Gestión inteligente de espacios académicos y equipamiento tecnológico</p>
         <div class="campus-art" aria-hidden="true">
           <div class="campus-grid"></div>
@@ -49,8 +49,8 @@ function submit() {
         <Brand/>
       </div>
       <div class="login-form-wrap">
-        <span class="form-kicker">BIENVENIDO A ESPACIO-U</span>
-        <h2>Iniciar sesión</h2>
+
+        <h1>Iniciar sesión</h1>
         <p class="lead">Ingrese sus credenciales para continuar.</p>
         <div v-if="page.props.flash?.notice" class="alert" role="status">{{ page.props.flash.notice }}</div>
         <form @submit.prevent="submit" class="form-stack">

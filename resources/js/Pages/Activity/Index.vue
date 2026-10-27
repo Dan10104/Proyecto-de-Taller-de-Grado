@@ -15,7 +15,7 @@ function apply() {
 </script>
 <template>
   <AppLayout title="Bitácora">
-    <div class="page-heading"><div><span class="eyebrow">CONTROL INSTITUCIONAL · CU30</span><h1>Bitácora de actividad</h1><p>Acciones registradas, responsables y referencias. Consulta de solo lectura.</p></div><span class="audit-count">{{ registros.total }} registros</span></div>
+    <div class="page-heading"><div><h1>Bitácora de actividad</h1><p>Acciones registradas, responsables y referencias. Consulta de solo lectura.</p></div><span class="audit-count">{{ registros.total }} registros</span></div>
     <form class="panel audit-filters" @submit.prevent="apply">
       <div class="audit-filter-grid">
         <InputField id="fecha_desde" label="Desde" type="date" v-model="form.fecha_desde" :error="form.errors.fecha_desde" required/>
@@ -40,7 +40,7 @@ function apply() {
       <p class="audit-note">Los nombres mostrados son actuales; el registro conserva el ID histórico del usuario.</p>
       <div v-if="registros.data.length" class="audit-table-wrap" tabindex="0" role="region" aria-label="Tabla de actividad; desplazamiento horizontal disponible">
         <table class="audit-table"><caption class="sr-only">Actividades ordenadas por fecha e identificador descendentes</caption><thead><tr><th scope="col">Fecha / hora</th><th scope="col">Acción</th><th scope="col">Resultado</th><th scope="col">Responsable</th><th scope="col">Referencias</th><th scope="col">Criticidad</th><th scope="col">Detalle</th></tr></thead><tbody>
-          <tr v-for="row in registros.data" :key="row.id"><td><time :datetime="row.fecha_hora">{{ dateLabel(row.fecha_hora) }}</time><small>#{{ row.id }}</small></td><td>{{ row.accion_label }}</td><td><span class="audit-badge" :class="`audit-${row.resultado.toLowerCase()}`">{{ row.resultado }}</span></td><td><span v-if="row.actor">{{ row.actor.label }}</span><small v-if="row.proceso_responsable">{{ row.proceso_responsable }}</small></td><td><span v-for="ref in row.referencias" :key="ref.campo" class="audit-reference">{{ ref.label }}</span><span v-if="!row.referencias.length">Sin FK de contexto</span></td><td>{{ row.critica ? 'Crítica' : 'No crítica' }}</td><td><Link :href="`/actividad/${row.id}`" class="btn btn-secondary" :aria-label="`Ver actividad ${row.id}`">Ver</Link></td></tr>
+          <tr v-for="row in registros.data" :key="row.id"><td><time :datetime="row.fecha_hora">{{ dateLabel(row.fecha_hora) }}</time><small>#{{ row.id }}</small></td><td>{{ row.accion_label }}</td><td><span class="audit-badge" :class="`audit-${row.resultado.toLowerCase()}`">{{ row.resultado }}</span></td><td><span v-if="row.actor">{{ row.actor.label }}</span><small v-if="row.proceso_responsable">{{ row.proceso_responsable }}</small></td><td><span v-for="ref in row.referencias" :key="ref.campo" class="audit-reference">{{ ref.label }}</span><span v-if="!row.referencias.length">Sin referencias asociadas</span></td><td>{{ row.critica ? 'Crítica' : 'No crítica' }}</td><td><Link :href="`/actividad/${row.id}`" class="btn btn-secondary" :aria-label="`Ver actividad ${row.id}`">Ver</Link></td></tr>
         </tbody></table>
       </div>
       <div v-else class="audit-empty"><h2>Sin actividad para estos filtros</h2><p>Pruebe otro periodo o quite condiciones para ampliar la consulta.</p></div>

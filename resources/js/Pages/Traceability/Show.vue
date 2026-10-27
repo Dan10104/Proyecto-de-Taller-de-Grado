@@ -1,6 +1,7 @@
 <script setup>
 import { Link, useForm } from '@inertiajs/vue3';
 import AppLayout from '../../Layouts/AppLayout.vue';
+import EvidenceFlow from '../../Components/EvidenceFlow.vue';
 import { operations, verificationResults, explanations } from '../../traceability';
 import { traceabilityDate } from '../../traceability';
 import { useAccess } from '../../security';
@@ -12,7 +13,8 @@ const run = action => form.post(`/trazabilidad/${props.evidencia.id}/${action}`,
 <template>
   <AppLayout :title="`Evidencia ${evidencia.id}`">
     <Link href="/trazabilidad" class="back-link">← Evidencias de trazabilidad</Link>
-    <div class="page-heading"><div><span class="eyebrow">{{ operations[evidencia.actividad.accion] }}</span><h1>Evidencia {{ evidencia.id }}</h1><p>{{ traceabilityDate(evidencia.actividad.fecha_hora) }}</p></div><div class="actions"><button v-if="can('trazabilidad.evidencias.verificar')" class="btn btn-primary" :disabled="form.processing" @click="run('verificar')">{{ form.processing ? 'Procesando…' : 'Verificar evidencia' }}</button><button v-if="can('trazabilidad.reintentar') && evidencia.estado === 'PENDIENTE'" class="btn btn-secondary" :disabled="form.processing" @click="run('reintentar')">Reintentar registro</button></div></div>
+    <div class="page-heading"><div><span class="section-context">{{ operations[evidencia.actividad.accion] }}</span><h1>Evidencia {{ evidencia.id }}</h1><p>{{ traceabilityDate(evidencia.actividad.fecha_hora) }}</p></div><div class="actions"><button v-if="can('trazabilidad.evidencias.verificar')" class="btn btn-primary" :disabled="form.processing" @click="run('verificar')">{{ form.processing ? 'Procesando…' : 'Verificar evidencia' }}</button><button v-if="can('trazabilidad.reintentar') && evidencia.estado === 'PENDIENTE'" class="btn btn-secondary" :disabled="form.processing" @click="run('reintentar')">Reintentar registro</button></div></div>
+    <EvidenceFlow kind="blockchain"/>
     <section class="panel trace-panel" aria-labelledby="result-title"><h2 id="result-title">{{ evidencia.ultima_verificacion ? verificationResults[evidencia.resultado_verificacion] : 'Sin verificar' }}</h2><p role="status">{{ evidencia.ultima_verificacion ? explanations[evidencia.resultado_verificacion] : 'Seleccione «Verificar evidencia» para comprobar la información disponible.' }}</p><p>Registro externo: <strong>{{ evidencia.estado === 'REGISTRADA' ? 'Registrado' : 'Pendiente' }}</strong></p><p v-if="evidencia.ultima_verificacion">Última comprobación: {{ traceabilityDate(evidencia.ultima_verificacion) }}</p></section>
     <section class="panel trace-panel" aria-labelledby="details-title"><h2 id="details-title">Detalle de la evidencia</h2><dl>
       <dt>Contexto</dt><dd>{{ evidencia.actividad.reserva_id ? `Reserva ${evidencia.actividad.reserva_id}` : `Préstamo ${evidencia.actividad.prestamo_id}` }} · Recurso {{ evidencia.actividad.recurso_id }}</dd>

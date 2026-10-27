@@ -12,7 +12,7 @@ const form = useForm({ lectura: props.filtros.lectura || '', tipo: props.filtros
 </script>
 <template>
   <AppLayout title="Notificaciones">
-    <div class="page-heading"><div><span class="eyebrow">AVISOS PERSONALES</span><h1>Notificaciones</h1><p>Consulte las novedades de sus solicitudes y actividades académicas.</p></div><span class="notification-total">{{ page.props.auth.no_leidas }} sin leer</span></div>
+    <div class="page-heading"><div><h1>Notificaciones</h1><p>Consulte las novedades de sus solicitudes y actividades académicas.</p></div><span class="notification-total">{{ page.props.auth.no_leidas }} sin leer</span></div>
     <form class="panel space-filters notification-filters" @submit.prevent="form.get('/notificaciones')">
       <InputField id="lectura" label="Estado de lectura" v-model="form.lectura" placeholder="Todas" :options="[{ value: 'no_leidas', label: 'No leídas' }, { value: 'leidas', label: 'Leídas' }]" :error="form.errors.lectura"/>
       <InputField id="tipo" label="Tipo de aviso" v-model="form.tipo" placeholder="Todos" :options="Object.entries(notificationTypes).map(([value, label]) => ({ value, label }))" :error="form.errors.tipo"/>

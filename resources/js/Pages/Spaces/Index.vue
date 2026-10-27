@@ -13,7 +13,7 @@ const { can } = useAccess();
   <AppLayout title="Espacios académicos">
     <div class="page-heading">
       <div>
-        <span class="eyebrow">CATÁLOGO DE ESPACIOS</span>
+
         <h1>Espacios académicos</h1>
         <p>Ubicación, características y estado operativo de cada ambiente.</p>
       </div>

@@ -28,7 +28,7 @@ onBeforeUnmount(() => { clear(); window.removeEventListener('pagehide', clear); 
 </script>
 <template>
   <AppLayout title="Detalle del sensor" section="IoT">
-    <div class="page-heading"><div><span class="eyebrow">SENSOR IoT</span><h1>{{ sensor.identificador }}</h1><p>{{ sensor.tipo }}</p></div><Link href="/iot/sensores" class="btn btn-secondary">Volver a sensores</Link></div>
+    <div class="page-heading"><div><h1>{{ sensor.identificador }}</h1><p>{{ sensor.tipo }}</p></div><Link href="/iot/sensores" class="btn btn-secondary">Volver a sensores</Link></div>
     <section class="panel detail-panel"><h2>Estado y asociación</h2><p><strong>{{ sensor.estado === 'HABILITADO' ? 'Habilitado' : 'Deshabilitado' }}</strong> · {{ comunicacion === 'RECIENTE' ? 'Comunicación reciente' : 'Sin comunicación reciente' }}</p><p>Espacio: <strong>{{ sensor.espacio_actual.recurso.codigo }} · {{ sensor.espacio_actual.recurso.nombre }}</strong></p><p>Última comunicación: {{ sensor.ultima_comunicacion ? dateLabel(sensor.ultima_comunicacion) : 'Sin eventos recibidos' }}</p><p class="hint">La ausencia de comunicación no determina que el espacio esté libre.</p>
       <div class="button-group"><Link v-if="can('iot.sensores.gestionar')" :href="`/iot/sensores/${sensor.id}/editar`" class="btn btn-secondary">Editar o reasociar</Link><button v-if="can('iot.sensores.gestionar')" class="btn btn-secondary" @click="state">{{ sensor.estado === 'HABILITADO' ? 'Deshabilitar sensor' : 'Habilitar sensor' }}</button><Link v-if="can('iot.monitoreo.ver')" :href="`/iot/monitoreo?sensor_id=${sensor.id}`" class="text-link">Ver monitoreo e historial</Link></div>
     </section>
