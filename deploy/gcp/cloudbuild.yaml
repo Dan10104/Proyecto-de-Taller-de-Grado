@@ -1,0 +1,12 @@
+# OPTIONAL future build only. Never deploys or runs migrations.
+# Submit only after explicit approval; use the dedicated build service account.
+steps:
+  - name: gcr.io/cloud-builders/docker@sha256:0aca0f95e1ba8f9107263d3e9782d5ce99a5b60d35b3f8985e4534b65552636f
+    args: [build, --build-arg, 'GIT_SHA=${_GIT_SHA}', --tag, '${_IMAGE_TAG}', .]
+images: ['${_IMAGE_TAG}']
+options:
+  logging: CLOUD_LOGGING_ONLY
+substitutions:
+  _GIT_SHA: REPLACE_40_HEX_GIT_SHA
+  _IMAGE_TAG: REPLACE_REGION-docker.pkg.dev/REPLACE_PROJECT/espacio-u/espacio-u:REPLACE_GIT_SHA
+timeout: 1200s
