@@ -258,3 +258,7 @@ Cambio exclusivamente documental. CU30 **NO IMPLEMENTADO**; implementación requ
 IotManagementService registra las seis acciones SENSOR_* de AC4: alta, edición de tipo, reasignación, habilitación, deshabilitación y consulta de credencial. Reasignación conserva recurso destino y referencias técnicas del origen; prevalece sobre edición. Provisionamiento audita dentro de transacción antes de revelar credencial: si falla, no hay revelación. No guarda identificador libre, secreto, firma o HMAC. ActivityVolumeTest ingiere veinte eventos firmados sin producir filas de actividad por lectura.
 
 [Implementación RF25/CU30, pruebas y resultados de integración](ACTIVITY_AUDIT_IMPLEMENTATION.md). Los cierres de fases anteriores conservan su alcance histórico. Fase 13 no iniciada.
+
+## Validación de infraestructura — Fase 14
+
+IOT_RATE_STORE=database en contenedores: fila compartida transaccional SELECT FOR UPDATE, misma ventana/cuota/429 y fallo cerrado 503. HMAC probado en kernel Linux con TLS, HTTP directo sigue rechazado. NO_DETERMINABLE y reglas de frescura intactas; master solo runtime. [Evidencia y límites](PHASE_14_DEPLOYMENT_PREPARATION.md).

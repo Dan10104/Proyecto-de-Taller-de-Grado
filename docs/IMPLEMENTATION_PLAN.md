@@ -425,3 +425,9 @@ La instrucción posterior autorizó Fase 12.6, insertada antes de Fase 13: recor
 ## Revalidación integral — Fase 13
 
 CU30 se completó en Fase 12.6; esta fase lo revalida con los otros 29 CU. El trabajo histórico que decía completar bitácora se satisface por esa implementación previa. Fase 13 ejecuta baseline, esquema, seguridad, UI, rendimiento y regresiones cruzadas. Evidencia final/publicación en PHASE_13_SYSTEM_VALIDATION. Fase 14 requiere nueva instrucción: HTTPS/proxies, sesiones/locks/scheduler/almacenamiento según topología y secretos privados. Sin Dockerfile final, nube, CI/CD de despliegue ni móvil.
+
+## Fase 14 — Preparación ejecutada, deployment pendiente
+
+Dockerfile, Compose aislado con dos réplicas, cuatro tablas framework, sesiones/locks/queue compartidos, entrypoint y probes implementados y verificados localmente. Plantillas/renderer/plan GCP sin ejecución, guía de secretos/IAM, backups/PITR/restauración/rollback y checklist completos. Suite final 1.095 tests / 13.046 assertions; ninguna prueba anterior eliminada. [Informe de entrega](PHASE_14_DEPLOYMENT_PREPARATION.md).
+
+Próximo paso: autorización expresa del proyecto/región/presupuesto/identidades y despliegue staging conforme a DEPLOYMENT_CHECKLIST; luego validar APIs/IAM/socket/proxy/scheduler reales, cold starts y restore cloud. No interpretar preparación como autorización de gasto o publicación. Smokes OpenAI/API key/cuota y Sepolia/testETH independientes. No se inicia ampliación funcional ni móvil.

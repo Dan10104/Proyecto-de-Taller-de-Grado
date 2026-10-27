@@ -1106,3 +1106,16 @@ Reutilizado registros_actividad sin modificar columnas/FK/CHECK/enum SQL. Cero m
 ## Revalidación integral — Fase 13
 
 SystemSchemaContractTest contrasta diccionario y MySQL testing: 31 tablas académicas, 211 columnas y 63 FK, más migrations técnica. Compara tipos, NULL, defaults, autoincremento, DELETE/UPDATE y cero huérfanos. Solo siete FK QR y fk_registro_actor usan UPDATE RESTRICT. Sin diferencias ni migraciones/índices nuevos; instalación desde cero bajo TestingDatabaseGuard.
+
+## Infraestructura framework — Fase 14
+
+Autorizada expresamente en la instrucción Fase 14 (secciones 54/58/63); no modifica el SQL académico. Migration incremental `2026_10_26_000032_create_framework_infrastructure_tables.php` agrega exclusivamente:
+
+| Tabla técnica | Finalidad / estructura |
+| --- | --- |
+| sessions | id PK, user_id nullable index, ip_address, user_agent, payload, last_activity index; sin FK académica |
+| cache | key PK, value, expiration; estado técnico compartido y cuotas IoT |
+| cache_locks | key PK, owner, expiration; exclusión entre instancias |
+| jobs | id PK autoincremental, queue index, payload, attempts, reserved_at nullable, available_at, created_at |
+
+No failed_jobs: los dos jobs actuales transportan IDs y recuperan desde registros/evidencias, sin persistir excepción/payload completo. Decisión revisable si aparecen otros trabajos. `migrations` continúa siendo técnica preexistente. Total físico 36 = 31 académicas + 4 nuevas técnicas + migrations. **31 tablas / 211 columnas / 63 FK académicas conservadas**, verificadas por suite y comparación de las 31 migrations originales. No índices académicos ni modelos de negocio nuevos. [Arquitectura y privilegios](DEPLOYMENT_ARCHITECTURE.md), [pruebas](PHASE_14_DEPLOYMENT_PREPARATION.md).

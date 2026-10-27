@@ -161,3 +161,7 @@ Cambio exclusivamente documental. CU30 **NO IMPLEMENTADO**; implementación requ
 ReportAuditService delega REPORTE_EXPORTADO al ActivityRecorder sin cambiar actor, resultado EXITO, criticidad false, contexto NULL ni metadata tipada. El fallo obligatorio sigue impidiendo descarga. ActivityReportQuery conserva sus dieciocho acciones, agregación y scopes: no se incorporan automáticamente las 38 administrativas. Preview/dashboard no generan actividad. CU30 ofrece consulta individual separada y no exporta; ActivitySemanticsTest comprueba la frontera y el recorrido manual verificó una sola actividad por PDF exitoso.
 
 [Implementación RF25/CU30, pruebas y resultados de integración](ACTIVITY_AUDIT_IMPLEMENTATION.md). Los cierres de fases anteriores conservan su alcance histórico. Fase 13 no iniciada.
+
+## Validación de infraestructura — Fase 14
+
+PDF/XLSX descargados y analizados en Linux; formula injection fixture escrita como string. Benchmark sintético de 10.000 filas: PDF media 2,264 s/58 MiB; XLSX 1,431 s/28 MiB, tres muestras por formato, 1 CPU/1 GiB. Temporales privados efímeros, cleanup tras respuesta y janitor de la misma instancia; no storage público o persistencia de reportes. No benchmark de producción cloud. [Evidencia y límites](PHASE_14_DEPLOYMENT_PREPARATION.md).

@@ -245,3 +245,11 @@ actividad.ver elegible solo Administrador ACTIVO con asignación/sesión/permiso
 No-store/private, nosniff y DENY también en errores y /up. Referrer-Policy same-origin, salvo no-referrer de IoT. CSP mínima base-uri/self, object-src/none y frame-ancestors/none; no se declara script-src ni eliminación universal de XSS. HSTS max-age=31536000 solo production + HTTPS fiable, sin preload/subdominios. CORS api/*: POST/cabeceras IoT, allowed_origins vacío y supports_credentials=false; no sustituye HMAC.
 
 Excepciones inesperadas sin mensaje, traza, previous, URL, request ni bindings: solo clase y huella SHA-256 truncada de archivo/línea. 500 genérico en español con APP_DEBUG=false. Las cinco altas dev Hardhat/Zod son la única excepción autorizada; runtime auditado por separado.
+
+## Endurecimiento de contenedores — Fase 14
+
+Imagen sin `.env`, credenciales, dev dependencies o Hardhat/Zod ejecutable. Build sin secretos; versiones/digests/locks fijos, secret scan de contexto, capas, history y Git. Runtime UID 33, código de solo lectura para el usuario, directorios privados mínimos y umask 077. stdout/stderr, acceso Apache sin URL/query/cookies/cuerpo. Nunca inspeccionar/imprimir Config.Env de contenedores ya iniciados. `.env.docker` local ignorado; ejemplos vacíos y ACL revisada.
+
+`deployment:check` rechaza configuraciones inseguras: debug, sesiones/locks file, DB root/testing, HTTP cloud y cookies no seguras. Proxies FOR/PROTO/PORT confiados solo en target cloud-run, antes del boundary IoT; no forwarded host. HSTS excluye localhost. Cloud SQL socket por integración oficial; usuario DML separado de migración DDL. No JSON key ni Owner/Editor runtime; Secret Manager por secreto/versiones numéricas.
+
+Reportes temporales privados efímeros: eliminación tras descarga/fallo y barrido local TTL, no volumen público. Réplicas comparten sesiones/locks sin alterar revocación/INACTIVO/RBAC. Cola guarda IDs y publicación post-commit; recuperadores conservan sus contratos. [Matriz IAM y rotación](DEPLOYMENT_ARCHITECTURE.md), [backup y recuperación](DEPLOYMENT_RECOVERY.md), [resultados y límites](PHASE_14_DEPLOYMENT_PREPARATION.md). Aprovisionar/publicar cloud requiere nueva autorización; OpenAI/Sepolia no habilitados.

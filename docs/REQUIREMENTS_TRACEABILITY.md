@@ -601,3 +601,20 @@ Se conservan 217 textos normativos, 30 CU y 17 decisiones D; se actualiza el est
 ## Implementación RF25/CU30 — Fase 12.6
 
 RF25 → CU30 → registros_actividad → ActivityAction/ActivityRecorder/ActivityAttempt/ActivityTransaction → AdministrationService/SpaceManagementService/EquipmentService/IotManagementService/QrManagementService/ReleasePolicyManagementService y tres delegadores heredados → ActivityRequest/ActivityFilters/ActivityQueryService → Activity/Index.vue y Show.vue → Activity*Test, regresión D-12/N/DR/CH y QA. Los 217 textos normativos permanecen intactos. [Implementación, evidencia y límites](ACTIVITY_AUDIT_IMPLEMENTATION.md).
+
+## Evidencia adicional de infraestructura — Fase 14
+
+No RF/CU nuevo ni modificación de los 217 textos normativos. RF26 móvil sigue diferido; CU01–CU30 conservan validación funcional previa y suite completa.
+
+| Requisito | Evidencia incorporada | Límite de la conclusión |
+| --- | --- | --- |
+| RNF-10/11/12 y seguridad transversal | RBAC/revocación/logout/INACTIVO entre réplicas, cookie/proxy, secretos fuera de imagen y grants DML/DDL | IAM/proxy cloud efectivos pendientes |
+| RNF-18/19/20 | `/up` independiente SQL, restart y parada ordenada, optional integrations disabled, errores seguros | No acredita disponibilidad mensual, HA ni SLO cloud |
+| RNF-22 | Dump/restore local sintético a esquema aislado; plan backups/PITR siete días y restore a instancia nueva | Drill Cloud SQL pendiente; RTO 4 h objetivo, no medido cloud |
+| RNF-23/24/25/27 | Mismos dominios, adaptadores y contratos; guías/plantillas versionadas, Node local y FakeProvider | No agrega módulo móvil ni habilita proveedores externos |
+| RNF-30 | Docker build repetido, runtime Linux productivo, dos web + MySQL aislado y smoke | Validado localmente |
+| RNF-31 | Cloud Run/SQL/Registry/Secrets/Jobs/Scheduler preparados | Despliegue real NO ejecutado; autorización pendiente |
+| RNF-32 | Secrets runtime, ejemplos sin valores, guards production y configuración por entorno | Versiones reales de secretos deben provisionarse después |
+| RNF-33 | MySQL compartido, locks/cuotas entre procesos, escalado acotado y presupuesto SQL | Capacidad cloud deberá medirse en staging |
+
+Trazabilidad técnica: Dockerfile/compose → DeploymentConfiguration/TrustDeploymentProxies/cola/cache → DeploymentConfigurationTest/DeploymentSharedStorageTest + scripts/docker → [informe Fase 14](PHASE_14_DEPLOYMENT_PREPARATION.md).

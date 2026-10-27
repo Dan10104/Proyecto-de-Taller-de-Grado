@@ -223,3 +223,7 @@ RF25 y CU30 cuentan con implementación; con esta entrega queda implementado el 
 Rama autorizada: feature/phase-12.6-activity-audit; base main/origin/main ec3a064542e85e742c68cd9fca8a042c1778756e. Implementación y pruebas en b2c3e76 (feat: implement transactional activity audit and CU30). La documentación reúne los resultados aprobados en un commit separado. Publicación de la rama e integración mediante fast-forward, sin force push; los hashes definitivos y la igualdad de main/origin/main se confirman en el informe de cierre después de ejecutar y verificar esas operaciones.
 
 Documentación de cierre: este informe nuevo y 21 documentos actualizados (README, diez documentos vinculantes y diez informes funcionales). Trazabilidad RF25 → CU30 → registros_actividad → recorder/productores → listado/detalle → pruebas T-A01–T-A40. Cero bloqueantes de esta entrega; Fase 13 no iniciada.
+
+## Validación de infraestructura — Fase 14
+
+CU30 conserva permiso exclusivo, filtros/consulta y catálogo de 56 acciones. Smoke de bitácora autenticada Linux y auditoría exacta de dos exportaciones; no nuevos eventos de negocio por deployment. Backup/restore contempla actividad/evidencias y sesiones revocadas; no reducción de retención académica. [Evidencia y límites](PHASE_14_DEPLOYMENT_PREPARATION.md).

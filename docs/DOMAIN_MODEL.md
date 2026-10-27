@@ -281,3 +281,7 @@ Para roles/catálogos/sensores/QR/bloqueos/políticas sin FK propia se usa refer
 ## Implementación RF25/CU30 — Fase 12.6
 
 RegistroActividad conserva trece campos, responsable OR, contexto FK e inmutabilidad. 56 acciones en ActivityAction; 38 nuevas no críticas, sin nuevas operaciones de dominio. Noop/transición efectiva y precedencia AC4/AC12; nombres actuales no snapshot. CU30 consulta individual; RF23 conserva agregado y CU29 no obtiene actividad. [Implementación, evidencia y límites](ACTIVITY_AUDIT_IMPLEMENTATION.md).
+
+## Validación de infraestructura — Fase 14
+
+No entidades, enums o relaciones académicas nuevas. sessions/cache/cache_locks/jobs pertenecen al framework, no al modelo de dominio; sesiones_acceso mantiene su semántica de seguridad. Infraestructura no añade RF/CU ni cambia reglas operativas. [Evidencia y límites](PHASE_14_DEPLOYMENT_PREPARATION.md).

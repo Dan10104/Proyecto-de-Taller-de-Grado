@@ -1,6 +1,8 @@
 # ESPACIO-U
 
-**Estado vigente — Fase 13 completada y validada (2026-10-26).** QA integral de CU01–CU30 y RF1–RF25 web; RF26 móvil diferido. [Informe de seguridad, rendimiento y pruebas](docs/PHASE_13_SYSTEM_VALIDATION.md) y [matriz final por CU](docs/FINAL_USE_CASE_VALIDATION.md). Los estados de fases anteriores que siguen son históricos. OpenAI/Sepolia pendientes independientes; excepción dev Hardhat/Zod explícita. Fase 14 NO iniciada.
+**Estado vigente — Fase 14: Docker validado y despliegue Google Cloud preparado (2026-10-26).** Imagen PHP/Apache productiva, Node mínimo, MySQL aislado y dos réplicas verificadas. 1.095 tests / 13.046 assertions; 31 tablas académicas intactas más cuatro tablas técnicas Laravel. **Ningún recurso cloud creado ni deployment ejecutado.** [Informe y límites](docs/PHASE_14_DEPLOYMENT_PREPARATION.md). OpenAI/Sepolia siguen pendientes independientes; cinco altas dev Hardhat/Zod quedan fuera de la imagen.
+
+**Cierre histórico — Fase 13 completada y validada (2026-10-26).** QA integral de CU01–CU30 y RF1–RF25 web; RF26 móvil diferido. [Informe de seguridad, rendimiento y pruebas](docs/PHASE_13_SYSTEM_VALIDATION.md) y [matriz final por CU](docs/FINAL_USE_CASE_VALIDATION.md). Los estados de fases anteriores que siguen son históricos. OpenAI/Sepolia pendientes independientes; excepción dev Hardhat/Zod explícita. Fase 14 NO iniciada.
 
 **Cierre histórico — Fase 12.6 — RF25/CU30 implementados y validados localmente (2026-10-26).** [Registro de actividad y bitácora](docs/ACTIVITY_AUDIT_IMPLEMENTATION.md): 56 acciones, recorder transaccional, permiso exclusivo de Administrador y consulta individual. Sin nuevas tablas/dependencias. Fase 13 NO iniciada; smokes OpenAI/Sepolia pendientes independientes. Los cierres siguientes conservan su alcance histórico.
 
@@ -44,6 +46,12 @@ php artisan serve --host=127.0.0.1 --port=8000
 Abrir http://127.0.0.1:8000. Se muestra el login institucional. El administrador local ya fue creado; sus credenciales permanecen únicamente en `.env` privado. No ejecutar de nuevo el bootstrap ni publicar ese archivo. Para editar con Vite, activar el mismo entorno en una segunda terminal y ejecutar `npm run dev`; Laravel sigue ejecutándose en la primera. Detener los servidores con Ctrl+C y MySQL con `.\scripts\mysql-dev.ps1 -Action Stop`.
 
 Para preparar un entorno sin dependencias instaladas, consultar primero [DEVELOPMENT_SETUP.md](docs/DEVELOPMENT_SETUP.md). Allí se explican `composer install`, `npm ci`, `.env`, herramientas locales y creación segura de MySQL. En desarrollo se usan migraciones incrementales; la limpieza destructiva se permite exclusivamente en testing protegido.
+
+## Docker y despliegue preparado
+
+[Guía Docker local](docs/DOCKER_DEPLOYMENT.md): build multi-stage, `.env.docker` privado, MySQL sin puerto host y web en 127.0.0.1:8088/8089. Desarrollo tradicional en 8000 sigue disponible. No usar `artisan serve` en producción.
+
+[Arquitectura Cloud Run/SQL](docs/DEPLOYMENT_ARCHITECTURE.md), [checklist de autorización y despliegue](docs/DEPLOYMENT_CHECKLIST.md), [respaldo/restauración/rollback](docs/DEPLOYMENT_RECOVERY.md) y [plantillas GCP](deploy/gcp/README.md). `render.py` genera archivos localmente y `plan.py` solo imprime comandos; no ejecuta operaciones cloud. Aprovisionamiento, secretos reales, push de imagen y deployment requieren autorización posterior expresa.
 
 ## Comprobar seguridad, espacios y disponibilidad
 
