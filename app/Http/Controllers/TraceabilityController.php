@@ -60,7 +60,7 @@ final class TraceabilityController extends Controller
             abort_unless($evidencia->fresh()->estado->value === 'PENDIENTE', 409, 'La evidencia ya está registrada.');
             DB::afterCommit(function () use ($evidencia) {
                 Cache::forget('traceability:retry:'.$evidencia->id);
-                RegisterTraceabilityEvidence::dispatch($evidencia->id)->onConnection('deferred');
+                RegisterTraceabilityEvidence::dispatch($evidencia->id)->onConnection(config('queue.effects_connection'));
             });
         });
 

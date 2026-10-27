@@ -34,7 +34,7 @@ final class CriticalActivityRecorder
         DB::afterCommit(static function () use ($id) {
             try {
                 $evidence = app(LocalEvidenceService::class)->ensure($id);
-                RegisterTraceabilityEvidence::dispatch($evidence->id)->onConnection('deferred');
+                RegisterTraceabilityEvidence::dispatch($evidence->id)->onConnection(config('queue.effects_connection'));
             } catch (\Throwable) {
                 // The durable activity is the recovery cursor. Do not undo a committed operation.
                 Log::warning('traceability.local_pending', ['activity_id' => $id]);

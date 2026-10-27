@@ -62,7 +62,7 @@ return [
 
     'files' => env('APP_ENV') === 'testing' ? base_path('.local/testing/sessions') : storage_path('framework/sessions'),
     'block' => true,
-    'block_store' => env('CACHE_STORE', 'file'),
+    'block_store' => env('SESSION_BLOCK_STORE', env('CACHE_STORE', 'file')),
     'block_lock_seconds' => 120,
     'block_wait_seconds' => 15,
 
@@ -173,7 +173,7 @@ return [
     |
     */
 
-    'secure' => ! in_array(env('APP_ENV', 'production'), ['local', 'testing'], true) || (bool) env('SESSION_SECURE_COOKIE', false),
+    'secure' => (bool) env('SESSION_SECURE_COOKIE', ! in_array(env('APP_ENV', 'production'), ['local', 'testing'], true)),
 
     /*
     |--------------------------------------------------------------------------

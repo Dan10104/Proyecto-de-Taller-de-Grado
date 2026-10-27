@@ -43,8 +43,8 @@ class ReleaseSchemaTest extends ReleaseTestCase
                 $this->assertSame(['PRIMARY' => 'id', 'idx_eval_reserva_fecha' => 'reserva_id,fecha_hora', 'idx_eval_politica' => 'politica_id'], ['PRIMARY' => $map['PRIMARY'], 'idx_eval_reserva_fecha' => $map['idx_eval_reserva_fecha'], 'idx_eval_politica' => $map['idx_eval_politica']]);
             }
         }
-        $this->assertSame(31, DB::table('information_schema.TABLES')->whereRaw('TABLE_SCHEMA=DATABASE()')->where('TABLE_NAME', '!=', 'migrations')->count());
-        $this->assertSame(211, DB::table('information_schema.COLUMNS')->whereRaw('TABLE_SCHEMA=DATABASE()')->where('TABLE_NAME', '!=', 'migrations')->count());
+        $this->assertSame(31, DB::table('information_schema.TABLES')->whereRaw('TABLE_SCHEMA=DATABASE()')->whereNotIn('TABLE_NAME', ['migrations', 'sessions', 'cache', 'cache_locks', 'jobs'])->count());
+        $this->assertSame(211, DB::table('information_schema.COLUMNS')->whereRaw('TABLE_SCHEMA=DATABASE()')->whereNotIn('TABLE_NAME', ['migrations', 'sessions', 'cache', 'cache_locks', 'jobs'])->count());
     }
 
     public function test_database_constraints_and_many_to_many_relationships_preserve_history(): void
@@ -97,6 +97,8 @@ class ReleaseSchemaTest extends ReleaseTestCase
 
     public function test_only_three_new_migrations_rollback_and_reapply_on_testing(): void
     {
+        $this->artisan('migrate:rollback', ['--step' => 1, '--force' => true])->assertSuccessful(); // Phase 14 infrastructure.
+        $this->assertFalse(Schema::hasTable('sessions'));
         $this->artisan('migrate:rollback', ['--step' => 3, '--force' => true])->assertSuccessful(); // Phase 10 and Phase 9, then Phase 8.
         $this->assertFalse(Schema::hasTable('notificaciones'));
         $this->artisan('migrate:rollback', ['--step' => 3, '--force' => true])->assertSuccessful();

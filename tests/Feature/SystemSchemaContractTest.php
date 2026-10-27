@@ -48,7 +48,7 @@ class SystemSchemaContractTest extends SecurityTestCase
                 $expectedForeign[$table.'.'.$column] = [$parent, $key, $delete, in_array($table.'.'.$column, $restrict, true) ? 'RESTRICT' : 'CASCADE'];
             }
         }
-        $actualTables = DB::table('information_schema.TABLES')->whereRaw('TABLE_SCHEMA=DATABASE()')->where('TABLE_NAME', '<>', 'migrations')->pluck('TABLE_NAME')->all();
+        $actualTables = DB::table('information_schema.TABLES')->whereRaw('TABLE_SCHEMA=DATABASE()')->whereNotIn('TABLE_NAME', ['migrations', 'sessions', 'cache', 'cache_locks', 'jobs'])->pluck('TABLE_NAME')->all();
         $this->assertCount(31, $tables);
         $this->assertSame(211, $columnCount);
         $this->assertEqualsCanonicalizing($tables, $actualTables);

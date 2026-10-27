@@ -2,6 +2,7 @@
 .env
 .env.*
 !.env.example
+!.env.docker.example
 /vendor/
 /node_modules/
 /blockchain/node_modules/
@@ -71,3 +72,7 @@ Thumbs.db
 /_ide_helper.php
 /public/fonts-manifest.dev.json
 /storage/pail/
+
+# Local Python bytecode from deployment tooling
+__pycache__/
+*.py[cod]
