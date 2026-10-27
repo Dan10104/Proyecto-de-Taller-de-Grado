@@ -17,7 +17,7 @@ function requestUrl(e){return '/prestamos/crear?'+new URLSearchParams({equipamie
 </script>
 <template>
  <AppLayout :title="disponibilidad ? 'Disponibilidad de equipos' : 'Equipamiento tecnológico'">
-  <div class="page-heading"><div><span class="eyebrow">RECURSOS TECNOLÓGICOS</span><h1>{{ disponibilidad ? 'Encuentre un equipo disponible' : 'Equipamiento tecnológico' }}</h1><p>{{ disponibilidad ? 'Consulte un periodo antes de preparar su solicitud de préstamo.' : 'Consulte el inventario, su ubicación base y su estado operativo.' }}</p></div>
+  <div class="page-heading"><div><h1>{{ disponibilidad ? 'Encuentre un equipo disponible' : 'Equipamiento tecnológico' }}</h1><p>{{ disponibilidad ? 'Consulte un periodo antes de preparar su solicitud de préstamo.' : 'Consulte el inventario, su ubicación base y su estado operativo.' }}</p></div>
    <div class="button-group"><Link v-if="can('equipamientos.gestionar')" href="/equipamientos/tipos" class="btn btn-secondary">Tipos de equipo</Link><Link v-if="can('equipamientos.gestionar')" href="/equipamientos/crear" class="btn btn-primary">Registrar equipo</Link></div>
   </div>
   <nav class="catalog-tabs" aria-label="Consulta de equipamiento"><Link href="/equipamientos" :class="{active:!disponibilidad}">Inventario</Link><Link href="/equipamientos/disponibilidad" :class="{active:disponibilidad}">Disponibilidad por periodo</Link></nav>

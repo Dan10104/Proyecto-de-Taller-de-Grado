@@ -16,7 +16,7 @@ const {can}=useAccess();
 </script>
 <template>
  <AppLayout title="Detalle de préstamo" section="Préstamos">
-  <div class="page-heading"><div><span class="eyebrow">PRÉSTAMO DE EQUIPAMIENTO</span><h1>{{prestamo.equipamiento.nombre}}</h1><p class="reservation-code">{{prestamo.codigo}}</p></div><div class="button-group"><Link v-if="can('qr.gestionar') && can('prestamos.ver_administrativos')" :href="'/qr/prestamo/'+prestamo.id" class="btn btn-secondary">Gestionar QR</Link><OperationalState :value="prestamo.estado"/><Link href="/prestamos" class="btn btn-secondary">Volver a préstamos</Link></div></div>
+  <div class="page-heading"><div><h1>{{prestamo.equipamiento.nombre}}</h1><p class="reservation-code">{{prestamo.codigo}}</p></div><div class="button-group"><Link v-if="can('qr.gestionar') && can('prestamos.ver_administrativos')" :href="'/qr/prestamo/'+prestamo.id" class="btn btn-secondary">Gestionar QR</Link><OperationalState :value="prestamo.estado"/><Link href="/prestamos" class="btn btn-secondary">Volver a préstamos</Link></div></div>
   <p v-if="prestamo.vencido" class="alert">{{prestamo.revision_pendiente?'El fin previsto ya pasó. La recepción está registrada y falta confirmar su revisión.':'El préstamo está vencido y continúa pendiente de devolución.'}}</p>
   <section class="panel detail-panel"><h2>Solicitud y equipo</h2><dl class="detail-grid">
    <div><dt>Equipo</dt><dd>{{prestamo.equipamiento.codigo}} · {{prestamo.equipamiento.nombre}}</dd></div><div><dt>Tipo y ubicación base</dt><dd>{{prestamo.equipamiento.tipo}} · {{prestamo.equipamiento.ubicacion}}</dd></div>

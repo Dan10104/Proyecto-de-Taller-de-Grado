@@ -21,7 +21,7 @@ function clear() { router.get('/reservas', { alcance: props.alcance }); }
 <template>
   <AppLayout title="Reservas" section="Espacios académicos">
     <div class="page-heading">
-      <div><span class="eyebrow">SOLICITUDES Y SEGUIMIENTO</span><h1>Reservas de espacios</h1><p>{{ alcance === 'propias' ? 'Consulte sus solicitudes y el estado de cada reserva.' : 'Revise las solicitudes y gestione las reservas autorizadas.' }}</p></div>
+      <div><h1>Reservas de espacios</h1><p>{{ alcance === 'propias' ? 'Consulte sus solicitudes y el estado de cada reserva.' : 'Revise las solicitudes y gestione las reservas autorizadas.' }}</p></div>
       <Link v-if="can('reservas.solicitar') && can('espacios.ver')" href="/disponibilidad" class="btn btn-primary">Solicitar reserva</Link>
     </div>
     <nav class="catalog-tabs" aria-label="Alcance de reservas">

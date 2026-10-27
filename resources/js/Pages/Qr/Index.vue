@@ -11,7 +11,7 @@ function search(){router.get('/qr',filters);}
 </script>
 <template>
  <AppLayout title="Códigos QR" section="QR">
-  <div class="page-heading"><div><span class="eyebrow">IDENTIFICACIÓN DE RECURSOS</span><h1>Códigos QR</h1><p>Seleccione el objetivo para emitir, rotar o desactivar su código.</p></div></div>
+  <div class="page-heading"><div><h1>Códigos QR</h1><p>Seleccione el objetivo para emitir, rotar o desactivar su código.</p></div></div>
   <form class="panel form-panel" @submit.prevent="search"><div class="form-grid">
    <div class="field"><label for="qr-tipo">Objetivo del código</label><select id="qr-tipo" v-model="filters.tipo"><option value="recurso">Recurso físico · espacio o equipo</option><option v-if="can('reservas.ver_administrativas')" value="reserva">Reserva específica</option><option v-if="can('prestamos.ver_administrativos')" value="prestamo">Préstamo específico</option></select></div>
    <InputField id="qr-search" label="Buscar por código o nombre del recurso" v-model="filters.q" maxlength="120"/>

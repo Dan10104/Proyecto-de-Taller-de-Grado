@@ -80,7 +80,7 @@ onUnmounted(() => {
 
 <template>
   <AppLayout title="Asistente">
-    <div class="page-heading assistant-heading"><div><span class="eyebrow">ORIENTACIÓN DE LA PLATAFORMA</span><h1>Asistente</h1><p>Encuentra el procedimiento y el módulo que necesitas.</p></div><span class="assistant-tag"><Icon name="shield"/>Solo orientación</span></div>
+    <div class="page-heading assistant-heading"><div><h1>Asistente</h1><p>Encuentra el procedimiento y el módulo que necesitas.</p></div><span class="assistant-tag"><Icon name="shield"/>Solo orientación</span></div>
     <div class="assistant-layout">
       <section class="panel assistant-conversation" aria-label="Asistente de ESPACIO-U">
         <div class="assistant-toolbar"><div><strong>Tu consulta, paso a paso</strong><small>Historial temporal de esta página</small></div><button type="button" class="btn btn-secondary" @click="clear(true)" :disabled="!messages.length && !question && !error">Limpiar</button></div>
@@ -98,7 +98,7 @@ onUnmounted(() => {
           <p class="assistant-privacy">El asistente brinda orientación. Verifica estados y operaciones en los módulos oficiales.</p>
         </form>
       </section>
-      <aside class="assistant-help" aria-label="Alcance del asistente"><div class="panel"><span class="eyebrow">GUÍA PARA TU CONSULTA</span><h2>Orientación según tus permisos</h2><ul><li>Encuentra dónde realizar una operación.</li><li>Consulta requisitos y significado de estados.</li><li>Abre el módulo autorizado desde la respuesta.</li></ul></div><div class="assistant-memory"><Icon name="shield"/><p>La conversación permanece solo en esta página. Al salir o recargar, el historial se pierde.</p></div></aside>
+      <aside class="assistant-help" aria-label="Alcance del asistente"><div class="panel"><h2>Orientación según tus permisos</h2><ul><li>Encuentra dónde realizar una operación.</li><li>Consulta requisitos y significado de estados.</li><li>Abre el módulo autorizado desde la respuesta.</li></ul></div><div class="assistant-memory"><Icon name="shield"/><p>La conversación permanece solo en esta página. Al salir o recargar, el historial se pierde.</p></div></aside>
     </div>
   </AppLayout>
 </template>

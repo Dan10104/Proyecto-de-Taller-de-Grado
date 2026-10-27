@@ -45,50 +45,61 @@ onUnmounted(() => document.removeEventListener('keydown', keydown));
   <div v-else class="app-shell">
     <a class="skip-link" href="#main">Ir al contenido</a>
     <button v-if="drawer" class="drawer-backdrop" aria-label="Cerrar menú" @click="drawer=false"></button>
-    <aside class="sidebar" :class="{'sidebar-open':drawer}">
+    <aside id="main-navigation" class="sidebar" :class="{'sidebar-open':drawer}">
       <Brand/>
-      <p class="nav-label">PLATAFORMA</p>
       <nav aria-label="Navegación principal">
-        <Link href="/inicio" :class="{active:page.url==='/inicio'}" @click="drawer=false">
+        <div class="nav-group">
+          <p class="nav-label">Mi espacio</p>
+          <Link href="/inicio" :class="{active:page.url==='/inicio'}" @click="drawer=false">
           <Icon name="home"/>
           Inicio
         </Link>
-        <Link v-if="can('chatbot.consultar')" href="/asistente" :class="{active:page.url.startsWith('/asistente')}" @click="drawer=false"><Icon name="search"/>Asistente</Link>
-        <Link v-if="can('dashboard.ver')" href="/dashboard" :class="{active:page.url.startsWith('/dashboard')}" @click="drawer=false"><Icon name="home"/>Dashboard</Link>
-        <Link v-if="can('actividad.ver')" href="/actividad" :class="{active:page.url.startsWith('/actividad')}" @click="drawer=false"><Icon name="search"/>Bitácora</Link>
-        <Link v-if="can('reportes.ver')" href="/reportes" :class="{active:page.url.startsWith('/reportes')}" @click="drawer=false"><Icon name="search"/>Reportes</Link>
-        <Link v-if="can('notificaciones.ver_propias')" href="/notificaciones" :class="{active:page.url.startsWith('/notificaciones')}" @click="drawer=false"><Icon name="bell"/>Notificaciones</Link>
-        <Link v-if="can('espacios.ver')" href="/disponibilidad" :class="{active:page.url.startsWith('/disponibilidad')}" @click="drawer=false">
+          <Link v-if="can('dashboard.ver')" href="/dashboard" :class="{active:page.url.startsWith('/dashboard')}" @click="drawer=false"><Icon name="chart"/>Dashboard</Link>
+          <Link v-if="can('notificaciones.ver_propias')" href="/notificaciones" :class="{active:page.url.startsWith('/notificaciones')}" @click="drawer=false"><Icon name="bell"/>Notificaciones</Link>
+          <Link v-if="can('chatbot.consultar')" href="/asistente" :class="{active:page.url.startsWith('/asistente')}" @click="drawer=false"><Icon name="chat"/>Asistente</Link>
+        </div>
+        <div class="nav-group">
+          <p class="nav-label">Gestión académica</p>
+          <Link v-if="can('espacios.ver')" href="/disponibilidad" :class="{active:page.url.startsWith('/disponibilidad')}" @click="drawer=false">
           <Icon name="search"/>
           Disponibilidad
         </Link>
-        <Link v-if="can('espacios.ver')" href="/espacios" :class="{active:page.url.startsWith('/espacios')}" @click="drawer=false">
+          <Link v-if="can('espacios.ver')" href="/espacios" :class="{active:page.url.startsWith('/espacios')}" @click="drawer=false">
           <Icon name="building"/>
           Espacios académicos
         </Link>
-        <Link v-if="can('reservas.ver_propias') || can('reservas.ver_administrativas')" href="/reservas" :class="{active:page.url.startsWith('/reservas')}" @click="drawer=false">
-          <Icon name="building"/>Reservas
+          <Link v-if="can('reservas.ver_propias') || can('reservas.ver_administrativas')" href="/reservas" :class="{active:page.url.startsWith('/reservas')}" @click="drawer=false">
+          <Icon name="calendar"/>Reservas
         </Link>
-        <Link v-if="can('equipamientos.ver')" href="/equipamientos" :class="{active:page.url.startsWith('/equipamientos')}" @click="drawer=false"><Icon name="building"/>Equipamiento</Link>
-        <Link v-if="can('prestamos.ver_propios') || can('prestamos.ver_administrativos')" href="/prestamos" :class="{active:page.url.startsWith('/prestamos')}" @click="drawer=false"><Icon name="users"/>Préstamos</Link>
-        <Link v-if="can('incidencias.ver')" href="/incidencias" :class="{active:page.url.startsWith('/incidencias')}" @click="drawer=false"><Icon name="shield"/>Incidencias</Link>
-        <Link v-if="can('qr.gestionar')" href="/qr" :class="{active:page.url.startsWith('/qr')}" @click="drawer=false"><Icon name="shield"/>Códigos QR</Link>
-        <Link v-if="can('iot.sensores.ver')" href="/iot/sensores" :class="{active:page.url.startsWith('/iot/sensores')}" @click="drawer=false"><Icon name="shield"/>Sensores IoT</Link>
-        <Link v-if="can('iot.monitoreo.ver')" href="/iot/monitoreo" :class="{active:page.url.startsWith('/iot/monitoreo')}" @click="drawer=false"><Icon name="search"/>Monitoreo de ocupación</Link>
-        <Link v-if="can('liberacion.politicas.ver') || can('liberacion.politicas.gestionar')" :href="can('liberacion.politicas.ver') ? '/liberacion/politicas' : '/liberacion/asignaciones'" :class="{active:page.url.startsWith('/liberacion/politicas') || page.url.startsWith('/liberacion/asignaciones')}" @click="drawer=false"><Icon name="shield"/>Políticas de liberación</Link>
-        <Link v-if="can('liberacion.evaluaciones.ver_administrativas') || can('liberacion.evaluaciones.ver_propias')" href="/liberacion/evaluaciones" :class="{active:page.url.startsWith('/liberacion/evaluaciones')}" @click="drawer=false"><Icon name="search"/>Evaluaciones de reservas</Link>
-        <Link v-if="can('usuarios.ver')" href="/usuarios" :class="{active:page.url.startsWith('/usuarios')}" @click="drawer=false">
+          <Link v-if="can('equipamientos.ver')" href="/equipamientos" :class="{active:page.url.startsWith('/equipamientos')}" @click="drawer=false"><Icon name="monitor"/>Equipamiento</Link>
+          <Link v-if="can('prestamos.ver_propios') || can('prestamos.ver_administrativos')" href="/prestamos" :class="{active:page.url.startsWith('/prestamos')}" @click="drawer=false"><Icon name="exchange"/>Préstamos</Link>
+          <Link v-if="can('incidencias.ver')" href="/incidencias" :class="{active:page.url.startsWith('/incidencias')}" @click="drawer=false"><Icon name="tool"/>Incidencias</Link>
+        </div>
+        <div class="nav-group">
+          <p class="nav-label">Monitoreo y evidencia</p>
+          <Link v-if="can('iot.monitoreo.ver')" href="/iot/monitoreo" :class="{active:page.url.startsWith('/iot/monitoreo')}" @click="drawer=false"><Icon name="signal"/>Monitoreo de ocupación</Link>
+          <Link v-if="can('iot.sensores.ver')" href="/iot/sensores" :class="{active:page.url.startsWith('/iot/sensores')}" @click="drawer=false"><Icon name="sensor"/>Sensores IoT</Link>
+          <Link v-if="can('trazabilidad.evidencias.ver')" href="/trazabilidad" :class="{active:page.url.startsWith('/trazabilidad')}" @click="drawer=false">
+          <Icon name="network"/>
+          Evidencias de trazabilidad
+        </Link>
+          <Link v-if="can('qr.gestionar')" href="/qr" :class="{active:page.url.startsWith('/qr')}" @click="drawer=false"><Icon name="qr"/>Códigos QR</Link>
+          <Link v-if="can('liberacion.politicas.ver') || can('liberacion.politicas.gestionar')" :href="can('liberacion.politicas.ver') ? '/liberacion/politicas' : '/liberacion/asignaciones'" :class="{active:page.url.startsWith('/liberacion/politicas') || page.url.startsWith('/liberacion/asignaciones')}" @click="drawer=false"><Icon name="clock"/>Políticas de liberación</Link>
+          <Link v-if="can('liberacion.evaluaciones.ver_administrativas') || can('liberacion.evaluaciones.ver_propias')" href="/liberacion/evaluaciones" :class="{active:page.url.startsWith('/liberacion/evaluaciones')}" @click="drawer=false"><Icon name="checklist"/>Evaluaciones de reservas</Link>
+        </div>
+        <div class="nav-group">
+          <p class="nav-label">Administración</p>
+          <Link v-if="can('reportes.ver')" href="/reportes" :class="{active:page.url.startsWith('/reportes')}" @click="drawer=false"><Icon name="report"/>Reportes</Link>
+          <Link v-if="can('actividad.ver')" href="/actividad" :class="{active:page.url.startsWith('/actividad')}" @click="drawer=false"><Icon name="activity"/>Bitácora</Link>
+          <Link v-if="can('usuarios.ver')" href="/usuarios" :class="{active:page.url.startsWith('/usuarios')}" @click="drawer=false">
           <Icon name="users"/>
           Usuarios
         </Link>
-        <Link v-if="can('trazabilidad.evidencias.ver')" href="/trazabilidad" :class="{active:page.url.startsWith('/trazabilidad')}" @click="drawer=false">
-          <Icon name="shield"/>
-          Evidencias de trazabilidad
-        </Link>
-        <Link v-if="can('roles.ver')" href="/roles" :class="{active:page.url.startsWith('/roles')||page.url.startsWith('/permisos')}" @click="drawer=false">
+          <Link v-if="can('roles.ver')" href="/roles" :class="{active:page.url.startsWith('/roles')||page.url.startsWith('/permisos')}" @click="drawer=false">
           <Icon name="shield"/>
           Roles y permisos
         </Link>
+        </div>
       </nav>
       <div class="sidebar-bottom">
         <span class="institution-tag">FICCT</span>
@@ -104,10 +115,10 @@ onUnmounted(() => document.removeEventListener('keydown', keydown));
     <div class="app-body">
       <header class="app-header">
         <div class="header-location">
-          <button class="menu-button" aria-label="Abrir menú" :aria-expanded="drawer" @click="drawer=!drawer">
+          <button class="menu-button" aria-label="Abrir menú" aria-controls="main-navigation" :aria-expanded="drawer" @click="drawer=!drawer">
             <Icon name="menu"/>
           </button>
-          <span>Plataforma de gestión</span>
+          <span class="header-title">{{ title }}</span>
         </div>
         <div class="account">
           <Link v-if="can('notificaciones.ver_propias')" href="/notificaciones" class="notification-header" :aria-label="`Notificaciones: ${auth.no_leidas} no leídas`"><Icon name="bell"/><span class="notification-badge">{{ auth.no_leidas > 99 ? '99+' : auth.no_leidas }}</span></Link>

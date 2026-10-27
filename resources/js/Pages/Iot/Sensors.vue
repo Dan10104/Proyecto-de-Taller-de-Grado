@@ -11,7 +11,7 @@ function search() { filters.get('/iot/sensores', { preserveState: true }); }
 </script>
 <template>
   <AppLayout title="Sensores IoT" section="IoT">
-    <div class="page-heading"><div><span class="eyebrow">DISPOSITIVOS Y COMUNICACIÓN</span><h1>Sensores IoT</h1><p>Administre la asociación de cada dispositivo y consulte su última comunicación.</p></div><Link v-if="can('iot.sensores.gestionar')" href="/iot/sensores/crear" class="btn btn-primary">Registrar sensor</Link></div>
+    <div class="page-heading"><div><h1>Sensores IoT</h1><p>Administre la asociación de cada dispositivo y consulte su última comunicación.</p></div><Link v-if="can('iot.sensores.gestionar')" href="/iot/sensores/crear" class="btn btn-primary">Registrar sensor</Link></div>
     <form class="panel form-panel" @submit.prevent="search"><div class="form-grid">
       <InputField id="iot-search" label="Identificador o tipo" v-model="filters.q" maxlength="120"/>
       <InputField id="iot-state" label="Estado" v-model="filters.estado" :options="[{value:'HABILITADO',label:'Habilitado'},{value:'DESHABILITADO',label:'Deshabilitado'}]" placeholder="Todos"/>

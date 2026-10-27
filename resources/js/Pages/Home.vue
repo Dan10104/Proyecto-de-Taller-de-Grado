@@ -11,7 +11,7 @@ const { auth, can } = useAccess();
   <AppLayout title="Inicio">
     <section class="welcome-panel">
       <div>
-        <span class="eyebrow">SU ESPACIO DE TRABAJO</span>
+
         <h1>Bienvenido, {{ auth?.usuario.nombres }}.</h1>
         <p>Desde aquí puede acceder a las funciones habilitadas para su cuenta.</p>
         <div class="role-chips">

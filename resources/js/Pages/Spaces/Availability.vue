@@ -17,7 +17,7 @@ function requestUrl(space) {
   <AppLayout title="Disponibilidad de espacios">
     <section class="availability-heading">
       <div>
-        <span class="eyebrow">ENCUENTRE EL ESPACIO ADECUADO</span>
+
         <h1>Disponibilidad de espacios</h1>
         <p>Consulte ambientes por horario, ubicación y características.</p>
       </div>

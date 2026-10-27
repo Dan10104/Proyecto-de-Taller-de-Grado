@@ -19,7 +19,7 @@ function deactivate(id) { router.patch(`/espacios/${props.espacio.recurso_id}/bl
   <AppLayout :title="espacio.recurso.nombre" section="Espacios">
     <div class="page-heading">
       <div>
-        <span class="eyebrow">{{ espacio.recurso.codigo }}</span>
+        <span class="section-context">{{ espacio.recurso.codigo }}</span>
         <h1>{{ espacio.recurso.nombre }}</h1>
         <p>{{ espacio.tipo.nombre }} · {{ espacio.piso.nombre }}</p>
       </div>
