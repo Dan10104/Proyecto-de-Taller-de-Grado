@@ -1,0 +1,232 @@
+{
+  "apiVersion": "serving.knative.dev/v1",
+  "kind": "Service",
+  "metadata": {
+    "name": "espacio-u-web",
+    "labels": {
+      "cloud.googleapis.com/location": "southamerica-west1"
+    },
+    "annotations": {
+      "run.googleapis.com/ingress": "all"
+    }
+  },
+  "spec": {
+    "template": {
+      "metadata": {
+        "labels": {
+          "commit": "REPLACE_40_HEX_GIT_SHA"
+        },
+        "annotations": {
+          "run.googleapis.com/cloudsql-instances": "REPLACE_PROJECT_ID:southamerica-west1:espacio-u-mysql",
+          "run.googleapis.com/execution-environment": "gen2",
+          "autoscaling.knative.dev/minScale": "0",
+          "autoscaling.knative.dev/maxScale": "3",
+          "run.googleapis.com/cpu-throttling": "false"
+        }
+      },
+      "spec": {
+        "serviceAccountName": "espacio-u-web@REPLACE_PROJECT_ID.iam.gserviceaccount.com",
+        "containerConcurrency": 20,
+        "timeoutSeconds": 60,
+        "containers": [
+          {
+            "image": "southamerica-west1-docker.pkg.dev/REPLACE_PROJECT_ID/espacio-u/espacio-u@sha256:REPLACE_64_HEX_IMAGE_DIGEST",
+            "ports": [
+              {
+                "containerPort": 8080
+              }
+            ],
+            "env": [
+              {
+                "name": "APP_NAME",
+                "value": "ESPACIO-U"
+              },
+              {
+                "name": "APP_ENV",
+                "value": "production"
+              },
+              {
+                "name": "APP_DEBUG",
+                "value": "false"
+              },
+              {
+                "name": "APP_URL",
+                "value": "https://REPLACE_APPROVED_HOST"
+              },
+              {
+                "name": "APP_TIMEZONE",
+                "value": "America/La_Paz"
+              },
+              {
+                "name": "DEPLOYMENT_TARGET",
+                "value": "cloud-run"
+              },
+              {
+                "name": "DB_CONNECTION",
+                "value": "mysql"
+              },
+              {
+                "name": "DB_SOCKET",
+                "value": "/cloudsql/REPLACE_PROJECT_ID:southamerica-west1:espacio-u-mysql"
+              },
+              {
+                "name": "DB_HOST",
+                "value": "localhost"
+              },
+              {
+                "name": "DB_PORT",
+                "value": "3306"
+              },
+              {
+                "name": "DB_DATABASE",
+                "value": "espacio_u"
+              },
+              {
+                "name": "DB_USERNAME",
+                "value": "espacio_u_app"
+              },
+              {
+                "name": "DB_TIMEZONE",
+                "value": "-04:00"
+              },
+              {
+                "name": "SESSION_DRIVER",
+                "value": "database"
+              },
+              {
+                "name": "SESSION_BLOCK_STORE",
+                "value": "database"
+              },
+              {
+                "name": "SESSION_SECURE_COOKIE",
+                "value": "true"
+              },
+              {
+                "name": "SESSION_HTTP_ONLY",
+                "value": "true"
+              },
+              {
+                "name": "SESSION_SAME_SITE",
+                "value": "lax"
+              },
+              {
+                "name": "CACHE_STORE",
+                "value": "database"
+              },
+              {
+                "name": "IOT_RATE_STORE",
+                "value": "database"
+              },
+              {
+                "name": "QUEUE_CONNECTION",
+                "value": "database"
+              },
+              {
+                "name": "QUEUE_EFFECTS_CONNECTION",
+                "value": "database"
+              },
+              {
+                "name": "QUEUE_FAILED_DRIVER",
+                "value": "null"
+              },
+              {
+                "name": "DB_QUEUE_RETRY_AFTER",
+                "value": "120"
+              },
+              {
+                "name": "LOG_CHANNEL",
+                "value": "stderr"
+              },
+              {
+                "name": "LOG_EMERGENCY_PATH",
+                "value": "php://stderr"
+              },
+              {
+                "name": "LOG_LEVEL",
+                "value": "warning"
+              },
+              {
+                "name": "CHATBOT_ENABLED",
+                "value": "false"
+              },
+              {
+                "name": "BLOCKCHAIN_ENABLED",
+                "value": "false"
+              },
+              {
+                "name": "BLOCKCHAIN_NODE_BINARY",
+                "value": "/usr/local/bin/node"
+              },
+              {
+                "name": "NOTIFICATIONS_EVENTS_FROM",
+                "value": "REPLACE_LOCAL_ACTIVATION_YYYY-MM-DD_HH:MM:SS"
+              },
+              {
+                "name": "APP_KEY",
+                "valueFrom": {
+                  "secretKeyRef": {
+                    "name": "espacio-u-app-key",
+                    "key": "REPLACE_NUMERIC_VERSION"
+                  }
+                }
+              },
+              {
+                "name": "DB_PASSWORD",
+                "valueFrom": {
+                  "secretKeyRef": {
+                    "name": "espacio-u-db-password",
+                    "key": "REPLACE_NUMERIC_VERSION"
+                  }
+                }
+              },
+              {
+                "name": "IOT_MASTER_SECRET",
+                "valueFrom": {
+                  "secretKeyRef": {
+                    "name": "espacio-u-iot-master",
+                    "key": "REPLACE_NUMERIC_VERSION"
+                  }
+                }
+              }
+            ],
+            "resources": {
+              "limits": {
+                "cpu": "1",
+                "memory": "1Gi"
+              }
+            },
+            "startupProbe": {
+              "httpGet": {
+                "path": "/up",
+                "port": 8080
+              },
+              "periodSeconds": 5,
+              "timeoutSeconds": 2,
+              "failureThreshold": 24
+            },
+            "livenessProbe": {
+              "httpGet": {
+                "path": "/up",
+                "port": 8080
+              },
+              "periodSeconds": 30,
+              "timeoutSeconds": 5,
+              "failureThreshold": 3
+            }
+          }
+        ]
+      }
+    },
+    "traffic": [
+      {
+        "revisionName": "REPLACE_PREVIOUS_REVISION_OR_EMPTY_FOR_FIRST_STAGING",
+        "percent": 100
+      },
+      {
+        "latestRevision": true,
+        "percent": 0,
+        "tag": "candidate"
+      }
+    ]
+  }
+}

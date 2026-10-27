@@ -1,0 +1,42 @@
+{
+  "project_id": "REPLACE_PROJECT_ID",
+  "region": "southamerica-west1",
+  "repository": "espacio-u",
+  "git_sha": "REPLACE_40_HEX_GIT_SHA",
+  "image_digest": "REPLACE_64_HEX_IMAGE_DIGEST",
+  "app_url": "https://REPLACE_APPROVED_HOST",
+  "sql_instance": "espacio-u-mysql",
+  "database": "espacio_u",
+  "runtime_db_user": "espacio_u_app",
+  "migration_db_user": "espacio_u_migrate",
+  "notification_events_from": "REPLACE_LOCAL_ACTIVATION_YYYY-MM-DD_HH:MM:SS",
+  "previous_revision": "REPLACE_PREVIOUS_REVISION_OR_EMPTY_FOR_FIRST_STAGING",
+  "web_cpu": "1",
+  "web_memory": "1Gi",
+  "web_concurrency": 20,
+  "web_min_instances": 0,
+  "web_max_instances": 3,
+  "web_timeout_seconds": 60,
+  "secrets": {
+    "app_key": {
+      "name": "espacio-u-app-key",
+      "version": "REPLACE_NUMERIC_VERSION"
+    },
+    "database_password": {
+      "name": "espacio-u-db-password",
+      "version": "REPLACE_NUMERIC_VERSION"
+    },
+    "migration_password": {
+      "name": "espacio-u-migration-password",
+      "version": "REPLACE_NUMERIC_VERSION"
+    },
+    "iot_master_secret": {
+      "name": "espacio-u-iot-master",
+      "version": "REPLACE_NUMERIC_VERSION"
+    }
+  },
+  "optional_integrations": {
+    "chatbot_enabled": false,
+    "blockchain_enabled": false
+  }
+}
