@@ -10,6 +10,7 @@ use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\IotBoundary;
 use App\Http\Middleware\PrivateResponse;
 use App\Http\Middleware\QrPrivacy;
+use App\Http\Middleware\TrustDeploymentProxies;
 use App\Services\AccessSessionService;
 use App\Services\Chatbot\ChatbotFailure;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -18,6 +19,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Middleware\TrustProxies;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Log;
@@ -26,10 +28,12 @@ use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(web: __DIR__.'/../routes/web.php', api: __DIR__.'/../routes/api.php', commands: __DIR__.'/../routes/console.php', health: '/up')
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->remove(TrustProxies::class);
         $middleware->prepend(ChatbotBoundary::class);
         $middleware->prepend(QrPrivacy::class);
         $middleware->prepend(IotBoundary::class);
         $middleware->prepend(PrivateResponse::class);
+        $middleware->prepend(TrustDeploymentProxies::class);
         $middleware->trimStrings(except: [fn (Request $request) => $request->is('api/iot', 'api/iot/*'), 'identificador']);
         $middleware->convertEmptyStringsToNull(except: [fn (Request $request) => $request->is('api/iot', 'api/iot/*')]);
         $middleware->trimStrings(except: ['qr_token', 'pregunta']);

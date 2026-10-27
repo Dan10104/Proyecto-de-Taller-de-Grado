@@ -7,6 +7,6 @@ return [
     'rate_limit_per_minute' => (int) env('IOT_RATE_LIMIT_PER_MINUTE', 120),
     'max_body_bytes' => (int) env('IOT_MAX_BODY_BYTES', 4096),
     'origin_rate_limit_per_minute' => (int) env('IOT_ORIGIN_RATE_LIMIT_PER_MINUTE', 1200),
-    // One host, coordinated across PHP workers; a shared store is required on multiple hosts.
-    'rate_store' => 'file',
+    // Containers share the database quota; local development retains its file store.
+    'rate_store' => env('IOT_RATE_STORE', 'file'),
 ];

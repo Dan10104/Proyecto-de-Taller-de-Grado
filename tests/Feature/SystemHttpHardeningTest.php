@@ -48,7 +48,8 @@ class SystemHttpHardeningTest extends SecurityTestCase
         $this->app->instance('env', 'production');
         try {
             $this->get('http://localhost/login')->assertHeaderMissing('Strict-Transport-Security');
-            $this->get('https://localhost/login')->assertHeader('Strict-Transport-Security', 'max-age=31536000');
+            $this->get('https://localhost/login')->assertHeaderMissing('Strict-Transport-Security');
+            $this->get('https://app.example.test/login')->assertHeader('Strict-Transport-Security', 'max-age=31536000');
         } finally {
             $this->app->instance('env', 'testing');
         }

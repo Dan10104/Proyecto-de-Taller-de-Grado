@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Support\DeploymentConfiguration;
 use Closure;
 use Illuminate\Http\Request;
 
@@ -19,7 +20,7 @@ class PrivateResponse
         // Navigation/embedding protection without blocking Inertia, local Vite or camera blobs.
         // This deliberately is not a script-src policy or a substitute for output escaping.
         $response->headers->set('Content-Security-Policy', "base-uri 'self'; object-src 'none'; frame-ancestors 'none'");
-        if (app()->environment('production') && $request->isSecure()) {
+        if (app()->environment('production') && $request->isSecure() && ! app(DeploymentConfiguration::class)->isLocalHost($request->getHost())) {
             $response->headers->set('Strict-Transport-Security', 'max-age=31536000');
         }
 

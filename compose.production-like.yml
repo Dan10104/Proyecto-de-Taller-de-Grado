@@ -1,0 +1,104 @@
+name: espacio-u-production-like
+x-environment: &environment
+  APP_NAME: ESPACIO-U
+  APP_ENV: production
+  APP_DEBUG: "false"
+  APP_URL: http://127.0.0.1:8088
+  APP_KEY: ${APP_KEY:?Generate .env.docker first}
+  DEPLOYMENT_TARGET: local-container
+  DB_CONNECTION: mysql
+  DB_HOST: db
+  DB_PORT: "3306"
+  DB_DATABASE: espacio_u_container
+  DB_USERNAME: espacio_u_app
+  DB_PASSWORD: ${DB_PASSWORD:?Generate .env.docker first}
+  SESSION_DRIVER: database
+  SESSION_SECURE_COOKIE: "false"
+  SESSION_COOKIE: espacio-u-container-session
+  SESSION_BLOCK_STORE: database
+  CACHE_STORE: database
+  IOT_RATE_STORE: database
+  QUEUE_CONNECTION: database
+  QUEUE_EFFECTS_CONNECTION: database
+  QUEUE_FAILED_DRIVER: "null"
+  DB_QUEUE_RETRY_AFTER: "120"
+  LOG_CHANNEL: stderr
+  LOG_EMERGENCY_PATH: php://stderr
+  IOT_MASTER_SECRET: ${IOT_MASTER_SECRET:?Generate .env.docker first}
+  NOTIFICATIONS_EVENTS_FROM: ${NOTIFICATIONS_EVENTS_FROM:?Set the initial activation boundary}
+  CHATBOT_ENABLED: "false"
+  BLOCKCHAIN_ENABLED: "false"
+x-app: &app
+  image: espacio-u:phase14
+  build:
+    context: .
+    args:
+      GIT_SHA: ${GIT_SHA:-local-validation}
+  environment: *environment
+  init: true
+  networks: [application]
+  depends_on:
+    db:
+      condition: service_healthy
+  cpus: 1
+  mem_limit: 1g
+  security_opt: [no-new-privileges:true]
+  cap_drop: [ALL]
+  stop_grace_period: 10s
+services:
+  db:
+    image: mysql:8.4.11@sha256:0f51e63e537a1f176423fa03ef559aabe6fa4372a53160a44bc7e75da7d15364
+    environment:
+      MYSQL_DATABASE: espacio_u_container
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Generate .env.docker first}
+      DB_PASSWORD: ${DB_PASSWORD:?Generate .env.docker first}
+      DB_MIGRATION_PASSWORD: ${DB_MIGRATION_PASSWORD:?Generate .env.docker first}
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./docker/mysql-init.sh:/docker-entrypoint-initdb.d/10-espacio-u.sh:ro
+    networks: [application]
+    healthcheck:
+      test: [CMD, mysqladmin, ping, --silent]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+    mem_limit: 1g
+  web-a:
+    <<: *app
+    ports: [127.0.0.1:8088:8080]
+  web-b:
+    <<: *app
+    ports: [127.0.0.1:8089:8080]
+  migrate:
+    <<: *app
+    profiles: [operations]
+    environment:
+      <<: *environment
+      DB_USERNAME: espacio_u_migrate
+      DB_PASSWORD: ${DB_MIGRATION_PASSWORD:?Generate .env.docker first}
+    command: [php, artisan, migrate, --force, --no-interaction]
+  seed-security:
+    <<: *app
+    profiles: [operations]
+    command: [php, artisan, db:seed, --class=SecuritySeeder, --force, --no-interaction]
+  bootstrap-admin:
+    <<: *app
+    profiles: [operations]
+    environment:
+      <<: *environment
+      SEED_ADMIN_EMAIL: ${SEED_ADMIN_EMAIL:-}
+      SEED_ADMIN_PASSWORD: ${SEED_ADMIN_PASSWORD:-}
+    command: [php, artisan, security:bootstrap-admin, --from-env, --no-interaction]
+  scheduler:
+    <<: *app
+    profiles: [operations]
+    command: [php, artisan, schedule:run, --no-interaction]
+  queue:
+    <<: *app
+    profiles: [operations]
+    command: [php, artisan, queue:work, database, --stop-when-empty, --max-time=50, --max-jobs=100, --timeout=60, --tries=5, --sleep=1, --memory=128, --quiet]
+volumes:
+  mysql-data:
+networks:
+  application:
+    driver: bridge

@@ -12,7 +12,7 @@ class NotificationDispatch
     {
         DB::afterCommit(static function () use ($id) {
             try {
-                GenerateNotifications::dispatch($id)->onConnection('deferred');
+                GenerateNotifications::dispatch($id)->onConnection(config('queue.effects_connection'));
             } catch (\Throwable) {
                 Log::warning('notifications.dispatch_pending', ['activity_id' => $id]);
             }
