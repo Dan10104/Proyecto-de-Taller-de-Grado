@@ -199,3 +199,7 @@ Cambio exclusivamente documental. CU30 **NO IMPLEMENTADO**; implementación requ
 ReleasePolicyManagementService registra cinco acciones de versión/estado/asignación/retiro; reemplazo es una asignación lógica, no retiro más asignación. Conserva locks, validación y guardas de compromisos, sin actividad por no-op o política inexistente. ALERTAR/LIBERAR retienen sus hitos y scheduler:liberacion; MANTENER_POR_USO/NO_DETERMINABLE no añaden filas. Regresión dirigida comprobó que una política inexistente conserva ValidationException, sin auditoría de ID no resuelto.
 
 [Implementación RF25/CU30, pruebas y resultados de integración](ACTIVITY_AUDIT_IMPLEMENTATION.md). Los cierres de fases anteriores conservan su alcance histórico. Fase 13 no iniciada.
+
+## Validación de infraestructura — Fase 14
+
+Scheduler de ejecución única en job separado y triggers preparados cada minuto. Ocho evaluadores concurrentes entre dos réplicas produjeron una sola evaluación para la reserva sintética. Sin cambios a D-08, estados o política; locks/transacciones originales conservados. [Evidencia y límites](PHASE_14_DEPLOYMENT_PREPARATION.md).

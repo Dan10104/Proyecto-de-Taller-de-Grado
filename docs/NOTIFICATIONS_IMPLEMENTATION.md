@@ -201,3 +201,7 @@ Cambio exclusivamente documental. CU30 **NO IMPLEMENTADO**; implementación requ
 NotificationActivityRecorder delega una única inserción al ActivityRecorder, conservando los diecisiete identificadores de NotificationRuleRegistry, contexto, resultado y afterCommit. No se amplían destinatarios/reglas ni se duplican notificaciones. Las 38 nuevas acciones, sus RECHAZO/ERROR y REPORTE_EXPORTADO no notifican. Abrir/marcar avisos no produce actividad, verificado por regresión y recorrido manual con conteo antes/después. Consultar CU30 tampoco genera avisos ni actividad.
 
 [Implementación RF25/CU30, pruebas y resultados de integración](ACTIVITY_AUDIT_IMPLEMENTATION.md). Los cierres de fases anteriores conservan su alcance histórico. Fase 13 no iniciada.
+
+## Validación de infraestructura — Fase 14
+
+Queue de efectos database post-commit en contenedores y corte NOTIFICATIONS_EVENTS_FROM explícito/estable. 17 reglas, destinatarios y recuperación 24 h intactos. Dos réplicas con ocho productores simultáneos generaron una notificación por evento/destinatario. Scheduler/job separados con locks MySQL; no nueva clase de aviso. [Evidencia y límites](PHASE_14_DEPLOYMENT_PREPARATION.md).

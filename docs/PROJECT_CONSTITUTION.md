@@ -128,3 +128,7 @@ La nueva instrucción autoriza exclusivamente [Activity Audit Contract / Readine
 ## Implementación RF25/CU30 — Fase 12.6
 
 La instrucción explícita Fase 12.6 autoriza completar RF25/CU30 sobre el contrato AC cerrado. Se mantienen workspace/repositorio únicos, esquema, stack, exclusiones y autorización de publicación fast-forward. No iniciar Fase 13 ni cliente móvil; la validación de esta entrega no certifica producción ni smokes externos. [Implementación, evidencia y límites](ACTIVITY_AUDIT_IMPLEMENTATION.md).
+
+## Aplicación de la autorización Fase 14
+
+La instrucción oficial autoriza tablas framework estrictamente necesarias, sin alterar la definición académica. Se incorporan sessions/cache/cache_locks/jobs para contenedores multi-instancia; las 31 tablas/211 columnas/63 FK permanecen intactas. No nueva decisión D ni reinterpretación de CU, enums o reglas. Cloud queda preparado en archivos; creación/gasto/despliegue requieren autorización posterior expresa. [Alcance y evidencia](PHASE_14_DEPLOYMENT_PREPARATION.md).

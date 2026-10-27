@@ -206,3 +206,7 @@ Seeder incremental aplicado en la base de desarrollo espacio_u exclusivamente co
 La primera ejecución completa detectó tres expectativas anteriores del catálogo de permisos; se actualizaron al permiso nuevo manteniendo los tests. Los casos adicionales de entrada/encoding se verificaron y la ejecución final anterior corresponde al árbol corregido. No se atribuyen los resultados con fallos al cierre aprobado.
 
 Implementación y pruebas versionadas en commit `9b2aafbdbedadc2bd609d249e634f908511ef6ca`. Rama de entrega: feature/phase-12-chatbot. Integración prevista y autorizada: main por fast-forward, sin force push; hashes finales y verificación remota se entregan en el informe del chat. CU30 NO IMPLEMENTADO, móvil diferida, Sepolia pendiente independiente y ninguna fase posterior iniciada. Siguiente paso: configurar credencial/cuota local segura y ejecutar el smoke sintético separado, sin iniciar otro alcance.
+
+## Validación de infraestructura — Fase 14
+
+CHATBOT_ENABLED=false no impide health, login o negocio en imagen Linux; respuesta controlada al consultar deshabilitado. FakeProvider se inyecta solo en pruebas; no seleccionable por env ni servicio externo. OpenAI real sigue pendiente de API key/cuota. Contexto/conocimiento/CH1–CH12 permanecen intactos. [Evidencia y límites](PHASE_14_DEPLOYMENT_PREPARATION.md).

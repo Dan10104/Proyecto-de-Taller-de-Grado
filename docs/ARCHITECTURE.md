@@ -287,3 +287,9 @@ ActivityRecorder centraliza una inserción por hito; ActivityAttempt/ActivityTra
 ## Revalidación integral — Fase 13
 
 PrivateResponse se ejecuta como middleware exterior, incluidos routing, /up e IoT. Boundaries específicos mantienen prioridad. Reporter general solo clase y huella de ubicación; 500 con debug=false tiene cuerpo fijo. CORS API explícito sin orígenes de navegador. UI comparte keepDialogFocus en tres diálogos y bloquea filtros de dashboard/reportes mientras espera respuesta. Sin nueva infraestructura, tablas ni dependencias.
+
+## Contenedores e infraestructura preparada — Fase 14
+
+La instrucción posterior autoriza implementar la preparación antes diferida. Docker multi-stage PHP 8.5.12/Apache + assets Vite + Node 24.22.1 mínimo (JCS/ethers), runtime no root. Sesiones, caché, locks y efectos post-commit usan MySQL compartido; cuatro tablas framework fuera del esquema académico. El transporte local tradicional conserva deferred como default, mientras contenedores eligen database explícitamente. No nuevas reglas de negocio ni servicio Node HTTP.
+
+Destino preparado: Cloud Run web + Cloud SQL MYSQL_8_4 en southamerica-west1 configurable, Artifact Registry, secretos por identidad y jobs separados migrate/scheduler/queue. Sin daemon permanente queue/schedule en web; limpieza de reportes por instancia. `/up` mide vida del proceso, no salud SQL. [Diagrama, límites, IAM y conexiones](DEPLOYMENT_ARCHITECTURE.md); [evidencia local y pendientes](PHASE_14_DEPLOYMENT_PREPARATION.md). No nube aprovisionada ni frontend móvil.

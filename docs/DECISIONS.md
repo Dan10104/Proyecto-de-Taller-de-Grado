@@ -2610,3 +2610,11 @@ La instrucción posterior de Fase 12.6 autoriza implementar AC1–AC15; el cierr
 ## Revalidación integral — Fase 13
 
 La instrucción Fase 13 autoriza QA/correcciones sin reinterpretar D-01–D-17 ni DR/CH/AC. Los 30 CU web están implementados; RF26 sigue diferido. Modelo 31/211/63, exactamente ocho RESTRICT autorizados. No necesidad demostrada de índices ni nuevas dependencias. Correcciones de logger/cabeceras/CORS/errores, foco/contraste, filtros durante carga y etiquetas constan en el registro de defectos. OpenAI sin clave y Sepolia sin testETH siguen pendientes independientes; excepción dev Zod revisada. Fase 14 no iniciada; no nuevo expediente D.
+
+## Deployment Preparation / Readiness for Controlled Staging — Fase 14
+
+Instrucción oficial posterior a Fase 13: se implementa infraestructura autorizada sin abrir nuevo D ni cambiar contratos. PHP oficial 8.5.12/Apache, Node 24.22.1 mínimo, MySQL 8.4.11 local y objetivo Cloud SQL MYSQL_8_4. Sesiones/caché/cuota IoT compartidas en MySQL; cuatro tablas framework fuera de 31 académicas. Queue database post-commit para efectos durables, jobs acotados separados, reconciliación original. Providers externos false por defecto. Secretos solo runtime y mínimo privilegio.
+
+Cloud Run 1 CPU/1 GiB/concurrency 20/min0/max3/timeout60; Apache8 workers y presupuesto conservador SQL, misma región configurable. Cloud SQL native socket, DML/DDL separados, Secret Manager por versiones, Artifact Registry SHA/digest. Plan solo dry-run, ninguna acción cloud. Backups diarios siete retenidos/PITR siete días, restore a instancia aislada nueva y rollback de tráfico sin rollback SQL automático.
+
+Preparación local validada con 1.095 tests/13.046 assertions y Docker real de dos réplicas. **Cero bloqueantes de preparación local; deployment real pendiente de autorización, valores finales, APIs/IAM y validación staging.** No equivale a certificación de SLA, HA, restauración cloud o smokes externos. [Informe](PHASE_14_DEPLOYMENT_PREPARATION.md), [checklist obligatorio](DEPLOYMENT_CHECKLIST.md).
