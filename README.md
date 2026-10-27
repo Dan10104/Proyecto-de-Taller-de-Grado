@@ -233,3 +233,7 @@ Pruebas específicas: `php artisan test --filter=Activity`; regresión completa:
 ## Repetir QA integral
 
 Desde el entorno del workspace: `php artisan test`, `php vendor/bin/pint --test`, `npm run build` y `node --test tests/Browser/dialog-focus.test.mjs`. La suite carga .env.testing y exige espacio_u_testing mediante TestingDatabaseGuard. Nunca ejecutar migrate:fresh en desarrollo. La integración Blockchain offline `npm --prefix blockchain run test:integration` también reinicia testing: no debe coincidir con PHPUnit ni QA de navegador. Auditorías de blockchain/ desarrollo y runtime siempre separadas. [Informe Fase 13](docs/PHASE_13_SYSTEM_VALIDATION.md).
+
+## Pulido visual de presentación
+
+Navegación agrupada, estilo compartido, dashboard más compacto y paneles explicativos de IoT/Blockchain. [Auditoría, skills y validación](docs/PRESENTATION_POLISH.md) y [datos de demo aprobados y estrategia institucional](docs/PRESENTATION_DEMO_DATA.md). No requiere migraciones, seeders, nuevas dependencias ni cambios de configuración: activar el entorno oficial y ejecutar `npm run build`. El renombrado local autorizado no forma parte del despliegue ni se ejecuta al instalar. Los estados y evidencias siguen mostrando los datos reales del sistema.
