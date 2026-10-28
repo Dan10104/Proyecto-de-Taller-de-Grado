@@ -5,6 +5,7 @@ import SpaceFilters from '../../Components/SpaceFilters.vue';
 import SpaceState from '../../Components/SpaceState.vue';
 import Pagination from '../../Components/Pagination.vue';
 import Icon from '../../Components/Icon.vue';
+import SpaceGallery from '../../Components/SpaceGallery.vue';
 import { useAccess } from '../../security';
 defineProps({ espacios: Object, filtros: Object, opciones: Object });
 const { can } = useAccess();
@@ -26,12 +27,14 @@ const { can } = useAccess();
       </div>
     </div>
     <SpaceFilters :filtros="filtros" :opciones="opciones"/>
-    <section class="panel">
+    <SpaceGallery :spaces="espacios.data"/>
+    <section class="panel space-list-panel">
       <div class="panel-heading">
         <h2>Espacios registrados</h2>
         <p>El estado operativo se complementa con los bloqueos del periodo consultado.</p>
       </div>
-      <div v-if="espacios.data.length" class="table-scroll" role="region" tabindex="0" aria-label="Listado de espacios desplazable">
+      <details v-if="espacios.data.length" class="data-disclosure"><summary>Ver tabla completa y características</summary>
+      <div class="table-scroll" role="region" tabindex="0" aria-label="Listado de espacios desplazable">
         <table>
           <caption class="sr-only">Espacios académicos registrados</caption>
           <thead>
@@ -70,6 +73,7 @@ const { can } = useAccess();
           </tbody>
         </table>
       </div>
+      </details>
       <div v-else class="empty-state">
         <Icon name="building"/>
         <h3>No hay espacios que coincidan</h3>

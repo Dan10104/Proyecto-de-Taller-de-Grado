@@ -17,30 +17,17 @@ function submit() {
   <Head title="Iniciar sesión · ESPACIO-U"/>
   <div class="login-page">
     <section class="login-story">
+      <img class="login-campus-photo" :src="'/images/presentation/campus-demo.webp'" alt="Campus universitario conceptual, imagen generada de demostración." width="1536" height="1024" fetchpriority="high">
       <Brand light/>
       <div class="login-story-main">
 
         <h2>
-          Un espacio para
+          Conocimiento
           <br>
-          conectar posibilidades.
+          que conecta.
         </h2>
         <p>Gestión inteligente de espacios académicos y equipamiento tecnológico</p>
-        <div class="campus-art" aria-hidden="true">
-          <div class="campus-grid"></div>
-          <div class="campus-building building-back"></div>
-          <div class="campus-building building-front">
-            <i v-for="n in 12" :key="n"></i>
-          </div>
-          <div class="campus-label">
-            <Icon name="building"/>
-            <span>
-              FICCT
-              <br>
-              <strong>Conocimiento que conecta.</strong>
-            </span>
-          </div>
-        </div>
+        <span class="login-photo-caption">Campus conceptual · Imagen de demostración</span>
       </div>
       <footer>Facultad de Ingeniería en Ciencias de la Computación y Telecomunicaciones</footer>
     </section>
