@@ -1,7 +1,7 @@
 <script setup>
 import { Link, useForm, usePoll } from '@inertiajs/vue3';
 import AppLayout from '../../Layouts/AppLayout.vue';
-import EvidenceFlow from '../../Components/EvidenceFlow.vue';
+import IotTwin from '../../Components/IotTwin.vue';
 import InputField from '../../Components/InputField.vue';
 import FormErrors from '../../Components/FormErrors.vue';
 import Pagination from '../../Components/Pagination.vue';
@@ -17,8 +17,8 @@ function search() { filters.get('/iot/monitoreo', { preserveState: true }); }
 <template>
   <AppLayout title="Monitoreo de ocupación" section="IoT">
     <div class="page-heading"><div><h1>Monitoreo de ocupación</h1><p>Consulta: {{ consultado }} · Bolivia. Actualización cada 3 segundos.</p></div><Link v-if="can('iot.sensores.ver')" href="/iot/sensores" class="btn btn-secondary">Gestionar sensores</Link></div>
-    <EvidenceFlow kind="iot"/>
-    <p class="alert">Una lectura reciente requiere medición y recepción dentro de {{ ventana }} segundos. La comunicación reciente por sí sola no demuestra ocupación. La interpretación depende del dispositivo.</p>
+    <IotTwin :sensors="sensores.data"/>
+    <details class="compact-help"><summary>Interpretación y vigencia de las lecturas</summary><p>Una lectura reciente requiere medición y recepción dentro de {{ ventana }} segundos. La comunicación reciente por sí sola no demuestra ocupación. La interpretación depende del dispositivo.</p></details>
     <form class="panel form-panel sensor-filters" @submit.prevent="search"><FormErrors :errors="filters.errors"/><div class="form-grid">
       <InputField id="sensor-filter" label="Referencia del sensor" type="number" v-model="filters.sensor_id" min="1" :error="filters.errors.sensor_id"/>
       <InputField id="space-filter" label="Referencia del espacio" type="number" v-model="filters.espacio_id" min="1" :error="filters.errors.espacio_id"/>
