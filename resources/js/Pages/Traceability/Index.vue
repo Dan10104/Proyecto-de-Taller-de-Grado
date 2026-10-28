@@ -1,7 +1,7 @@
 <script setup>
 import { Link, useForm } from '@inertiajs/vue3';
 import AppLayout from '../../Layouts/AppLayout.vue';
-import EvidenceFlow from '../../Components/EvidenceFlow.vue';
+import TraceabilityChain from '../../Components/TraceabilityChain.vue';
 import InputField from '../../Components/InputField.vue';
 import Pagination from '../../Components/Pagination.vue';
 import { operations, verificationResults } from '../../traceability';
@@ -13,7 +13,7 @@ const options = object => Object.entries(object).map(([value, label]) => ({ valu
 <template>
   <AppLayout title="Evidencias de trazabilidad">
     <div class="page-heading"><div><h1>Evidencias de trazabilidad</h1><p>Consulte el registro de aprobaciones, cancelaciones, entregas y devoluciones confirmadas.</p></div></div>
-    <EvidenceFlow kind="blockchain"/>
+    <TraceabilityChain :entries="evidencias.data"/>
     <form class="panel space-filters" @submit.prevent="form.get('/trazabilidad')">
       <InputField id="estado" label="Registro" v-model="form.estado" placeholder="Todos" :options="options({ PENDIENTE: 'Pendiente', REGISTRADA: 'Registrada' })" :error="form.errors.estado"/>
       <InputField id="operacion" label="Operación" v-model="form.operacion" placeholder="Todas" :options="options(operations)" :error="form.errors.operacion"/>
