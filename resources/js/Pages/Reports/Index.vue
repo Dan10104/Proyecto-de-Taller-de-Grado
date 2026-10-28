@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue';
 import { router, usePage } from '@inertiajs/vue3';
 import AppLayout from '../../Layouts/AppLayout.vue';
+import Icon from '../../Components/Icon.vue';
 import FormErrors from '../../Components/FormErrors.vue';
 import ReportPeriodFields from '../../Components/ReportPeriodFields.vue';
 import ReportReferenceField from '../../Components/ReportReferenceField.vue';
@@ -30,7 +31,7 @@ async function download(format) {
 </script>
 <template>
   <AppLayout title="Reportes"><div class="page-heading"><div><h1>Reportes institucionales</h1><p>Vista previa y archivos con los mismos filtros, columnas y alcance autorizado.</p></div><span class="report-muted">America/La_Paz</span></div>
-    <form class="panel report-form" @submit.prevent="loadPreview()"><fieldset class="report-filter-lock" :disabled="busy || Boolean(exporting)"><label class="report-field report-selector" for="report-type"><span>Reporte</span><select id="report-type" v-model="selected" @change="changeReport"><option v-for="r in catalogo" :key="r.id" :value="r.id">{{ r.titulo }}</option></select></label>
+    <form class="panel report-form" @submit.prevent="loadPreview()"><div class="report-journey" aria-label="Proceso del reporte"><span><Icon name="report"/><strong>Reporte</strong></span><Icon name="arrow"/><span><Icon name="search"/>Filtros</span><Icon name="arrow"/><span><Icon name="chart"/>Vista previa</span><Icon name="arrow"/><span>PDF / XLSX</span></div><fieldset class="report-filter-lock" :disabled="busy || Boolean(exporting)"><label class="report-field report-selector" for="report-type"><span>Reporte</span><select id="report-type" v-model="selected" @change="changeReport"><option v-for="r in catalogo" :key="r.id" :value="r.id">{{ r.titulo }}</option></select></label>
       <div class="report-filter-grid" v-if="definition"><ReportPeriodFields v-if="definition.rango" v-model="filters" prefix="report-period"/><template v-for="([field, spec]) in fieldSpecs" :key="`${selected}-${field}`"><ReportReferenceField v-if="spec === 'reference'" :report="selected" :field="field" :label="labels[field]" v-model="filters[field]"/><label v-else class="report-field" :for="`filter-${field}`"><span>{{ labels[field] }}</span><input v-if="spec === 'instant'" :id="`filter-${field}`" type="datetime-local" v-model="filters[field]" required><select v-else :id="`filter-${field}`" :value="filters[field] || (field === 'vista' ? 'inventario' : '')" @change="filters[field] = $event.target.value"><option v-if="field !== 'vista'" value="">Todos</option><option v-for="choice in spec" :key="choice" :value="choice">{{ choice.replaceAll('_', ' ') }}</option></select></label></template></div>
       <div class="report-actions"><button class="btn btn-primary" :disabled="busy || !definition">{{ busy ? 'Consultando…' : 'Ver vista previa' }}</button><button type="button" class="btn btn-secondary" @click="changeReport">Limpiar filtros</button><span class="report-muted">Hasta {{ limite.toLocaleString('es-BO') }} filas por archivo.</span></div>
     </fieldset></form><FormErrors :errors="{ ...page.props.errors, ...error }"/><p v-if="status" role="status" class="alert alert-success">{{ status }}</p>

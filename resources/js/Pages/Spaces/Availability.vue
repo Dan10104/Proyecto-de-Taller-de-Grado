@@ -6,6 +6,7 @@ import SpaceState from '../../Components/SpaceState.vue';
 import Pagination from '../../Components/Pagination.vue';
 import Icon from '../../Components/Icon.vue';
 import IotEvidence from '../../Components/IotEvidence.vue';
+import SpaceMedia from '../../Components/SpaceMedia.vue';
 import { useAccess } from '../../security';
 const { can } = useAccess();
 const props = defineProps({ espacios: Object, periodo: Object, filtros: Object, opciones: Object, fechaActual: String, iot: Object });
@@ -23,10 +24,10 @@ function requestUrl(space) {
       </div>
       <Icon name="building"/>
     </section>
-    <div class="availability-notice">
-      <strong>Disponibilidad para el periodo seleccionado</strong>
+    <details class="availability-notice compact-help">
+      <summary>Cómo se calcula la disponibilidad</summary>
       <p>Los resultados consideran el estado del espacio, los bloqueos, las reservas aprobadas y las incidencias abiertas. La disponibilidad se comprueba nuevamente al confirmar una solicitud.</p>
-    </div>
+    </details>
     <SpaceFilters :filtros="filtros" :opciones="opciones" availability :fecha-actual="fechaActual"/>
     <section v-if="periodo" aria-labelledby="resultados-heading">
       <div class="section-heading results-heading">
@@ -38,6 +39,7 @@ function requestUrl(space) {
       </div>
       <div v-if="espacios.data.length" class="space-card-grid">
         <article v-for="space in espacios.data" :key="space.recurso_id" class="panel space-card">
+          <SpaceMedia :name="space.recurso.nombre"/>
           <div class="space-card-top">
             <span class="tile-icon">
               <Icon name="building"/>

@@ -4,6 +4,7 @@ import AppLayout from '../../Layouts/AppLayout.vue';
 import InputField from '../../Components/InputField.vue';
 import FormErrors from '../../Components/FormErrors.vue';
 import Pagination from '../../Components/Pagination.vue';
+import Icon from '../../Components/Icon.vue';
 import OperationalState from '../../Components/OperationalState.vue';
 import { useAccess } from '../../security';
 import { options, clean } from '../../equipment';
@@ -40,7 +41,7 @@ function requestUrl(e){return '/prestamos/crear?'+new URLSearchParams({equipamie
    <div class="panel-heading"><h2>{{ equipamientos.total }} {{ periodoCompleto ? (equipamientos.total===1 ? 'equipo disponible para el periodo' : 'equipos disponibles para el periodo') : (equipamientos.total===1 ? 'equipo en inventario' : 'equipos en inventario') }}</h2><p v-if="!periodoCompleto">El estado operativo por sí solo no confirma un horario disponible.</p></div>
    <div v-if="equipamientos.data.length" class="table-scroll" tabindex="0" role="region" aria-label="Inventario de equipos desplazable">
     <table class="equipment-table"><caption class="sr-only">Equipamiento tecnológico</caption><thead><tr><th>Equipo</th><th>Tipo / modelo</th><th>Ubicación base</th><th>Estado</th><th>Acciones</th></tr></thead>
-     <tbody><tr v-for="e in equipamientos.data" :key="e.id"><td><Link class="text-link" :href="'/equipamientos/'+e.id">{{ e.nombre }}</Link><small class="cell-subline">{{ e.codigo }}</small></td><td>{{ e.tipo }}<small class="cell-subline">{{ [e.marca,e.modelo].filter(Boolean).join(' · ') || 'Sin marca o modelo' }}</small></td><td>{{ e.ubicacion }}</td><td><OperationalState :value="e.estado"/></td><td><div class="button-group"><Link :href="'/equipamientos/'+e.id" class="text-link">Ver detalle<span class="sr-only"> de {{ e.nombre }}</span></Link><Link v-if="periodoCompleto && can('prestamos.solicitar')" :href="requestUrl(e)" class="btn btn-secondary">Solicitar préstamo<span class="sr-only"> de {{ e.nombre }}</span></Link></div></td></tr></tbody>
+     <tbody><tr v-for="e in equipamientos.data" :key="e.id"><td><div class="equipment-identity"><Icon name="monitor"/><div><Link class="text-link" :href="'/equipamientos/'+e.id">{{ e.nombre }}</Link><small class="cell-subline">{{ e.codigo }}</small></div></div></td><td>{{ e.tipo }}<small class="cell-subline">{{ [e.marca,e.modelo].filter(Boolean).join(' · ') || 'Sin marca o modelo' }}</small></td><td>{{ e.ubicacion }}</td><td><OperationalState :value="e.estado"/></td><td><div class="button-group"><Link :href="'/equipamientos/'+e.id" class="text-link">Ver detalle<span class="sr-only"> de {{ e.nombre }}</span></Link><Link v-if="periodoCompleto && can('prestamos.solicitar')" :href="requestUrl(e)" class="btn btn-secondary">Solicitar préstamo<span class="sr-only"> de {{ e.nombre }}</span></Link></div></td></tr></tbody>
     </table>
    </div><div v-else class="empty-state"><h3>No hay equipos con estos criterios</h3><p>Revise los filtros o consulte otro periodo.</p></div>
   </section>
