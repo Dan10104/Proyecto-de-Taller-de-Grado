@@ -15,10 +15,9 @@ function save(){form.patch('/equipamientos/'+props.equipamiento.id+'/estado',{on
 </script>
 <template>
  <AppLayout title="Detalle de equipamiento" section="Equipamiento">
-  <Link href="/equipamientos" class="back-link">Volver al inventario</Link>
   <div class="page-heading">
    <div><div class="equipment-title"><h1>{{equipamiento.nombre}}</h1><OperationalState :value="equipamiento.estado"/></div><p><span class="reservation-code">{{equipamiento.codigo}}</span> · {{equipamiento.tipo}}</p></div>
-   <div class="button-group"><Link v-if="can('qr.gestionar')" :href="'/qr/recurso/'+equipamiento.id" class="btn btn-secondary">Gestionar QR</Link><Link v-if="can('equipamientos.gestionar')" :href="'/equipamientos/'+equipamiento.id+'/editar'" class="btn btn-secondary">Editar equipo</Link><Link href="/equipamientos/disponibilidad" class="btn btn-primary">Consultar disponibilidad</Link></div>
+   <div class="button-group"><Link href="/equipamientos" class="btn btn-secondary">Volver al inventario</Link><Link v-if="can('qr.gestionar')" :href="'/qr/recurso/'+equipamiento.id" class="btn btn-secondary">Gestionar QR</Link><Link v-if="can('equipamientos.gestionar')" :href="'/equipamientos/'+equipamiento.id+'/editar'" class="btn btn-secondary">Editar equipo</Link><Link href="/equipamientos/disponibilidad" class="btn btn-primary">Consultar disponibilidad</Link></div>
   </div>
   <p v-if="incidenciasAbiertas" class="alert alert-warning">Este recurso tiene {{incidenciasAbiertas}} restricciones abiertas y no está disponible para nuevos préstamos.</p>
 

@@ -37,7 +37,7 @@ function clear() { router.get('/reservas', { alcance: props.alcance }); }
         <InputField id="filtro-reserva-espacio" label="Espacio" v-model="filters.espacio_id" placeholder="Todos los espacios" :options="opciones.espacios.map(s => ({ value: s.id, label: `${s.codigo} · ${s.nombre}` }))" :error="filters.errors.espacio_id"/>
         <InputField v-if="alcance === 'administrativas'" id="filtro-reserva-solicitante" label="Solicitante" v-model="filters.solicitante_id" placeholder="Todos los solicitantes" :options="opciones.solicitantes.map(u => ({ value: u.id, label: `${u.nombres} ${u.apellidos}` }))" :error="filters.errors.solicitante_id"/>
       </div>
-      <div class="filter-actions"><p class="hint">La fecha incluye las reservas que abarcan parte de ese día. Hora de Bolivia.</p><div class="button-group"><button type="button" class="text-button" @click="clear">Limpiar</button><button class="btn btn-secondary" :disabled="filters.processing">Aplicar filtros</button></div></div>
+      <div class="filter-actions"><p class="hint">La fecha incluye las reservas que abarcan parte de ese día. Hora de Bolivia.</p><div class="button-group"><button type="button" class="text-button" @click="clear">Limpiar filtros</button><button class="btn btn-secondary" :disabled="filters.processing">Aplicar filtros</button></div></div>
     </form>
     <section class="panel">
       <div class="panel-heading"><h2>{{ reservas.total }} {{ reservas.total === 1 ? 'reserva' : 'reservas' }}</h2><p>El estado refleja la última decisión registrada.</p></div>

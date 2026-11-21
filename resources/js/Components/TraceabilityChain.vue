@@ -71,7 +71,6 @@ const stages = computed(() => {
   <section class="tech-surface blockchain-chain" :aria-labelledby="current ? 'chain-title' : undefined" :aria-label="current ? undefined : 'Recorrido de la evidencia'">
     <template v-if="current">
       <div v-if="!evidence" class="chain-head">
-        <span class="tech-chip"><Icon name="cube"/>Evidencia #{{ current.id }}</span>
         <Link class="chain-open" :href="`/trazabilidad/${current.id}`">Abrir evidencia #{{ current.id }}</Link>
       </div>
 

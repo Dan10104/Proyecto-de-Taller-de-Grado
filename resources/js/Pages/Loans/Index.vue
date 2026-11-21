@@ -43,7 +43,7 @@ const filtered=['q','estado','fecha','equipamiento_id','solicitante_id','vencido
      <InputField v-if="alcance==='administrativos'" id="solicitante" label="Solicitante" v-model="filters.solicitante_id" :options="opciones.solicitantes.map(u=>({value:u.id,label:person(u)}))" placeholder="Todos los solicitantes"/>
     </div>
    </details>
-   <div class="filter-actions"><p class="hint">Vencido: entregado y con el fin previsto cumplido. Una revisión pendiente sigue abierta hasta su cierre.</p><div class="button-group"><button class="btn btn-secondary" type="button" @click="router.get('/prestamos',{alcance})">Limpiar</button><button class="btn btn-primary" :disabled="filters.processing">Aplicar filtros</button></div></div>
+   <div class="filter-actions"><p class="hint">Vencido: entregado y con el fin previsto cumplido. Una revisión pendiente sigue abierta hasta su cierre.</p><div class="button-group"><button class="text-button" type="button" @click="router.get('/prestamos',{alcance})">Limpiar filtros</button><button class="btn btn-secondary" :disabled="filters.processing">Aplicar filtros</button></div></div>
   </form>
 
   <section class="panel">

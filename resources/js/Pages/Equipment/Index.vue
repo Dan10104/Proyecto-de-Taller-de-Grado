@@ -58,7 +58,7 @@ function pictogram(e){const text=`${e.tipo||''} ${e.nombre||''}`.toLowerCase();i
      </template>
     </div>
    </details>
-   <div class="filter-actions"><p class="hint">Hora de Bolivia. La disponibilidad se comprueba otra vez al solicitar y al aprobar.</p><div class="button-group"><button type="button" class="btn btn-secondary" @click="router.get(path)">Limpiar</button><button class="btn btn-primary" :disabled="filters.processing">Consultar</button></div></div>
+   <div class="filter-actions"><p class="hint">Hora de Bolivia. La disponibilidad se comprueba otra vez al solicitar y al aprobar.</p><div class="button-group"><button type="button" class="text-button" @click="router.get(path)">Limpiar filtros</button><button :class="['btn', disponibilidad ? 'btn-primary' : 'btn-secondary']" :disabled="filters.processing">Consultar</button></div></div>
   </form>
 
   <section v-if="equipamientos" class="panel">

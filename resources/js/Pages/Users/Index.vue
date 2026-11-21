@@ -58,11 +58,8 @@ function disable(user) {
         </select>
       </div>
       <div class="button-group">
-        <button class="btn btn-secondary" type="submit">
-          <Icon name="search"/>
-          Filtrar
-        </button>
-        <button v-if="filters.q||filters.estado||filters.rol" class="text-button" type="button" @click="Object.assign(filters,{q:'',estado:'',rol:''});search()">Limpiar</button>
+        <button v-if="filters.q||filters.estado||filters.rol" class="text-button" type="button" @click="Object.assign(filters,{q:'',estado:'',rol:''});search()">Limpiar filtros</button>
+        <button class="btn btn-secondary" type="submit">Aplicar filtros</button>
       </div>
     </form>
     <section class="panel">

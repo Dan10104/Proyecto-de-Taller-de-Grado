@@ -136,8 +136,8 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Cifras de ancho fijo solo donde se comparan en columna: indicadores, contadores y paginación. */
-.numeral-value, .nav-count, .state-legend strong, .dashboard-breakdown dd, .pagination, input[type='number'], input[type='date'], input[type='time'], input[type='datetime-local'] { font-variant-numeric: tabular-nums; }
+/* Cifras de ancho fijo solo donde se alinean o cambian en el sitio: contador del menú, paginación y campos. */
+.nav-count, .pagination, input[type='number'], input[type='date'], input[type='time'], input[type='datetime-local'] { font-variant-numeric: tabular-nums; }
 
 ::selection { background: var(--color-primary); color: var(--color-on-primary); }
 
@@ -299,7 +299,7 @@ input, textarea, [contenteditable] { caret-color: var(--color-electric); }
 .sidebar-account .avatar { background: var(--color-rail-active); color: #fff; }
 .account-text { display: grid; flex: 1; line-height: 1.25; min-width: 0; }
 .account-text strong { font-size: var(--text-sm); font-weight: 650; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.account-text small { font-size: 0.6875rem; color: var(--color-rail-ink-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.account-text small { font-size: 0.6875rem; color: var(--color-rail-ink-2); overflow-wrap: anywhere; }
 .logout-button {
   display: grid;
   place-items: center;
@@ -547,8 +547,6 @@ a.numeral:hover .numeral-go, a.numeral:focus-visible .numeral-go { color: var(--
 }
 .danger-link:hover { text-decoration-color: currentColor; }
 
-.back-link { display: inline-flex; align-items: center; gap: var(--space-1); color: var(--color-ink-2); font-weight: 600; font-size: var(--text-sm); }
-.back-link:hover { color: var(--color-link); }
 
 /* ───────── Formularios ───────── */
 
@@ -656,6 +654,8 @@ form > .form-actions:only-child, dialog .form-actions { border-top: 0; padding-t
   grid-column: 1 / -1;
 }
 .filter-actions .hint { flex: 1 1 18rem; margin: 0; }
+/* Sin texto de ayuda, las acciones siguen a la derecha. */
+.filter-actions > .button-group:only-child { margin-left: auto; }
 
 /* ───────── Datos ───────── */
 
@@ -1016,6 +1016,8 @@ dialog p { color: var(--color-ink-2); }
   :is(.table-scroll, .audit-table-wrap) tbody td:empty { display: none; }
   :is(.table-scroll, .audit-table-wrap) .row-actions { justify-content: flex-start; }
   :is(.table-scroll, .audit-table-wrap) .date-cell { white-space: normal; }
+  /* En la ficha hay sitio para el texto completo. */
+  :is(.table-scroll, .audit-table-wrap) .reservation-purpose { display: block; max-width: none; overflow: visible; }
 }
 
 @media (max-width: 36rem) {
@@ -1030,6 +1032,8 @@ dialog p { color: var(--color-ink-2); }
   .filter-actions .button-group .btn { flex: 1 1 auto; }
   .numerals { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .numeral-value { font-size: 2rem; }
+  /* Las pestañas pasan a varias líneas en lugar de recortarse sin indicio de desplazamiento. */
+  .catalog-tabs { flex-wrap: wrap; overflow-x: visible; }
   .tech-surface { padding: var(--space-4); }
 }
 

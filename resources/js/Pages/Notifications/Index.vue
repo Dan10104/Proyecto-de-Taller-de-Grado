@@ -27,9 +27,11 @@ const typeIcons = { SOLICITUD: 'checklist', DECISION: 'checkCircle', CANCELACION
     <form class="panel space-filters notification-filters" @submit.prevent="form.get('/notificaciones')">
       <InputField id="lectura" label="Lectura" v-model="form.lectura" placeholder="Todas" :options="[{ value: 'no_leidas', label: 'No leídas' }, { value: 'leidas', label: 'Leídas' }]" :error="form.errors.lectura"/>
       <InputField id="tipo" label="Tipo" v-model="form.tipo" placeholder="Todos" :options="Object.entries(notificationTypes).map(([value, label]) => ({ value, label }))" :error="form.errors.tipo"/>
-      <div class="notification-filter-actions">
-        <button class="btn btn-secondary" :disabled="form.processing"><Icon name="filter"/>Aplicar filtros</button>
-        <Link class="text-link" href="/notificaciones">Limpiar filtros</Link>
+      <div class="filter-actions">
+        <div class="button-group">
+          <Link class="text-link" href="/notificaciones">Limpiar filtros</Link>
+          <button class="btn btn-secondary" :disabled="form.processing">Aplicar filtros</button>
+        </div>
       </div>
     </form>
     <section class="panel notification-panel" aria-label="Avisos recibidos">

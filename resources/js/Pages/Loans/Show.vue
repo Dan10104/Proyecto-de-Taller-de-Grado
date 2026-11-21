@@ -42,10 +42,9 @@ const yourAction=computed(()=>{const a=props.prestamo.acciones||{};return a.reso
 </script>
 <template>
  <AppLayout title="Detalle de préstamo" section="Préstamos">
-  <Link href="/prestamos" class="back-link">Volver a préstamos</Link>
   <div class="page-heading">
    <div><div class="equipment-title"><h1>{{prestamo.equipamiento.nombre}}</h1><div class="operational-badges"><OperationalState :value="prestamo.estado"/><span v-if="prestamo.vencido" class="badge badge-negative"><svg class="badge-mark" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3.4v3.2M6 8.6h.01M10.5 6a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0Z"/></svg>Vencido</span><OperationalState v-if="prestamo.revision_pendiente" value="PENDIENTE_REVISION"/></div></div><p><span class="reservation-code">{{prestamo.codigo}}</span> · {{prestamo.equipamiento.codigo}} · {{reservationDate(prestamo.inicio_previsto)}} – {{reservationDate(prestamo.fin_previsto)}}</p></div>
-   <div class="button-group"><Link v-if="can('qr.gestionar') && can('prestamos.ver_administrativos')" :href="'/qr/prestamo/'+prestamo.id" class="btn btn-secondary">Gestionar QR</Link></div>
+   <div class="button-group"><Link href="/prestamos" class="btn btn-secondary">Volver a préstamos</Link><Link v-if="can('qr.gestionar') && can('prestamos.ver_administrativos')" :href="'/qr/prestamo/'+prestamo.id" class="btn btn-secondary">Gestionar QR</Link></div>
   </div>
   <p v-if="prestamo.vencido" class="alert alert-error">{{prestamo.revision_pendiente?'El fin previsto ya pasó. La recepción está registrada y falta confirmar su revisión.':'El préstamo está vencido y continúa pendiente de devolución.'}}</p>
 

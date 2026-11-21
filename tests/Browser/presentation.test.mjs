@@ -91,3 +91,22 @@ test('blockchain renders supplied confirmation and verification separately, with
   assert.ok(!html.includes('Sin verificar'));
   assert.match(html, /no bloques enlazados entre operaciones/);
 });
+test('IoT shows the recorded floor of a space and never states the provisional floor as fact', async () => {
+  const auditorium = { recurso_id: 31, piso_id: 2, capacidad: 60, estado: 'DISPONIBLE', recurso: { codigo: 'ESP-006', nombre: 'Auditorio principal' }, piso: { nombre: 'Segundo piso' }, tipo: { nombre: 'Auditorio' } };
+  const classroom = { recurso_id: 32, piso_id: 1, capacidad: 30, estado: 'DISPONIBLE', recurso: { codigo: 'ESP-011', nombre: 'Aula 11' }, piso: { nombre: 'Planta baja' }, tipo: { nombre: 'Aula' } };
+  const html = await render('IotTwin', { sensors: [
+    { ...sensor, id: 8, identificador: 'SNS-AUD', espacio_actual_id: 31, espacio_actual: auditorium },
+    { ...sensor, id: 9, identificador: 'SNS-A11', espacio_actual_id: 32, espacio_actual: classroom },
+  ] });
+  // The provisional drawing puts the auditorium on floor 4; a record that says otherwise is not drawn there.
+  assert.match(html, /Otros espacios monitoreados/);
+  assert.match(html, /Segundo piso/);
+  assert.match(html, /Planta baja/);
+  assert.ok(!/<small[^>]*>Piso \d+<\/small>/.test(html));
+  assert.ok(!/Auditorio principal[^<]*Piso 4/.test(html));
+});
+test('the evidence chain carries no label above its verdict heading', async () => {
+  const html = await render('TraceabilityChain', { entries: [evidence] });
+  assert.ok(!html.includes('tech-chip'));
+  assert.match(html, /Abrir evidencia #5/);
+});

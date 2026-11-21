@@ -32,9 +32,11 @@ const hasFilters = computed(() => Object.values(props.filtros || {}).some(Boolea
       <InputField id="resultado" label="Verificación" v-model="form.resultado" placeholder="Todos" :options="options(verificationResults)" :error="form.errors.resultado"/>
       <InputField id="desde" type="date" label="Desde" v-model="form.desde" :error="form.errors.desde"/>
       <InputField id="hasta" type="date" label="Hasta" v-model="form.hasta" :error="form.errors.hasta"/>
-      <div class="button-group">
-        <button class="btn btn-secondary" :disabled="form.processing">Filtrar</button>
-        <Link class="btn btn-secondary" href="/trazabilidad">Limpiar filtros</Link>
+      <div class="filter-actions">
+        <div class="button-group">
+          <Link class="text-link" href="/trazabilidad">Limpiar filtros</Link>
+          <button class="btn btn-secondary" :disabled="form.processing">Aplicar filtros</button>
+        </div>
       </div>
     </form>
 

@@ -8,7 +8,6 @@
 
 /* Filtros compactos */
 .notification-filters { grid-template-columns: repeat(auto-fill, minmax(11.5rem, 14rem)) 1fr; }
-.notification-filter-actions { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-2) var(--space-4); min-height: var(--control-height); }
 
 /* Bandeja */
 .notification-panel { padding: 0; overflow: hidden; }

@@ -16,9 +16,9 @@ function close(){form.post('/incidencias/'+props.incidencia.id+'/cerrar',{onErro
 </script>
 <template>
  <AppLayout title="Detalle de incidencia" section="Incidencias">
-  <Link href="/incidencias" class="back-link">Volver al listado</Link>
   <div class="page-heading">
    <div><div class="equipment-title"><h1>{{incidencia.recurso.nombre}}</h1><OperationalState :value="incidencia.estado"/></div><p>{{labels[incidencia.tipo]}} · <span class="reservation-code">{{incidencia.recurso.codigo}}</span></p></div>
+   <Link href="/incidencias" class="btn btn-secondary">Volver al listado</Link>
   </div>
 
   <section class="panel detail-panel">

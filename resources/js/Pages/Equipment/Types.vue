@@ -15,8 +15,7 @@ function save(){const opts={onSuccess:reset,onError:focusError,preserveScroll:tr
 </script>
 <template>
  <AppLayout title="Tipos de equipamiento" section="Equipamiento">
-  <Link href="/equipamientos" class="back-link">Volver al inventario</Link>
-  <div class="page-heading"><div><h1>Tipos de equipamiento</h1><p>Clasificación del inventario.</p></div></div>
+  <div class="page-heading"><div><h1>Tipos de equipamiento</h1><p>Clasificación del inventario.</p></div><Link href="/equipamientos" class="btn btn-secondary">Volver al inventario</Link></div>
   <div class="equipment-types">
    <form class="panel form-panel" @submit.prevent="save">
     <h2>{{editing?'Editar tipo':'Registrar tipo'}}</h2>

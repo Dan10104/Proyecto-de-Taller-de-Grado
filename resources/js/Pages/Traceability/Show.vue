@@ -12,13 +12,13 @@ const run = action => form.post(`/trazabilidad/${props.evidencia.id}/${action}`,
 </script>
 <template>
   <AppLayout :title="`Evidencia ${evidencia.id}`">
-    <Link href="/trazabilidad" class="back-link">Volver a las evidencias</Link>
     <div class="page-heading">
       <div>
         <h1>Evidencia {{ evidencia.id }}</h1>
         <p>{{ operations[evidencia.actividad.accion] }} · {{ traceabilityDate(evidencia.actividad.fecha_hora) }}</p>
       </div>
       <div class="button-group">
+        <Link href="/trazabilidad" class="btn btn-secondary">Volver a las evidencias</Link>
         <button v-if="can('trazabilidad.evidencias.verificar')" class="btn btn-primary" :disabled="form.processing" @click="run('verificar')">{{ form.processing ? 'Procesando…' : 'Verificar evidencia' }}</button>
         <button v-if="can('trazabilidad.reintentar') && evidencia.estado === 'PENDIENTE'" class="btn btn-secondary" :disabled="form.processing" @click="run('reintentar')">Reintentar registro</button>
       </div>

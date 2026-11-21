@@ -14,8 +14,7 @@ function save(){form.transform(d=>selected.value?.equipamiento_exists?Object.fro
 </script>
 <template>
  <AppLayout title="Registrar incidencia o mantenimiento" section="Incidencias">
-  <Link href="/incidencias" class="back-link">Volver al listado</Link>
-  <div class="page-heading"><div><h1>Registrar incidencia o mantenimiento</h1><p>Recurso afectado y condición observada.</p></div></div>
+  <div class="page-heading"><div><h1>Registrar incidencia o mantenimiento</h1><p>Recurso afectado y condición observada.</p></div><Link href="/incidencias" class="btn btn-secondary">Volver al listado</Link></div>
   <section class="panel form-panel equipment-flow">
    <OperationForm label="Registrar restricción" message="El registro abierto restringirá inmediatamente el recurso. Los préstamos y reservas existentes conservarán su estado y deberán revisarse." :disabled="form.processing" @confirm="save"><FormErrors :errors="form.errors"/>
     <header class="form-section-heading"><h2>Recurso</h2></header>

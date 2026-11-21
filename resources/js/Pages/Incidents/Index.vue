@@ -25,7 +25,7 @@ const filtered=['q','tipo','estado','recurso_id'].some(k=>!!props.filtros[k]);
   </div>
   <form class="panel space-filters" @submit.prevent="search"><FormErrors :errors="form.errors"/>
    <div class="equipment-filter-grid"><InputField id="q" label="Código o nombre del recurso" v-model="form.q" maxlength="160"/><InputField id="tipo" label="Tipo de registro" v-model="form.tipo" :options="options(['INCIDENCIA','MANTENIMIENTO'])" placeholder="Todos los tipos"/><InputField id="estado" label="Estado" v-model="form.estado" :options="options(['ABIERTA','CERRADA'])" placeholder="Todos los estados"/></div>
-   <div class="filter-actions"><p v-if="form.recurso_id" class="hint">Consulta limitada al recurso seleccionado desde su detalle.</p><div class="button-group"><button type="button" class="btn btn-secondary" @click="router.get('/incidencias')">Limpiar</button><button class="btn btn-primary" :disabled="form.processing">Aplicar filtros</button></div></div>
+   <div class="filter-actions"><p v-if="form.recurso_id" class="hint">Consulta limitada al recurso seleccionado desde su detalle.</p><div class="button-group"><button type="button" class="text-button" @click="router.get('/incidencias')">Limpiar filtros</button><button class="btn btn-secondary" :disabled="form.processing">Aplicar filtros</button></div></div>
   </form>
   <section class="panel">
    <div class="panel-heading"><h2>{{incidencias.total}} {{incidencias.total===1?'registro':'registros'}}</h2><p>Un registro abierto restringe el recurso hasta su cierre.</p></div>

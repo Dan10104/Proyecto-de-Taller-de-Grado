@@ -18,7 +18,7 @@ const form = useForm({ alcance: props.alcance, resultado: props.filtros.resultad
     <nav class="catalog-tabs" aria-label="Alcance de evaluaciones"><Link v-if="can('liberacion.evaluaciones.ver_propias')" href="/liberacion/evaluaciones?alcance=propias" :class="{ active: alcance === 'propias' }">Mis evaluaciones</Link><Link v-if="can('liberacion.evaluaciones.ver_administrativas')" href="/liberacion/evaluaciones?alcance=administrativas" :class="{ active: alcance === 'administrativas' }">Evaluaciones administrativas</Link></nav>
     <form class="panel space-filters" @submit.prevent="form.get('/liberacion/evaluaciones')">
       <InputField id="resultado" label="Resultado" placeholder="Todos los resultados" v-model="form.resultado" :options="Object.entries(releaseResults).map(([value, label]) => ({ value, label }))" :error="form.errors.resultado"/>
-      <div class="filter-actions"><div class="button-group"><button class="btn btn-secondary">Filtrar</button><Link href="/liberacion/evaluaciones" class="text-link">Limpiar filtros</Link></div></div>
+      <div class="filter-actions"><div class="button-group"><Link href="/liberacion/evaluaciones" class="text-link">Limpiar filtros</Link><button class="btn btn-secondary">Aplicar filtros</button></div></div>
     </form>
     <section class="panel">
       <div v-if="evaluaciones.data.length" class="table-scroll" tabindex="0" role="region" aria-label="Evaluaciones de reservas, tabla desplazable">

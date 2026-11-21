@@ -32,9 +32,11 @@ onUnmounted(() => document.removeEventListener('visibilitychange', markRead));
 </script>
 <template>
   <AppLayout title="Detalle del aviso" section="Notificaciones">
-    <Link class="back-link" href="/notificaciones">Volver a notificaciones</Link>
-    <article class="panel notification-detail">
+    <div class="page-heading">
       <h1>{{ notificacion.titulo }}</h1>
+      <Link class="btn btn-secondary" href="/notificaciones">Volver a notificaciones</Link>
+    </div>
+    <article class="panel notification-detail">
       <p class="notification-message">{{ notificacion.mensaje }}</p>
       <div class="notification-context">
         <Link v-if="enlace" class="btn btn-primary" :href="enlace.url">{{ enlace.label }}</Link>
