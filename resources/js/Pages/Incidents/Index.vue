@@ -1,4 +1,5 @@
 <script setup>
+import {computed} from 'vue';
 import {Link,router,useForm} from '@inertiajs/vue3';
 import AppLayout from '../../Layouts/AppLayout.vue';
 import InputField from '../../Components/InputField.vue';
