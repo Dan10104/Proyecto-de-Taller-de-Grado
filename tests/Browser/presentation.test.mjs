@@ -84,7 +84,7 @@ test('pending blockchain evidence never implies an external confirmation or vali
   assert.ok(!html.includes('chain-green'));
 });
 test('blockchain renders supplied confirmation and verification separately, with the original detail link', async () => {
-  const html = await render('TraceabilityChain', { entries: [{ ...evidence, estado: 'REGISTRADA', registrada_externamente_en: '2026-10-21T10:00:00-04:00', ultima_verificacion: '2026-10-22T10:00:00-04:00', resultado_verificacion: 'VALIDO' }] });
+  const html = await render('TraceabilityChain', { entries: [{ ...evidence, estado: 'REGISTRADA', referencia_externa: '0x' + 'b'.repeat(64), registrada_externamente_en: '2026-10-21T10:00:00-04:00', ultima_verificacion: '2026-10-22T10:00:00-04:00', resultado_verificacion: 'VALIDO' }] });
   assert.match(html, /Registrada/);
   assert.match(html, /href="\/trazabilidad\/5"/);
   assert.ok(!html.includes('Sin confirmación externa'));
@@ -166,6 +166,11 @@ test('the IoT plan needs an unambiguous room identifier: a bare number in a name
   assert.equal(at('Aula 11', 'ESP-001', { piso: { nombre: 'Segundo piso' } }), null); // the recorded floor contradicts the drawing
   assert.equal(at('Auditorio principal', 'ESP-006'), null); // no number and no recorded floor to confirm it
   assert.deepEqual(at('Auditorio principal', 'ESP-006', { piso: { nombre: 'Cuarto piso' } }), { floor: 4, room: 'auditorium', kind: 'auditorio' });
+  // Two different rooms in one record are ambiguous; the same room named twice is not.
+  assert.equal(at('Aula 11 / Aula 13', 'ESP-009'), null);
+  assert.equal(at('Aula 11', 'AULA-13'), null);
+  assert.deepEqual(at('Aula 11', 'AULA-11'), { floor: 1, room: 11, kind: 'aula' });
+  assert.deepEqual(at('Sala norte', 'AULA_11'), { floor: 1, room: 11, kind: 'aula' });
 });
 test('a REGISTRADA state without confirmation date or reference is not presented as an external registration', async () => {
   const html = await render('TraceabilityChain', { evidence: { ...evidence, estado: 'REGISTRADA', referencia_externa: null, registrada_externamente_en: null, ultima_verificacion: null } });
@@ -174,6 +179,14 @@ test('a REGISTRADA state without confirmation date or reference is not presented
   assert.ok(!/registro externo confirmado/.test(html));
   assert.ok(!html.includes('chain-violet'));
   assert.match(html, /Estado recibido/);
+  // A confirmation date without its reference is not enough either.
+  const dated = await render('TraceabilityChain', { evidence: { ...evidence, estado: 'REGISTRADA', registrada_externamente_en: '2026-10-21T10:00:00-04:00' } });
+  assert.match(dated, /Registro externo sin respaldo/);
+  assert.ok(!/registro externo confirmado/.test(dated));
+  const { externalRegistration } = await load('resources/js/traceability.js');
+  assert.equal(externalRegistration({ estado: 'REGISTRADA', registrada_externamente_en: '2026-10-21', referencia_externa: '0xabc' }), 'registered');
+  assert.equal(externalRegistration({ estado: 'REGISTRADA', registrada_externamente_en: null, referencia_externa: null }), 'unbacked');
+  assert.equal(externalRegistration({ estado: 'PENDIENTE' }), 'pending');
 });
 test('an expired reading stays expired when the detail is mounted later, as when another space is selected', async () => {
   const reading = { sensor_id: 5, tipo: 'PRESENCIA', valor: '1.00', vigente_por_segundos: 1, fecha_evento: '2026-10-28 08:00:00', fecha_recepcion: '2026-10-28 08:00:01' };
@@ -182,6 +195,10 @@ test('an expired reading stays expired when the detail is mounted later, as when
   const late = await render('IotEvidence', { readings: [reading], embedded: true, elapsed: 8 });
   assert.match(late, /Sin lecturas recientes suficientes/);
   assert.ok(!late.includes('Lectura de presencia'));
+  // The compact detail keeps the reception time the server sent.
+  const compact = await render('IotEvidence', { readings: [reading], compact: true });
+  assert.match(compact, /Recepción/);
+  assert.match(compact, /08:00:01/);
 });
 test('the state breakdown keeps the indicator title and the clarification sent with it', async () => {
   const html = await render('StateBreakdown', { title: 'Espacios por estado operativo', context: 'Estado operativo actual · no es disponibilidad temporal', total: 3, values: { DISPONIBLE: 2, BLOQUEADO: 1 } });
@@ -192,7 +209,11 @@ test('home and the sidebar share one navigation: a single view permission is an 
   const { authorizedModules, navigationGroups } = await load('resources/js/navigation.js');
   const only = (...codes) => (code) => codes.includes(code);
   assert.deepEqual(authorizedModules(only('reservas.ver_administrativas')).map(item => item.href), ['/reservas']);
-  assert.deepEqual(authorizedModules(only('incidencias.gestionar')), []); // registering does not open the list
+  // Registering without listing opens the form, never the list.
+  assert.deepEqual(authorizedModules(only('incidencias.gestionar')).map(item => item.href), ['/incidencias/crear']);
+  assert.deepEqual(authorizedModules(only('iot.sensores.gestionar')).map(item => item.href), ['/iot/sensores/crear']);
+  assert.deepEqual(authorizedModules(only('espacios.gestionar')).map(item => item.href), ['/espacios/crear']);
+  assert.deepEqual(authorizedModules(only('espacios.ver')).map(item => item.href), ['/disponibilidad', '/espacios']);
   assert.deepEqual(authorizedModules(only()), []);
   assert.deepEqual(navigationGroups(only()).flatMap(group => group.items).map(item => item.href), ['/inicio']);
 });
