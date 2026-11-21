@@ -35,10 +35,10 @@ const space = { recurso_id: 23, piso_id: 77, capacidad: 24, estado: 'DISPONIBLE'
 const sensor = { id: 4, identificador: 'SENSOR-DEMO', estado: 'DESHABILITADO', comunicacion: 'ANTIGUA', espacio_actual_id: 23, espacio_actual: space, lecturas: [] };
 const evidence = { id: 5, actividad: { reserva_id: 9, accion: 'RESERVA_APROBADA', fecha_hora: '2026-10-20T15:00:00-04:00' }, algoritmo_hash: 'SHA-256', version_canonica: 'espacio-u-jcs-v1', hash: 'a'.repeat(64), estado: 'PENDIENTE', ultima_verificacion: null, registrada_externamente_en: null, registro_actividad_id: 12 };
 
-test('resource imagery is explicitly conceptual and keeps the existing detail destination', async () => {
+test('resource listing shows no fabricated imagery or demo wording and keeps the existing detail destination', async () => {
   const html = await render('SpaceGallery', { spaces: [space] });
-  assert.match(html, /Imagen conceptual · Demo/);
-  assert.match(html, /laboratory-demo.webp/);
+  assert.ok(!/<img\b/.test(html));
+  assert.ok(!/\.webp|Imagen conceptual|· Demo/.test(html));
   assert.match(html, /href="\/espacios\/23"/);
   assert.match(html, /Piso de prueba/);
   assert.match(html, /24 personas/);
@@ -48,14 +48,15 @@ test('resource text is escaped; a supplied name cannot inject markup', async () 
   assert.ok(!html.includes('<img src=x'));
   assert.match(html, /&lt;img src=x/);
 });
-test('IoT uses actual floor references and preserves disabled and undetermined semantics', async () => {
+test('IoT keeps actual floor references, labels the building layout as provisional and preserves disabled and undetermined semantics', async () => {
   const html = await render('IotTwin', { sensors: [sensor] });
   assert.match(html, /Piso · ref. 77/);
   assert.match(html, /Deshabilitado/);
   assert.match(html, /Ocupación: no determinable/);
   assert.match(html, /Sin lecturas recientes suficientes/);
-  assert.ok(!html.includes('Piso 1'));
-  assert.match(html, /no representa el plano real/);
+  // The stacked floors are a provisional visual scaffold supplied by the faculty, not inventory.
+  assert.match(html, /Distribución provisional del edificio: no representa el plano real definitivo/);
+  assert.ok(!/\d+\s?%/.test(html.replace(/<style[\s\S]*?<\/style>/g, '').replace(/style="[^"]*"/g, '')));
 });
 test('IoT retains both sensors on the same room and does not turn raw zero into availability', async () => {
   const reading = { sensor_id: 5, tipo: 'OCUPACION', valor: '0.00', vigente_por_segundos: 30, fecha_evento: '2026-10-28 08:00:00', fecha_recepcion: '2026-10-28 08:00:01' };
@@ -66,11 +67,13 @@ test('IoT retains both sensors on the same room and does not turn raw zero into 
   assert.match(html, /Ocupación: no determinable/);
   assert.ok(!html.includes('0%'));
 });
-test('IoT empty data does not invent rooms, floors or sensors', async () => {
+test('IoT empty data draws only the provisional scaffold and invents no sensors, readings or floor references', async () => {
   const html = await render('IotTwin', { sensors: [] });
   assert.match(html, /No hay sensores actuales/);
-  assert.ok(!html.includes('class="twin-room"'));
+  assert.match(html, /Distribución provisional del edificio: no representa el plano real definitivo/);
+  assert.ok(!html.includes('twin-pin'));
   assert.ok(!html.includes('Piso · ref.'));
+  assert.ok(!html.includes('Lectura de presencia'));
 });
 test('pending blockchain evidence never implies an external confirmation or valid verification', async () => {
   const html = await render('TraceabilityChain', { evidence });
