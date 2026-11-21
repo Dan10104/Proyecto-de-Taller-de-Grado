@@ -11,12 +11,14 @@ try {
     if (! in_array($action, ['status', 'stop'], true)) {
         throw new RuntimeException('Unsupported action');
     }
-    if (($env['DB_HOST'] ?? '') !== '127.0.0.1' || ($env['DB_PORT'] ?? '') !== '3308' || ($env['DB_DATABASE'] ?? '') !== 'espacio_u') {
+    // La base activa se elige en la configuración local; la instancia se valida por puerto y directorio de datos.
+    $database = (string) ($env['DB_DATABASE'] ?? '');
+    if (($env['DB_HOST'] ?? '') !== '127.0.0.1' || ($env['DB_PORT'] ?? '') !== '3308' || ! preg_match('/\A[a-z][a-z0-9_]{2,48}\z/', $database)) {
         throw new RuntimeException('Unexpected local target');
     }
     $admin = $action === 'stop';
     $connection = new PDO(
-        'mysql:host=127.0.0.1;port=3308;dbname=espacio_u;charset=utf8mb4',
+        'mysql:host=127.0.0.1;port=3308;'.($admin ? '' : 'dbname='.$database.';').'charset=utf8mb4',
         $admin ? 'root' : $env['DB_USERNAME'],
         $admin ? $env['MYSQL_DEV_ROOT_PASSWORD'] : $env['DB_PASSWORD'],
         [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_TIMEOUT => 3]
@@ -31,7 +33,7 @@ try {
         $connection->exec('SHUTDOWN');
         echo "Instancia MySQL del proyecto detenida correctamente.\n";
     } else {
-        echo 'MySQL '.$row['version']." conectado a espacio_u en 127.0.0.1:3308; directorio del proyecto verificado.\n";
+        echo 'MySQL '.$row['version'].' conectado a '.$database." en 127.0.0.1:3308; directorio del proyecto verificado.\n";
     }
 } catch (Throwable $error) {
     // No revelar usuario, contraseña, DSN ampliado ni excepciones del proveedor.
