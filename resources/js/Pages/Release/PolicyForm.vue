@@ -13,7 +13,7 @@ watch(() => form.usa_iot, value => { form.max_antiguedad_lectura_min = value ? 5
 </script>
 <template>
   <AppLayout :title="origen ? 'Crear nueva versión' : 'Crear política'" section="Liberación">
-    <div class="page-heading"><div><h1>{{ origen ? 'Crear nueva versión' : 'Crear política' }}</h1><p>Las reglas no podrán modificarse después de guardar.</p></div><Link v-if="can('liberacion.politicas.ver')" href="/liberacion/politicas" class="btn btn-secondary">Volver a políticas</Link></div>
+    <div class="page-heading"><div><h1>{{ origen ? 'Crear nueva versión' : 'Crear política' }}</h1><p>Las reglas no podrán modificarse después de guardar.</p></div><Link v-if="can('liberacion.politicas.ver')" href="/liberacion/politicas" class="btn btn-secondary">Volver a políticas</Link><Link v-else href="/liberacion/asignaciones" class="btn btn-secondary">Volver a asignaciones</Link></div>
     <form class="panel form-panel release-form" @submit.prevent="form.post('/liberacion/politicas', { onError: focusError })"><FormErrors :errors="form.errors"/>
       <p v-if="origen" class="alert">Basada en {{ origen.nombre }} · v{{ origen.version }}. Se creará una versión independiente; revise su número antes de guardar.</p>
 
