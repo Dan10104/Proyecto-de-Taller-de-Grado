@@ -7,13 +7,15 @@ import OperationForm from '../../Components/OperationForm.vue';
 import Icon from '../../Components/Icon.vue';
 import {reservationDate} from '../../reservations';
 import {focusError} from '../../spaces';
+import {useAccess} from '../../security';
+const {can}=useAccess();
 const props=defineProps({equipamiento:Object,seleccion:Object});
 const form=useForm({...props.seleccion,motivo:''});
 function send(){form.post('/prestamos',{onError:focusError});}
 </script>
 <template>
  <AppLayout title="Solicitar préstamo" section="Préstamos">
-  <div class="page-heading"><div><h1>{{equipamiento.nombre}}</h1><p>Solicitud de préstamo · <span class="reservation-code">{{equipamiento.codigo}}</span> · {{equipamiento.tipo}}</p></div><Link href="/equipamientos/disponibilidad" class="btn btn-secondary">Cambiar equipo o periodo</Link></div>
+  <div class="page-heading"><div><h1>{{equipamiento.nombre}}</h1><p>Solicitud de préstamo · <span class="reservation-code">{{equipamiento.codigo}}</span> · {{equipamiento.tipo}}</p></div><Link :href="can('equipamientos.ver') ? '/equipamientos/disponibilidad' : '/inicio'" class="btn btn-secondary">{{ can('equipamientos.ver') ? 'Cambiar equipo o periodo' : 'Volver al inicio' }}</Link></div>
   <section class="panel form-panel equipment-flow">
    <div class="loan-summary">
     <span class="equipment-glyph"><Icon name="calendar"/></span>

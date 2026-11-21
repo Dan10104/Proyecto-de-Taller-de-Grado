@@ -6,6 +6,8 @@ import FormErrors from '../../Components/FormErrors.vue';
 import SpaceIllustration from '../../Components/SpaceIllustration.vue';
 import Icon from '../../Components/Icon.vue';
 import { focusError } from '../../spaces';
+import { useAccess } from '../../security';
+const { can } = useAccess();
 const props = defineProps({ espacio: Object, periodo: Object });
 const form = useForm({ espacio_id: props.espacio.id, inicio: props.periodo.inicio, fin: props.periodo.fin, proposito: '' });
 </script>
@@ -13,7 +15,7 @@ const form = useForm({ espacio_id: props.espacio.id, inicio: props.periodo.inici
   <AppLayout title="Solicitar reserva" section="Reservas">
     <div class="page-heading">
       <div><h1 tabindex="-1">Solicitar reserva</h1><p>Revise el horario e indique el propósito. Hora de Bolivia.</p></div>
-      <Link href="/disponibilidad" class="btn btn-secondary">Elegir otro espacio</Link>
+      <Link :href="can('espacios.ver') ? '/disponibilidad' : '/inicio'" class="btn btn-secondary">{{ can('espacios.ver') ? 'Elegir otro espacio' : 'Volver al inicio' }}</Link>
     </div>
     <form class="panel form-panel" @submit.prevent="form.post('/reservas', { onError: focusError })">
       <FormErrors :errors="form.errors"/>
@@ -38,7 +40,7 @@ const form = useForm({ espacio_id: props.espacio.id, inicio: props.periodo.inici
       <InputField id="reserva-proposito" label="Propósito de la actividad" v-model="form.proposito" type="textarea" required maxlength="500" :error="form.errors.proposito"/>
       <p class="hint">{{ form.proposito.length }}/500 caracteres. Los campos con * son obligatorios.</p>
       <div class="alert reservation-explanation">Su solicitud quedará pendiente de revisión. El horario se confirmará cuando un responsable la apruebe.</div>
-      <div class="form-actions"><Link href="/disponibilidad" class="btn btn-secondary">Volver</Link><button class="btn btn-primary" :disabled="form.processing">{{ form.processing ? 'Registrando…' : 'Confirmar solicitud' }}</button></div>
+      <div class="form-actions"><Link :href="can('espacios.ver') ? '/disponibilidad' : '/inicio'" class="btn btn-secondary">Volver</Link><button class="btn btn-primary" :disabled="form.processing">{{ form.processing ? 'Registrando…' : 'Confirmar solicitud' }}</button></div>
     </form>
   </AppLayout>
 </template>

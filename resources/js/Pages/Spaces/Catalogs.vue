@@ -7,6 +7,8 @@ import FormErrors from '../../Components/FormErrors.vue';
 import Pagination from '../../Components/Pagination.vue';
 import Icon from '../../Components/Icon.vue';
 import { focusError } from '../../spaces';
+import { useAccess } from '../../security';
+const { can } = useAccess();
 const props = defineProps({ catalogo: String, registros: Object, filtros: Object });
 const labels = { pisos: 'Pisos', tipos: 'Tipos de espacio', caracteristicas: 'Características' };
 const editing = ref(null), search = ref(props.filtros.q || '');
@@ -23,7 +25,7 @@ function save() { const url = `/espacios/catalogos/${props.catalogo}`; const opt
         <h1>Catálogos auxiliares</h1>
         <p>Pisos, tipos y características para registrar espacios.</p>
       </div>
-      <Link href="/espacios" class="btn btn-secondary">Volver a espacios</Link>
+      <Link :href="can('espacios.ver') ? '/espacios' : '/inicio'" class="btn btn-secondary">{{ can('espacios.ver') ? 'Volver a espacios' : 'Volver al inicio' }}</Link>
     </div>
     <nav class="catalog-tabs" aria-label="Catálogos de espacios">
       <Link v-for="(label, key) in labels" :key="key" :href="`/espacios/catalogos/${key}`" :class="{active:catalogo === key}" :aria-current="catalogo === key ? 'page' : undefined">{{ label }}</Link>
