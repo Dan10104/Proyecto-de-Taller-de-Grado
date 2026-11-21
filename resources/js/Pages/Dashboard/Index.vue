@@ -1,26 +1,133 @@
 <script setup>
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { router, Link, usePage } from '@inertiajs/vue3';
 import AppLayout from '../../Layouts/AppLayout.vue';
 import FormErrors from '../../Components/FormErrors.vue';
 import ReportPeriodFields from '../../Components/ReportPeriodFields.vue';
 import AccessibleChart from '../../Components/AccessibleChart.vue';
+import StateBreakdown from '../../Components/StateBreakdown.vue';
 import Icon from '../../Components/Icon.vue';
-import '../../../css/reporting.css';
+import { reservationDate } from '../../reservations';
+
 const props = defineProps({ vista: String, vistas: Array, filtros: Object, generado_en: String, zona: String, tarjetas: Array, graficos: Array, proximas: Array, iot: Object });
 const filters = ref({ ...props.filtros });
 const selectedView = ref(props.vista), loading = ref(false);
 const page = usePage();
 function refresh() { const query = { vista: selectedView.value, ...filters.value }; if (query.periodo !== 'personalizado') { delete query.fecha_inicio; delete query.fecha_fin; } router.get('/dashboard', query, { onStart: () => loading.value = true, onFinish: () => loading.value = false }); }
+
+// Presentación de cada indicador calculado por el servidor: icono, destino y si pide atención.
+// No se añade ni se recalcula ningún valor; solo se ordena lo que llega en «tarjetas».
+const present = {
+  A1: { icon: 'calendar', href: '/reservas?alcance=administrativas&estado=PENDIENTE', lead: true },
+  A5: { icon: 'exchange', href: '/prestamos?alcance=administrativos&estado=PENDIENTE', lead: true },
+  A7: { icon: 'clock', href: '/prestamos?alcance=administrativos', lead: true, alert: 'danger' },
+  A9: { icon: 'tool', href: '/incidencias', lead: true, alert: 'warning' },
+  A2: { icon: 'calendar', href: '/reservas?alcance=administrativas&estado=APROBADA', lead: true },
+  A6: { icon: 'exchange', href: '/prestamos?alcance=administrativos&estado=ENTREGADO', lead: true },
+  A3: { icon: 'clock' },
+  A4: { icon: 'building', breakdown: 'Espacios académicos', href: '/espacios' },
+  A8: { icon: 'monitor', breakdown: 'Equipamiento tecnológico', href: '/equipamientos' },
+  A10: { iot: true },
+  P1: { icon: 'calendar', href: '/reservas?alcance=propias&estado=PENDIENTE', lead: true },
+  P2: { icon: 'calendar', href: '/reservas?alcance=propias&estado=APROBADA', lead: true },
+  P4: { icon: 'exchange', href: '/prestamos?alcance=propios&estado=APROBADO', lead: true },
+  P5: { icon: 'monitor', href: '/prestamos?alcance=propios&estado=ENTREGADO', lead: true },
+  P6: { icon: 'clock', href: '/prestamos?alcance=propios', lead: true, alert: 'danger' },
+  P7: { icon: 'bell', href: '/notificaciones', lead: true },
+  P3: { icon: 'exchange', href: '/prestamos?alcance=propios&estado=PENDIENTE' },
+};
+const cards = computed(() => props.tarjetas.map(card => ({ ...card, ...(present[card.id] || { icon: 'chart' }) })));
+const lead = computed(() => cards.value.filter(card => card.lead));
+const breakdowns = computed(() => cards.value.filter(card => card.breakdown));
+const more = computed(() => cards.value.filter(card => !card.lead && !card.breakdown && !card.iot));
+const tone = card => (card.alert && card.valor > 0 ? `is-${card.alert}` : '');
+
+const groups = computed(() => {
+  const pick = (...ids) => props.graficos.filter(chart => ids.includes(chart.id));
+  return [
+    { id: 'reservas', label: 'Reservas', charts: pick('G5', 'G1') },
+    { id: 'prestamos', label: 'Préstamos', charts: pick('G6', 'G2') },
+    { id: 'recursos', label: 'Equipos e incidencias', charts: pick('G3', 'G4') },
+  ].filter(group => group.charts.length);
+});
+const tab = ref(null);
+const activeGroup = computed(() => groups.value.find(group => group.id === tab.value) || groups.value[0]);
 </script>
+
 <template>
-  <AppLayout title="Dashboard"><div class="page-heading"><div><h1>{{ vista === 'administrativo' ? 'Dashboard institucional' : 'Mi dashboard' }}</h1><p>{{ vista === 'administrativo' ? 'Indicadores de los ámbitos que puede consultar.' : 'Sus solicitudes, próximas reservas y avisos personales.' }}</p></div></div>
-    <form class="panel report-filters" @submit.prevent="refresh"><fieldset class="report-filter-lock" :disabled="loading"><label v-if="vistas.length > 1" class="report-field" for="dashboard-vista"><span>Vista</span><select id="dashboard-vista" v-model="selectedView"><option v-for="v in vistas" :key="v" :value="v">{{ v === 'personal' ? 'Personal' : 'Institucional' }}</option></select></label><ReportPeriodFields v-if="selectedView === 'administrativo'" v-model="filters" prefix="dashboard-periodo"/><button class="btn btn-primary" :disabled="loading">{{ loading ? 'Actualizando…' : 'Actualizar' }}</button><span class="report-muted">{{ zona }}</span></fieldset></form>
-    <FormErrors :errors="page.props.errors"/><p class="report-cut" role="status">Consultado: {{ generado_en }} · {{ zona }}. Las tarjetas de estado actual son independientes del periodo.</p>
-    <div class="dashboard-cards" :aria-busy="loading"><section v-for="card in tarjetas" :key="card.id" class="panel dashboard-card" :data-metric="card.id"><div class="metric-heading"><h2>{{ card.titulo }}</h2><Icon :name="({ A1:'calendar',A2:'calendar',A3:'clock',A4:'building',A5:'exchange',A6:'exchange',A7:'clock',A8:'monitor',A9:'tool',A10:'sensor',P1:'calendar',P2:'calendar',P3:'exchange',P4:'exchange',P5:'exchange',P6:'clock',P7:'bell' })[card.id] || 'chart'"/></div><strong class="dashboard-value" :class="{'insufficient': card.valor === null}">{{ card.valor === null ? 'Sin datos suficientes' : card.valor.toLocaleString('es-BO') }}</strong><details class="metric-context"><summary>Contexto<span class="sr-only"> de {{ card.titulo }}</span></summary><p>{{ card.contexto }}</p><dl v-if="Object.keys(card.desglose).length" class="dashboard-breakdown"><div v-for="(n, name) in card.desglose" :key="name"><dt>{{ name.replaceAll('_', ' ') }}</dt><dd>{{ n }}</dd></div></dl></details></section></div>
-    <p v-if="!tarjetas.length" class="panel report-empty">No tiene indicadores habilitados con sus permisos actuales.</p>
-    <details v-if="iot && !iot.error" class="compact-help dashboard-iot"><summary>Evidencia IoT · ocupación no determinable</summary><p>{{ iot.con_evidencia_reciente }} espacios con evidencia reciente; {{ iot.sin_evidencia_reciente }} sin evidencia reciente. La ocupación es no determinable: estos datos no permiten afirmar que un espacio está libre ni calcular un porcentaje de ocupación.</p></details>
-    <div v-if="graficos.length" class="dashboard-charts"><AccessibleChart v-for="chart in graficos" :key="chart.id" :chart="chart"/></div>
-    <section v-if="vista === 'personal'" class="panel dashboard-upcoming"><h2>Mis próximas reservas</h2><p class="report-muted">Hasta cinco reservas aprobadas, ordenadas por inicio.</p><ul v-if="proximas.length"><li v-for="r in proximas" :key="r.id"><div><Link :href="`/reservas/${r.id}`">{{ r.codigo }} · {{ r.espacio }}</Link><p>{{ r.inicio }} — {{ r.fin }}</p></div><Link class="btn btn-secondary" :href="`/reservas/${r.id}`">Ver reserva</Link></li></ul><p v-else class="report-empty">No tiene próximas reservas aprobadas.</p></section>
+  <AppLayout title="Dashboard">
+    <div class="page-heading">
+      <div>
+        <h1>{{ vista === 'administrativo' ? 'Dashboard' : 'Mi resumen' }}</h1>
+        <p role="status">Actualizado {{ generado_en }}</p>
+      </div>
+      <form class="dashboard-filter" @submit.prevent="refresh">
+        <fieldset class="report-filter-lock" :disabled="loading">
+          <label v-if="vistas.length > 1" class="report-field" for="dashboard-vista"><span>Vista</span><select id="dashboard-vista" v-model="selectedView"><option v-for="v in vistas" :key="v" :value="v">{{ v === 'personal' ? 'Personal' : 'Institucional' }}</option></select></label>
+          <ReportPeriodFields v-if="selectedView === 'administrativo'" v-model="filters" prefix="dashboard-periodo"/>
+          <button class="btn btn-secondary" :disabled="loading">{{ loading ? 'Actualizando…' : 'Actualizar' }}</button>
+        </fieldset>
+      </form>
+    </div>
+    <FormErrors :errors="page.props.errors"/>
+
+    <section v-if="lead.length" class="numerals" aria-label="Indicadores principales" :aria-busy="loading">
+      <component :is="card.href ? Link : 'div'" v-for="card in lead" :key="card.id" :href="card.href" class="numeral" :data-metric="card.id">
+        <span class="numeral-head"><Icon :name="card.icon"/><Icon v-if="card.href" name="arrow" class="numeral-go"/></span>
+        <strong class="numeral-value" :class="[tone(card), { 'is-empty': card.valor === null }]">{{ card.valor === null ? 'Sin datos' : card.valor.toLocaleString('es-BO') }}</strong>
+        <span class="numeral-label">{{ card.titulo }}</span>
+      </component>
+    </section>
+    <div v-if="!tarjetas.length" class="panel empty-state">
+      <Icon name="chart"/>
+      <h2>Sin indicadores para su cuenta</h2>
+      <p>Su rol todavía no tiene indicadores habilitados.</p>
+    </div>
+
+    <div v-if="breakdowns.length || iot" class="dashboard-status">
+      <StateBreakdown v-for="card in breakdowns" :key="card.id" :title="card.breakdown" :total="card.valor" :values="card.desglose" :href="card.href" :data-metric="card.id"/>
+      <section v-if="iot" class="tech-surface dashboard-iot" aria-labelledby="dashboard-iot-title" data-metric="A10">
+        <div class="dashboard-iot-head">
+          <h2 id="dashboard-iot-title">Monitoreo de ocupación</h2>
+          <svg class="dashboard-iot-glyph" viewBox="0 0 64 56" aria-hidden="true"><path d="M32 6 58 19 32 32 6 19Z"/><path d="M32 16 58 29 32 42 6 29Z"/><path d="M32 26 58 39 32 52 6 39Z"/></svg>
+        </div>
+        <p v-if="iot.error">No se pudo consultar el monitoreo en este momento.</p>
+        <dl v-else class="dashboard-iot-figures">
+          <div><dd>{{ iot.con_evidencia_reciente }}</dd><dt>espacios con lectura reciente</dt></div>
+          <div><dd>{{ iot.sin_evidencia_reciente }}</dd><dt>espacios sin lectura reciente</dt></div>
+        </dl>
+        <details v-if="!iot.error"><summary>Cómo leer este dato</summary><p>Una lectura reciente es evidencia del ambiente; no permite afirmar que un espacio esté libre ni calcular un porcentaje. La ocupación se declara no determinable.</p></details>
+        <Link href="/iot/monitoreo" class="btn btn-secondary">Abrir monitoreo</Link>
+      </section>
+    </div>
+
+    <section v-if="groups.length" class="panel dashboard-charts-panel">
+      <div class="panel-heading">
+        <h2>Actividad del periodo</h2>
+        <div v-if="groups.length > 1" class="segmented" role="tablist" aria-label="Grupo de gráficos">
+          <button v-for="group in groups" :key="group.id" type="button" role="tab" :aria-selected="group.id === activeGroup.id" :class="{ active: group.id === activeGroup.id }" @click="tab = group.id">{{ group.label }}</button>
+        </div>
+      </div>
+      <div class="dashboard-charts"><AccessibleChart v-for="chart in activeGroup.charts" :key="chart.id" :chart="chart"/></div>
+    </section>
+
+    <section v-if="vista === 'personal'" class="panel dashboard-upcoming">
+      <div class="panel-heading"><h2>Mis próximas reservas</h2><Link v-if="proximas.length" href="/reservas?alcance=propias" class="text-link">Ver todas</Link></div>
+      <ul v-if="proximas.length">
+        <li v-for="r in proximas" :key="r.id">
+          <Link :href="`/reservas/${r.id}`"><strong>{{ r.espacio }}</strong><small>{{ r.codigo }}</small></Link>
+          <span>{{ reservationDate(r.inicio) }} – {{ r.fin.split(' ')[1] }}</span>
+        </li>
+      </ul>
+      <div v-else class="empty-state"><Icon name="calendar"/><h3>No tiene reservas próximas</h3><Link href="/disponibilidad" class="btn btn-primary">Reservar un espacio</Link></div>
+    </section>
+
+    <details v-if="more.length" class="disclosure dashboard-more">
+      <summary>Más indicadores</summary>
+      <dl class="dashboard-breakdown">
+        <div v-for="card in more" :key="card.id" :data-metric="card.id"><dt>{{ card.titulo }}<small>{{ card.contexto }}</small></dt><dd>{{ card.valor === null ? 'Sin datos' : card.valor.toLocaleString('es-BO') }}</dd></div>
+      </dl>
+    </details>
+    <p class="hint">Hora de referencia: {{ zona }}. Los indicadores de estado actual no dependen del periodo.</p>
   </AppLayout>
 </template>

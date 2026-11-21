@@ -2,6 +2,7 @@
 import { ref, watch, onMounted, onUnmounted } from 'vue';
 import { Link, usePage } from '@inertiajs/vue3';
 import AppLayout from '../../Layouts/AppLayout.vue';
+import StatusBadge from '../../Components/StatusBadge.vue';
 import { dateLabel } from '../../security';
 import { notificationTypes } from '../../notifications';
 const props = defineProps({ notificacion: Object, enlace: Object });
@@ -31,16 +32,27 @@ onUnmounted(() => document.removeEventListener('visibilitychange', markRead));
 </script>
 <template>
   <AppLayout title="Detalle del aviso" section="Notificaciones">
-    <Link class="back-link" href="/notificaciones">← Volver a notificaciones</Link>
+    <Link class="back-link" href="/notificaciones">Volver a notificaciones</Link>
     <article class="panel notification-detail">
-      <div class="notification-meta"><span>{{ notificationTypes[notificacion.tipo] }}</span><span class="notification-state">{{ readAt ? 'Leída' : 'No leída' }}</span></div>
       <h1>{{ notificacion.titulo }}</h1>
-      <p class="notification-date">Recibida el {{ dateLabel(notificacion.creada_en) }}</p>
       <p class="notification-message">{{ notificacion.mensaje }}</p>
-      <p v-if="readAt" class="notification-date">Leída el {{ dateLabel(readAt) }}</p>
-      <p v-else-if="pending" role="status">Confirmando lectura…</p>
-      <div v-if="error" class="alert" role="alert"><p>{{ error }}</p><button class="btn btn-secondary" :disabled="pending" @click="markRead">Reintentar lectura</button></div>
-      <div class="notification-context"><Link v-if="enlace" class="btn btn-primary" :href="enlace.url">{{ enlace.label }}</Link><p v-else>El detalle relacionado no está disponible con sus permisos actuales.</p></div>
+      <div class="notification-context">
+        <Link v-if="enlace" class="btn btn-primary" :href="enlace.url">{{ enlace.label }}</Link>
+        <p v-else class="hint">El detalle relacionado no está disponible con sus permisos actuales.</p>
+      </div>
+      <div v-if="error" class="alert alert-error notification-retry" role="alert"><p>{{ error }}</p><button class="btn btn-secondary" :disabled="pending" @click="markRead">Reintentar lectura</button></div>
+      <dl class="detail-grid notification-facts">
+        <div><dt>Tipo</dt><dd><span class="feature-chips"><span>{{ notificationTypes[notificacion.tipo] }}</span></span></dd></div>
+        <div><dt>Recibida</dt><dd><time :datetime="notificacion.creada_en">{{ dateLabel(notificacion.creada_en) }}</time></dd></div>
+        <div>
+          <dt>Lectura</dt>
+          <dd>
+            <StatusBadge :value="!readAt" domain="lectura"/>
+            <small v-if="readAt" class="cell-subline">{{ dateLabel(readAt) }}</small>
+            <small v-else-if="pending" class="cell-subline" role="status">Confirmando lectura…</small>
+          </dd>
+        </div>
+      </dl>
     </article>
   </AppLayout>
 </template>

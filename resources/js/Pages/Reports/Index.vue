@@ -7,7 +7,6 @@ import FormErrors from '../../Components/FormErrors.vue';
 import ReportPeriodFields from '../../Components/ReportPeriodFields.vue';
 import ReportReferenceField from '../../Components/ReportReferenceField.vue';
 import { useAccess } from '../../security';
-import '../../../css/reporting.css';
 const props = defineProps({ catalogo: Array, preview: Object, limite: Number });
 const page = usePage(), { can } = useAccess();
 const selected = ref(props.preview?.reporte || props.catalogo[0]?.id || '');
@@ -30,17 +29,86 @@ async function download(format) {
 }
 </script>
 <template>
-  <AppLayout title="Reportes"><div class="page-heading"><div><h1>Reportes institucionales</h1><p>Vista previa y archivos con los mismos filtros, columnas y alcance autorizado.</p></div><span class="report-muted">America/La_Paz</span></div>
-    <form class="panel report-form" @submit.prevent="loadPreview()"><div class="report-journey" aria-label="Proceso del reporte"><span><Icon name="report"/><strong>Reporte</strong></span><Icon name="arrow"/><span><Icon name="search"/>Filtros</span><Icon name="arrow"/><span><Icon name="chart"/>Vista previa</span><Icon name="arrow"/><span>PDF / XLSX</span></div><fieldset class="report-filter-lock" :disabled="busy || Boolean(exporting)"><label class="report-field report-selector" for="report-type"><span>Reporte</span><select id="report-type" v-model="selected" @change="changeReport"><option v-for="r in catalogo" :key="r.id" :value="r.id">{{ r.titulo }}</option></select></label>
-      <div class="report-filter-grid" v-if="definition"><ReportPeriodFields v-if="definition.rango" v-model="filters" prefix="report-period"/><template v-for="([field, spec]) in fieldSpecs" :key="`${selected}-${field}`"><ReportReferenceField v-if="spec === 'reference'" :report="selected" :field="field" :label="labels[field]" v-model="filters[field]"/><label v-else class="report-field" :for="`filter-${field}`"><span>{{ labels[field] }}</span><input v-if="spec === 'instant'" :id="`filter-${field}`" type="datetime-local" v-model="filters[field]" required><select v-else :id="`filter-${field}`" :value="filters[field] || (field === 'vista' ? 'inventario' : '')" @change="filters[field] = $event.target.value"><option v-if="field !== 'vista'" value="">Todos</option><option v-for="choice in spec" :key="choice" :value="choice">{{ choice.replaceAll('_', ' ') }}</option></select></label></template></div>
-      <div class="report-actions"><button class="btn btn-primary" :disabled="busy || !definition">{{ busy ? 'Consultando…' : 'Ver vista previa' }}</button><button type="button" class="btn btn-secondary" @click="changeReport">Limpiar filtros</button><span class="report-muted">Hasta {{ limite.toLocaleString('es-BO') }} filas por archivo.</span></div>
-    </fieldset></form><FormErrors :errors="{ ...page.props.errors, ...error }"/><p v-if="status" role="status" class="alert alert-success">{{ status }}</p>
-    <section v-if="preview" class="panel report-results" :aria-busy="busy"><div class="report-results-heading"><div><h2>{{ preview.titulo }}</h2><p>{{ preview.total.toLocaleString('es-BO') }} filas · Consultado: {{ preview.generado_en }} · {{ preview.zona }}</p></div><div v-if="can('reportes.exportar')" class="report-actions"><button v-for="format in ['pdf','xlsx']" :key="format" type="button" class="btn btn-secondary" :disabled="!unchanged || !preview.total || preview.total > limite || busy || Boolean(exporting)" @click="download(format)">{{ exporting === format ? 'Generando…' : `Exportar ${format.toUpperCase()}` }}</button></div></div>
-      <p v-if="!unchanged" class="alert" role="status">Actualice la vista previa para aplicar los filtros y habilitar la exportación.</p><p v-if="preview.total > limite" class="alert" role="status">Demasiados resultados para exportar. Refine los filtros; no se generará un archivo truncado.</p><dl class="report-applied"><div v-for="(value, key) in preview.filtros_visibles" :key="key"><dt>{{ key }}</dt><dd>{{ value }}</dd></div></dl>
-      <p v-if="selected === 'actividad-operacional'" class="report-note">Resumen agrupado por día, acción, resultado, responsable, categoría y referencia. No es un navegador de bitácora general.</p>
-      <p v-if="selected === 'iot'" class="report-note">Eventos históricos sin identidad personal. El valor no expresa un porcentaje universal de ocupación ni asistencia.</p>
-      <div v-if="preview.filas.length" class="report-table-scroll" tabindex="0" aria-label="Resultados del reporte"><table class="report-table"><caption class="sr-only">{{ preview.titulo }} · vista previa autorizada</caption><thead><tr><th v-for="column in preview.columnas" :key="column.key" :class="{num: column.type === 'integer' || column.type === 'number' || column.type === 'decimal'}" scope="col">{{ column.label }}</th></tr></thead><tbody><tr v-for="(row, index) in preview.filas" :key="index"><td v-for="column in preview.columnas" :key="column.key" :class="{num: column.type === 'integer' || column.type === 'number' || column.type === 'decimal'}">{{ valueLabel(row[column.key], column.type) }}</td></tr></tbody></table></div><p v-else class="report-empty">Sin datos para el periodo seleccionado. No se generará un archivo vacío.</p>
-      <nav v-if="preview.ultima_pagina > 1" class="report-pagination" aria-label="Páginas del reporte"><button class="btn btn-secondary" :disabled="preview.pagina <= 1 || busy || !unchanged" @click="loadPreview(preview.pagina - 1)">Anterior</button><span>Página {{ preview.pagina }} de {{ preview.ultima_pagina }}</span><button class="btn btn-secondary" :disabled="preview.pagina >= preview.ultima_pagina || busy || !unchanged" @click="loadPreview(preview.pagina + 1)">Siguiente</button></nav>
-    </section><section v-else class="panel report-empty">Seleccione el reporte y sus filtros para consultar los datos antes de exportar.</section>
+  <AppLayout title="Reportes">
+    <div class="page-heading">
+      <div><h1>Reportes</h1><p>Consulte la vista previa y descárguela en PDF o XLSX.</p></div>
+      <span class="hint">Hora de referencia: America/La_Paz</span>
+    </div>
+
+    <form class="panel report-form no-print" @submit.prevent="loadPreview()">
+      <fieldset class="report-filter-lock" :disabled="busy || Boolean(exporting)">
+        <div class="report-step">
+          <span class="report-step-number" aria-hidden="true">1</span>
+          <div class="report-step-body">
+            <label class="report-field report-selector" for="report-type"><span>Reporte</span><select id="report-type" v-model="selected" @change="changeReport"><option v-for="r in catalogo" :key="r.id" :value="r.id">{{ r.titulo }}</option></select></label>
+          </div>
+        </div>
+        <div v-if="definition" class="report-step">
+          <span class="report-step-number" aria-hidden="true">2</span>
+          <div class="report-step-body">
+            <h2 class="report-step-title">Periodo y filtros</h2>
+            <div class="report-filter-grid">
+              <ReportPeriodFields v-if="definition.rango" v-model="filters" prefix="report-period"/>
+              <template v-for="([field, spec]) in fieldSpecs" :key="`${selected}-${field}`">
+                <ReportReferenceField v-if="spec === 'reference'" :report="selected" :field="field" :label="labels[field]" v-model="filters[field]"/>
+                <label v-else class="report-field" :for="`filter-${field}`"><span>{{ labels[field] }}</span><input v-if="spec === 'instant'" :id="`filter-${field}`" type="datetime-local" v-model="filters[field]" required><select v-else :id="`filter-${field}`" :value="filters[field] || (field === 'vista' ? 'inventario' : '')" @change="filters[field] = $event.target.value"><option v-if="field !== 'vista'" value="">Todos</option><option v-for="choice in spec" :key="choice" :value="choice">{{ choice.replaceAll('_', ' ') }}</option></select></label>
+              </template>
+            </div>
+          </div>
+        </div>
+        <div class="report-actions">
+          <button class="btn btn-primary" :disabled="busy || !definition"><Icon name="eye"/>{{ busy ? 'Consultando…' : 'Ver vista previa' }}</button>
+          <button type="button" class="text-button" @click="changeReport">Limpiar filtros</button>
+          <span class="hint">Hasta {{ limite.toLocaleString('es-BO') }} filas por archivo.</span>
+        </div>
+      </fieldset>
+    </form>
+    <FormErrors class="no-print" :errors="{ ...page.props.errors, ...error }"/>
+    <p v-if="status" role="status" class="alert alert-success no-print">{{ status }}</p>
+
+    <section v-if="preview" class="panel report-results" :aria-busy="busy">
+      <div class="report-results-heading">
+        <div class="report-step">
+          <span class="report-step-number no-print" aria-hidden="true">3</span>
+          <div class="report-step-body">
+            <h2>{{ preview.titulo }}</h2>
+            <p class="report-total"><strong>{{ preview.total.toLocaleString('es-BO') }}</strong> filas <span class="report-generated">Consultado: {{ preview.generado_en }} · {{ preview.zona }}</span></p>
+          </div>
+        </div>
+        <div v-if="can('reportes.exportar')" class="report-export no-print">
+          <span class="report-step-number" aria-hidden="true">4</span>
+          <div class="button-group" role="group" aria-label="Exportar">
+            <button v-for="format in ['pdf','xlsx']" :key="format" type="button" class="btn btn-secondary" :disabled="!unchanged || !preview.total || preview.total > limite || busy || Boolean(exporting)" @click="download(format)"><Icon name="download"/>{{ exporting === format ? 'Generando…' : `Exportar ${format.toUpperCase()}` }}</button>
+          </div>
+        </div>
+      </div>
+      <p v-if="!unchanged" class="alert no-print" role="status">Actualice la vista previa para aplicar los filtros y habilitar la exportación.</p>
+      <p v-if="preview.total > limite" class="alert alert-warning" role="status">Demasiados resultados para exportar. Refine los filtros; no se generará un archivo truncado.</p>
+      <div v-if="Object.keys(preview.filtros_visibles || {}).length" class="report-applied">
+        <p class="report-applied-line"><Icon name="filter"/><span>{{ Object.values(preview.filtros_visibles).join(' · ') }}</span></p>
+        <details class="report-applied-more">
+          <summary>Ver filtros aplicados</summary>
+          <dl><div v-for="(value, key) in preview.filtros_visibles" :key="key"><dt>{{ key }}</dt><dd>{{ value }}</dd></div></dl>
+        </details>
+      </div>
+      <details v-if="selected === 'actividad-operacional' || selected === 'iot'" class="disclosure report-note">
+        <summary>Cómo leer este reporte</summary>
+        <p v-if="selected === 'actividad-operacional'">Resumen agrupado por día, acción, resultado, responsable, categoría y referencia. No es un navegador de bitácora general.</p>
+        <p v-if="selected === 'iot'">Eventos históricos sin identidad personal. El valor no expresa un porcentaje universal de ocupación ni asistencia.</p>
+      </details>
+      <div v-if="preview.filas.length" class="report-table-scroll table-scroll" tabindex="0" role="region" aria-label="Resultados del reporte"><table class="report-table"><caption class="sr-only">{{ preview.titulo }} · vista previa autorizada</caption><thead><tr><th v-for="column in preview.columnas" :key="column.key" :class="[column.type, { num: column.type === 'integer' || column.type === 'number' || column.type === 'decimal' }]" scope="col">{{ column.label }}</th></tr></thead><tbody><tr v-for="(row, index) in preview.filas" :key="index"><td v-for="column in preview.columnas" :key="column.key" :class="[column.type, { num: column.type === 'integer' || column.type === 'number' || column.type === 'decimal' }]">{{ valueLabel(row[column.key], column.type) }}</td></tr></tbody></table></div>
+      <div v-else class="empty-state"><Icon name="report"/><h3>Sin datos para el periodo seleccionado.</h3><p>No se generará un archivo vacío.</p></div>
+      <nav v-if="preview.ultima_pagina > 1" class="report-pagination no-print" aria-label="Páginas del reporte"><button class="btn btn-secondary" :disabled="preview.pagina <= 1 || busy || !unchanged" @click="loadPreview(preview.pagina - 1)">Anterior</button><span>Página {{ preview.pagina }} de {{ preview.ultima_pagina }}</span><button class="btn btn-secondary" :disabled="preview.pagina >= preview.ultima_pagina || busy || !unchanged" @click="loadPreview(preview.pagina + 1)">Siguiente</button></nav>
+    </section>
+    <section v-else class="panel report-placeholder">
+      <div class="report-step">
+        <span class="report-step-number is-idle" aria-hidden="true">3</span>
+        <div class="report-step-body"><h2>Vista previa</h2><p class="hint">Seleccione el reporte y sus filtros para consultar los datos antes de exportar.</p></div>
+      </div>
+      <div v-if="can('reportes.exportar')" class="report-step">
+        <span class="report-step-number is-idle" aria-hidden="true">4</span>
+        <div class="report-step-body"><h2>Exportar</h2><p class="hint">PDF o XLSX, disponible tras la vista previa.</p></div>
+      </div>
+    </section>
   </AppLayout>
 </template>

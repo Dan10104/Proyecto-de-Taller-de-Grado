@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import { Head, useForm, usePage } from '@inertiajs/vue3';
 import Brand from '../../Components/Brand.vue';
 import Icon from '../../Components/Icon.vue';
+import SpaceIllustration from '../../Components/SpaceIllustration.vue';
 
 const page = usePage();
 const visible = ref(false);
@@ -16,34 +17,32 @@ function submit() {
 <template>
   <Head title="Iniciar sesión · ESPACIO-U"/>
   <div class="login-page">
-    <section class="login-story">
-      <img class="login-campus-photo" :src="'/images/presentation/campus-demo.webp'" alt="Campus universitario conceptual, imagen generada de demostración." width="1536" height="1024" fetchpriority="high">
+    <section class="login-story" aria-label="ESPACIO-U">
       <Brand light/>
       <div class="login-story-main">
-
-        <h2>
-          Conocimiento
-          <br>
-          que conecta.
-        </h2>
-        <p>Gestión inteligente de espacios académicos y equipamiento tecnológico</p>
-        <span class="login-photo-caption">Campus conceptual · Imagen de demostración</span>
+        <h2>Reservas de espacios y préstamos de equipamiento</h2>
+        <ul class="login-points">
+          <li><Icon name="calendar"/>Espacios académicos</li>
+          <li><Icon name="monitor"/>Equipamiento tecnológico</li>
+          <li><Icon name="signal"/>Monitoreo de ocupación</li>
+          <li><Icon name="network"/>Trazabilidad verificable</li>
+        </ul>
       </div>
-      <footer>Facultad de Ingeniería en Ciencias de la Computación y Telecomunicaciones</footer>
+      <SpaceIllustration class="login-illustration"/>
+      <p class="login-faculty">Facultad de Ingeniería en Ciencias de la Computación y Telecomunicaciones</p>
     </section>
     <main class="login-form-side">
-      <div class="login-mobile-brand">
-        <Brand/>
-      </div>
       <div class="login-form-wrap">
-
+        <div class="login-mobile-brand">
+          <Brand/>
+        </div>
         <h1>Iniciar sesión</h1>
-        <p class="lead">Ingrese sus credenciales para continuar.</p>
+        <p class="lead">Ingrese con su cuenta de ESPACIO-U.</p>
         <div v-if="page.props.flash?.notice" class="alert" role="status">{{ page.props.flash.notice }}</div>
         <form @submit.prevent="submit" class="form-stack">
           <div class="field">
             <label for="correo">Correo</label>
-            <input id="correo" v-model="form.correo" type="email" autocomplete="username" maxlength="190" required autofocus placeholder="Su correo institucional" :aria-invalid="!!form.errors.correo" aria-describedby="correo-error">
+            <input id="correo" v-model="form.correo" type="email" autocomplete="username" maxlength="190" required autofocus :aria-invalid="!!form.errors.correo" aria-describedby="correo-error">
             <p id="correo-error" class="field-error" role="alert">{{ form.errors.correo }}</p>
           </div>
           <div class="field">
@@ -54,18 +53,10 @@ function submit() {
             </div>
             <p id="password-error" class="field-error" role="alert">{{ form.errors.password }}</p>
           </div>
-          <button class="btn btn-primary login-submit" :disabled="form.processing" type="submit">
-            {{ form.processing?'Verificando…':'Iniciar sesión' }}
-            <Icon name="arrow"/>
-          </button>
+          <button class="btn btn-primary login-submit" :disabled="form.processing" type="submit">{{ form.processing?'Verificando…':'Iniciar sesión' }}</button>
         </form>
-        <p class="login-access">
-          <Icon name="shield"/>
-          Acceso autorizado para usuarios de la FICCT
-        </p>
-        <p class="login-help">Si necesita ayuda con su acceso, comuníquese con la administración de la Facultad.</p>
+        <p class="login-help">¿No puede ingresar? Solicite ayuda a la administración de la Facultad.</p>
       </div>
-      <footer class="login-footer">ESPACIO-U · Plataforma institucional</footer>
     </main>
   </div>
 </template>
