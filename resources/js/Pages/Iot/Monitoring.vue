@@ -10,6 +10,9 @@ import IotEvidence from '../../Components/IotEvidence.vue';
 import StatusBadge from '../../Components/StatusBadge.vue';
 import Icon from '../../Components/Icon.vue';
 import { dateLabel, useAccess } from '../../security';
+// Historial: fecha con segundos, para distinguir eventos medidos o recibidos en el mismo minuto.
+const precise = new Intl.DateTimeFormat('es-BO', { dateStyle: 'medium', timeStyle: 'medium', timeZone: 'America/La_Paz' });
+const preciseDate = value => (value ? precise.format(new Date(value)) : '—');
 const props = defineProps({ sensores: Object, eventos: Object, filtros: Object, consultado: String, ventana: Number });
 const { can } = useAccess();
 const filters = useForm({ sensor_id: props.filtros.sensor_id || '', espacio_id: props.filtros.espacio_id || '', tipo: props.filtros.tipo || '', desde: props.filtros.desde || '', hasta: props.filtros.hasta || '' });
@@ -95,7 +98,7 @@ const filtersOpen = ref(Object.values(props.filtros || {}).some(value => value !
           <thead><tr><th>Medición · Bolivia</th><th>Sensor</th><th>Espacio histórico</th><th>Tipo y valor</th></tr></thead>
           <tbody>
             <tr v-for="event in eventos.data" :key="event.id">
-              <td class="date-cell">{{ dateLabel(event.fecha_evento) }}<small class="cell-subline">Recepción: {{ dateLabel(event.fecha_recepcion) }}</small></td>
+              <td class="date-cell">{{ preciseDate(event.fecha_evento) }}<small class="cell-subline">Recepción: {{ preciseDate(event.fecha_recepcion) }}</small></td>
               <td>{{ event.sensor.identificador }}<small class="cell-subline">Evento #{{ event.id }}</small></td>
               <td>{{ event.espacio_historico.recurso.nombre }}<small class="cell-subline">{{ event.espacio_historico.recurso.codigo }}</small></td>
               <td>{{ event.tipo === 'PRESENCIA' ? 'Presencia' : event.tipo === 'OCUPACION' ? 'Ocupación' : event.tipo }}<small class="cell-subline">Valor informado: {{ event.valor ?? 'No informado' }}</small></td>

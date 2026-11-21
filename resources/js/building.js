@@ -53,16 +53,23 @@ const floorOfRoom = (number) => BUILDING_FLOORS.find((floor) => floor.left.inclu
 // «Aula N° 11» en el nombre; «LAB-41», «AULA_11» en el código). Un número suelto no identifica un
 // ambiente: «Sala para 20 personas» o un correlativo como «ESP-020» no se interpretan.
 const ROOM_ID = /\b(aula|laboratorio|lab)\b\.?\s*(?:n(?:ro|o)?\b\.?\s*)?(\d{1,3})\b/g;
+// Tras un identificador, otro número unido por espacio, barra, coma, «y», «a» o «al» indica una
+// enumeración o un rango de ambientes («AULA_11-13», «Aula 11 / 13», «Aula 11 y 13»).
+const ROOM_LIST = /^\s*(?:[\/,&+]|\b(?:y|a|al)\b)?\s*\d/;
 // Todos los identificadores presentes en un texto, como pares «tipo-número» sin repetir.
+// Devuelve null cuando el texto enumera varios ambientes bajo un mismo identificador.
 function roomIdsOf(value) {
   const text = plain(value).replace(/[°º]/g, 'o').replace(/[_-]+/g, ' ');
-  return [...new Set([...text.matchAll(ROOM_ID)].map((found) => `${found[1] === 'aula' ? 'aula' : 'laboratorio'}-${Number(found[2])}`))];
+  const found = [...text.matchAll(ROOM_ID)];
+  if (found.some((match) => ROOM_LIST.test(text.slice(match.index + match[0].length)))) return null;
+  return [...new Set(found.map((match) => `${match[1] === 'aula' ? 'aula' : 'laboratorio'}-${Number(match[2])}`))];
 }
 
 // Ubica un espacio real en la maqueta. Devuelve { floor, room, kind } o null cuando el registro no
 // respalda la posición; en ese caso el espacio se lista aparte, nunca se descarta.
 // · Aula o laboratorio: exige que nombre y código, juntos, identifiquen un único ambiente; si nombran
-//   dos distintos («Aula 11 / Aula 13», o nombre y código que no coinciden) el espacio no se dibuja.
+//   dos distintos («Aula 11 / Aula 13», o nombre y código que no coinciden) o enumeran un rango
+//   («AULA_11-13», «Aula 11 / 13») el espacio no se dibuja.
 //   El tipo del identificador debe coincidir con el del ambiente de la maqueta.
 // · Auditorio: no tiene número, así que solo se dibuja cuando el piso registrado lo confirma.
 // · Si el registro indica su piso con un número o un ordinal, debe coincidir con el de la maqueta.
@@ -77,7 +84,9 @@ export function locateSpace(space) {
     return floor && floorHint === floor.number ? { floor: floor.number, room: 'auditorium', kind: 'auditorio' } : null;
   }
 
-  const ids = [...new Set([...roomIdsOf(name), ...roomIdsOf(code)])];
+  const inName = roomIdsOf(name), inCode = roomIdsOf(code);
+  if (!inName || !inCode) return null;
+  const ids = [...new Set([...inName, ...inCode])];
   if (ids.length !== 1) return null;
   const [kind, digits] = ids[0].split('-');
   const number = Number(digits);

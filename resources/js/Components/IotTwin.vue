@@ -309,6 +309,7 @@ const floors = computed(() => scaffold.map(floor => ({
               <div><dt>Código del espacio</dt><dd class="twin-code">{{ view.space.recurso?.codigo }}</dd></div>
               <div><dt>Referencia del espacio</dt><dd>#{{ view.group.id }}</dd></div>
               <div v-if="view.space.piso_id != null"><dt>Piso en los datos</dt><dd>Piso · ref. {{ view.space.piso_id }}</dd></div>
+              <div v-if="view.space.referencia_ubicacion"><dt>Referencia de ubicación registrada</dt><dd>{{ view.space.referencia_ubicacion }}</dd></div>
               <div><dt>Estado operativo</dt><dd><StatusBadge :value="view.space.estado"/></dd></div>
               <div><dt>Capacidad</dt><dd>{{ view.space.capacidad }} personas</dd></div>
             </template>
