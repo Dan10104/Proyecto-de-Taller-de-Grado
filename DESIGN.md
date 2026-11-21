@@ -287,7 +287,7 @@ Paleta fría y contenida: un azul profundo que da identidad, un cian que señala
 **Character:** una sola familia contemporánea y muy legible, alojada en el propio proyecto (`@fontsource-variable/onest`). La jerarquía se resuelve con tamaño y peso; los pesos intermedios del eje variable (550, 650) evitan saltos bruscos.
 
 ### Hierarchy
-- **Display** (700, 2.5rem, 1.05, -0.03em, cifras tabulares): los numerales del tablero. Baja a 2rem por debajo de 36rem. Sin dato muestra «Sin datos» a 1rem/600 en tinta de apoyo.
+- **Display** (700, 2.5rem, 1.05, -0.03em): los numerales del tablero. Baja a 2rem por debajo de 36rem. Sin dato muestra «Sin datos» a 1rem/600 en tinta de apoyo.
 - **Headline** (650, 1.375rem, 1.2, -0.015em, `text-wrap: balance`): el `h1` de cada página y el veredicto de la cadena de evidencia. Inicio e inicio de sesión lo suben a 1.75rem.
 - **Title** (650, 1rem, 1.35): `h2` de panel. En diálogos sube a 1.125rem.
 - **Subtitle** (650, 0.875rem, 1.4): `h3` dentro de un panel.
@@ -301,7 +301,7 @@ Paleta fría y contenida: un azul profundo que da identidad, un cian que señala
 
 **Regla de la línea meta.** No hay antetítulos sobre los encabezados. El código del registro (reserva, equipo, espacio) vive en la línea bajo el `h1`, en `accent-ink`, 600, junto a tipo y fechas separados por «·».
 
-**Regla de las cifras tabulares.** `tabular-nums` solo donde las cifras se comparan o cambian en el sitio: numerales, contadores, totales, paginación y campos de fecha y número.
+**Regla de las cifras tabulares.** `tabular-nums` solo donde las cifras se alinean o cambian en el sitio: contador del menú, paginación y campos de fecha y número. Los numerales y contadores sueltos usan cifras proporcionales, porque las tabulares abren un hueco en cifras como «11».
 
 ## Layout
 
