@@ -19,7 +19,8 @@ const column = computed(() => Math.min(36, Math.max(2, slot.value * 0.64)));
       <h3 :id="`chart-${chart.id}`">{{ chart.titulo }}</h3>
       <strong v-if="!chart.sin_datos" class="chart-total">{{ total.toLocaleString('es-BO') }}</strong>
     </div>
-    <p v-if="chart.sin_datos" class="chart-empty">Sin registros en el periodo.</p>
+    <p class="chart-scope">{{ chart.contexto }}</p>
+    <p v-if="chart.sin_datos" class="chart-empty">Sin registros.</p>
     <div v-else-if="chart.tipo !== 'tendencia'" class="chart-bars" aria-hidden="true">
       <div v-for="([name, n]) in entries" :key="name" class="chart-bar-row">
         <span>{{ label(name) }}</span>
@@ -43,7 +44,6 @@ const column = computed(() => Math.min(36, Math.max(2, slot.value * 0.64)));
     </div>
     <details class="chart-data">
       <summary>Ver datos<span class="sr-only"> de {{ chart.titulo.toLowerCase() }}</span></summary>
-      <p class="hint">{{ chart.contexto }}</p>
       <div class="report-table-scroll" tabindex="0" :aria-label="`Tabla: ${chart.titulo}`">
         <table class="report-table"><caption class="sr-only">{{ chart.titulo }} · {{ chart.contexto }}</caption><thead><tr><th scope="col">{{ chart.tipo === 'tendencia' ? 'Periodo local' : 'Categoría' }}</th><th scope="col">Cantidad</th></tr></thead><tbody><tr v-for="([name, n]) in entries" :key="name"><th scope="row">{{ chart.tipo === 'tendencia' ? name : label(name) }}</th><td>{{ n }}</td></tr></tbody></table>
       </div>

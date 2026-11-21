@@ -8,11 +8,14 @@ import AccessibleChart from '../../Components/AccessibleChart.vue';
 import StateBreakdown from '../../Components/StateBreakdown.vue';
 import Icon from '../../Components/Icon.vue';
 import { reservationDate } from '../../reservations';
+import { statusOf } from '../../status';
+import { useAccess } from '../../security';
 
 const props = defineProps({ vista: String, vistas: Array, filtros: Object, generado_en: String, zona: String, tarjetas: Array, graficos: Array, proximas: Array, iot: Object });
 const filters = ref({ ...props.filtros });
 const selectedView = ref(props.vista), loading = ref(false);
 const page = usePage();
+const { can } = useAccess();
 function refresh() { const query = { vista: selectedView.value, ...filters.value }; if (query.periodo !== 'personalizado') { delete query.fecha_inicio; delete query.fecha_fin; } router.get('/dashboard', query, { onStart: () => loading.value = true, onFinish: () => loading.value = false }); }
 
 // Presentación de cada indicador calculado por el servidor: icono, destino y si pide atención.
@@ -20,8 +23,8 @@ function refresh() { const query = { vista: selectedView.value, ...filters.value
 const present = {
   A1: { icon: 'calendar', href: '/reservas?alcance=administrativas&estado=PENDIENTE', lead: true },
   A5: { icon: 'exchange', href: '/prestamos?alcance=administrativos&estado=PENDIENTE', lead: true },
-  A7: { icon: 'clock', href: '/prestamos?alcance=administrativos', lead: true, alert: 'danger' },
-  A9: { icon: 'tool', href: '/incidencias', lead: true, alert: 'warning' },
+  A7: { icon: 'clock', href: '/prestamos?alcance=administrativos&vencidos=1', lead: true, alert: 'danger' },
+  A9: { icon: 'tool', href: '/incidencias?estado=ABIERTA', lead: true, alert: 'warning' },
   A2: { icon: 'calendar', href: '/reservas?alcance=administrativas&estado=APROBADA', lead: true },
   A6: { icon: 'exchange', href: '/prestamos?alcance=administrativos&estado=ENTREGADO', lead: true },
   A3: { icon: 'clock' },
@@ -32,8 +35,8 @@ const present = {
   P2: { icon: 'calendar', href: '/reservas?alcance=propias&estado=APROBADA', lead: true },
   P4: { icon: 'exchange', href: '/prestamos?alcance=propios&estado=APROBADO', lead: true },
   P5: { icon: 'monitor', href: '/prestamos?alcance=propios&estado=ENTREGADO', lead: true },
-  P6: { icon: 'clock', href: '/prestamos?alcance=propios', lead: true, alert: 'danger' },
-  P7: { icon: 'bell', href: '/notificaciones', lead: true },
+  P6: { icon: 'clock', href: '/prestamos?alcance=propios&vencidos=1', lead: true, alert: 'danger' },
+  P7: { icon: 'bell', href: '/notificaciones?lectura=no_leidas', lead: true },
   P3: { icon: 'exchange', href: '/prestamos?alcance=propios&estado=PENDIENTE' },
 };
 const cards = computed(() => props.tarjetas.map(card => ({ ...card, ...(present[card.id] || { icon: 'chart' }) })));
@@ -41,6 +44,10 @@ const lead = computed(() => cards.value.filter(card => card.lead));
 const breakdowns = computed(() => cards.value.filter(card => card.breakdown));
 const more = computed(() => cards.value.filter(card => !card.lead && !card.breakdown && !card.iot));
 const tone = card => (card.alert && card.valor > 0 ? `is-${card.alert}` : '');
+// Desglose que el servidor envía con el indicador (p. ej. vigentes y vencidos): se muestra, no se recalcula.
+const detailLabels = { VIGENTES: 'vigentes', VENCIDOS: 'vencidos', INCIDENCIA: 'incidencias', MANTENIMIENTO: 'mantenimientos' };
+const detail = card => Object.entries(card.desglose || {}).map(([key, value]) => `${value.toLocaleString('es-BO')} ${detailLabels[key] || statusOf(key).label.toLowerCase()}`);
+const sameDay = r => String(r.inicio).split(' ')[0] === String(r.fin).split(' ')[0];
 
 const groups = computed(() => {
   const pick = (...ids) => props.graficos.filter(chart => ids.includes(chart.id));
@@ -76,6 +83,7 @@ const activeGroup = computed(() => groups.value.find(group => group.id === tab.v
         <span class="numeral-head"><Icon :name="card.icon"/><Icon v-if="card.href" name="arrow" class="numeral-go"/></span>
         <strong class="numeral-value" :class="[tone(card), { 'is-empty': card.valor === null }]">{{ card.valor === null ? 'Sin datos' : card.valor.toLocaleString('es-BO') }}</strong>
         <span class="numeral-label">{{ card.titulo }}</span>
+        <span v-if="detail(card).length" class="numeral-detail">{{ detail(card).join(' · ') }}</span>
       </component>
     </section>
     <div v-if="!tarjetas.length" class="panel empty-state">
@@ -92,10 +100,13 @@ const activeGroup = computed(() => groups.value.find(group => group.id === tab.v
           <svg class="dashboard-iot-glyph" viewBox="0 0 64 56" aria-hidden="true"><path d="M32 6 58 19 32 32 6 19Z"/><path d="M32 16 58 29 32 42 6 29Z"/><path d="M32 26 58 39 32 52 6 39Z"/></svg>
         </div>
         <p v-if="iot.error">No se pudo consultar el monitoreo en este momento.</p>
-        <dl v-else class="dashboard-iot-figures">
-          <div><dd>{{ iot.con_evidencia_reciente }}</dd><dt>espacios con lectura reciente</dt></div>
-          <div><dd>{{ iot.sin_evidencia_reciente }}</dd><dt>espacios sin lectura reciente</dt></div>
-        </dl>
+        <template v-else>
+          <p class="dashboard-iot-total"><strong>{{ iot.no_determinable }}</strong> {{ iot.no_determinable === 1 ? 'espacio monitoreado, con ocupación no determinable' : 'espacios monitoreados, todos con ocupación no determinable' }}</p>
+          <dl class="dashboard-iot-figures">
+            <div><dd>{{ iot.con_evidencia_reciente }}</dd><dt>con lectura reciente</dt></div>
+            <div><dd>{{ iot.sin_evidencia_reciente }}</dd><dt>sin lectura reciente</dt></div>
+          </dl>
+        </template>
         <details v-if="!iot.error"><summary>Cómo leer este dato</summary><p>Una lectura reciente es evidencia del ambiente; no permite afirmar que un espacio esté libre ni calcular un porcentaje. La ocupación se declara no determinable.</p></details>
         <Link href="/iot/monitoreo" class="btn btn-secondary">Abrir monitoreo</Link>
       </section>
@@ -103,7 +114,7 @@ const activeGroup = computed(() => groups.value.find(group => group.id === tab.v
 
     <section v-if="groups.length" class="panel dashboard-charts-panel">
       <div class="panel-heading">
-        <h2>Actividad del periodo</h2>
+        <h2>Actividad y estado actual</h2>
         <div v-if="groups.length > 1" class="segmented" role="tablist" aria-label="Grupo de gráficos">
           <button v-for="group in groups" :key="group.id" type="button" role="tab" :aria-selected="group.id === activeGroup.id" :class="{ active: group.id === activeGroup.id }" @click="tab = group.id">{{ group.label }}</button>
         </div>
@@ -116,10 +127,10 @@ const activeGroup = computed(() => groups.value.find(group => group.id === tab.v
       <ul v-if="proximas.length">
         <li v-for="r in proximas" :key="r.id">
           <Link :href="`/reservas/${r.id}`"><strong>{{ r.espacio }}</strong><small>{{ r.codigo }}</small></Link>
-          <span>{{ reservationDate(r.inicio) }} – {{ r.fin.split(' ')[1] }}</span>
+          <span>{{ reservationDate(r.inicio) }} – {{ sameDay(r) ? r.fin.split(' ')[1] : reservationDate(r.fin) }}</span>
         </li>
       </ul>
-      <div v-else class="empty-state"><Icon name="calendar"/><h3>No tiene reservas próximas</h3><Link href="/disponibilidad" class="btn btn-primary">Reservar un espacio</Link></div>
+      <div v-else class="empty-state"><Icon name="calendar"/><h3>No tiene reservas próximas</h3><Link v-if="can('reservas.solicitar') && can('espacios.ver')" href="/disponibilidad" class="btn btn-primary">Reservar un espacio</Link></div>
     </section>
 
     <details v-if="more.length" class="disclosure dashboard-more">

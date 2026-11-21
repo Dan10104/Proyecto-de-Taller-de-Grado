@@ -53,9 +53,13 @@
 .dashboard-iot .btn { justify-self: start; }
 
 /* Gráficos */
-.dashboard-charts { display: grid; grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr)); gap: var(--space-6) var(--space-8); }
+.dashboard-charts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(20rem, 100%), 1fr)); gap: var(--space-6) var(--space-8); }
 .dashboard-chart { min-width: 0; }
 .dashboard-chart > * + * { margin-top: var(--space-3); }
+/* Alcance del gráfico (periodo o estado actual), siempre a la vista. */
+.dashboard-chart > .chart-scope { margin-top: 0.125rem; color: var(--color-ink-3); font-size: var(--text-xs); }
+.dashboard-iot-total { font-size: var(--text-sm); }
+.dashboard-iot-total strong { color: #fff; font-weight: 700; }
 .chart-head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-3); }
 .chart-head h3 { color: var(--color-ink-2); font-weight: 600; }
 .chart-total { font-size: var(--text-xl); font-weight: 700; letter-spacing: -0.02em; }
