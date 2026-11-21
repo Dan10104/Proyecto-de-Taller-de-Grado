@@ -10,16 +10,12 @@ function search() { form.get(props.availability ? '/disponibilidad' : '/espacios
 function clear() { form.defaults(defaults); form.reset(); search(); }
 </script>
 <template>
-  <form class="panel space-filters" @submit.prevent="search">
+  <form class="panel space-filters" :class="{ 'is-availability': availability }" @submit.prevent="search">
     <FormErrors :errors="form.errors"/>
     <div v-if="availability" class="period-fields">
       <InputField id="f-fecha" label="Fecha" v-model="form.fecha" type="date" required min="1000-01-01" max="9999-12-31" :error="form.errors.fecha"/>
       <InputField id="f-inicio" label="Hora de inicio" v-model="form.hora_inicio" type="time" required :error="form.errors.hora_inicio"/>
       <InputField id="f-fin" label="Hora de fin" v-model="form.hora_fin" type="time" required :error="form.errors.hora_fin"/>
-      <div class="period-context">
-        <strong>Hora de Bolivia</strong>
-        <span>America/La_Paz · UTC−4</span>
-      </div>
     </div>
     <div class="space-filter-grid">
       <InputField id="f-q" label="Buscar espacio" v-model="form.q" type="search" maxlength="160" placeholder="Código o nombre" :error="form.errors.q"/>
@@ -43,8 +39,11 @@ function clear() { form.defaults(defaults); form.reset(); search(); }
       <p class="hint">El espacio debe contar con todas las características seleccionadas.</p>
     </details>
     <div class="filter-actions">
-      <button class="btn btn-primary" :disabled="form.processing">{{ availability ? 'Consultar disponibilidad' : 'Aplicar filtros' }}</button>
-      <button type="button" class="text-button" @click="clear">Limpiar filtros</button>
+      <p v-if="availability" class="hint">Hora de Bolivia · America/La_Paz · UTC−4</p>
+      <div class="button-group">
+        <button type="button" class="text-button" @click="clear">Limpiar filtros</button>
+        <button class="btn" :class="availability ? 'btn-primary' : 'btn-secondary'" :disabled="form.processing">{{ availability ? 'Consultar disponibilidad' : 'Aplicar filtros' }}</button>
+      </div>
     </div>
   </form>
 </template>

@@ -5,7 +5,6 @@ import SpaceFilters from '../../Components/SpaceFilters.vue';
 import SpaceState from '../../Components/SpaceState.vue';
 import Pagination from '../../Components/Pagination.vue';
 import Icon from '../../Components/Icon.vue';
-import SpaceGallery from '../../Components/SpaceGallery.vue';
 import { useAccess } from '../../security';
 defineProps({ espacios: Object, filtros: Object, opciones: Object });
 const { can } = useAccess();
@@ -14,9 +13,8 @@ const { can } = useAccess();
   <AppLayout title="Espacios académicos">
     <div class="page-heading">
       <div>
-
         <h1>Espacios académicos</h1>
-        <p>Ubicación, características y estado operativo de cada ambiente.</p>
+        <p>Ubicación, capacidad y estado operativo de cada ambiente.</p>
       </div>
       <div v-if="can('espacios.gestionar')" class="button-group">
         <Link href="/espacios/catalogos/pisos" class="btn btn-secondary">Catálogos auxiliares</Link>
@@ -27,57 +25,49 @@ const { can } = useAccess();
       </div>
     </div>
     <SpaceFilters :filtros="filtros" :opciones="opciones"/>
-    <SpaceGallery :spaces="espacios.data"/>
     <section class="panel space-list-panel">
       <div class="panel-heading">
-        <h2>Espacios registrados</h2>
-        <p>El estado operativo se complementa con los bloqueos del periodo consultado.</p>
+        <h2>{{ espacios.total }} {{ espacios.total === 1 ? 'espacio' : 'espacios' }}</h2>
+        <p>Los bloqueos temporales se reflejan al consultar la disponibilidad de un periodo.</p>
       </div>
-      <details v-if="espacios.data.length" class="data-disclosure"><summary>Ver tabla completa y características</summary>
-      <div class="table-scroll" role="region" tabindex="0" aria-label="Listado de espacios desplazable">
-        <table>
+      <div v-if="espacios.data.length" class="table-scroll" role="region" tabindex="0" aria-label="Listado de espacios desplazable">
+        <table class="space-table">
           <caption class="sr-only">Espacios académicos registrados</caption>
           <thead>
             <tr>
               <th>Espacio</th>
-              <th>Ubicación</th>
+              <th>Piso</th>
               <th>Tipo</th>
-              <th>Capacidad</th>
+              <th class="align-right">Capacidad</th>
               <th>Estado</th>
-              <th>Características</th>
-              <th>Acciones</th>
+              <th class="align-right">Acción</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="space in espacios.data" :key="space.recurso_id">
-              <td>
-                <Link :href="`/espacios/${space.recurso_id}`" class="text-link">{{ space.recurso.nombre }}</Link>
-                <small class="cell-subtitle">{{ space.recurso.codigo }}</small>
+              <td class="space-name-cell">
+                <Link :href="`/espacios/${space.recurso_id}`" class="space-name-link">{{ space.recurso.nombre }}</Link>
+                <small class="cell-subline">{{ space.recurso.codigo }}</small>
+                <small class="cell-subline space-features" :title="space.caracteristicas.map(feature => feature.nombre).join(', ') || undefined">{{ space.caracteristicas.length ? space.caracteristicas.map(feature => feature.nombre).join(' · ') : 'Sin características' }}</small>
               </td>
               <td>{{ space.piso.nombre }}</td>
               <td>{{ space.tipo.nombre }}</td>
-              <td>{{ space.capacidad }} personas</td>
+              <td class="align-right nowrap">{{ space.capacidad }} personas</td>
               <td>
                 <SpaceState :value="space.estado"/>
               </td>
-              <td>
-                <div class="feature-chips">
-                  <span v-for="feature in space.caracteristicas" :key="feature.id">{{ feature.nombre }}</span>
-                  <span v-if="!space.caracteristicas.length">Sin características</span>
-                </div>
-              </td>
-              <td>
-                <Link :href="`/espacios/${space.recurso_id}`" class="text-link">Ver detalle</Link>
+              <td class="row-actions">
+                <Link :href="`/espacios/${space.recurso_id}`">Ver<span class="sr-only"> {{ space.recurso.nombre }}</span></Link>
               </td>
             </tr>
           </tbody>
         </table>
       </div>
-      </details>
       <div v-else class="empty-state">
         <Icon name="building"/>
         <h3>No hay espacios que coincidan</h3>
-        <p>Ajuste los filtros o registre el primer espacio si tiene autorización.</p>
+        <p>Ajuste los filtros{{ can('espacios.gestionar') ? ' o registre un espacio.' : '.' }}</p>
+        <Link v-if="can('espacios.gestionar')" href="/espacios/crear" class="btn btn-secondary">Registrar espacio</Link>
       </div>
       <Pagination :data="espacios"/>
     </section>

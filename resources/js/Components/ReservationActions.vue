@@ -28,8 +28,8 @@ function submit() {
 }
 </script>
 <template>
-  <div v-if="reserva.acciones.resolver || reserva.acciones.cancelar" class="panel reservation-actions">
-    <div><h2>Acciones disponibles</h2><p class="muted">Revise el periodo y el propósito antes de confirmar.</p></div>
+  <div v-if="reserva.acciones.resolver || reserva.acciones.cancelar" class="reservation-actions">
+    <div><h2>Acciones disponibles</h2><p class="hint">Revise el periodo y el propósito antes de confirmar.</p></div>
     <div class="button-group">
       <button v-if="reserva.acciones.resolver" type="button" class="btn btn-primary" @click="open('aprobar')">Aprobar</button>
       <button v-if="reserva.acciones.resolver" type="button" class="btn btn-secondary" @click="open('rechazar')">Rechazar</button>

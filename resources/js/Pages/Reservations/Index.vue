@@ -21,8 +21,8 @@ function clear() { router.get('/reservas', { alcance: props.alcance }); }
 <template>
   <AppLayout title="Reservas" section="Espacios académicos">
     <div class="page-heading">
-      <div><h1>Reservas de espacios</h1><p>{{ alcance === 'propias' ? 'Consulte sus solicitudes y el estado de cada reserva.' : 'Revise las solicitudes y gestione las reservas autorizadas.' }}</p></div>
-      <Link v-if="can('reservas.solicitar') && can('espacios.ver')" href="/disponibilidad" class="btn btn-primary">Solicitar reserva</Link>
+      <div><h1>Reservas de espacios</h1><p>{{ alcance === 'propias' ? 'Sus solicitudes y el estado de cada reserva.' : 'Solicitudes por revisar y reservas registradas.' }}</p></div>
+      <Link v-if="can('reservas.solicitar') && can('espacios.ver')" href="/disponibilidad" class="btn btn-primary"><Icon name="plus"/>Solicitar reserva</Link>
     </div>
     <nav class="catalog-tabs" aria-label="Alcance de reservas">
       <Link v-if="can('reservas.ver_propias')" href="/reservas?alcance=propias" :class="{ active: alcance === 'propias' }" :aria-current="alcance === 'propias' ? 'page' : undefined">Mis reservas</Link>
@@ -37,27 +37,31 @@ function clear() { router.get('/reservas', { alcance: props.alcance }); }
         <InputField id="filtro-reserva-espacio" label="Espacio" v-model="filters.espacio_id" placeholder="Todos los espacios" :options="opciones.espacios.map(s => ({ value: s.id, label: `${s.codigo} · ${s.nombre}` }))" :error="filters.errors.espacio_id"/>
         <InputField v-if="alcance === 'administrativas'" id="filtro-reserva-solicitante" label="Solicitante" v-model="filters.solicitante_id" placeholder="Todos los solicitantes" :options="opciones.solicitantes.map(u => ({ value: u.id, label: `${u.nombres} ${u.apellidos}` }))" :error="filters.errors.solicitante_id"/>
       </div>
-      <div class="filter-actions"><p class="hint">La fecha incluye las reservas que abarcan parte de ese día. Hora de Bolivia.</p><div class="button-group"><button type="button" class="btn btn-secondary" @click="clear">Limpiar</button><button class="btn btn-primary" :disabled="filters.processing">Aplicar filtros</button></div></div>
+      <div class="filter-actions"><p class="hint">La fecha incluye las reservas que abarcan parte de ese día. Hora de Bolivia.</p><div class="button-group"><button type="button" class="text-button" @click="clear">Limpiar</button><button class="btn btn-secondary" :disabled="filters.processing">Aplicar filtros</button></div></div>
     </form>
     <section class="panel">
       <div class="panel-heading"><h2>{{ reservas.total }} {{ reservas.total === 1 ? 'reserva' : 'reservas' }}</h2><p>El estado refleja la última decisión registrada.</p></div>
       <div v-if="reservas.data.length" class="table-scroll" role="region" tabindex="0" aria-label="Listado de reservas desplazable">
         <table class="reservation-table">
           <caption class="sr-only">Reservas {{ alcance === 'propias' ? 'propias' : 'administrativas' }}</caption>
-          <thead><tr><th>Código</th><th>Espacio / piso</th><th v-if="alcance === 'administrativas'">Solicitante</th><th>Inicio / fin</th><th>Propósito</th><th>Estado</th><th>Acciones</th></tr></thead>
+          <thead><tr><th>Código</th><th>Espacio / piso</th><th v-if="alcance === 'administrativas'">Solicitante</th><th>Periodo</th><th>Estado</th><th class="align-right">Acción</th></tr></thead>
           <tbody><tr v-for="reservation in reservas.data" :key="reservation.id">
             <td><Link :href="`/reservas/${reservation.id}`" class="text-link reservation-code">{{ reservation.codigo }}</Link></td>
-            <td><strong>{{ reservation.espacio.nombre }}</strong><small class="cell-subline">{{ reservation.espacio.piso }}</small></td>
+            <td class="reservation-space-cell"><strong>{{ reservation.espacio.nombre }}</strong><small class="cell-subline">{{ reservation.espacio.piso }}</small><small class="cell-subline reservation-purpose" :title="reservation.proposito">{{ reservation.proposito }}</small></td>
             <td v-if="alcance === 'administrativas'">{{ reservation.solicitante.nombres }} {{ reservation.solicitante.apellidos }}</td>
-            <td class="reservation-period">{{ reservationDate(reservation.inicio) }}<small class="cell-subline">{{ reservationDate(reservation.fin) }}</small></td>
-            <td><span class="reservation-purpose">{{ reservation.proposito }}</span></td>
+            <td class="date-cell">{{ reservationDate(reservation.inicio) }}<small class="cell-subline">hasta {{ reservationDate(reservation.fin) }}</small></td>
             <td><ReservationState :value="reservation.estado"/></td>
-            <td><Link :href="`/reservas/${reservation.id}`" class="text-link">Ver detalle<span class="sr-only"> de {{ reservation.codigo }}</span></Link></td>
+            <td class="row-actions"><Link :href="`/reservas/${reservation.id}`">Ver<span class="sr-only"> detalle de {{ reservation.codigo }}</span></Link></td>
           </tr></tbody>
         </table>
       </div>
-      <div v-else class="empty-state"><Icon name="search"/><h3>No hay reservas con estos criterios</h3><p>Revise los filtros o consulte la disponibilidad para preparar una solicitud.</p></div>
+      <div v-else class="empty-state">
+        <Icon name="calendar"/>
+        <h3>No hay reservas con estos criterios</h3>
+        <p>Revise los filtros{{ can('reservas.solicitar') && can('espacios.ver') ? ' o consulte la disponibilidad para solicitar una.' : '.' }}</p>
+        <Link v-if="can('reservas.solicitar') && can('espacios.ver')" href="/disponibilidad" class="btn btn-secondary">Consultar disponibilidad</Link>
+      </div>
+      <Pagination :data="reservas"/>
     </section>
-    <Pagination :data="reservas"/>
   </AppLayout>
 </template>
