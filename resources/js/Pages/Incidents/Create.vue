@@ -13,14 +13,27 @@ const selected=computed(()=>props.recursos.find(r=>String(r.id)===String(form.re
 function save(){form.transform(d=>selected.value?.equipamiento_exists?Object.fromEntries(Object.entries(d).filter(([k])=>k!=='estado_espacio')):d).post('/incidencias',{onError:focusError});}
 </script>
 <template>
- <AppLayout title="Registrar incidencia o mantenimiento" section="Incidencias"><div class="page-heading"><div><h1>Registrar incidencia o mantenimiento</h1><p>Describa la condición observada y el recurso afectado.</p></div><Link href="/incidencias" class="btn btn-secondary">Volver al listado</Link></div>
-  <section class="panel form-panel"><OperationForm label="Registrar restricción" message="El registro abierto restringirá inmediatamente el recurso. Los préstamos y reservas existentes conservarán su estado y deberán revisarse." :disabled="form.processing" @confirm="save"><FormErrors :errors="form.errors"/><div class="form-grid">
-   <InputField id="recurso" label="Recurso afectado" v-model="form.recurso_id" required :options="recursos.map(r=>({value:r.id,label:r.codigo+' · '+r.nombre}))" :error="form.errors.recurso_id"/>
-   <InputField id="tipo" label="Tipo de registro" v-model="form.tipo" required :options="options(['INCIDENCIA','MANTENIMIENTO'])" :error="form.errors.tipo"/>
-   <InputField id="inicio" label="Inicio" type="datetime-local" v-model="form.inicio" required min="1000-01-01T00:00" max="9999-12-31T23:59" :error="form.errors.inicio"/>
-   <InputField id="fin" label="Fin previsto (opcional)" type="datetime-local" v-model="form.fin_previsto" min="1000-01-01T00:00" max="9999-12-31T23:59" :error="form.errors.fin_previsto"/>
-   <InputField v-if="selected && !selected.equipamiento_exists" id="estado-espacio" label="Condición operativa del espacio" v-model="form.estado_espacio" required :options="options(['EN_MANTENIMIENTO','BLOQUEADO'])" :error="form.errors.estado_espacio"/>
-   <InputField class="span-2" id="descripcion" label="Descripción" type="textarea" v-model="form.descripcion" required maxlength="16000" :error="form.errors.descripcion"/>
-  </div><p class="alert">Toda incidencia o mantenimiento abierto impide nuevas asignaciones, incluso si su inicio está previsto para más adelante. El fin previsto no cierra el registro automáticamente.</p><p class="hint">Fechas y horas de Bolivia. Complete el cierre después de verificar la condición del recurso.</p></OperationForm></section>
+ <AppLayout title="Registrar incidencia o mantenimiento" section="Incidencias">
+  <Link href="/incidencias" class="back-link">Volver al listado</Link>
+  <div class="page-heading"><div><h1>Registrar incidencia o mantenimiento</h1><p>Recurso afectado y condición observada.</p></div></div>
+  <section class="panel form-panel equipment-flow">
+   <OperationForm label="Registrar restricción" message="El registro abierto restringirá inmediatamente el recurso. Los préstamos y reservas existentes conservarán su estado y deberán revisarse." :disabled="form.processing" @confirm="save"><FormErrors :errors="form.errors"/>
+    <header class="form-section-heading"><h2>Recurso</h2></header>
+    <div class="form-grid">
+     <InputField id="recurso" label="Recurso afectado" v-model="form.recurso_id" required :options="recursos.map(r=>({value:r.id,label:r.codigo+' · '+r.nombre}))" :error="form.errors.recurso_id"/>
+     <InputField id="tipo" label="Tipo de registro" v-model="form.tipo" required :options="options(['INCIDENCIA','MANTENIMIENTO'])" :error="form.errors.tipo"/>
+     <InputField v-if="selected && !selected.equipamiento_exists" id="estado-espacio" label="Condición operativa del espacio" v-model="form.estado_espacio" required :options="options(['EN_MANTENIMIENTO','BLOQUEADO'])" :error="form.errors.estado_espacio"/>
+    </div>
+    <header class="form-section-heading"><h2>Periodo</h2><p>Fechas y horas de Bolivia.</p></header>
+    <div class="form-grid">
+     <InputField id="inicio" label="Inicio" type="datetime-local" v-model="form.inicio" required min="1000-01-01T00:00" max="9999-12-31T23:59" :error="form.errors.inicio"/>
+     <InputField id="fin" label="Fin previsto (opcional)" type="datetime-local" v-model="form.fin_previsto" min="1000-01-01T00:00" max="9999-12-31T23:59" :error="form.errors.fin_previsto"/>
+    </div>
+    <header class="form-section-heading"><h2>Descripción</h2></header>
+    <InputField id="descripcion" label="Descripción" type="textarea" v-model="form.descripcion" required maxlength="16000" :error="form.errors.descripcion"/>
+    <p class="alert alert-warning">Un registro abierto impide nuevas asignaciones desde ahora, aunque su inicio sea posterior. El fin previsto no lo cierra automáticamente.</p>
+    <p class="hint">Registre el cierre después de verificar la condición del recurso.</p>
+   </OperationForm>
+  </section>
  </AppLayout>
 </template>
