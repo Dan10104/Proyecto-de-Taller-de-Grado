@@ -76,3 +76,12 @@ Thumbs.db
 # Local Python bytecode from deployment tooling
 __pycache__/
 *.py[cod]
+
+# Herramientas locales y archivos de trabajo: no forman parte del proyecto publicado
+/.claude/
+/.impeccable/
+/credentials.visual-testing.json
+# Documentos locales de auditoría y de mantenimiento pendiente
+/docs/AUDITORIA_INFORME_*
+/docs/MAINTENANCE_BACKLOG.md
+/docs/DEPENDENCY_ADVISORIES.md
