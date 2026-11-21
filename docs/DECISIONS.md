@@ -1029,7 +1029,7 @@ El usuario autorizó cerrar la comprobación física por su confirmación («fun
 
 ## Contrato IoT — cierre D-10 de Fase 6.5
 
-**D-10: RESUELTA PARA FASE 7.** Este apartado es la referencia normativa única del protocolo. Cierre exclusivamente documental sobre `ceae7cb`, rama `docs/phase-6.5-iot-decisions`. No se modifican código, SQL, migraciones, configuración real, `.env.example`, permisos DB, vistas ni Word/PDF. No se generan credenciales ni datos IoT. Fase 7 no iniciada; las obligaciones futuras no son pruebas ejecutadas.
+**D-10: RESUELTA PARA FASE 7.** Este apartado es la referencia normativa única del protocolo. Cierre exclusivamente documental sobre `c3a0b9d`, rama `docs/phase-6.5-iot-decisions`. No se modifican código, SQL, migraciones, configuración real, `.env.example`, permisos DB, vistas ni Word/PDF. No se generan credenciales ni datos IoT. Fase 7 no iniciada; las obligaciones futuras no son pruebas ejecutadas.
 
 ### Fuentes y alcance IoT
 
@@ -1217,11 +1217,11 @@ CU23/Fase 8 combina QR, IoT, reserva y política; **no se implementa en Fase 7**
 
 ### Verificación documental de Fase 6.5
 
-Revisión de los 12 Markdown autorizados, diff y alcance: sin archivos funcionales/configuración/migraciones modificados. Los textos de los 217 requisitos y los tres apartados SQL del diccionario son idénticos a la base ceae7cb. Los hashes del Word/PDF original se mantienen. Comprobados 206 enlaces locales sin destinos/anclas rotos y 32 escenarios de aceptación futuros, sin ejecutarlos como pruebas funcionales.
+Revisión de los 12 Markdown autorizados, diff y alcance: sin archivos funcionales/configuración/migraciones modificados. Los textos de los 217 requisitos y los tres apartados SQL del diccionario son idénticos a la base c3a0b9d. Los hashes del Word/PDF original se mantienen. Comprobados 206 enlaces locales sin destinos/anclas rotos y 32 escenarios de aceptación futuros, sin ejecutarlos como pruebas funcionales.
 
 Escaneo privado de los 309 archivos públicos y diferencias/historial sin coincidencias de secretos locales ni patrones sensibles; 81 archivos locales revisados para evitar persistencia de payloads QR, sin coincidencias. .env y .env.testing ignorados; plantilla sin valores privados. No se generó IOT_MASTER_SECRET ni claves derivadas. Consulta de metadatos exclusivamente de lectura: 23 tablas académicas, cero tablas sensores_iot/eventos_ocupacion, 36 permisos y cero permisos iot.*. Estos controles no son pruebas de ingestión IoT.
 
-Rama de trabajo docs/phase-6.5-iot-decisions desde main/origin/main limpio en ceae7cb; commit de cierre documental, publicación de rama e integración fast-forward a main según autorización, sin force push. El informe de entrega confirma el hash resultante, igualdad remota y árbol limpio tras ejecutar esas operaciones. No se crean copias del proyecto ni un segundo workspace.
+Rama de trabajo docs/phase-6.5-iot-decisions desde main/origin/main limpio en c3a0b9d; commit de cierre documental, publicación de rama e integración fast-forward a main según autorización, sin force push. El informe de entrega confirma el hash resultante, igualdad remota y árbol limpio tras ejecutar esas operaciones. No se crean copias del proyecto ni un segundo workspace.
 
 
 ## Aplicación de D-10 en Fase 7
@@ -1230,7 +1230,7 @@ Contrato aplicado sin cambiar tablas, enums, derivación, formato RAW, toleranci
 
 ## Contrato de liberación de reservas — cierre D-08 de Fase 7.5
 
-Autoridad: instrucción oficial de Fase 7.5, §§1–84, posterior a ffdebb9. Es una decisión documental de implementación; los detalles técnicos añadidos aquí son convenciones explícitas para resolver los vacíos, no texto atribuido al informe. No modifica D-05, D-09, D-10 ni la aplicación vigente. RF18/CU23 queda preparado, no acreditado como implementado.
+Autoridad: instrucción oficial de Fase 7.5, §§1–84, posterior a 96ed65a. Es una decisión documental de implementación; los detalles técnicos añadidos aquí son convenciones explícitas para resolver los vacíos, no texto atribuido al informe. No modifica D-05, D-09, D-10 ni la aplicación vigente. RF18/CU23 queda preparado, no acreditado como implementado.
 
 ### Fuentes contrastadas para D-08
 
@@ -1439,7 +1439,7 @@ Revisión de fuentes, matriz completa, invariantes, enlaces y alcance exclusivam
 
 Resultados del control documental: **14 Markdown modificados, 0 archivos funcionales**, cuatro SQL Word/PDF equivalentes y cuatro secciones físicas del diccionario intactas; 217 textos de requisitos preservados; 48 resultados de matriz coherentes, 36 criterios futuros y 248 enlaces locales sin errores. SHA-256 originales sin cambios. Escaneo de 347 archivos públicos y 105 artefactos locales (95 anteriores y 10 de esta revisión), sin secretos detectados. Metadatos de solo lectura: 25 tablas académicas, 169 columnas, 48 FK, 39 permisos; cero tablas evaluaciones_* y cero permisos liberacion.*.
 
-Rama docs/phase-7.5-release-policy-decisions desde main/origin/main limpio ffdebb9; commit documental, push e integración fast-forward autorizados, sin force push. El informe final confirma el SHA, igualdad remota y árbol limpio después de las operaciones. El cierre documental no equivale a implementación, calibración de hardware ni certificación de comportamiento concurrente: son condiciones de aceptación de Fase 8.
+Rama docs/phase-7.5-release-policy-decisions desde main/origin/main limpio 96ed65a; commit documental, push e integración fast-forward autorizados, sin force push. El informe final confirma el SHA, igualdad remota y árbol limpio después de las operaciones. El cierre documental no equivale a implementación, calibración de hardware ni certificación de comportamiento concurrente: son condiciones de aceptación de Fase 8.
 
 ## Contrato Blockchain — cierre D-12 de Fase 8.5
 
@@ -1688,7 +1688,7 @@ Escaneo de 389 archivos públicos, índice, historial Git y material temporal de
 
 No se ejecutaron migraciones, seeders, pruebas funcionales, llamadas RPC, generación de wallet/clave, compilación Solidity ni cambios de configuración/BD. T-B01–T-B40 son obligaciones futuras. Las pruebas de Fase 8 conservan su evidencia histórica y no se atribuyen a esta fase documental.
 
-Rama docs/phase-8.5-blockchain-decisions desde main/origin/main limpio f3c38ea2f2093b79941e29b5d71fe97860f1a67b. Commit documental, push e integración fast-forward autorizados, sin force push. El informe final confirma el SHA, igualdad remota y árbol limpio una vez realizadas esas operaciones.
+Rama docs/phase-8.5-blockchain-decisions desde main/origin/main limpio a60121c0d67766e62900d686ab3014438f96a008. Commit documental, push e integración fast-forward autorizados, sin force push. El informe final confirma el SHA, igualdad remota y árbol limpio una vez realizadas esas operaciones.
 
 ## Aplicación D-12 en Fase 9 y excepciones autorizadas
 
@@ -2112,7 +2112,7 @@ Cero se muestra **0** cuando un conteo completo autorizado realmente es cero. «
 
 ### Verificación documental de Fase 10.5
 
-Revisión sobre main limpio en 49e34c56ce533ca08e1e3bad6dfb29f0dc456b7b y rama docs/phase-10.5-dashboard-reporting-decisions. El cambio afecta exclusivamente 16 Markdown existentes: README, DECISIONS, BUSINESS_RULES, DATA_MODEL, DOMAIN_MODEL, USE_CASE_MATRIX, REQUIREMENTS_TRACEABILITY, ARCHITECTURE, SECURITY_POLICY, IMPLEMENTATION_PLAN y los seis informes de Reservas, Equipamiento/Préstamos, IoT, Liberación, Blockchain y Notificaciones.
+Revisión sobre main limpio en 243b910a15bd409fcf1bc6df23bac5d0c3e91128 y rama docs/phase-10.5-dashboard-reporting-decisions. El cambio afecta exclusivamente 16 Markdown existentes: README, DECISIONS, BUSINESS_RULES, DATA_MODEL, DOMAIN_MODEL, USE_CASE_MATRIX, REQUIREMENTS_TRACEABILITY, ARCHITECTURE, SECURITY_POLICY, IMPLEMENTATION_PLAN y los seis informes de Reservas, Equipamiento/Préstamos, IoT, Liberación, Blockchain y Notificaciones.
 
 Comprobaciones: 217 requisitos normativos conservados (solo estado/criterio de RF22/RF23 actualizado), 30 CU conservados, catálogo D-01–D-17 intacto, filas del diccionario físico sin cambios, 12 secciones DR, 10 tarjetas administrativas, 6 gráficos, 7 tarjetas personales y 48 criterios futuros. SHA-256 Word/PDF coinciden con los originales verificados. 343 enlaces locales/anclas validados sin errores. Diff sin errores de whitespace; ningún archivo de implementación, migración, dependencia, permiso, configuración o secreto incluido.
 
@@ -2335,7 +2335,7 @@ Smoke OpenAI real separado, manual y opt-in al implementar Fase 12: requiere ins
 
 Fuentes oficiales consultadas el 2026-10-26: [modelo](https://developers.openai.com/api/docs/models/gpt-6-luna), [Responses y mensajes](https://developers.openai.com/api/docs/guides/text), [Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs?api-mode=responses), [controles de datos](https://developers.openai.com/api/docs/guides/your-data), [SDKs](https://developers.openai.com/api/docs/libraries). En Fase 12 se revalidarán; una política futura diferente debe reflejarse en documentación y pruebas. No se promete disponibilidad externa ni calidad absoluta a partir de estas fuentes.
 
-Verificación documental de este cierre: base main/origin/main e328c06 limpia, rama docs/phase-11.5-chatbot-decisions, 20 documentos modificados; 217 textos normativos conservados, 30 CU y 17 decisiones D existentes sin nuevas numeraciones. CH1–CH12 contienen 20 rutas contrastadas con Laravel y 50 criterios futuros T-CB. Se revisaron las 117 secciones de la instrucción y los enlaces internos; Word/PDF conservan sus huellas. El diff no cambia aplicación, dependencias, configuración ni permisos. El escaneo previo a publicación abarca archivos públicos, índice, diff e historial sin imprimir secretos. No se repitieron tests/auditorías funcionales ni se hizo inferencia OpenAI en esta fase documental.
+Verificación documental de este cierre: base main/origin/main afd24e6 limpia, rama docs/phase-11.5-chatbot-decisions, 20 documentos modificados; 217 textos normativos conservados, 30 CU y 17 decisiones D existentes sin nuevas numeraciones. CH1–CH12 contienen 20 rutas contrastadas con Laravel y 50 criterios futuros T-CB. Se revisaron las 117 secciones de la instrucción y los enlaces internos; Word/PDF conservan sus huellas. El diff no cambia aplicación, dependencias, configuración ni permisos. El escaneo previo a publicación abarca archivos públicos, índice, diff e historial sin imprimir secretos. No se repitieron tests/auditorías funcionales ni se hizo inferencia OpenAI en esta fase documental.
 
 ## Ejecución del contrato de asistencia — Fase 12
 
@@ -2347,7 +2347,7 @@ Verificación offline y evidencia final en el informe. Smoke real OpenAI pendien
 
 ## Activity Audit Contract / Readiness for CU30
 
-**Fase 12.5 exclusivamente documental, 2026-10-26. Contrato cerrado; bloqueantes documentales para implementar CU30 = 0. CU30 NO IMPLEMENTADO.** Requiere nueva instrucción para programarlo. No se inventa D nuevo: concreta RF25/CU30 y BR-21, conserva D-04/D-07/D-12/D-16/D-17 y contratos N/DR/CH. Base main/origin/main `985df46`, limpia antes de crear `docs/phase-12.5-activity-audit-decisions`.
+**Fase 12.5 exclusivamente documental, 2026-10-26. Contrato cerrado; bloqueantes documentales para implementar CU30 = 0. CU30 NO IMPLEMENTADO.** Requiere nueva instrucción para programarlo. No se inventa D nuevo: concreta RF25/CU30 y BR-21, conserva D-04/D-07/D-12/D-16/D-17 y contratos N/DR/CH. Base main/origin/main `10d7f67`, limpia antes de crear `docs/phase-12.5-activity-audit-decisions`.
 
 ### AC1. Fuentes y alcance
 
@@ -2600,7 +2600,7 @@ Criterios [T-A01–T-A40](BUSINESS_RULES.md#aceptación-prevista-para-rf25cu30--
 
 **Bloqueantes documentales = 0.** RF25 conserva cobertura productora parcial; CU30 **NO IMPLEMENTADO**. Su implementación puede comenzar **solo con nueva instrucción**. No código, endpoints, UI, permiso DB, servicio funcional, migraciones, índices o actividad nueva. No .env/dependencias/entornos de datos/seeders modificados. Los cierres funcionales anteriores conservan su evidencia histórica.
 
-Verificación documental de Fase 12.5: 21 documentos modificados; 520 referencias locales comprobadas sin errores. Se conservaron 217 textos normativos, 30 CU, 17 expedientes D, CH1–CH12, veinte route_key y cincuenta criterios T-CB; añadidos AC1–AC15 y cuarenta criterios T-A. Catálogo AC3 cotejado con NotificationRuleRegistry y REPORTE_EXPORTADO. Huellas Word/PDF intactas; árbol de archivos funcionales/dependencias/migraciones idéntico a 985df46. Diff y staged revisados; escaneo de secretos en worktree/índice/diferencias/historial sin hallazgos; evidencias de comprobación privadas e ignoradas en .local/qa/phase125. No suite funcional, build, nuevas auditorías de dependencias ni smoke externo atribuidos a este cierre documental. Publicación e integración autorizadas por la instrucción; hash y estado remoto definitivos en el informe final.
+Verificación documental de Fase 12.5: 21 documentos modificados; 520 referencias locales comprobadas sin errores. Se conservaron 217 textos normativos, 30 CU, 17 expedientes D, CH1–CH12, veinte route_key y cincuenta criterios T-CB; añadidos AC1–AC15 y cuarenta criterios T-A. Catálogo AC3 cotejado con NotificationRuleRegistry y REPORTE_EXPORTADO. Huellas Word/PDF intactas; árbol de archivos funcionales/dependencias/migraciones idéntico a 10d7f67. Diff y staged revisados; escaneo de secretos en worktree/índice/diferencias/historial sin hallazgos; evidencias de comprobación privadas e ignoradas en .local/qa/phase125. No suite funcional, build, nuevas auditorías de dependencias ni smoke externo atribuidos a este cierre documental. Publicación e integración autorizadas por la instrucción; hash y estado remoto definitivos en el informe final.
 
 
 ## Implementación RF25/CU30 — Fase 12.6

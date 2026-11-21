@@ -2,7 +2,7 @@
 
 **Estado vigente — Fase 13 completada y validada (2026-10-26).** QA integral de CU01–CU30 y RF1–RF25 web; RF26 móvil diferido. [Informe de seguridad, rendimiento y pruebas](PHASE_13_SYSTEM_VALIDATION.md) y [matriz final por CU](FINAL_USE_CASE_VALIDATION.md). Los estados de fases anteriores que siguen son históricos. OpenAI/Sepolia pendientes independientes; excepción dev Hardhat/Zod explícita. Fase 14 NO iniciada.
 
-RF24 → CU29 implementados bajo [CH1–CH12](DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12), instrucción oficial de Fase 12 y D-04/D-07/D-14. Fecha de verificación: 2026-10-26. Workspace único ESPACIO-U; base main/origin/main `1105d41`; rama `feature/phase-12-chatbot`. Validación offline completada: 877 pruebas / 10.217 assertions, QA y controles de publicación aprobados; smoke OpenAI real pendiente por falta de credencial.
+RF24 → CU29 implementados bajo [CH1–CH12](DECISIONS.md#chatbot-assistance-contract--readiness-for-phase-12), instrucción oficial de Fase 12 y D-04/D-07/D-14. Fecha de verificación: 2026-10-26. Workspace único ESPACIO-U; base main/origin/main `1df817d`; rama `feature/phase-12-chatbot`. Validación offline completada: 877 pruebas / 10.217 assertions, QA y controles de publicación aprobados; smoke OpenAI real pendiente por falta de credencial.
 
 El asistente orienta sobre procedimientos autorizados. No ejecuta operaciones, consulta registros operativos, adjunta identidad, realiza búsquedas, abre herramientas ni conserva conversación. CU30 continúa **NO IMPLEMENTADO**, aplicación móvil diferida y ninguna fase posterior iniciada. El smoke Sepolia pendiente de testETH es independiente.
 
@@ -205,7 +205,7 @@ Seeder incremental aplicado en la base de desarrollo espacio_u exclusivamente co
 
 La primera ejecución completa detectó tres expectativas anteriores del catálogo de permisos; se actualizaron al permiso nuevo manteniendo los tests. Los casos adicionales de entrada/encoding se verificaron y la ejecución final anterior corresponde al árbol corregido. No se atribuyen los resultados con fallos al cierre aprobado.
 
-Implementación y pruebas versionadas en commit `9b2aafbdbedadc2bd609d249e634f908511ef6ca`. Rama de entrega: feature/phase-12-chatbot. Integración prevista y autorizada: main por fast-forward, sin force push; hashes finales y verificación remota se entregan en el informe del chat. CU30 NO IMPLEMENTADO, móvil diferida, Sepolia pendiente independiente y ninguna fase posterior iniciada. Siguiente paso: configurar credencial/cuota local segura y ejecutar el smoke sintético separado, sin iniciar otro alcance.
+Implementación y pruebas versionadas en commit `72aa9ab08e37f16225c553142c7708f17092a6a7`. Rama de entrega: feature/phase-12-chatbot. Integración prevista y autorizada: main por fast-forward, sin force push; hashes finales y verificación remota se entregan en el informe del chat. CU30 NO IMPLEMENTADO, móvil diferida, Sepolia pendiente independiente y ninguna fase posterior iniciada. Siguiente paso: configurar credencial/cuota local segura y ejecutar el smoke sintético separado, sin iniciar otro alcance.
 
 ## Validación de infraestructura — Fase 14
 

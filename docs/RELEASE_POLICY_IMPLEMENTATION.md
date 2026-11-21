@@ -6,7 +6,7 @@
 
 **Estado histórico funcional — Fase 10 (2026-10-26).** RF21/CU26 implementados y verificados: 17 reglas, avisos propios, primera lectura y recuperación de 24 h. [Informe y evidencia](NOTIFICATIONS_IMPLEMENTATION.md). CU30 general y Fase 11 no iniciados. Sepolia real sigue pendiente de testETH. Los apartados de cierres anteriores conservan su contexto histórico.
 
-Fecha: 2026-10-24. RF18 → CU23 implementado bajo el [contrato D-08 congelado](DECISIONS.md#contrato-de-liberación-de-reservas--cierre-d-08-de-fase-75), sin reinterpretar sus 24 filas × dos modos. Workspace único y remoto oficial conservados. La implementación parte de `08b6b08bcdba423ec1d2b1a519da3b9d6c4f16cd`; rama `feature/phase-8-release-policies`. Este informe actualiza el estado de ejecución de las fotografías documentales anteriores, que conservan su alcance histórico.
+Fecha: 2026-10-24. RF18 → CU23 implementado bajo el [contrato D-08 congelado](DECISIONS.md#contrato-de-liberación-de-reservas--cierre-d-08-de-fase-75), sin reinterpretar sus 24 filas × dos modos. Workspace único y remoto oficial conservados. La implementación parte de `acc4d583fe220abf2c2b34438363890f48bb27b7`; rama `feature/phase-8-release-policies`. Este informe actualiza el estado de ejecución de las fotografías documentales anteriores, que conservan su alcance histórico.
 
 ## Esquema y dominio
 

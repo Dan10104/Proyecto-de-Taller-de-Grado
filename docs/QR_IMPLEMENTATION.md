@@ -6,7 +6,7 @@
 
 **Continuidad documental de Fase 7.5:** [Semántica QR para D-08](DECISIONS.md#evidencia-qr-de-cu23). CU23 futuro consultará USO_ESPACIO de la misma reserva/recurso, desde inicio hasta evaluación; una VALIDA basta y puede vetar aunque el QR sea opcional. INVALIDA solo explica contexto, nunca no uso. Rotación posterior no cambia validez histórica. D-09, CU11 y su aceptación conservan su alcance; no hay código ni nuevos escaneos en esta entrega.
 
-Fecha: 2026-10-23, America/La_Paz. Base Git `08baa06`; rama `feature/phase-6-qr`. D-09 sigue **RESUELTA PARA FASE 6**. Implementación y suite automatizada terminadas: **325 pruebas aprobadas, 4.984 aserciones, 267,29 s**. El usuario aceptó expresamente la lectura física sin exigir una nueva prueba independiente. Ese límite se conserva en este informe; no se atribuye éxito físico a las simulaciones. Fase 7 no iniciada.
+Fecha: 2026-10-23, America/La_Paz. Base Git `f4a79ca`; rama `feature/phase-6-qr`. D-09 sigue **RESUELTA PARA FASE 6**. Implementación y suite automatizada terminadas: **325 pruebas aprobadas, 4.984 aserciones, 267,29 s**. El usuario aceptó expresamente la lectura física sin exigir una nueva prueba independiente. Ese límite se conserva en este informe; no se atribuye éxito físico a las simulaciones. Fase 7 no iniciada.
 
 ## Alcance y arquitectura
 
@@ -209,7 +209,7 @@ QA: cuentas sintéticas inactivas, roles retirados, sesiones revocadas y credenc
 
 ## Git y entrega
 
-Rama feature/phase-6-qr desde main/origin/main 08baa06. Commits de implementación 24b8712 y pruebas 2f35b46, más el cierre documental. Publicación de feature y posterior integración fast-forward a main, sin force push. El informe final confirma los SHA remotos y el árbol limpio después de ejecutar estas operaciones. No se crean copias, worktrees ni repositorios paralelos.
+Rama feature/phase-6-qr desde main/origin/main f4a79ca. Commits de implementación b4089ed y pruebas 34184ba, más el cierre documental. Publicación de feature y posterior integración fast-forward a main, sin force push. El informe final confirma los SHA remotos y el árbol limpio después de ejecutar estas operaciones. No se crean copias, worktrees ni repositorios paralelos.
 
 ## Continuidad documental IoT — Fase 6.5
 

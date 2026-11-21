@@ -4,7 +4,7 @@ La revisión final del 28/10/2026 se documenta al final de este archivo. Las sec
 
 ## Alcance y línea base
 
-Fase exclusivamente visual autorizada el 26/10/2026. Rama `feature/presentation-polish`, base `47f42cf7963b0db691fcc1b6379526be3483f377`; main y origin/main iguales, árbol limpio antes de cambios. No servicios, controladores, modelos, SQL, migraciones, RBAC, integración ni contratos modificables. Todas las cifras/estados continúan viniendo del backend existente.
+Fase exclusivamente visual autorizada el 26/10/2026. Rama `feature/presentation-polish`, base `96837011d71019d0782284e42dbbc628021a417f`; main y origin/main iguales, árbol limpio antes de cambios. No servicios, controladores, modelos, SQL, migraciones, RBAC, integración ni contratos modificables. Todas las cifras/estados continúan viniendo del backend existente.
 
 ## Auditoría previa a cambios
 
@@ -83,7 +83,7 @@ Las capturas se inspeccionaron en la herramienta. La escritura directa de PNG en
 
 ## Entrega y operación
 
-Rama `feature/presentation-polish`; commit visual `e2de47b` (`style: refine academic interface and evidence presentation`). Informe y estrategia se versionan en un commit documental posterior. Se publica la rama solicitada; main conserva la línea base de Fase 14. Para usar el estilo en otro checkout autorizado, instalar las dependencias existentes y ejecutar `npm run build`; no hay migración, nuevo permiso ni cambio de .env. VS Code mantiene la raíz oficial. El servidor local y MySQL aislado permanecen disponibles.
+Rama `feature/presentation-polish`; commit visual `e1ff7d1` (`style: refine academic interface and evidence presentation`). Informe y estrategia se versionan en un commit documental posterior. Se publica la rama solicitada; main conserva la línea base de Fase 14. Para usar el estilo en otro checkout autorizado, instalar las dependencias existentes y ejecutar `npm run build`; no hay migración, nuevo permiso ni cambio de .env. VS Code mantiene la raíz oficial. El servidor local y MySQL aislado permanecen disponibles.
 
 No se certifica ningún smoke externo nuevo. Las limitaciones previamente documentadas de OpenAI/Sepolia y la excepción dev Hardhat/Zod no desaparecen con esta fase visual. Las fuentes Word/PDF, contratos y lógica del sistema quedan intactos.
 
@@ -91,7 +91,7 @@ No se certifica ningún smoke externo nuevo. Las limitaciones previamente docume
 
 ### Alcance, autoridad y preservación
 
-Continuación de `feature/presentation-polish` desde `74aaf8e5ad44df6777e936db83c8b7e927c6df78`, inicialmente limpia y sincronizada con su remoto. Trabajo en el workspace oficial ESPACIO-U. La nueva instrucción limita esta entrega a frontend/presentación: no se cambia ningún archivo PHP, servicio, controlador, modelo, policy, Form Request, ruta, configuración, dependencia, SQL, migración, contrato ni prueba funcional existente. Main permanece en la línea base de Fase 14.
+Continuación de `feature/presentation-polish` desde `d450e78cf77409f979f295ad38951267f011a6ef`, inicialmente limpia y sincronizada con su remoto. Trabajo en el workspace oficial ESPACIO-U. La nueva instrucción limita esta entrega a frontend/presentación: no se cambia ningún archivo PHP, servicio, controlador, modelo, policy, Form Request, ruta, configuración, dependencia, SQL, migración, contrato ni prueba funcional existente. Main permanece en la línea base de Fase 14.
 
 No se ejecutó otro renombrado, seeder, limpieza de datos ni operación sobre el inventario Demo. IDs, nombres, códigos técnicos, pisos, estados, permisos, relaciones e historial permanecen tal como se recibieron. La revisión del navegador utiliza consultas y vistas; no confirma reservas, modifica sensores, verifica/reintenta Blockchain, exporta reportes ni envía consultas al proveedor del asistente. Login/logout utiliza el flujo existente. La suite escribe únicamente en `espacio_u_testing`.
 
@@ -187,8 +187,8 @@ Ningún cambio en `AppLayout` ni en componentes funcionales compartidos en esta 
 | `node --test tests/Browser/*.test.mjs` | **11/11 aprobados**, 4 existentes y 7 nuevos; ejecución final 4.315 ms. |
 | `npm run build` | Aprobado, Vite 8.3.5, 546 ms de compilación reportados. |
 | Conservación de páginas existentes | Scripts de nueve páginas iguales tras retirar únicamente imports presentacionales; **226 directivas/bindings originales conservados**. Solo se retira el bucle decorativo de ventanas CSS del login. |
-| Backend, contratos y pruebas originales | Comparación con `74aaf8e`: sin cambios en archivos protegidos y diez documentos normativos. |
-| Pint `--test` | **No aprobado por cinco archivos PHP preexistentes**, idénticos por hash de blob a `74aaf8e`; detalle debajo. No se ejecuta autofix sobre backend. |
+| Backend, contratos y pruebas originales | Comparación con `d450e78`: sin cambios en archivos protegidos y diez documentos normativos. |
+| Pint `--test` | **No aprobado por cinco archivos PHP preexistentes**, idénticos por hash de blob a `d450e78`; detalle debajo. No se ejecuta autofix sobre backend. |
 | Consola | Sin errores ni warnings en la sesión recorrida. |
 | Escaneo de secretos | Sin hallazgos en worktree, índice, diff, historial Git y artefactos; archivos privados ignorados. Repetido antes de publicar. |
 | Nuevas dependencias | Ninguna; no se atribuye una auditoría nueva de dependencias a esta entrega. La excepción dev Hardhat/Zod anterior sigue independiente. |

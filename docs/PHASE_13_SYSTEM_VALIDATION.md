@@ -4,7 +4,7 @@ Estado: **VALIDADO — cierre técnico de Fase 13**. Fecha de trabajo: 2026-10-2
 
 ## Autoridad y alcance
 
-Workspace oficial único; origen Git verificado. Inicio en main limpio, idéntico a origin/main: `e50fc387d3235af55e6ea557c37106220aaaebeb`. Rama `feature/phase-13-system-hardening`. Solo correcciones, endurecimiento, pruebas y documentación; sin nuevas tablas, índices, dependencias, permisos, estados o prestaciones de negocio. Word/PDF se conservan. RF26 móvil sigue diferido.
+Workspace oficial único; origen Git verificado. Inicio en main limpio, idéntico a origin/main: `e6d59670c67328e992c6fbe371d364cc17e6e45c`. Rama `feature/phase-13-system-hardening`. Solo correcciones, endurecimiento, pruebas y documentación; sin nuevas tablas, índices, dependencias, permisos, estados o prestaciones de negocio. Word/PDF se conservan. RF26 móvil sigue diferido.
 
 Fuentes: PROJECT_CONSTITUTION, ARCHITECTURE, DOMAIN_MODEL, DATA_MODEL, BUSINESS_RULES, USE_CASE_MATRIX, REQUIREMENTS_TRACEABILITY, SECURITY_POLICY, IMPLEMENTATION_PLAN, DECISIONS y los doce informes funcionales de seguridad, espacios, reservas, equipamiento/préstamos, QR, IoT, liberación, Blockchain, notificaciones, dashboard/reportes, chatbot y actividad. D-01–D-17, DR, CH1–CH12 y AC1–AC15 mantienen su autoridad. Un cierre anterior describe su fecha histórica, no el estado vigente de otro módulo.
 
@@ -180,6 +180,6 @@ Los **30 CU quedan VALIDADO** en su alcance web acordado; RF1–RF26 trazados y 
 | Secret scan | 0 hallazgos; worktree, índice, diff, historial, logs, build y evidencia |
 | Cleanup testing | 0 usuarios activos / 0 sesiones sin revocar; servidor QA y credenciales temporales retirados |
 
-Commits técnicos: `8939372` (errores y HTTP), `1952c37` (foco/contraste/filtros), `16e2a49` (regresión integral y ensayo Blockchain). Esta documentación constituye el cuarto grupo. Rama de entrega: `feature/phase-13-system-hardening`; integración autorizada fast-forward a main, sin force push. El cierre Git exige publicación de ambas referencias, main == origin/main y árbol limpio, verificados después del commit documental y reportados en la entrega final.
+Commits técnicos: `fb3d89d` (errores y HTTP), `badb0f2` (foco/contraste/filtros), `c55d694` (regresión integral y ensayo Blockchain). Esta documentación constituye el cuarto grupo. Rama de entrega: `feature/phase-13-system-hardening`; integración autorizada fast-forward a main, sin force push. El cierre Git exige publicación de ambas referencias, main == origin/main y árbol limpio, verificados después del commit documental y reportados en la entrega final.
 
 **Lista para preparación de despliegue cuando se autorice Fase 14. Fase 14 NO iniciada.** Siguiente trabajo recomendado: elegir topología y validar HTTPS/proxies, sesiones/locks, scheduler/queue, almacenamiento privado, gestión de secretos y restauración de respaldo con las condiciones descritas arriba. No Docker, nube, deployment ni aplicación móvil implementados en F13. OpenAI y Sepolia permanecen pendientes independientes, sin fondos reales.

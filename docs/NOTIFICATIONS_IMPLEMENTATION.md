@@ -170,7 +170,7 @@ Trazabilidad: **RF21 → CU26 → registros_actividad → notificaciones → Not
 
 ## Control de entrega
 
-Rama de trabajo: feature/phase-10-notifications, desde main/origin/main f262ed9. Commit funcional: e445d16; documentación en commit separado. Publicación e integración autorizadas mediante fast-forward, sin force push. La comprobación final de hashes y árbol se comunica al concluir la entrega.
+Rama de trabajo: feature/phase-10-notifications, desde main/origin/main 2d14d6e. Commit funcional: c8ad326; documentación en commit separado. Publicación e integración autorizadas mediante fast-forward, sin force push. La comprobación final de hashes y árbol se comunica al concluir la entrega.
 
 Escaneo privado previo al commit: 479 archivos públicos, índice, diferencias e historial; cero hallazgos de valores sensibles locales o patrones de credenciales. .env/.env.testing, .local/.tools, dependencias, logs y compilados siguen ignorados; .env.example sin secretos. Enlaces documentales: 319 revisados sin errores; git diff --check correcto. No se publican originales Word/PDF, datos privados, cuentas ni credenciales de QA. El servidor web, MySQL aislado y scheduler se conservan activos.
 

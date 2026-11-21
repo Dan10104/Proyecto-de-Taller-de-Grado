@@ -2,7 +2,7 @@
 
 **Estado vigente — Fase 13 completada y validada (2026-10-26).** QA integral de CU01–CU30 y RF1–RF25 web; RF26 móvil diferido. [Informe de seguridad, rendimiento y pruebas](PHASE_13_SYSTEM_VALIDATION.md) y [matriz final por CU](FINAL_USE_CASE_VALIDATION.md). Los estados de fases anteriores que siguen son históricos. OpenAI/Sepolia pendientes independientes; excepción dev Hardhat/Zod explícita. Fase 14 NO iniciada.
 
-Estado: implementada y verificada el 2026-10-26. RF22/CU27 y RF23/CU28, desde main limpio ffbed66. Rama feature/phase-11-dashboard-reports. Referencia: [DR1–DR12](DECISIONS.md#dashboard--reporting-contract--readiness-for-phase-11). CU30 NO IMPLEMENTADO; Fase 12 NO iniciada.
+Estado: implementada y verificada el 2026-10-26. RF22/CU27 y RF23/CU28, desde main limpio b932cf5. Rama feature/phase-11-dashboard-reports. Referencia: [DR1–DR12](DECISIONS.md#dashboard--reporting-contract--readiness-for-phase-11). CU30 NO IMPLEMENTADO; Fase 12 NO iniciada.
 
 ## Precisiones de la instrucción de Fase 11
 
@@ -139,10 +139,10 @@ Responsive: 1440×900, 1366×768, 768×1024 y 390×844; ancho de documento no ex
 - npm audit frontend: 0. npm audit --omit=dev frontend: 0. Módulo blockchain npm audit: **5 altas exclusivamente dev Hardhat/Zod bajo la excepción temporal autorizada previamente**; no se afirma cero ni se modifica ese toolchain. blockchain npm audit --omit=dev: 0. Retiro de excepción sigue como deuda del informe Blockchain.
 - Lectura independiente de PDF/XLSX de 10.000 filas: mismo conjunto y **orden exacto** BENCH-00000…BENCH-09999; XLSX sin fórmulas/macros. Extracción pypdf/PDFium y render visual Poppler, sin OCR.
 - QA manual y responsive completados arriba; tres descargas reales produjeron tres actividades no críticas, ninguna notificación y cero temporales restantes. Se habilitaron los tres permisos en el desarrollo oficial mediante SecuritySeeder, sin restaurar capacidades previamente retiradas.
-- Secret scan: worktree, índice, diffs e historia contra valores locales y patrones; **0 hallazgos**, .env/.env.testing/material privado ignorados. Enlaces locales/anchors documentales validados. Los **217 textos normativos** se compararon con ffbed66 y permanecen iguales.
+- Secret scan: worktree, índice, diffs e historia contra valores locales y patrones; **0 hallazgos**, .env/.env.testing/material privado ignorados. Enlaces locales/anchors documentales validados. Los **217 textos normativos** se compararon con b932cf5 y permanecen iguales.
 - Sin migración, índice o tabla nuevos. Sin fondos reales ni llamada Sepolia nueva; smoke real pendiente por testETH permanece independiente. **CU30 NO IMPLEMENTADO; Fase 12 NO iniciada.**
 
-Rama de trabajo: feature/phase-11-dashboard-reports; base ffbed66. Publicación de commits y fast-forward a main se verifican como paso final de entrega, sin force push. No se crean repositorios/copias/ZIP paralelos. Bloqueantes funcionales de Fase 11: 0 tras las verificaciones anteriores. Para Fase 12 se recomienda cerrar proveedor, contexto autorizado, privacidad y fallos del chatbot orientativo conforme D-14/RF24/CU29, mediante una nueva instrucción; este cierre no la inicia.
+Rama de trabajo: feature/phase-11-dashboard-reports; base b932cf5. Publicación de commits y fast-forward a main se verifican como paso final de entrega, sin force push. No se crean repositorios/copias/ZIP paralelos. Bloqueantes funcionales de Fase 11: 0 tras las verificaciones anteriores. Para Fase 12 se recomienda cerrar proveedor, contexto autorizado, privacidad y fallos del chatbot orientativo conforme D-14/RF24/CU29, mediante una nueva instrucción; este cierre no la inicia.
 
 
 ## Límite de asistencia previsto — Fase 11.5

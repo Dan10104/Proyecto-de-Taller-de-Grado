@@ -6,7 +6,7 @@
 
 **Estado histórico funcional — Fase 10 (2026-10-26).** RF21/CU26 implementados y verificados: 17 reglas, avisos propios, primera lectura y recuperación de 24 h. [Informe y evidencia](NOTIFICATIONS_IMPLEMENTATION.md). CU30 general y Fase 11 no iniciados. Sepolia real sigue pendiente de testETH. Los apartados de cierres anteriores conservan su contexto histórico.
 
-**Fase 9 implementada y validada offline, 2026-10-25/26.** Rama `feature/phase-9-blockchain` desde main limpio `a7731994f9a7339a8398739721af043c83ede6fc`. El contrato D-12 sigue vigente. Sepolia real pendiente de testETH; excepción temporal dev de Zod autorizada. No se inicia Fase 10 ni CU30 general. Se distinguen resultados ejecutados offline de la integración pública pendiente.
+**Fase 9 implementada y validada offline, 2026-10-25/26.** Rama `feature/phase-9-blockchain` desde main limpio `d264f454b745c28fbdbd13b9579ffe01ef7a2fa5`. El contrato D-12 sigue vigente. Sepolia real pendiente de testETH; excepción temporal dev de Zod autorizada. No se inicia Fase 10 ni CU30 general. Se distinguen resultados ejecutados offline de la integración pública pendiente.
 
 ## Evaluación JCS y propuesta de implementación
 
@@ -294,7 +294,7 @@ QA descubrió y corrigió el uso indebido del formatter DATETIME sobre ISO UTC s
 | 68 | Este informe, README y contratos/matrices actualizados |
 | 69 | RF19 → CU24 y RF20 → CU25 → actividad/hash/driver/contrato/tests |
 | 70 | feature/phase-9-blockchain |
-| 71 | Commits funcionales 29b6ce3, b9e3a0d y 1cdfa2b; cierre documental identificado por su mensaje en el registro Git siguiente |
+| 71 | Commits funcionales 2a15d4b, 1dcd757 y 824f727; cierre documental identificado por su mensaje en el registro Git siguiente |
 | 72 | Publicación de feature/phase-9-blockchain en origin |
 | 73 | Integración de feature en main con --ff-only y push sin force |
 | 74 | Control final exigido y comprobado en la entrega: main == origin/main y árbol limpio |
@@ -306,7 +306,7 @@ QA descubrió y corrigió el uso indebido del formatter DATETIME sobre ISO UTC s
 
 ## Registro Git de entrega
 
-Secuencia coherente desde `a773199`: `29b6ce3 feat: implement critical traceability and Sepolia registry`; `b9e3a0d feat: add authorized traceability verification interface`; `1cdfa2b test: cover traceability privacy recovery and concurrency`; cierre `docs: record phase 9 validation and development-only exception`. La rama de entrega es `feature/phase-9-blockchain`; se publica antes de integrar por fast-forward en main, sin reescritura de historial. El commit documental final puede consultarse con `git log -1`; no se incluye su propio hash dentro de este archivo para evitar una autorreferencia imposible. El informe de entrega comunica el resultado efectivo del push y la comparación final de referencias.
+Secuencia coherente desde `d264f45`: `2a15d4b feat: implement critical traceability and Sepolia registry`; `1dcd757 feat: add authorized traceability verification interface`; `824f727 test: cover traceability privacy recovery and concurrency`; cierre `docs: record phase 9 validation and development-only exception`. La rama de entrega es `feature/phase-9-blockchain`; se publica antes de integrar por fast-forward en main, sin reescritura de historial. El commit documental final puede consultarse con `git log -1`; no se incluye su propio hash dentro de este archivo para evitar una autorreferencia imposible. El informe de entrega comunica el resultado efectivo del push y la comparación final de referencias.
 
 ## Coexistencia documental con RF21 — Fase 9.5
 

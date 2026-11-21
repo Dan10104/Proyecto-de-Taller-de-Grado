@@ -72,7 +72,7 @@ Escaneo de imagen: 41 capas/18.999 archivos, 18 valores secretos locales compara
 
 Contexto build/upload local: allowlist .dockerignore/.gcloudignore, 394 archivos revisados sin .env/.local/.tools/.git/node_modules del host. docker history e imagen/config contienen solo metadatos no secretos. `.env.docker` ignorado, valores no impresos y ACL sin permisos amplios Everyone/Users/Authenticated Users. No modificar `.env` original. Evidencia local privada en `.local/qa/phase14`; no dump de DB, cookies o etiquetas QR versionados. Escaneo de worktree/índice/diffs/historial/build/logs/PDF/XLSX se repite antes del commit y publicación.
 
-Dos builds de igual configuración produjeron misma configuración runtime y mismas capas, con índices OCI distintos por atestaciones. Tamaño observado **243.684.289 bytes (232,40 MiB)**. La compilación final se repitió desde el commit `b3b32eeca47e0eca283c65b4b75fcaeb2a98bc92`; tag local `espacio-u:b3b32eeca47e0eca283c65b4b75fcaeb2a98bc92`, digest local final `sha256:504584f931fef6735b1f234e0663ac27b7e74405e21ea0a156355b1d72ccfc2e`. Mismo código/config/dependencias y mismas capas en ambas compilaciones. El commit documental posterior no cambia el contenido runtime. Este digest no fue publicado en Artifact Registry; el futuro push debe resolver/verificar su digest en ese registro. Nunca latest para publicar. PORT también se revalidó en 8181 sin publicar un puerto host adicional; el contenedor temporal fue retirado.
+Dos builds de igual configuración produjeron misma configuración runtime y mismas capas, con índices OCI distintos por atestaciones. Tamaño observado **243.684.289 bytes (232,40 MiB)**. La compilación final se repitió desde el commit `63ba01bd9625877fa46242abfb45fa210279d372`; tag local `espacio-u:63ba01bd9625877fa46242abfb45fa210279d372`, digest local final `sha256:504584f931fef6735b1f234e0663ac27b7e74405e21ea0a156355b1d72ccfc2e`. Mismo código/config/dependencias y mismas capas en ambas compilaciones. El commit documental posterior no cambia el contenido runtime. Este digest no fue publicado en Artifact Registry; el futuro push debe resolver/verificar su digest en ese registro. Nunca latest para publicar. PORT también se revalidó en 8181 sin publicar un puerto host adicional; el contenedor temporal fue retirado.
 
 ## Índice de los 94 puntos solicitados
 
@@ -105,10 +105,10 @@ Dos builds de igual configuración produjeron misma configuración runtime y mis
 
 ## Commits y control de publicación
 
-Base inicial limpia/sincronizada: `51e95f7b13e73566e6f6368087a96f079932a813` en main == origin/main. Rama `feature/phase-14-deployment-prep`. Commits técnicos:
+Base inicial limpia/sincronizada: `4cf7886aaf082de1eac9a40f672c10d33e3dbc0a` en main == origin/main. Rama `feature/phase-14-deployment-prep`. Commits técnicos:
 
-- `5025152` — build: add production container and shared runtime infrastructure.
-- `b3b32ee` — ops: prepare cloud run templates and container validation tools.
+- `358a43a` — build: add production container and shared runtime infrastructure.
+- `63ba01b` — ops: prepare cloud run templates and container validation tools.
 
 El commit documental completa README, cinco guías/informe nuevos y contratos afectados. Antes de cada commit se revisaron status, diff/diff cached y secret scan; publicación autorizada de feature y fast-forward main sin force push se confirma contra remoto al finalizar. El hash documental y la igualdad final de referencias constan en la entrega, sin inventar un hash autorreferencial dentro del propio commit.
 
