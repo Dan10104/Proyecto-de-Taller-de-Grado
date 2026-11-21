@@ -30,70 +30,75 @@ function disable(user) {
     <div class="page-heading">
       <div>
         <h1>Usuarios</h1>
-        <p>Administre las cuentas y el acceso a la plataforma.</p>
+        <p>Cuentas y acceso a la plataforma.</p>
       </div>
       <Link v-if="can('usuarios.crear')" href="/usuarios/crear" class="btn btn-primary">
         <Icon name="plus"/>
         Registrar usuario
       </Link>
     </div>
-    <section class="panel">
-      <form class="filter-bar" @submit.prevent="search">
-        <div class="field search-field">
-          <label for="buscar">Buscar usuario</label>
-          <input id="buscar" v-model="filters.q" placeholder="Nombre, apellido o correo" maxlength="120" type="search">
-        </div>
-        <div class="field">
-          <label for="estado">Estado</label>
-          <select id="estado" v-model="filters.estado">
-            <option value="">Todos los estados</option>
-            <option value="ACTIVO">Activo</option>
-            <option value="INACTIVO">Inactivo</option>
-          </select>
-        </div>
-        <div class="field">
-          <label for="rol">Rol</label>
-          <select id="rol" v-model="filters.rol">
-            <option value="">Todos los roles</option>
-            <option v-for="role in roles" :key="role.id" :value="role.id">{{ role.nombre }}</option>
-          </select>
-        </div>
+    <form class="panel filter-bar" @submit.prevent="search">
+      <div class="field">
+        <label for="buscar">Buscar usuario</label>
+        <input id="buscar" v-model="filters.q" placeholder="Nombre, apellido o correo" maxlength="120" type="search">
+      </div>
+      <div class="field">
+        <label for="estado">Estado</label>
+        <select id="estado" v-model="filters.estado">
+          <option value="">Todos los estados</option>
+          <option value="ACTIVO">Activo</option>
+          <option value="INACTIVO">Inactivo</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="rol">Rol</label>
+        <select id="rol" v-model="filters.rol">
+          <option value="">Todos los roles</option>
+          <option v-for="role in roles" :key="role.id" :value="role.id">{{ role.nombre }}</option>
+        </select>
+      </div>
+      <div class="button-group">
         <button class="btn btn-secondary" type="submit">
           <Icon name="search"/>
           Filtrar
         </button>
         <button v-if="filters.q||filters.estado||filters.rol" class="text-button" type="button" @click="Object.assign(filters,{q:'',estado:'',rol:''});search()">Limpiar</button>
-      </form>
-      <div class="table-scroll" tabindex="0" aria-label="Listado de usuarios desplazable">
+      </div>
+    </form>
+    <section class="panel">
+      <div class="table-scroll" tabindex="0" role="region" aria-label="Listado de usuarios desplazable">
         <table>
           <caption class="sr-only">Usuarios registrados</caption>
           <thead>
             <tr>
-              <th>Usuario</th>
-              <th>Correo</th>
-              <th>Estado</th>
-              <th>Roles activos</th>
-              <th>Registro</th>
-              <th class="align-right">Acciones</th>
+              <th scope="col">Usuario</th>
+              <th scope="col">Correo</th>
+              <th scope="col">Roles activos</th>
+              <th scope="col">Estado</th>
+              <th scope="col" class="align-right">Acciones</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="user in usuarios.data" :key="user.id">
               <td>
                 <Link :href="`/usuarios/${user.id}`" class="person-cell">
-                  <span class="avatar avatar-small">{{ user.nombres[0] }}{{ user.apellidos[0] }}</span>
-                  <strong>{{ user.nombres }} {{ user.apellidos }}</strong>
+                  <span class="avatar avatar-small" aria-hidden="true">{{ user.nombres[0] }}{{ user.apellidos[0] }}</span>
+                  <span>
+                    <strong>{{ user.nombres }} {{ user.apellidos }}</strong>
+                    <small class="cell-subline">Registro: {{ dateLabel(user.fecha_registro) }}</small>
+                  </span>
                 </Link>
               </td>
               <td>{{ user.correo }}</td>
               <td>
-                <StatusBadge :value="user.estado"/>
+                <div v-if="user.roles_activos.length" class="role-chips">
+                  <span v-for="role in user.roles_activos" :key="role.id">{{ role.nombre }}</span>
+                </div>
+                <span v-else class="hint">Sin rol</span>
               </td>
               <td>
-                <span v-for="role in user.roles_activos" :key="role.id" class="role-pill">{{ role.nombre }}</span>
-                <span v-if="!user.roles_activos.length" class="muted">Sin asignación</span>
+                <StatusBadge :value="user.estado"/>
               </td>
-              <td class="date-cell">{{ dateLabel(user.fecha_registro) }}</td>
               <td>
                 <div class="row-actions">
                   <Link :href="`/usuarios/${user.id}`">Ver</Link>
@@ -103,7 +108,7 @@ function disable(user) {
               </td>
             </tr>
             <tr v-if="!usuarios.data.length">
-              <td colspan="6" class="empty-state">No se encontraron usuarios con estos filtros.</td>
+              <td colspan="5" class="empty-state">No se encontraron usuarios con estos filtros.</td>
             </tr>
           </tbody>
         </table>

@@ -6,6 +6,7 @@ import AppLayout from '../../Layouts/AppLayout.vue';
 import FormErrors from '../../Components/FormErrors.vue';
 import Pagination from '../../Components/Pagination.vue';
 import StatusBadge from '../../Components/StatusBadge.vue';
+import Icon from '../../Components/Icon.vue';
 import { useAccess } from '../../security';
 
 const props = defineProps({ rol: Object, catalogo: Array, usuarios: Object });
@@ -49,6 +50,20 @@ function withdraw(user) {
     preserveScroll: true,
   });
 }
+
+// Presentación: nombre legible y orden de cada módulo del catálogo de permisos.
+const moduleLabels = {
+  usuarios: 'Usuarios', roles: 'Roles y asignaciones', permisos: 'Permisos', espacios: 'Espacios académicos',
+  reservas: 'Reservas', equipamientos: 'Equipamiento tecnológico', prestamos: 'Préstamos',
+  incidencias: 'Incidencias y mantenimiento', qr: 'Códigos QR', iot: 'Sensores IoT y monitoreo',
+  liberacion: 'Políticas de liberación', trazabilidad: 'Evidencias de trazabilidad', notificaciones: 'Notificaciones',
+  dashboard: 'Dashboard', reportes: 'Reportes', chatbot: 'Asistente', actividad: 'Bitácora de actividad',
+};
+const moduleOrder = Object.keys(moduleLabels);
+const moduleLabel = key => moduleLabels[key] || key.charAt(0).toUpperCase() + key.slice(1);
+const rank = key => (moduleOrder.includes(key) ? moduleOrder.indexOf(key) : moduleOrder.length);
+const groupList = computed(() => Object.entries(groups.value).sort(([a], [b]) => rank(a) - rank(b)));
+const checkedIn = permissions => permissions.filter(permission => form.permisos.includes(permission.id)).length;
 </script>
 
 <template>
@@ -56,41 +71,69 @@ function withdraw(user) {
     <div class="page-heading">
       <div>
         <h1>{{ rol.nombre }}</h1>
-        <p>{{ rol.descripcion }}</p>
+        <p v-if="rol.descripcion">{{ rol.descripcion }}</p>
       </div>
-      <Link v-if="can('roles.editar')" :href="`/roles/${rol.id}/editar`" class="btn btn-secondary">Editar descripción</Link>
+      <Link v-if="can('roles.editar')" :href="`/roles/${rol.id}/editar`" class="btn btn-secondary">
+        <Icon name="edit"/>
+        Editar descripción
+      </Link>
     </div>
-    <section class="panel detail-panel">
-      <h2>Permisos del rol</h2>
-      <p class="muted">Cada permiso habilita una acción y conserva las restricciones del rol.</p>
+
+    <section class="numerals" aria-label="Resumen del rol">
+      <div class="numeral">
+        <span class="numeral-head"><Icon name="key"/></span>
+        <strong class="numeral-value">{{ rol.permisos.length }}</strong>
+        <span class="numeral-label">Permisos asignados</span>
+      </div>
+      <div class="numeral">
+        <span class="numeral-head"><Icon name="users"/></span>
+        <strong class="numeral-value">{{ usuarios.total }}</strong>
+        <span class="numeral-label">Asignaciones activas</span>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-heading">
+        <h2>Permisos del rol</h2>
+        <p>Acciones admitidas para este rol institucional.</p>
+      </div>
       <form v-if="can('permisos.ver')" @submit.prevent="form.put(`/roles/${rol.id}/permisos`,{preserveScroll:true})">
         <FormErrors :errors="form.errors"/>
-        <p class="hint">Se muestran las acciones admitidas para este rol institucional.</p>
-        <div class="permission-groups">
-          <fieldset v-for="(permissions,group) in groups" :key="group">
-            <legend>{{ group==='usuarios'?'Usuarios':group==='roles'?'Roles y asignaciones':group==='espacios'?'Espacios académicos':'Catálogo de permisos' }}</legend>
-            <label v-for="permission in permissions" :key="permission.id" class="permission-option">
-              <input v-model="form.permisos" type="checkbox" :value="permission.id" :disabled="!can('roles.gestionar_permisos')">
-              <span>
-                <strong>{{ permission.nombre }}</strong>
-                <small>{{ permission.codigo }}</small>
-              </span>
-            </label>
-          </fieldset>
+        <p v-if="!groupList.length" class="hint">No hay permisos disponibles para este rol.</p>
+        <div v-else class="permission-groups">
+          <details v-for="([group, permissions], index) in groupList" :key="group" class="permission-group" :open="index===0">
+            <summary>
+              <span class="permission-group-title">{{ moduleLabel(group) }}</span>
+              <span class="permission-group-count">{{ checkedIn(permissions) }} de {{ permissions.length }}</span>
+            </summary>
+            <fieldset>
+              <legend class="sr-only">{{ moduleLabel(group) }}</legend>
+              <label v-for="permission in permissions" :key="permission.id" class="check-option permission-option">
+                <input v-model="form.permisos" type="checkbox" :value="permission.id" :disabled="!can('roles.gestionar_permisos')">
+                <span>
+                  {{ permission.nombre }}
+                  <small class="cell-subline permission-code">{{ permission.codigo }}</small>
+                </span>
+              </label>
+            </fieldset>
+          </details>
         </div>
         <div v-if="can('roles.gestionar_permisos')" class="form-actions">
           <button class="btn btn-primary" :disabled="form.processing">Guardar permisos</button>
         </div>
       </form>
-      <div v-else class="assigned-list">
-        <p v-for="permission in rol.permisos" :key="permission.id">{{ permission.nombre }}</p>
-        <p v-if="!rol.permisos.length">Sin permisos asignados.</p>
-      </div>
+      <template v-else>
+        <ul v-if="rol.permisos.length" class="permission-readonly">
+          <li v-for="permission in rol.permisos" :key="permission.id">{{ permission.nombre }}</li>
+        </ul>
+        <p v-else class="hint">Sin permisos asignados.</p>
+      </template>
     </section>
+
     <section class="panel">
       <div class="panel-heading">
         <h2>Usuarios con este rol</h2>
-        <p>Asignaciones activas; retirar un rol conserva su historia.</p>
+        <p>Retirar un rol conserva su historial.</p>
       </div>
       <div v-if="can('roles.asignar')" class="assign-search">
         <form @submit.prevent="find" class="inline-form">
@@ -98,7 +141,10 @@ function withdraw(user) {
             <label for="buscar-usuario">Buscar usuario para asignar</label>
             <input id="buscar-usuario" v-model="search" type="search" minlength="2" maxlength="120" required placeholder="Nombre, apellido o correo">
           </div>
-          <button class="btn btn-secondary" :disabled="searching">Buscar</button>
+          <button class="btn btn-secondary" :disabled="searching">
+            <Icon name="search"/>
+            Buscar
+          </button>
         </form>
         <p v-if="searchError" class="field-error" role="alert">{{ searchError }}</p>
         <form v-if="results.length" @submit.prevent="assign" class="inline-form">
@@ -109,35 +155,38 @@ function withdraw(user) {
               <option v-for="user in results" :key="user.id" :value="user.id">{{ user.nombres }} {{ user.apellidos }} · {{ user.correo }}</option>
             </select>
           </div>
-          <button class="btn btn-primary" :disabled="assignForm.processing">Asignar rol</button>
+          <button class="btn btn-secondary" :disabled="assignForm.processing">Asignar rol</button>
         </form>
         <FormErrors :errors="assignForm.errors"/>
       </div>
-      <div class="table-scroll" tabindex="0">
+      <div class="table-scroll" tabindex="0" role="region" aria-label="Usuarios con este rol">
         <table>
           <caption class="sr-only">Usuarios con asignación activa</caption>
           <thead>
             <tr>
-              <th>Usuario</th>
-              <th>Correo</th>
-              <th>Estado</th>
-              <th>Acciones</th>
+              <th scope="col">Usuario</th>
+              <th scope="col">Estado</th>
+              <th scope="col" class="align-right">Acciones</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="user in usuarios.data" :key="user.id">
-              <td>{{ user.nombres }} {{ user.apellidos }}</td>
-              <td>{{ user.correo }}</td>
+              <td>
+                <strong>{{ user.nombres }} {{ user.apellidos }}</strong>
+                <small class="cell-subline">{{ user.correo }}</small>
+              </td>
               <td>
                 <StatusBadge :value="user.estado"/>
               </td>
               <td>
-                <ConfirmAction v-if="can('roles.retirar')" label="Retirar rol" :message="`¿Retirar este rol a ${user.nombres} ${user.apellidos}? Se conservará el historial.`" @confirm="withdraw(user)"/>
-                <span v-else>—</span>
+                <div class="row-actions">
+                  <ConfirmAction v-if="can('roles.retirar')" label="Retirar rol" :message="`¿Retirar este rol a ${user.nombres} ${user.apellidos}? Se conservará el historial.`" @confirm="withdraw(user)"/>
+                  <span v-else>—</span>
+                </div>
               </td>
             </tr>
             <tr v-if="!usuarios.data.length">
-              <td colspan="4" class="empty-state">No hay usuarios con este rol activo.</td>
+              <td colspan="3" class="empty-state">No hay usuarios con este rol activo.</td>
             </tr>
           </tbody>
         </table>

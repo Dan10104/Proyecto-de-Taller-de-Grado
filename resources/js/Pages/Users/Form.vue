@@ -30,14 +30,13 @@ function submit() {
     <div class="page-heading">
       <div>
         <h1>{{ usuario?'Editar usuario':'Registrar usuario' }}</h1>
-        <p>Complete la información de la cuenta. Los campos con * son obligatorios.</p>
+        <p>Los campos con * son obligatorios.</p>
       </div>
     </div>
     <form @submit.prevent="submit" class="panel form-panel">
       <FormErrors :errors="form.errors"/>
       <div class="form-section-heading">
-        <h2>Información personal</h2>
-        <p>Datos de identificación del usuario.</p>
+        <h2>Datos personales</h2>
       </div>
       <div class="form-grid">
         <div class="field">
@@ -54,8 +53,8 @@ function submit() {
         </div>
       </div>
       <div class="form-section-heading">
-        <h2>{{ usuario?'Actualizar contraseña':'Credenciales iniciales' }}</h2>
-        <p>{{ usuario?'Opcional. Deje ambos campos vacíos para conservarla. Al cambiarla, se cerrarán las sesiones del usuario.':'Defina una contraseña inicial de al menos 12 caracteres.' }}</p>
+        <h2>Contraseña</h2>
+        <p>{{ usuario?'Opcional. Déjela vacía para conservarla; si la cambia, se cerrarán las sesiones del usuario.':'Mínimo 12 caracteres.' }}</p>
       </div>
       <div class="form-grid">
         <div class="field">
@@ -67,17 +66,19 @@ function submit() {
           <input id="password_confirmation" v-model="form.password_confirmation" type="password" autocomplete="new-password" minlength="12" maxlength="128" :required="!usuario||!!form.password">
         </div>
       </div>
-      <fieldset v-if="!usuario&&can('roles.asignar')" class="role-selection">
-        <legend>
-          Roles iniciales
-          <span class="muted">(opcional)</span>
-        </legend>
-        <label v-for="role in roles" :key="role.id" class="check-option">
-          <input v-model="form.roles" type="checkbox" :value="role.id">
-          {{ role.nombre }}
-        </label>
-        <p class="hint">La asignación quedará registrada con su usuario como responsable.</p>
-      </fieldset>
+      <template v-if="!usuario&&can('roles.asignar')">
+        <div class="form-section-heading">
+          <h2>Roles iniciales</h2>
+          <p>Opcional. La asignación quedará registrada a su nombre.</p>
+        </div>
+        <fieldset class="role-selection">
+          <legend class="sr-only">Roles iniciales</legend>
+          <label v-for="role in roles" :key="role.id" class="check-option">
+            <input v-model="form.roles" type="checkbox" :value="role.id">
+            {{ role.nombre }}
+          </label>
+        </fieldset>
+      </template>
       <div class="form-actions">
         <Link :href="can('usuarios.ver')?'/usuarios':'/inicio'" class="btn btn-secondary">Cancelar</Link>
         <button class="btn btn-primary" type="submit" :disabled="form.processing">{{ form.processing?'Guardando…':'Guardar usuario' }}</button>

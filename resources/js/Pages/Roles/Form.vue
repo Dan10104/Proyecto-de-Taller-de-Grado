@@ -21,24 +21,26 @@ function submit() {
     <div class="page-heading">
       <div>
         <h1>{{ rol?'Editar rol':'Registrar rol institucional' }}</h1>
-        <p>Conserve la identidad y responsabilidad del rol.</p>
+        <p>Los campos con * son obligatorios.</p>
       </div>
     </div>
     <form class="panel form-panel" @submit.prevent="submit">
       <FormErrors :errors="form.errors"/>
       <div v-if="!rol&&!nombres.length" class="alert">Todos los roles institucionales ya están registrados.</div>
-      <div class="field">
-        <label for="nombre">Nombre del rol *</label>
-        <select id="nombre" v-model="form.nombre" required :disabled="!!rol">
-          <option value="">Seleccione un rol institucional</option>
-          <option v-for="name in nombres" :key="name" :value="name">{{ name }}</option>
-        </select>
-        <p v-if="rol" class="hint">El nombre identifica el rol institucional y se conserva junto con su historial.</p>
-      </div>
-      <div class="field">
-        <label for="descripcion">Descripción</label>
-        <textarea id="descripcion" v-model="form.descripcion" maxlength="255" rows="4"></textarea>
-        <p class="hint">Hasta 255 caracteres.</p>
+      <div class="form-stack">
+        <div class="field">
+          <label for="nombre">Nombre del rol *</label>
+          <select id="nombre" v-model="form.nombre" required :disabled="!!rol">
+            <option value="">Seleccione un rol institucional</option>
+            <option v-for="name in nombres" :key="name" :value="name">{{ name }}</option>
+          </select>
+          <p v-if="rol" class="hint">El nombre no se puede cambiar; identifica el rol y su historial.</p>
+        </div>
+        <div class="field">
+          <label for="descripcion">Descripción</label>
+          <textarea id="descripcion" v-model="form.descripcion" maxlength="255" rows="3"></textarea>
+          <p class="hint">Hasta 255 caracteres.</p>
+        </div>
       </div>
       <div class="form-actions">
         <Link :href="can('roles.ver')?'/roles':'/inicio'" class="btn btn-secondary">Cancelar</Link>

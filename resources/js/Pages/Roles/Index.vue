@@ -13,36 +13,53 @@ const { can } = useAccess();
     <div class="page-heading">
       <div>
         <h1>Roles y permisos</h1>
-        <p>Responsabilidades institucionales y accesos autorizados.</p>
+        <p>Roles institucionales y sus accesos.</p>
       </div>
       <div class="button-group">
-        <Link v-if="can('permisos.ver')" href="/permisos" class="btn btn-secondary">Catálogo de permisos</Link>
+        <Link v-if="can('permisos.ver')" href="/permisos" class="btn btn-secondary">
+          <Icon name="key"/>
+          Catálogo de permisos
+        </Link>
         <Link v-if="can('roles.crear')&&faltantes.length" href="/roles/crear" class="btn btn-primary">
           <Icon name="plus"/>
           Registrar rol
         </Link>
       </div>
     </div>
-    <div class="role-grid">
-      <article v-for="role in roles" :key="role.id" class="panel role-card">
-        <span class="tile-icon">
-          <Icon name="shield"/>
-        </span>
-        <h2>{{ role.nombre }}</h2>
-        <p>{{ role.descripcion||'Sin descripción.' }}</p>
-        <div class="role-meta">
-          <span>{{ role.usuarios_activos_count }} asignaciones activas</span>
-          <span>{{ role.permisos_count }} permisos</span>
-        </div>
-        <div class="role-actions">
-          <Link :href="`/roles/${role.id}`" class="text-link">
-            Consultar rol
-            <Icon name="arrow"/>
-          </Link>
-          <Link v-if="can('roles.editar')" :href="`/roles/${role.id}/editar`">Editar</Link>
-        </div>
-      </article>
-    </div>
+    <section class="panel">
+      <div class="table-scroll" tabindex="0" role="region" aria-label="Roles institucionales">
+        <table class="roles-table">
+          <caption class="sr-only">Roles institucionales</caption>
+          <thead>
+            <tr>
+              <th scope="col">Rol</th>
+              <th scope="col" class="align-right">Asignaciones activas</th>
+              <th scope="col" class="align-right">Permisos</th>
+              <th scope="col" class="align-right">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="role in roles" :key="role.id">
+              <td>
+                <Link :href="`/roles/${role.id}`" class="role-name"><strong>{{ role.nombre }}</strong></Link>
+                <small class="cell-subline role-summary" :title="role.descripcion||undefined">{{ role.descripcion||'Sin descripción.' }}</small>
+              </td>
+              <td class="align-right role-count">{{ role.usuarios_activos_count }}</td>
+              <td class="align-right role-count">{{ role.permisos_count }}</td>
+              <td>
+                <div class="row-actions">
+                  <Link :href="`/roles/${role.id}`">Ver</Link>
+                  <Link v-if="can('roles.editar')" :href="`/roles/${role.id}/editar`">Editar</Link>
+                </div>
+              </td>
+            </tr>
+            <tr v-if="!roles.length">
+              <td colspan="4" class="empty-state">No hay roles registrados.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
     <p v-if="!faltantes.length" class="hint">Los cuatro roles institucionales están registrados.</p>
   </AppLayout>
 </template>
