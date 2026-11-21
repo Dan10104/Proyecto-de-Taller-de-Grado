@@ -178,9 +178,9 @@ test('the IoT plan needs an unambiguous room identifier: a bare number in a name
   }
   assert.equal(at('Sala norte', 'AULA_11-13'), null);
   assert.equal(at('Sala norte', 'AULA-11/13'), null);
-  // Text without another number keeps the identifier unambiguous.
-  assert.deepEqual(at('Aula 11 - Bloque B', 'ESP-001'), { floor: 1, room: 11, kind: 'aula' });
-  assert.deepEqual(at('Aula 11', 'ESP-013'), { floor: 1, room: 11, kind: 'aula' }); // a code without a room identifier is a serial
+  // Anything added to the identifier keeps the record off the plan, a descriptive suffix included.
+  assert.equal(at('Aula 11 - Bloque B', 'ESP-001'), null);
+  assert.deepEqual(at('Aula 11', 'ESP-013'), { floor: 1, room: 11, kind: 'aula' }); // a code without a room type is a serial
 });
 test('a REGISTRADA state without confirmation date or reference is not presented as an external registration', async () => {
   const html = await render('TraceabilityChain', { evidence: { ...evidence, estado: 'REGISTRADA', referencia_externa: null, registrada_externamente_en: null, ultima_verificacion: null } });
@@ -288,7 +288,7 @@ test('single rooms are still drawn after the ambiguity rules', async () => {
   const { locateSpace } = await load('resources/js/building.js');
   const at = (nombre, codigo, extra = {}) => locateSpace({ recurso: { nombre, codigo }, ...extra });
   const aula11 = { floor: 1, room: 11, kind: 'aula' };
-  for (const [name, code] of [['Aula 11', 'ESP-001'], ['Aula 11', 'AULA-11'], ['Aula 11', 'ESP-013'], ['Sala norte', 'AULA_11'], ['Aula 011', 'ESP-001'], ['AULA 11', 'ESP-001'], ['Aula 11 - Bloque B', 'ESP-001'], ['Aula 11 - Bloque C', 'ESP-001'], ['Aula 11 (aula 11)', 'ESP-001'], ['Ambiente 11', 'AULA-11'], ['Aula １１', 'ESP-001']]) {
+  for (const [name, code] of [['Aula 11', 'ESP-001'], ['Aula 11', 'AULA-11'], ['Aula 11', 'ESP-013'], ['Sala norte', 'AULA_11'], ['Aula 011', 'ESP-001'], ['AULA 11', 'ESP-001'], ['  Aula   11  ', 'ESP-001'], ['Aula Nro. 11', 'ESP-001'], ['Aula １１', 'ESP-001']]) {
     assert.deepEqual(at(name, code), aula11, `${name} / ${code}`);
   }
   assert.deepEqual(at('Aula N° 13', 'ESP-001'), { floor: 1, room: 13, kind: 'aula' });
@@ -302,4 +302,27 @@ test('single rooms are still drawn after the ambiguity rules', async () => {
   assert.equal(at('Aula 11', 'AULA-13'), null);
   assert.equal(at('Aula 11', 'ESP-001', { piso: { nombre: 'Segundo piso' } }), null);
   assert.equal(at('Aula 11', 'ESP-001', { piso: { nombre: 'Piso ２' } }), null); // a full-width floor number still contradicts
+});
+test('a room is drawn only when its name or its code is exactly a room identifier', async () => {
+  const { locateSpace } = await load('resources/js/building.js');
+  const at = (nombre, codigo) => locateSpace({ recurso: { nombre, codigo } });
+  // Reported case, kept verbatim, and the same idea with other suffixes: a different room is named.
+  for (const [name, code] of [
+    ['Aula 11 / Aula 11B', 'ESP-001'], ['Aula 11B', 'ESP-001'], ['Aula 11 B', 'ESP-001'], ['Aula 11 bis', 'ESP-001'], ['Aula 11 anexo', 'ESP-001'],
+    ['Aula 11-A', 'ESP-001'], ['Aula 11 - Bloque B', 'ESP-001'], ['Aula 11 - Bloque C', 'ESP-001'], ['Aula 11 (aula 11)', 'ESP-001'], ['Aula 11.', 'ESP-001'],
+    ['Aula 11 y laboratorio', 'ESP-001'], ['Aulas 11', 'ESP-001'], ['Ambiente 11', 'AULA-11'], ['Sala 11', 'AULA-11'], ['Sala XIII', 'AULA-11'],
+    ['Sala norte', 'AULA-11B'], ['Sala norte', 'AULA-11-B'], ['Sala norte', 'AULA-11 bis'], ['Sala norte', 'AULAS-11'], ['Aula 11', 'AULA-11B'],
+    ['Aula 11', 'LAB-11'], ['Laboratorio 41', 'AULA-41'],
+  ]) {
+    assert.equal(at(name, code), null, `${name} / ${code}`);
+  }
+  // Suffixes generated around a valid identifier: none may be drawn.
+  let checked = 0;
+  for (const suffix of ['B', 'b', ' B', ' bis', ' anexo', '-A', '/B', ' (B)', ' I', ' II', 'º', '.5', ' 1', '0000', ' y', ' sur', '\u200b13', ' / Aula 11B', ' – Aula 11']) {
+    for (const base of ['Aula 11', 'Lab 41', 'Laboratorio 41', 'Aula N° 11']) {
+      assert.equal(at(`${base}${suffix}`, 'ESP-001'), null, `${base}${JSON.stringify(suffix)}`);
+      checked++;
+    }
+  }
+  assert.ok(checked > 70);
 });

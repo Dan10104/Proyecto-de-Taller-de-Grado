@@ -50,41 +50,35 @@ function floorHintOf(piso) {
 const floorOfRoom = (number) => BUILDING_FLOORS.find((floor) => floor.left.includes(number) || floor.right.includes(number));
 
 // Texto comparable: sin tildes, en minúsculas, con las variantes tipográficas de una cifra reducidas a su
-// forma básica (NFKC convierte «１３», «¹³» o «ⅩⅢ» en «13», «13» y «xiii») y guiones y guiones bajos
-// tratados como espacios («AULA_11», «LAB-41»).
-const comparable = (value) => plain(String(value ?? '').replace(/[°º]/g, 'o').normalize('NFKC')).replace(/[_-]+/g, ' ');
+// forma básica (NFKC convierte «１１» o «¹¹» en «11» y «ⅩⅢ» en «xiii»), guiones y guiones bajos tratados
+// como espacios («AULA_11», «LAB-41») y sin espacios en los extremos.
+const comparable = (value) => plain(String(value ?? '').replace(/[°º]/g, 'o').normalize('NFKC')).replace(/[_-]+/g, ' ').trim();
 
-// Palabra que nombra un tipo de ambiente y, unida a ella, su número: «Aula 11», «Lab. 41», «Aula N° 11»,
-// «LAB-41», «AULA_11». Un número suelto no identifica un ambiente («Sala para 20 personas», «ESP-020»).
+// Identificador de ambiente. Debe ser el texto COMPLETO: tipo de ambiente y número, y nada más
+// («Aula 11», «Lab. 41», «Aula N° 11», «AULA_11», «LAB-41»). Cualquier añadido impide reconocerlo:
+// otro número, un sufijo o una letra («Aula 11B», «Aula 11 bis», «Aula 11 - Bloque B»), un rango o una
+// lista («Aula 11–13», «Aula 11 / Aula 11B») o una aclaración («Aula 11 (30 personas)»).
+const ROOM_ID = /^(aula|laboratorio|lab)\.?\s*(?:n(?:ro|o)?\.?\s*)?(\d{1,3})$/;
 const ROOM_TYPE = /\b(?:aulas?|laboratorios?|labs?)\b/;
-const ROOM_ID = /\b(aulas?|laboratorios?|labs?)\b\.?\s*(?:n(?:ro|o)?\b\.?\s*)?(\d{1,3})\b/g;
-// Numeral romano escrito con letras («XIII», «IV»). Una letra suelta solo cuenta si es I, V o X, para no
-// confundir «Bloque C» o «Bloque D» con un número.
+// Numeral romano escrito con letras («XIII», «IV»); una letra suelta solo cuenta si es I, V o X.
 const ROMAN = /\b(?=[ivxlcdm]{2,}\b|[ivx]\b)m{0,3}(?:cm|cd|d?c{0,3})(?:xc|xl|l?x{0,3})(?:ix|iv|v?i{0,3})\b/;
 
-// Identificadores de ambiente presentes en un texto, como pares «tipo-número» sin repetir.
-function roomIdsOf(text) {
-  return [...new Set([...text.matchAll(ROOM_ID)].map((match) => `${match[1].startsWith('aula') ? 'aula' : 'laboratorio'}-${Number(match[2])}`))];
+function roomIdOf(text) {
+  const found = ROOM_ID.exec(text);
+  return found ? { kind: found[1] === 'aula' ? 'aula' : 'laboratorio', number: Number(found[2]) } : null;
 }
-
-// ¿Contiene el texto algún número que no sea «number»? Cuenta las cifras de cualquier escritura y los
-// numerales romanos; los que no están escritos con cifras básicas se consideran siempre distintos.
-function hasOtherNumber(text, number) {
-  if ((text.match(/\d+/g) || []).some((digits) => Number(digits) !== number)) return true;
-  if (/\p{N}/u.test(text.replace(/\d+/g, ' '))) return true;
-  return ROMAN.test(text);
-}
+// ¿Menciona el texto algún número? Cuenta las cifras de cualquier escritura y los numerales romanos.
+const mentionsNumber = (text) => /\p{N}/u.test(text) || ROMAN.test(text);
 
 // Ubica un espacio real en la maqueta. Devuelve { floor, room, kind } o null cuando el registro no
 // respalda la posición; en ese caso el espacio se lista aparte, nunca se descarta.
-// · Aula o laboratorio: nombre y código, juntos, deben identificar un único ambiente, y el registro no
-//   puede traer ningún otro número que pueda ser otro ambiente:
-//     - el nombre no puede contener un número distinto del identificado, sea cual sea el separador o la
-//       forma de escribirlo («Aula 11–13», «Aula 11 o 13», «Aulas 11 y 13», «Aula (11 / 13)»,
-//       «Aula 11 / XIII», «Aula 11 / １３»);
-//     - el código, si nombra un tipo de ambiente, tampoco («AULA_11-13»); un código sin tipo es un
-//       correlativo («ESP-013») y no se interpreta.
-//   Es deliberadamente conservador: «Aula 11 (30 personas)» tampoco se dibuja y queda en la lista aparte.
+// Regla conservadora: ante cualquier ambigüedad el espacio NO se dibuja.
+// · Aula o laboratorio: se dibuja solo si el nombre o el código es, completo, un identificador de ambiente.
+//     - El nombre debe ser exactamente un identificador, o no mencionar ningún número (un nombre
+//       descriptivo como «Laboratorio de redes» o «Sala norte», que entonces depende del código).
+//     - El código debe ser exactamente un identificador, o no nombrar ningún tipo de ambiente (un
+//       correlativo como «ESP-013», que no se interpreta).
+//     - Si nombre y código son ambos identificadores, deben coincidir.
 //   El tipo del identificador debe coincidir con el del ambiente de la maqueta.
 // · Auditorio: no tiene número, así que solo se dibuja cuando el piso registrado lo confirma.
 // · Si el registro indica su piso con un número o un ordinal, debe coincidir con el de la maqueta.
@@ -99,15 +93,16 @@ export function locateSpace(space) {
     return floor && floorHint === floor.number ? { floor: floor.number, room: 'auditorium', kind: 'auditorio' } : null;
   }
 
-  const ids = [...new Set([...roomIdsOf(name), ...roomIdsOf(code)])];
-  if (ids.length !== 1) return null;
-  const [kind, digits] = ids[0].split('-');
-  const number = Number(digits);
-  if (hasOtherNumber(name, number)) return null;
-  if (ROOM_TYPE.test(code) && hasOtherNumber(code, number)) return null;
+  const inName = roomIdOf(name);
+  const inCode = roomIdOf(code);
+  if (!inName && mentionsNumber(name)) return null;
+  if (!inCode && ROOM_TYPE.test(code)) return null;
+  const id = inName || inCode;
+  if (!id) return null;
+  if (inName && inCode && (inName.kind !== inCode.kind || inName.number !== inCode.number)) return null;
 
-  const floor = floorOfRoom(number);
-  if (!floor || floor.kind !== kind) return null;
+  const floor = floorOfRoom(id.number);
+  if (!floor || floor.kind !== id.kind) return null;
   if (floorHint !== null && floorHint !== floor.number) return null;
-  return { floor: floor.number, room: number, kind: floor.kind };
+  return { floor: floor.number, room: id.number, kind: floor.kind };
 }
