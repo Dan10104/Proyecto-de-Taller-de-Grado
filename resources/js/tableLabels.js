@@ -40,7 +40,7 @@ export function labelTables(root) {
         const aligned = row.cells.length === labels.length;
         [...row.cells].forEach((cell, index) => {
           setRole(cell, cell.tagName === 'TH' ? 'rowheader' : 'cell');
-          const kind = cellLabel(aligned && index > 0 ? labels[index] : '', Boolean(cell.querySelector('a, button')));
+          const kind = cellLabel(aligned ? labels[index] : '', Boolean(cell.querySelector('a, button')));
           // Los controles no necesitan rótulo: sus enlaces ya dicen qué hacen. Los datos lo conservan.
           if (kind.actions) cell.dataset.actions = '';
           else if (kind.label && cell.dataset.label !== kind.label) cell.dataset.label = kind.label;

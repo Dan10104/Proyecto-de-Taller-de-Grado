@@ -153,3 +153,60 @@ test('the dashboard chart shows its scope next to the title, not only inside the
   const beforeDetails = html.slice(0, html.indexOf('<details'));
   assert.match(beforeDetails, /Estado actual · independiente del periodo/);
 });
+const load = (file) => import(pathToFileURL(resolve(root, file)).href);
+test('the IoT plan needs an unambiguous room identifier: a bare number in a name is not a room', async () => {
+  const { locateSpace } = await load('resources/js/building.js');
+  const at = (nombre, codigo, extra = {}) => locateSpace({ recurso: { nombre, codigo }, ...extra });
+  assert.equal(at('Sala para 20 personas', 'SAL-NORTE'), null);
+  assert.equal(at('Depósito general', 'ESP-020'), null);
+  assert.equal(at('Aula 41', 'ESP-041'), null); // 41 is a laboratory in the drawing: the type must agree
+  assert.deepEqual(at('Aula 11', 'ESP-001'), { floor: 1, room: 11, kind: 'aula' });
+  assert.deepEqual(at('Aula N° 13', 'ESP-002'), { floor: 1, room: 13, kind: 'aula' });
+  assert.deepEqual(at('Laboratorio de redes', 'LAB-41'), { floor: 4, room: 41, kind: 'laboratorio' });
+  assert.equal(at('Aula 11', 'ESP-001', { piso: { nombre: 'Segundo piso' } }), null); // the recorded floor contradicts the drawing
+  assert.equal(at('Auditorio principal', 'ESP-006'), null); // no number and no recorded floor to confirm it
+  assert.deepEqual(at('Auditorio principal', 'ESP-006', { piso: { nombre: 'Cuarto piso' } }), { floor: 4, room: 'auditorium', kind: 'auditorio' });
+});
+test('a REGISTRADA state without confirmation date or reference is not presented as an external registration', async () => {
+  const html = await render('TraceabilityChain', { evidence: { ...evidence, estado: 'REGISTRADA', referencia_externa: null, registrada_externamente_en: null, ultima_verificacion: null } });
+  assert.match(html, /Registro externo sin respaldo/);
+  assert.match(html, /Sin confirmación externa/);
+  assert.ok(!/registro externo confirmado/.test(html));
+  assert.ok(!html.includes('chain-violet'));
+  assert.match(html, /Estado recibido/);
+});
+test('an expired reading stays expired when the detail is mounted later, as when another space is selected', async () => {
+  const reading = { sensor_id: 5, tipo: 'PRESENCIA', valor: '1.00', vigente_por_segundos: 1, fecha_evento: '2026-10-28 08:00:00', fecha_recepcion: '2026-10-28 08:00:01' };
+  const fresh = await render('IotEvidence', { readings: [reading], embedded: true });
+  assert.match(fresh, /Lectura de presencia/);
+  const late = await render('IotEvidence', { readings: [reading], embedded: true, elapsed: 8 });
+  assert.match(late, /Sin lecturas recientes suficientes/);
+  assert.ok(!late.includes('Lectura de presencia'));
+});
+test('the state breakdown keeps the indicator title and the clarification sent with it', async () => {
+  const html = await render('StateBreakdown', { title: 'Espacios por estado operativo', context: 'Estado operativo actual · no es disponibilidad temporal', total: 3, values: { DISPONIBLE: 2, BLOQUEADO: 1 } });
+  assert.match(html, /Espacios por estado operativo/);
+  assert.match(html, /no es disponibilidad temporal/);
+});
+test('home and the sidebar share one navigation: a single view permission is an authorized module', async () => {
+  const { authorizedModules, navigationGroups } = await load('resources/js/navigation.js');
+  const only = (...codes) => (code) => codes.includes(code);
+  assert.deepEqual(authorizedModules(only('reservas.ver_administrativas')).map(item => item.href), ['/reservas']);
+  assert.deepEqual(authorizedModules(only('incidencias.gestionar')), []); // registering does not open the list
+  assert.deepEqual(authorizedModules(only()), []);
+  assert.deepEqual(navigationGroups(only()).flatMap(group => group.items).map(item => item.href), ['/inicio']);
+});
+test('mobile row cards label every data cell, the first one included', async () => {
+  const { labelTables } = await load('resources/js/tableLabels.js');
+  const node = (extra = {}) => ({ attrs: {}, hasAttribute(name) { return name in this.attrs; }, setAttribute(name, value) { this.attrs[name] = value; }, ...extra });
+  const cell = (text, controls = false) => node({ tagName: 'TD', textContent: text, dataset: {}, querySelector: () => (controls ? {} : null), cloneNode: () => ({ textContent: text, querySelectorAll: () => [] }) });
+  const head = node({ cells: [cell('Espacio histórico'), cell('Acción'), cell('Acción')] });
+  const row = node({ cells: [cell('Aula 11'), cell('Reserva aprobada'), cell('Ver', true)] });
+  const table = node({ tHead: node({ rows: [head] }), tBodies: [node({ rows: [row] })] });
+  labelTables({ querySelectorAll: () => [table] });
+  assert.equal(row.cells[0].dataset.label, 'Espacio histórico');
+  assert.equal(row.cells[1].dataset.label, 'Acción');
+  assert.equal(row.cells[2].dataset.label, undefined);
+  assert.equal(row.cells[2].dataset.actions, '');
+  assert.equal(table.attrs.role, 'table');
+});
