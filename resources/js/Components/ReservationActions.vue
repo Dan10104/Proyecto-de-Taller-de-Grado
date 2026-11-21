@@ -43,7 +43,7 @@ function submit() {
         <p v-if="action === 'aprobar'">Se comprobará nuevamente la disponibilidad de {{ reserva.espacio.nombre }} antes de aprobar esta solicitud.</p>
         <p v-else-if="action === 'rechazar'">La solicitud quedará rechazada. Esta decisión no se puede deshacer.</p>
         <p v-else>La reserva quedará cancelada. Solo es posible confirmar antes de su hora de inicio.</p>
-        <p><strong>{{ reserva.espacio.nombre }}</strong></p>
+        <p class="dialog-subject"><strong>{{ reserva.espacio.nombre }}</strong></p>
         <FormErrors :errors="form.errors"/>
         <InputField v-if="action !== 'aprobar'" :id="reasonId" label="Motivo (opcional)" v-model="form.motivo" type="textarea" maxlength="500" :error="form.errors[reasonField]"/>
         <div class="form-actions">

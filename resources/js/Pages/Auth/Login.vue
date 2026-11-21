@@ -18,24 +18,25 @@ function submit() {
   <Head title="Iniciar sesión · ESPACIO-U"/>
   <div class="login-page">
     <section class="login-story" aria-label="ESPACIO-U">
-      <Brand light/>
-      <div class="login-story-main">
-        <h2>Reservas de espacios y préstamos de equipamiento</h2>
-        <ul class="login-points">
-          <li><Icon name="calendar"/>Espacios académicos</li>
-          <li><Icon name="monitor"/>Equipamiento tecnológico</li>
-          <li><Icon name="signal"/>Monitoreo de ocupación</li>
-          <li><Icon name="network"/>Trazabilidad verificable</li>
-        </ul>
+      <div class="login-story-inner">
+        <Brand light/>
+        <div class="login-story-main">
+          <h2>Reservas de espacios y préstamos de equipamiento</h2>
+          <div class="login-visual">
+            <SpaceIllustration class="login-illustration"/>
+            <ul class="login-points">
+              <li><Icon name="calendar"/>Espacios académicos</li>
+              <li><Icon name="monitor"/>Equipamiento tecnológico</li>
+              <li><Icon name="signal"/>Monitoreo de ocupación</li>
+              <li><Icon name="network"/>Trazabilidad verificable</li>
+            </ul>
+          </div>
+        </div>
+        <p class="login-faculty">Facultad de Ingeniería en Ciencias de la Computación y Telecomunicaciones</p>
       </div>
-      <SpaceIllustration class="login-illustration"/>
-      <p class="login-faculty">Facultad de Ingeniería en Ciencias de la Computación y Telecomunicaciones</p>
     </section>
     <main class="login-form-side">
       <div class="login-form-wrap">
-        <div class="login-mobile-brand">
-          <Brand/>
-        </div>
         <h1>Iniciar sesión</h1>
         <p class="lead">Ingrese con su cuenta de ESPACIO-U.</p>
         <div v-if="page.props.flash?.notice" class="alert" role="status">{{ page.props.flash.notice }}</div>

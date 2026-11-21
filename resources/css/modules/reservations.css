@@ -36,7 +36,7 @@
 .reservation-space-art { flex: none; width: 5.5rem; border: 1px solid var(--color-line); border-radius: var(--radius-s); background: var(--color-surface); }
 
 @media (max-width: 36rem) {
-  .reservation-actions .button-group, .reservation-dialog .form-actions { width: 100%; }
-  .reservation-actions .button-group .btn, .reservation-dialog .form-actions .btn { flex: 1 1 100%; }
+  .reservation-actions .button-group { width: 100%; }
+  .reservation-actions .button-group .btn { flex: 1 1 100%; }
   .reservation-space-art { width: 4rem; }
 }

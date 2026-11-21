@@ -878,19 +878,48 @@ details > summary:hover { text-decoration: underline; text-underline-offset: 3px
 /* Ayuda breve bajo demanda */
 .help-tip { position: relative; display: inline-grid; place-items: center; width: 1.125rem; height: 1.125rem; border: 1px solid var(--color-line-strong); border-radius: 50%; color: var(--color-ink-3); font-size: 0.6875rem; font-weight: 700; cursor: help; }
 
-dialog.confirm-dialog, dialog.reservation-dialog {
+/* Diálogo de confirmación: una sola hoja, centrada en la ventana sobre un telón uniforme, igual en todos los módulos.
+   El margen automático restituye el centrado nativo de <dialog>, que el reinicio global de márgenes anula. */
+dialog.confirm-dialog {
+  position: fixed;
+  inset: 0;
   width: min(28rem, calc(100vw - 2rem));
-  padding: var(--space-5);
+  max-width: none;
+  height: fit-content;
+  max-height: calc(100dvh - 2rem);
+  margin: auto;
+  padding: var(--space-6);
+  overflow-y: auto;
+  overscroll-behavior: contain;
   border: 1px solid var(--color-line);
   border-radius: var(--radius-l);
   background: var(--color-surface-raised);
   color: var(--color-ink);
   box-shadow: var(--shadow-overlay);
 }
-dialog::backdrop { background: rgb(14 27 46 / 0.45); }
-dialog h2 { font-size: var(--text-lg); }
-dialog > * + * { margin-top: var(--space-3); }
-dialog p { color: var(--color-ink-2); }
+dialog.confirm-dialog::backdrop { background: rgb(14 27 46 / 0.45); }
+/* El mismo ritmo interior tenga o no el diálogo un formulario propio. */
+:is(dialog.confirm-dialog, dialog.confirm-dialog > form) > * + * { margin-top: var(--space-3); }
+/* :where mantiene estos estilos de texto por debajo de las clases: un error de campo dentro del diálogo sigue en rojo. */
+:where(dialog.confirm-dialog) h2 { font-size: var(--text-lg); line-height: 1.3; text-wrap: balance; }
+:where(dialog.confirm-dialog) p { color: var(--color-ink-2); line-height: 1.55; text-wrap: pretty; }
+dialog.confirm-dialog h2 + p { margin-top: var(--space-2); }
+/* Registro sobre el que recae la acción. */
+dialog.confirm-dialog .dialog-subject {
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-m);
+  background: var(--color-surface-sunken);
+  color: var(--color-ink);
+  overflow-wrap: anywhere;
+}
+dialog.confirm-dialog .dialog-subject strong { font-weight: 600; }
+dialog.confirm-dialog .form-actions { margin-top: var(--space-6); padding-top: 0; }
+dialog.confirm-dialog .form-actions .btn { min-width: 6.5rem; }
+@media (max-width: 30rem) {
+  dialog.confirm-dialog { padding: var(--space-5); }
+  dialog.confirm-dialog .form-actions .btn { flex: 1 1 100%; }
+}
 
 .session-screen {
   display: grid;

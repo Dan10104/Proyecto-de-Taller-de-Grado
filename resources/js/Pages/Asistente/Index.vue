@@ -81,6 +81,7 @@ onUnmounted(() => {
 
 <template>
   <AppLayout title="Asistente">
+    <div class="assistant-page">
     <div class="page-heading">
       <div><h1>Asistente</h1><p>Encuentre el procedimiento y el módulo que necesita.</p></div>
       <span class="feature-chips assistant-tag"><span><Icon name="shield"/>Solo orientación</span></span>
@@ -122,15 +123,18 @@ onUnmounted(() => {
         <p v-if="error" class="alert alert-error assistant-error" role="alert">{{ error }}</p>
         <form class="assistant-composer" @submit.prevent="send" autocomplete="off">
           <label for="assistant-question" class="sr-only">Su consulta sobre ESPACIO-U</label>
-          <textarea id="assistant-question" ref="input" v-model="question" rows="3" placeholder="Escriba su consulta…" autocomplete="off" autocorrect="off" spellcheck="false" aria-describedby="assistant-privacy assistant-count assistant-keyboard" :aria-invalid="length > maxInputChars" @keydown="enter"></textarea>
-          <div class="assistant-compose-actions">
-            <small id="assistant-privacy" class="assistant-privacy"><Icon name="lock"/>Su pregunta se envía a OpenAI, proveedor externo de IA; no se adjuntan sus registros. No incluya contraseñas, claves, códigos ni información sensible.</small>
-            <small id="assistant-keyboard" class="assistant-keyboard">Enter para enviar · Shift+Enter para una nueva línea</small>
-            <span id="assistant-count" class="assistant-count" :class="{ 'assistant-over': length > maxInputChars }">{{ length }} / {{ maxInputChars }}</span>
-            <button class="btn btn-primary" type="submit" :disabled="pending || !length || length > maxInputChars">{{ pending ? 'Consultando…' : 'Enviar consulta' }}</button>
+          <small id="assistant-privacy" class="assistant-privacy"><Icon name="lock"/>Su pregunta se envía a OpenAI, proveedor externo de IA; no se adjuntan sus registros. No incluya contraseñas, claves, códigos ni información sensible.</small>
+          <div class="assistant-input">
+            <textarea id="assistant-question" ref="input" v-model="question" rows="3" placeholder="Escriba su consulta…" autocomplete="off" autocorrect="off" spellcheck="false" aria-describedby="assistant-privacy assistant-count assistant-keyboard" :aria-invalid="length > maxInputChars" @keydown="enter"></textarea>
+            <div class="assistant-compose-actions">
+              <small id="assistant-keyboard" class="assistant-keyboard">Enter para enviar · Shift+Enter para una nueva línea</small>
+              <span id="assistant-count" class="assistant-count" :class="{ 'assistant-over': length > maxInputChars }">{{ length }} / {{ maxInputChars }}</span>
+              <button class="btn btn-primary" type="submit" :disabled="pending || !length || length > maxInputChars">{{ pending ? 'Consultando…' : 'Enviar consulta' }}</button>
+            </div>
           </div>
         </form>
       </section>
+    </div>
     </div>
   </AppLayout>
 </template>

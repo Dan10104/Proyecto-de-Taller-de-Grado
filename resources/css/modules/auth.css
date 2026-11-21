@@ -17,26 +17,40 @@
 .ill-chair { fill: var(--color-electric); }
 .ill-monitor { fill: var(--color-ink); }
 
-/* Inicio de sesión */
-.login-page { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 4fr); min-height: 100dvh; background: var(--color-surface); }
+/* Inicio de sesión: panel institucional con la ilustración enmarcada y, a su lado, la hoja del formulario. */
+.login-page { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); min-height: 100dvh; background: var(--color-ground); }
 
 .login-story {
   --color-focus: var(--color-accent);
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-8);
-  padding: var(--space-8) var(--space-10);
-  overflow: hidden;
+  display: grid;
+  padding: var(--space-8) clamp(1.5rem, 4vw, 2.5rem);
   background: var(--color-rail);
   color: #fff;
 }
-.login-story-main { max-width: 30rem; }
-.login-story h2 { font-size: 2rem; line-height: 1.15; font-weight: 650; letter-spacing: -0.02em; text-wrap: balance; }
-.login-points { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-3) var(--space-5); margin-top: var(--space-6); }
-.login-points li { display: flex; align-items: center; gap: 0.625rem; color: var(--color-rail-ink); font-size: var(--text-sm); font-weight: 500; }
-.login-points svg { flex: none; width: 1.125rem; height: 1.125rem; color: var(--color-accent); }
-.login-illustration { margin-top: auto; max-width: 34rem; border-radius: var(--radius-l); }
+/* Una sola columna centrada: marca arriba, mensaje e ilustración al centro, facultad al pie.
+   Su ancho cede en ventanas bajas para que la ilustración nunca empuje el contenido fuera de la pantalla. */
+.login-story-inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  width: 100%;
+  max-width: min(34rem, max(20rem, (100dvh - 22rem) * 1.6));
+  margin-inline: auto;
+}
+.login-story-main { display: grid; gap: var(--space-6); margin-block: auto; }
+.login-story h2 { max-width: 20ch; font-size: clamp(1.75rem, 1.1rem + 1.4vw, 2.25rem); line-height: 1.12; font-weight: 650; letter-spacing: -0.02em; text-wrap: balance; }
+/* La ilustración y su leyenda forman una única pieza enmarcada. */
+.login-visual { container-type: inline-size; overflow: hidden; border: 1px solid var(--color-rail-line); border-radius: var(--radius-l); background: var(--color-primary-press); }
+.login-points { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid var(--color-rail-line); background: var(--color-rail); }
+.login-points li { display: grid; align-content: start; gap: var(--space-2); padding: var(--space-3) var(--space-4); color: var(--color-rail-ink); font-size: var(--text-sm); font-weight: 500; line-height: 1.3; }
+.login-points li + li { border-left: 1px solid var(--color-rail-line); }
+.login-points svg { flex: none; width: 1.25rem; height: 1.25rem; color: var(--color-accent); }
+@container (max-width: 30rem) {
+  .login-points { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .login-points li { display: flex; align-items: center; gap: 0.625rem; padding: var(--space-3); }
+  .login-points li:nth-child(odd) { border-left: 0; }
+  .login-points li:nth-child(n + 3) { border-top: 1px solid var(--color-rail-line); }
+}
 .login-story .ill-wall { fill: var(--color-rail-hover); stroke: var(--color-rail-line); }
 .login-story .ill-floor { fill: var(--color-primary-press); }
 .login-story .ill-line { stroke: var(--color-rail-line); }
@@ -50,16 +64,23 @@
 .login-story .ill-chair { fill: var(--color-accent); }
 .login-faculty { color: var(--color-rail-ink-2); font-size: var(--text-xs); }
 
+/* El formulario es la hoja de la página: la única superficie blanca sobre el lienzo. */
 .login-form-side { display: grid; place-items: center; padding: var(--space-8) var(--space-6); }
-.login-form-wrap { width: min(22rem, 100%); }
+.login-form-wrap {
+  width: min(29rem, 100%);
+  padding: clamp(1.5rem, 3.2vw, 2.5rem);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-l);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sheet);
+}
 .login-form-wrap > * + * { margin-top: var(--space-4); }
-.login-mobile-brand { display: none; margin-bottom: var(--space-8); }
 .login-form-wrap h1 { font-size: var(--text-2xl); }
 .login-form-wrap .lead { margin-top: var(--space-1); color: var(--color-ink-2); }
 .login-form-wrap .form-stack { margin-top: var(--space-6); }
-.login-form-wrap input { min-height: 2.5rem; }
+.login-form-wrap input { min-height: 2.75rem; padding-inline: var(--space-3); font-size: var(--text-md); }
 .password-field { position: relative; }
-.password-field input { padding-right: 4.75rem; }
+.password-field input { padding-right: 5rem; }
 .password-field button {
   position: absolute;
   inset: 0.25rem 0.25rem 0.25rem auto;
@@ -72,8 +93,8 @@
   font-weight: 600;
 }
 .password-field button:hover { background: var(--color-surface-sunken); }
-.login-submit { width: 100%; min-height: 2.5rem; margin-top: var(--space-2); }
-.login-help { color: var(--color-ink-3); font-size: var(--text-sm); }
+.login-submit { width: 100%; min-height: 2.75rem; margin-top: var(--space-2); font-size: var(--text-base); }
+.login-form-wrap .login-help { margin-top: var(--space-6); padding-top: var(--space-4); border-top: 1px solid var(--color-line); color: var(--color-ink-3); font-size: var(--text-sm); }
 
 /* Página de inicio: orienta al rol hacia sus tareas. */
 .home-greeting { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-3) var(--space-6); }
@@ -115,8 +136,26 @@
   .home-row { padding-inline: var(--space-4); }
 }
 
+/* Ventanas bajas: la leyenda cede su sitio a la ilustración. */
+@media (max-height: 42rem) and (min-width: 56.0625rem) {
+  .login-points { display: none; }
+}
+/* Una columna: el panel institucional pasa a ser una banda superior, sin ilustración, y la hoja del formulario sube sobre ella. */
 @media (max-width: 56rem) {
-  .login-page { grid-template-columns: minmax(0, 1fr); }
-  .login-story { display: none; }
-  .login-mobile-brand { display: block; }
+  .login-page { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto 1fr; }
+  .login-story { padding: var(--space-6) var(--space-6) calc(var(--space-10) * 2); }
+  .login-story-inner { max-width: 29rem; gap: var(--space-5); }
+  .login-story-main { gap: var(--space-5); margin-block: 0; }
+  .login-illustration, .login-faculty { display: none; }
+  .login-points { border-top: 0; }
+  .login-form-side { place-items: start center; margin-top: calc(var(--space-10) * -1); padding: 0 var(--space-4) var(--space-8); }
+}
+/* Teléfono: marca y mensaje arriba; el formulario ocupa el ancho completo como una hoja que sube sobre la banda. */
+@media (max-width: 30rem) {
+  .login-story { padding: var(--space-5) var(--space-5) var(--space-8); }
+  .login-story-inner { gap: var(--space-4); }
+  .login-story h2 { font-size: 1.375rem; line-height: 1.2; }
+  .login-visual { display: none; }
+  .login-form-side { place-items: stretch; margin-top: calc(var(--space-3) * -1); padding: 0; }
+  .login-form-wrap { width: 100%; padding: var(--space-6) var(--space-5) var(--space-8); border: 0; border-radius: var(--radius-l) var(--radius-l) 0 0; box-shadow: none; }
 }
