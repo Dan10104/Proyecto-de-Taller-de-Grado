@@ -30,7 +30,7 @@ function search() { filters.get('/iot/sensores', { preserveState: true }); }
       <div class="filter-actions">
         <div class="button-group">
           <Link href="/iot/sensores" class="text-link">Limpiar filtros</Link>
-          <button class="btn btn-secondary" :disabled="filters.processing">Buscar</button>
+          <button class="btn btn-secondary" :disabled="filters.processing">Aplicar filtros</button>
         </div>
       </div>
     </form>
@@ -49,7 +49,7 @@ function search() { filters.get('/iot/sensores', { preserveState: true }); }
               <td><strong>{{ sensor.identificador }}</strong><small class="cell-subline">{{ sensor.tipo }}</small></td>
               <td>{{ sensor.espacio_actual.recurso.nombre }}<small class="cell-subline">{{ sensor.espacio_actual.recurso.codigo }}</small></td>
               <td><StatusBadge :value="sensor.estado"/></td>
-              <td>{{ sensor.comunicacion === 'RECIENTE' ? 'Reciente' : 'Sin comunicación reciente' }}<small class="cell-subline">{{ sensor.ultima_comunicacion ? dateLabel(sensor.ultima_comunicacion) : 'Aún no se recibieron eventos' }}</small></td>
+              <td>{{ sensor.comunicacion === 'RECIENTE' ? 'En línea' : 'Sin señal reciente' }}<small class="cell-subline">{{ sensor.ultima_comunicacion ? dateLabel(sensor.ultima_comunicacion) : 'Aún no se recibieron eventos' }}</small></td>
               <td><div class="row-actions"><Link :href="`/iot/sensores/${sensor.id}`">Ver<span class="sr-only"> sensor {{ sensor.identificador }}</span></Link></div></td>
             </tr>
           </tbody>

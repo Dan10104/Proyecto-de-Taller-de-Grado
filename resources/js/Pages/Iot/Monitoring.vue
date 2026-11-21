@@ -33,7 +33,7 @@ const filtersOpen = ref(Object.values(props.filtros || {}).some(value => value !
 
     <details class="disclosure">
       <summary>Cómo interpretar las lecturas</summary>
-      <p>Una lectura reciente requiere medición y recepción dentro de {{ ventana }} segundos. La comunicación reciente por sí sola no demuestra ocupación. La interpretación depende del dispositivo.</p>
+      <p>Una lectura reciente requiere medición y recepción dentro de {{ ventana }} segundos. Que el dispositivo esté en línea no demuestra ocupación. La interpretación depende del dispositivo.</p>
     </details>
 
     <details class="disclosure iot-filter-disclosure" :open="filtersOpen" @toggle="filtersOpen = $event.target.open">
@@ -51,7 +51,7 @@ const filtersOpen = ref(Object.values(props.filtros || {}).some(value => value !
           <p class="hint">Las fechas filtran el historial por el instante de medición e incluyen su zona horaria. Formato: AAAA-MM-DDThh:mm:ss seguido de la zona (-04:00 en Bolivia).</p>
           <div class="button-group">
             <Link href="/iot/monitoreo" class="text-link">Limpiar filtros</Link>
-            <button class="btn btn-primary">Aplicar filtros</button>
+            <button class="btn btn-secondary">Aplicar filtros</button>
           </div>
         </div>
       </form>
@@ -70,7 +70,7 @@ const filtersOpen = ref(Object.values(props.filtros || {}).some(value => value !
             <tr v-for="sensor in sensores.data" :key="sensor.id">
               <td><strong>{{ sensor.identificador }}</strong><small class="cell-subline">Sensor #{{ sensor.id }}</small></td>
               <td>{{ sensor.espacio_actual.recurso.nombre }}<small class="cell-subline">{{ sensor.espacio_actual.recurso.codigo }} · espacio #{{ sensor.espacio_actual_id }}</small></td>
-              <td><StatusBadge :value="sensor.estado"/><small class="cell-subline">{{ sensor.comunicacion === 'RECIENTE' ? 'Comunicación reciente' : 'Sin comunicación reciente' }}</small></td>
+              <td><StatusBadge :value="sensor.estado"/><small class="cell-subline">{{ sensor.comunicacion === 'RECIENTE' ? 'Dispositivo en línea' : 'Dispositivo sin señal reciente' }}</small></td>
               <td><IotEvidence :readings="sensor.lecturas" embedded/></td>
             </tr>
           </tbody>

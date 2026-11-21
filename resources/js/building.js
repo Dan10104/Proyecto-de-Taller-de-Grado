@@ -38,19 +38,29 @@ export function roomName(room, kind) {
 const plain = (value) => String(value ?? '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 // Grupos de hasta tres cifras: descarta correlativos largos que no son un número de ambiente.
 const numbersIn = (value) => (String(value ?? '').match(/\d+/g) || []).filter((group) => group.length <= 3).map(Number);
+// Ordinales con los que suele nombrarse un piso («Segundo piso»). «Planta baja» no se interpreta.
+const ORDINALS = { primer: 1, primero: 1, primera: 1, segundo: 2, segunda: 2, tercer: 3, tercero: 3, tercera: 3, cuarto: 4, cuarta: 4 };
+function floorHintOf(piso) {
+  if (Number.isInteger(piso?.numero)) return piso.numero;
+  const number = numbersIn(piso?.nombre)[0];
+  if (number !== undefined) return number;
+  const word = plain(piso?.nombre).split(/[^a-z]+/).find((item) => item in ORDINALS);
+  return word ? ORDINALS[word] : null;
+}
 const floorOfRoom = (number) => BUILDING_FLOORS.find((floor) => floor.left.includes(number) || floor.right.includes(number));
 
 // Ubica un espacio real en la maqueta. Devuelve { floor, room, kind } o null cuando no hay una
 // correspondencia única y coherente; en ese caso el espacio se lista aparte, nunca se descarta.
 // El ambiente se toma del número presente en el nombre («Aula 11», «Laboratorio 48») o, si el nombre
-// no trae número pero sí indica el tipo, del código («LAB-41»). Si los datos traen el número de piso,
-// debe coincidir con el de la maqueta.
+// no trae número pero sí indica el tipo, del código («LAB-41»). Si el registro indica su piso con un
+// número o un ordinal, debe coincidir con el de la maqueta; si lo contradice, el espacio no se dibuja.
+// La posición resultante es solo de dibujo: el piso que se muestra al usuario es siempre el del registro.
 export function locateSpace(space) {
   const name = space?.recurso?.nombre;
   const code = space?.recurso?.codigo;
   const text = plain(`${name ?? ''} ${code ?? ''} ${space?.tipo?.nombre ?? ''}`);
   const kind = /\baudit/.test(text) ? 'auditorio' : /\blab/.test(text) ? 'laboratorio' : /\baula/.test(text) ? 'aula' : null;
-  const floorHint = Number.isInteger(space?.piso?.numero) ? space.piso.numero : numbersIn(space?.piso?.nombre)[0] ?? null;
+  const floorHint = floorHintOf(space?.piso);
   const fits = (floor) => floorHint === null || floorHint === floor.number;
 
   if (kind === 'auditorio') {

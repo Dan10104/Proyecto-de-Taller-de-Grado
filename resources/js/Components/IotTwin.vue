@@ -19,7 +19,7 @@ onBeforeUnmount(() => clearInterval(timer));
 const hasRecent = sensor => (sensor.lecturas || []).some(reading => elapsed.value <= reading.vigente_por_segundos);
 const sensorState = sensor => (sensor.estado !== 'HABILITADO' ? 'off' : hasRecent(sensor) ? 'recent' : 'idle');
 const stateText = { recent: 'Lectura reciente', idle: 'Sin lectura reciente', off: 'Sensor deshabilitado' };
-const communication = sensor => (sensor.comunicacion === 'RECIENTE' ? 'Comunicación reciente' : 'Sin comunicación reciente');
+const communication = sensor => (sensor.comunicacion === 'RECIENTE' ? 'Dispositivo en línea' : 'Dispositivo sin señal reciente');
 
 // Espacios con sensores recibidos en esta página. Los que no pueden ubicarse en la maqueta se listan aparte.
 const groups = computed(() => {
@@ -43,6 +43,8 @@ const others = computed(() => groups.value.filter(group => !group.place));
 const byCell = computed(() => new Map(placed.value.map(group => [group.cell, group])));
 const selected = computed(() => groups.value.find(group => group.id === choice.value) || groups.value[0] || null);
 const spaceName = group => group.space?.recurso?.nombre || 'Sin espacio asociado';
+// El piso se lee del registro del espacio; la maqueta provisional nunca lo sustituye.
+const floorName = group => group?.space?.piso?.nombre || '';
 const groupState = group => (group.sensors.some(hasRecent) ? 'recent' : group.sensors.every(sensor => sensor.estado !== 'HABILITADO') ? 'off' : 'idle');
 const recentCount = computed(() => props.sensors.filter(hasRecent).length);
 
@@ -56,7 +58,8 @@ const view = computed(() => {
     group,
     space: group.space,
     name: spaceName(group),
-    where: group.place ? `Piso ${group.place.floor} · ${kind.label}` : 'Sin ubicación en la distribución provisional',
+    // Piso del registro (si llega) y tipo; la posición en el dibujo se declara provisional.
+    where: [floorName(group), group.place ? `${kind.label} · posición provisional en el dibujo` : 'Sin ubicación en la distribución provisional'].filter(Boolean).join(' · '),
     features: kind?.features || [],
     recent,
     recentText: recent === 0 ? 'No hay lecturas recientes' : recent === 1 ? 'Sí, de 1 sensor' : `Sí, de ${recent} sensores`,
@@ -138,7 +141,7 @@ function roomShape(floor, cell, group, isSelected) {
     kind: cell.kind,
     group,
     selected: isSelected,
-    title: `${roomName(cell.item, cell.kind)} · Piso ${floor.number}${group ? ` · ${spaceName(group)}` : ''}`,
+    title: group ? [spaceName(group), floorName(group)].filter(Boolean).join(' · ') : `${roomName(cell.item, cell.kind)} · Piso ${floor.number} de la distribución provisional`,
     text: cell.item === 'auditorium' ? 'Aud.' : cell.item,
     top: quad(o, x, y, w, h, z),
     wallLeft: z ? join([at(o, x, y + h, z), at(o, x + w, y + h, z), at(o, x + w, y + h), at(o, x, y + h)]) : null,
@@ -222,7 +225,7 @@ const floors = computed(() => scaffold.map(floor => ({
             <button v-for="group in placed" :key="group.id" type="button" class="twin-space" :class="{ active: group.id === selected?.id }" :aria-pressed="group.id === selected?.id" @click="choice = group.id">
               <span class="twin-dot" :class="`is-${groupState(group)}`" aria-hidden="true"></span>
               <span class="twin-space-name">{{ spaceName(group) }}</span>
-              <small>Piso {{ group.place.floor }}</small>
+              <small v-if="floorName(group)">{{ floorName(group) }}</small>
               <span class="sr-only">. {{ stateText[groupState(group)] }}</span>
             </button>
           </div>
