@@ -4,13 +4,14 @@ import AppLayout from '../../Layouts/AppLayout.vue';
 import StatusBadge from '../../Components/StatusBadge.vue';
 import Icon from '../../Components/Icon.vue';
 import { dateLabel } from '../../security';
+import { actionLabel } from '../../activity';
 defineProps({ actividad: Object });
 </script>
 <template>
   <AppLayout title="Detalle de actividad">
     <div class="page-heading">
       <div>
-        <h1>{{ actividad.accion_label }}</h1>
+        <h1>{{ actionLabel(actividad.accion, actividad.accion_label) }}</h1>
         <p>Registro #{{ actividad.id }} · solo lectura</p>
       </div>
       <Link href="/actividad" class="btn btn-secondary">Volver a la bitácora</Link>

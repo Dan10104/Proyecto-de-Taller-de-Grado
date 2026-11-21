@@ -6,11 +6,12 @@ import Pagination from '../../Components/Pagination.vue';
 import StatusBadge from '../../Components/StatusBadge.vue';
 import Icon from '../../Components/Icon.vue';
 import { dateLabel } from '../../security';
+import { actionLabel, humanize } from '../../activity';
 const props = defineProps({ registros: Object, filtros: Object, acciones: Array, tipos_entidad: Array, procesos: Array });
 const references = { actor_id: 'ID del actor', usuario_afectado_id: 'ID del usuario afectado', reserva_id: 'ID de reserva', prestamo_id: 'ID de préstamo', recurso_id: 'ID de recurso', incidencia_id: 'ID de incidencia' };
 const fields = ['fecha_desde', 'fecha_hasta', 'accion', 'resultado', 'critica', 'tipo_entidad', 'responsable_tipo', 'proceso_responsable', ...Object.keys(references)];
 const form = useForm(Object.fromEntries(fields.map(key => [key, props.filtros[key] ?? ''])));
-const choices = values => values.map(value => ({ value, label: value.replaceAll('_', ' ') }));
+const choices = values => values.map(value => ({ value, label: humanize(value) }));
 function apply() {
   form.transform(data => Object.fromEntries(Object.entries(data).filter(([, value]) => value !== '' && value !== null))).get('/actividad', { preserveScroll: true });
 }
@@ -43,8 +44,8 @@ function apply() {
       <div class="filter-actions">
         <p class="hint">Hora de Bolivia (America/La_Paz). Al limpiar se muestran los últimos 30 días.</p>
         <div class="button-group">
-          <Link class="btn btn-secondary" href="/actividad">Limpiar filtros</Link>
-          <button class="btn btn-primary" :disabled="form.processing">{{ form.processing ? 'Consultando…' : 'Aplicar filtros' }}</button>
+          <Link class="text-link" href="/actividad">Limpiar filtros</Link>
+          <button class="btn btn-secondary" :disabled="form.processing">{{ form.processing ? 'Consultando…' : 'Aplicar filtros' }}</button>
         </div>
       </div>
     </form>
@@ -67,7 +68,7 @@ function apply() {
           <tbody>
             <tr v-for="row in registros.data" :key="row.id">
               <td class="date-cell"><time :datetime="row.fecha_hora">{{ dateLabel(row.fecha_hora) }}</time><small class="cell-subline">#{{ row.id }}</small></td>
-              <td class="audit-action">{{ row.accion_label }}</td>
+              <td class="audit-action">{{ actionLabel(row.accion, row.accion_label) }}</td>
               <td><StatusBadge :value="row.resultado"/></td>
               <td>
                 <span v-if="row.actor">{{ row.actor.label }}</span>
