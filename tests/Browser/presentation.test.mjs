@@ -36,7 +36,7 @@ const sensor = { id: 4, identificador: 'SENSOR-DEMO', estado: 'DESHABILITADO', c
 const evidence = { id: 5, actividad: { reserva_id: 9, accion: 'RESERVA_APROBADA', fecha_hora: '2026-10-20T15:00:00-04:00' }, algoritmo_hash: 'SHA-256', version_canonica: 'espacio-u-jcs-v1', hash: 'a'.repeat(64), estado: 'PENDIENTE', ultima_verificacion: null, registrada_externamente_en: null, registro_actividad_id: 12 };
 
 test('resource listing shows no fabricated imagery or demo wording and keeps the existing detail destination', async () => {
-  const html = await render('SpaceGallery', { spaces: [space] });
+  const html = await render('SpaceTable', { spaces: [space] });
   assert.ok(!/<img\b/.test(html));
   assert.ok(!/\.webp|Imagen conceptual|· Demo/.test(html));
   assert.match(html, /href="\/espacios\/23"/);
@@ -44,7 +44,7 @@ test('resource listing shows no fabricated imagery or demo wording and keeps the
   assert.match(html, /24 personas/);
 });
 test('resource text is escaped; a supplied name cannot inject markup', async () => {
-  const html = await render('SpaceGallery', { spaces: [{ ...space, recurso: { ...space.recurso, nombre: '<img src=x onerror=alert(1)>' } }] });
+  const html = await render('SpaceTable', { spaces: [{ ...space, recurso: { ...space.recurso, nombre: '<img src=x onerror=alert(1)>' } }] });
   assert.ok(!html.includes('<img src=x'));
   assert.match(html, /&lt;img src=x/);
 });
@@ -105,8 +105,51 @@ test('IoT shows the recorded floor of a space and never states the provisional f
   assert.ok(!/<small[^>]*>Piso \d+<\/small>/.test(html));
   assert.ok(!/Auditorio principal[^<]*Piso 4/.test(html));
 });
+test('IoT with the monitoring payload shape (no floor relation) draws numbered rooms only and asserts no floor', async () => {
+  // IotMonitoringController loads espacioActual.recurso only: the space arrives without piso or tipo.
+  const auditorium = { recurso_id: 31, piso_id: 2, capacidad: 60, estado: 'DISPONIBLE', recurso: { codigo: 'ESP-006', nombre: 'Auditorio principal' } };
+  const classroom = { recurso_id: 32, piso_id: 1, capacidad: 30, estado: 'DISPONIBLE', recurso: { codigo: 'ESP-011', nombre: 'Aula 11' } };
+  const html = await render('IotTwin', { sensors: [
+    { ...sensor, id: 8, identificador: 'SNS-AUD', espacio_actual_id: 31, espacio_actual: auditorium },
+    { ...sensor, id: 9, identificador: 'SNS-A11', espacio_actual_id: 32, espacio_actual: classroom },
+  ] });
+  // Without a recorded floor the auditorium cannot be checked against the drawing, so it is listed apart.
+  const others = html.slice(html.indexOf('Otros espacios monitoreados'));
+  assert.match(others, /Auditorio principal/);
+  assert.equal((html.match(/class="twin-pin/g) || []).length, 1);
+  assert.ok(!/<small[^>]*>Piso \d+<\/small>/.test(html));
+});
+test('IoT leaves two spaces that resolve to the same drawn room off the plan instead of picking one', async () => {
+  const first = { recurso_id: 41, piso_id: 1, estado: 'DISPONIBLE', recurso: { codigo: 'ESP-A', nombre: 'Aula 11' } };
+  const second = { recurso_id: 42, piso_id: 1, estado: 'DISPONIBLE', recurso: { codigo: 'ESP-B', nombre: 'Aula 11' } };
+  const html = await render('IotTwin', { sensors: [
+    { ...sensor, id: 10, identificador: 'SNS-P', espacio_actual_id: 41, espacio_actual: first },
+    { ...sensor, id: 11, identificador: 'SNS-Q', espacio_actual_id: 42, espacio_actual: second },
+  ] });
+  assert.ok(!html.includes('twin-pin'));
+  assert.match(html, /Otros espacios monitoreados/);
+});
+test('IoT states the last communication as a dated fact and labels typical equipment as such', async () => {
+  const classroom = { recurso_id: 32, piso_id: 1, estado: 'DISPONIBLE', recurso: { codigo: 'ESP-011', nombre: 'Aula 11' } };
+  const html = await render('IotTwin', { sensors: [{ ...sensor, id: 9, estado: 'HABILITADO', comunicacion: 'RECIENTE', ultima_comunicacion: '2026-10-28T12:00:00Z', espacio_actual_id: 32, espacio_actual: classroom }] });
+  assert.match(html, /Última comunicación: /);
+  assert.ok(!/En línea|sin señal/i.test(html));
+  assert.match(html, /Habitual en este tipo de ambiente; no es el inventario del espacio/);
+});
 test('the evidence chain carries no label above its verdict heading', async () => {
   const html = await render('TraceabilityChain', { entries: [evidence] });
   assert.ok(!html.includes('tech-chip'));
   assert.match(html, /Abrir evidencia #5/);
+});
+test('mobile row cards keep the label of an "Acción" data column and drop it only for controls', async () => {
+  const { cellLabel } = await import(pathToFileURL(resolve(root, 'resources/js/tableLabels.js')).href);
+  assert.deepEqual(cellLabel('Acción', false), { actions: false, label: 'Acción' });
+  assert.deepEqual(cellLabel('Acción', true), { actions: true, label: '' });
+  assert.deepEqual(cellLabel('Estado', true), { actions: false, label: 'Estado' });
+  assert.deepEqual(cellLabel('', true), { actions: false, label: '' });
+});
+test('the dashboard chart shows its scope next to the title, not only inside the data disclosure', async () => {
+  const html = await render('AccessibleChart', { chart: { id: 'G3', titulo: 'Equipamiento por estado', tipo: 'distribucion', contexto: 'Estado actual · independiente del periodo', valores: { DISPONIBLE: 2 }, sin_datos: false } });
+  const beforeDetails = html.slice(0, html.indexOf('<details'));
+  assert.match(beforeDetails, /Estado actual · independiente del periodo/);
 });

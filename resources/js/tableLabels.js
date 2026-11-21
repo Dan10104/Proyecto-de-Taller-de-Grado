@@ -11,6 +11,14 @@ function headerLabel(cell) {
   return clone.textContent.trim();
 }
 
+// Decide cómo se rotula una celda en la ficha. Una columna «Acción» puede contener datos (la acción
+// registrada en la bitácora) o controles (enlaces y botones): solo los controles van sin rótulo.
+export function cellLabel(label, hasControls) {
+  if (!label) return { actions: false, label: '' };
+  if (ACTIONS.test(label) && hasControls) return { actions: true, label: '' };
+  return { actions: false, label };
+}
+
 function setRole(node, role) {
   if (node && !node.hasAttribute('role')) node.setAttribute('role', role);
 }
@@ -32,10 +40,10 @@ export function labelTables(root) {
         const aligned = row.cells.length === labels.length;
         [...row.cells].forEach((cell, index) => {
           setRole(cell, cell.tagName === 'TH' ? 'rowheader' : 'cell');
-          const label = aligned && index > 0 ? labels[index] : '';
-          // La columna de acciones no necesita rótulo: sus enlaces ya dicen qué hacen.
-          if (ACTIONS.test(label)) cell.dataset.actions = '';
-          else if (label && cell.dataset.label !== label) cell.dataset.label = label;
+          const kind = cellLabel(aligned && index > 0 ? labels[index] : '', Boolean(cell.querySelector('a, button')));
+          // Los controles no necesitan rótulo: sus enlaces ya dicen qué hacen. Los datos lo conservan.
+          if (kind.actions) cell.dataset.actions = '';
+          else if (kind.label && cell.dataset.label !== kind.label) cell.dataset.label = kind.label;
         });
       }
     }
