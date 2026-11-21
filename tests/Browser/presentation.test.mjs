@@ -171,13 +171,16 @@ test('the IoT plan needs an unambiguous room identifier: a bare number in a name
   assert.equal(at('Aula 11', 'AULA-13'), null);
   assert.deepEqual(at('Aula 11', 'AULA-11'), { floor: 1, room: 11, kind: 'aula' });
   assert.deepEqual(at('Sala norte', 'AULA_11'), { floor: 1, room: 11, kind: 'aula' });
-  // A range or a list under one identifier names several rooms.
+  // Any other number next to an identifier may be another room, whatever the separator: the record is
+  // ambiguous and stays off the plan.
+  for (const name of ['Aula 11 / 13', 'Aula 11 y 13', 'Aula 11 o 13', 'Aula 11 u 13', 'Aula 11–13', 'Aula 11—13', 'Aula 11-13', 'Aula 11;13', 'Aula 11.13', 'Aula 11 (13)', 'Aula 11, 13 y 15', 'Aula 11 (30 personas)']) {
+    assert.equal(at(name, 'ESP-001'), null, name);
+  }
   assert.equal(at('Sala norte', 'AULA_11-13'), null);
-  assert.equal(at('Aula 11 / 13', 'ESP-1'), null);
-  assert.equal(at('Aula 11 y 13', 'ESP-1'), null);
-  // Text after the identifier that is not another room number keeps it unambiguous.
-  assert.deepEqual(at('Aula 11 (30 personas)', 'ESP-001'), { floor: 1, room: 11, kind: 'aula' });
+  assert.equal(at('Sala norte', 'AULA-11/13'), null);
+  // Text without another number keeps the identifier unambiguous.
   assert.deepEqual(at('Aula 11 - Bloque B', 'ESP-001'), { floor: 1, room: 11, kind: 'aula' });
+  assert.deepEqual(at('Aula 11', 'ESP-013'), { floor: 1, room: 11, kind: 'aula' }); // a code without a room identifier is a serial
 });
 test('a REGISTRADA state without confirmation date or reference is not presented as an external registration', async () => {
   const html = await render('TraceabilityChain', { evidence: { ...evidence, estado: 'REGISTRADA', referencia_externa: null, registrada_externamente_en: null, ultima_verificacion: null } });
@@ -191,7 +194,7 @@ test('a REGISTRADA state without confirmation date or reference is not presented
   assert.match(dated, /Registro externo sin respaldo/);
   assert.ok(!/registro externo confirmado/.test(dated));
   const { externalRegistration } = await load('resources/js/traceability.js');
-  assert.equal(externalRegistration({ estado: 'REGISTRADA', registrada_externamente_en: '2026-10-21', referencia_externa: '0xabc' }), 'registered');
+  assert.equal(externalRegistration({ estado: 'REGISTRADA', registrada_externamente_en: '2026-10-21', referencia_externa: '0x' + 'c'.repeat(64) }), 'registered');
   assert.equal(externalRegistration({ estado: 'REGISTRADA', registrada_externamente_en: null, referencia_externa: null }), 'unbacked');
   assert.equal(externalRegistration({ estado: 'PENDIENTE' }), 'pending');
 });

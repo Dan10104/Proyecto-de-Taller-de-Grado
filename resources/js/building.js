@@ -53,23 +53,25 @@ const floorOfRoom = (number) => BUILDING_FLOORS.find((floor) => floor.left.inclu
 // «Aula N° 11» en el nombre; «LAB-41», «AULA_11» en el código). Un número suelto no identifica un
 // ambiente: «Sala para 20 personas» o un correlativo como «ESP-020» no se interpretan.
 const ROOM_ID = /\b(aula|laboratorio|lab)\b\.?\s*(?:n(?:ro|o)?\b\.?\s*)?(\d{1,3})\b/g;
-// Tras un identificador, otro número unido por espacio, barra, coma, «y», «a» o «al» indica una
-// enumeración o un rango de ambientes («AULA_11-13», «Aula 11 / 13», «Aula 11 y 13»).
-const ROOM_LIST = /^\s*(?:[\/,&+]|\b(?:y|a|al)\b)?\s*\d/;
 // Todos los identificadores presentes en un texto, como pares «tipo-número» sin repetir.
-// Devuelve null cuando el texto enumera varios ambientes bajo un mismo identificador.
+// Regla estructural, independiente del separador: en un texto que identifica un ambiente, todo número
+// debe pertenecer a un identificador. Cualquier otro número puede ser otro ambiente de un rango o de una
+// lista («AULA_11-13», «Aula 11–13», «Aula 11 / 13», «Aula 11 o 13», «Aula 11 (13)»), así que el texto
+// se considera ambiguo y devuelve null. Un texto sin identificador devuelve una lista vacía.
 function roomIdsOf(value) {
   const text = plain(value).replace(/[°º]/g, 'o').replace(/[_-]+/g, ' ');
   const found = [...text.matchAll(ROOM_ID)];
-  if (found.some((match) => ROOM_LIST.test(text.slice(match.index + match[0].length)))) return null;
+  if (!found.length) return [];
+  if ((text.match(/\d+/g) || []).length !== found.length) return null;
   return [...new Set(found.map((match) => `${match[1] === 'aula' ? 'aula' : 'laboratorio'}-${Number(match[2])}`))];
 }
 
 // Ubica un espacio real en la maqueta. Devuelve { floor, room, kind } o null cuando el registro no
 // respalda la posición; en ese caso el espacio se lista aparte, nunca se descarta.
 // · Aula o laboratorio: exige que nombre y código, juntos, identifiquen un único ambiente; si nombran
-//   dos distintos («Aula 11 / Aula 13», o nombre y código que no coinciden) o enumeran un rango
-//   («AULA_11-13», «Aula 11 / 13») el espacio no se dibuja.
+//   dos distintos («Aula 11 / Aula 13», o nombre y código que no coinciden) o llevan cualquier otro
+//   número junto al identificador («AULA_11-13», «Aula 11–13», «Aula 11 o 13») el espacio no se dibuja.
+//   Es deliberadamente conservador: «Aula 11 (30 personas)» tampoco se dibuja y queda en la lista aparte.
 //   El tipo del identificador debe coincidir con el del ambiente de la maqueta.
 // · Auditorio: no tiene número, así que solo se dibuja cuando el piso registrado lo confirma.
 // · Si el registro indica su piso con un número o un ordinal, debe coincidir con el de la maqueta.
