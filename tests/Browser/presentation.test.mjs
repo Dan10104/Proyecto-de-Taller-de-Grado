@@ -247,3 +247,59 @@ test('the IoT inspector keeps the recorded location reference of a space in its 
   assert.match(html, /Referencia de ubicación registrada/);
   assert.match(html, /Pasillo sur, puerta azul/);
 });
+test('no record that mentions a second number is drawn as a single room, whatever the separator or the script', async () => {
+  const { locateSpace } = await load('resources/js/building.js');
+  const at = (nombre, codigo) => locateSpace({ recurso: { nombre, codigo } });
+  // Second numbers: basic digits, full-width, Arabic-Indic, Devanagari, superscript, Roman numeral characters and letters.
+  const seconds = ['13', '１３', '١٣', '१३', '¹³', 'ⅩⅢ', 'XIII', 'xiii', 'IV', '13.5', '013'];
+  const separators = [' / ', '/', ' - ', '-', '–', '—', ' o ', ' u ', ' y ', ' ó ', ', ', ';', '.', ' ', '\n', '\t', ' (', ' al ', ' a ', '+', ' & ', '·', '|', ' / ', ' ∕ ', '_'];
+  const templates = [
+    (sep, n) => `Aula 11${sep}${n}`,
+    (sep, n) => `Aulas 11${sep}${n}`,
+    (sep, n) => `Aula (11${sep}${n})`,
+    (sep, n) => `Aula N° 11${sep}${n}`,
+    (sep, n) => `Ambientes 11${sep}${n}`,
+    (sep, n) => `Aula 11${sep}Aula ${n}`,
+  ];
+  let checked = 0;
+  for (const second of seconds) {
+    for (const separator of separators) {
+      for (const template of templates) {
+        const name = template(separator, second);
+        for (const code of ['ESP-001', 'AULA-11', 'AULA_11']) {
+          assert.equal(at(name, code), null, `${JSON.stringify(name)} / ${code}`);
+          checked++;
+        }
+      }
+      // The same list written in the code, with a name that says nothing about rooms.
+      assert.equal(at('Sala norte', `AULA-11${separator}${second}`), null, `código AULA-11${JSON.stringify(separator)}${second}`);
+      checked++;
+    }
+  }
+  assert.ok(checked > 5000);
+  // Reported counterexamples, kept verbatim.
+  for (const [name, code] of [['Aula 11 / １３', 'ESP-001'], ['Aula 11 / ١٣', 'ESP-001'], ['Aula 11 / १३', 'ESP-001'], ['Aula 11 / ¹³', 'ESP-001'], ['Aula 11 / ⅩⅢ', 'ESP-001'], ['Aula 11 / XIII', 'ESP-001'], ['Sala norte', 'AULA-11/１３'], ['Aulas 11 y 13', 'AULA-11'], ['Aula (11 / 13)', 'AULA-11'], ['Sala 13', 'AULA-11']]) {
+    assert.equal(at(name, code), null, `${name} / ${code}`);
+  }
+  // Calling the function repeatedly gives the same answer (no state kept between calls).
+  for (let i = 0; i < 3; i++) assert.equal(at('Aula 11 / XIII', 'ESP-001'), null);
+});
+test('single rooms are still drawn after the ambiguity rules', async () => {
+  const { locateSpace } = await load('resources/js/building.js');
+  const at = (nombre, codigo, extra = {}) => locateSpace({ recurso: { nombre, codigo }, ...extra });
+  const aula11 = { floor: 1, room: 11, kind: 'aula' };
+  for (const [name, code] of [['Aula 11', 'ESP-001'], ['Aula 11', 'AULA-11'], ['Aula 11', 'ESP-013'], ['Sala norte', 'AULA_11'], ['Aula 011', 'ESP-001'], ['AULA 11', 'ESP-001'], ['Aula 11 - Bloque B', 'ESP-001'], ['Aula 11 - Bloque C', 'ESP-001'], ['Aula 11 (aula 11)', 'ESP-001'], ['Ambiente 11', 'AULA-11'], ['Aula １１', 'ESP-001']]) {
+    assert.deepEqual(at(name, code), aula11, `${name} / ${code}`);
+  }
+  assert.deepEqual(at('Aula N° 13', 'ESP-001'), { floor: 1, room: 13, kind: 'aula' });
+  assert.deepEqual(at('Laboratorio de redes', 'LAB-41'), { floor: 4, room: 41, kind: 'laboratorio' });
+  assert.deepEqual(at('Laboratorio 48', 'ESP-005'), { floor: 4, room: 48, kind: 'laboratorio' });
+  assert.deepEqual(at('Auditorio principal', 'ESP-006', { piso: { nombre: 'Cuarto piso' } }), { floor: 4, room: 'auditorium', kind: 'auditorio' });
+  assert.equal(at('Auditorio principal', 'ESP-006'), null);
+  assert.equal(at('Auditorio principal', 'ESP-006', { piso: { nombre: 'Segundo piso' } }), null);
+  assert.equal(at('Sala para 20 personas', 'SAL-NORTE'), null);
+  assert.equal(at('Aula 41', 'ESP-001'), null);
+  assert.equal(at('Aula 11', 'AULA-13'), null);
+  assert.equal(at('Aula 11', 'ESP-001', { piso: { nombre: 'Segundo piso' } }), null);
+  assert.equal(at('Aula 11', 'ESP-001', { piso: { nombre: 'Piso ２' } }), null); // a full-width floor number still contradicts
+});
