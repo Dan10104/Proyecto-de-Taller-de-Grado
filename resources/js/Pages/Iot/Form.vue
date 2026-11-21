@@ -4,6 +4,8 @@ import AppLayout from '../../Layouts/AppLayout.vue';
 import InputField from '../../Components/InputField.vue';
 import FormErrors from '../../Components/FormErrors.vue';
 import { focusError } from '../../spaces';
+import { useAccess } from '../../security';
+const { can } = useAccess();
 const props = defineProps({ sensor: Object, espacios: Array });
 const form = useForm({ ...(props.sensor ? {} : { identificador: '' }), tipo: props.sensor?.tipo || '', espacio_actual_id: props.sensor?.espacio_actual_id || '' });
 function save() { props.sensor ? form.put(`/iot/sensores/${props.sensor.id}`, { onError: focusError }) : form.post('/iot/sensores', { onError: focusError }); }
@@ -15,7 +17,7 @@ function save() { props.sensor ? form.put(`/iot/sensores/${props.sensor.id}`, { 
         <h1>{{ sensor ? 'Editar sensor' : 'Registrar sensor' }}</h1>
         <p>Los campos con * son obligatorios.</p>
       </div>
-      <Link href="/iot/sensores" class="btn btn-secondary">Volver a sensores</Link>
+      <Link :href="can('iot.sensores.ver') ? '/iot/sensores' : '/inicio'" class="btn btn-secondary">{{ can('iot.sensores.ver') ? 'Volver a sensores' : 'Volver al inicio' }}</Link>
     </div>
 
     <form class="panel form-panel" @submit.prevent="save">
@@ -41,7 +43,7 @@ function save() { props.sensor ? form.put(`/iot/sensores/${props.sensor.id}`, { 
       </div>
 
       <div class="form-actions">
-        <Link href="/iot/sensores" class="btn btn-secondary">Cancelar</Link>
+        <Link :href="can('iot.sensores.ver') ? '/iot/sensores' : '/inicio'" class="btn btn-secondary">Cancelar</Link>
         <button class="btn btn-primary" :disabled="form.processing || !espacios.length">{{ form.processing ? 'Guardando…' : 'Guardar sensor' }}</button>
       </div>
     </form>

@@ -6,6 +6,7 @@ import Icon from '../Components/Icon.vue';
 import FormErrors from '../Components/FormErrors.vue';
 import { useAccess, finishLogout } from '../security';
 import { watchTables } from '../tableLabels';
+import { navigationGroups } from '../navigation';
 
 const props = defineProps({ title: String, section: { type: String, default: '' } });
 const page = usePage();
@@ -15,42 +16,11 @@ const menuButton = ref(null);
 const mainContent = ref(null);
 let stopTables = () => {};
 
-const any = (...codes) => codes.some(code => can(code));
-const starts = (...prefixes) => prefixes.some(prefix => page.url.startsWith(prefix));
-
-// La navegación se agrupa por ámbito de trabajo; cada enlace aparece solo si el rol lo permite.
-const groups = computed(() => [
-  { label: 'Mi espacio', items: [
-    { href: '/inicio', label: 'Inicio', icon: 'home', show: true, active: page.url === '/inicio' },
-    { href: '/dashboard', label: 'Dashboard', icon: 'chart', show: can('dashboard.ver'), active: starts('/dashboard') },
-    { href: '/notificaciones', label: 'Notificaciones', icon: 'bell', show: can('notificaciones.ver_propias'), active: starts('/notificaciones'), count: auth.value?.no_leidas },
-    { href: '/asistente', label: 'Asistente', icon: 'chat', show: can('chatbot.consultar'), active: starts('/asistente') },
-  ] },
-  { label: 'Espacios y reservas', items: [
-    { href: '/disponibilidad', label: 'Disponibilidad', icon: 'search', show: can('espacios.ver'), active: starts('/disponibilidad') },
-    { href: '/espacios', label: 'Espacios académicos', icon: 'building', show: can('espacios.ver'), active: starts('/espacios') },
-    { href: '/reservas', label: 'Reservas', icon: 'calendar', show: any('reservas.ver_propias', 'reservas.ver_administrativas'), active: starts('/reservas') },
-  ] },
-  { label: 'Equipamiento y préstamos', items: [
-    { href: '/equipamientos', label: 'Equipamiento', icon: 'monitor', show: can('equipamientos.ver'), active: starts('/equipamientos') },
-    { href: '/prestamos', label: 'Préstamos', icon: 'exchange', show: any('prestamos.ver_propios', 'prestamos.ver_administrativos'), active: starts('/prestamos') },
-    { href: '/incidencias', label: 'Incidencias', icon: 'tool', show: can('incidencias.ver'), active: starts('/incidencias') },
-  ] },
-  { label: 'Monitoreo y evidencia', items: [
-    { href: '/iot/monitoreo', label: 'Monitoreo', icon: 'signal', show: can('iot.monitoreo.ver'), active: starts('/iot/monitoreo') },
-    { href: '/iot/sensores', label: 'Sensores IoT', icon: 'sensor', show: can('iot.sensores.ver'), active: starts('/iot/sensores') },
-    { href: '/qr', label: 'Códigos QR', icon: 'qr', show: can('qr.gestionar'), active: starts('/qr') },
-    { href: can('liberacion.politicas.ver') ? '/liberacion/politicas' : '/liberacion/asignaciones', label: 'Políticas de liberación', icon: 'clock', show: any('liberacion.politicas.ver', 'liberacion.politicas.gestionar'), active: starts('/liberacion/politicas', '/liberacion/asignaciones') },
-    { href: '/liberacion/evaluaciones', label: 'Evaluaciones', icon: 'checklist', show: any('liberacion.evaluaciones.ver_administrativas', 'liberacion.evaluaciones.ver_propias'), active: starts('/liberacion/evaluaciones') },
-    { href: '/trazabilidad', label: 'Trazabilidad', icon: 'network', show: can('trazabilidad.evidencias.ver'), active: starts('/trazabilidad') },
-  ] },
-  { label: 'Administración', items: [
-    { href: '/reportes', label: 'Reportes', icon: 'report', show: can('reportes.ver'), active: starts('/reportes') },
-    { href: '/actividad', label: 'Bitácora', icon: 'activity', show: can('actividad.ver'), active: starts('/actividad') },
-    { href: '/usuarios', label: 'Usuarios', icon: 'users', show: can('usuarios.ver'), active: starts('/usuarios') },
-    { href: '/roles', label: 'Roles y permisos', icon: 'shield', show: can('roles.ver'), active: starts('/roles', '/permisos') },
-  ] },
-].map(group => ({ ...group, items: group.items.filter(item => item.show) })).filter(group => group.items.length));
+// La navegación se define una sola vez (navigation.js); aquí solo se marca la entrada actual.
+const groups = computed(() => navigationGroups(can, auth.value?.no_leidas).map(group => ({
+  ...group,
+  items: group.items.map(item => ({ ...item, active: item.exact ? page.url === item.href : item.match.some(prefix => page.url.startsWith(prefix)) })),
+})));
 
 const current = computed(() => {
   for (const group of groups.value) {

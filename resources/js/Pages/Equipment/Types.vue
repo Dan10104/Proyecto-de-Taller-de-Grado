@@ -7,6 +7,8 @@ import FormErrors from '../../Components/FormErrors.vue';
 import Pagination from '../../Components/Pagination.vue';
 import Icon from '../../Components/Icon.vue';
 import {focusError} from '../../spaces';
+import {useAccess} from '../../security';
+const {can}=useAccess();
 defineProps({tipos:Object});
 const editing=ref(null),form=useForm({codigo:'',nombre:''});
 function edit(t){editing.value=t.id;form.codigo=t.codigo;form.nombre=t.nombre;form.clearErrors();document.getElementById('codigo')?.focus();}
@@ -15,7 +17,7 @@ function save(){const opts={onSuccess:reset,onError:focusError,preserveScroll:tr
 </script>
 <template>
  <AppLayout title="Tipos de equipamiento" section="Equipamiento">
-  <div class="page-heading"><div><h1>Tipos de equipamiento</h1><p>Clasificación del inventario.</p></div><Link href="/equipamientos" class="btn btn-secondary">Volver al inventario</Link></div>
+  <div class="page-heading"><div><h1>Tipos de equipamiento</h1><p>Clasificación del inventario.</p></div><Link :href="can('equipamientos.ver') ? '/equipamientos' : '/inicio'" class="btn btn-secondary">{{ can('equipamientos.ver') ? 'Volver al inventario' : 'Volver al inicio' }}</Link></div>
   <div class="equipment-types">
    <form class="panel form-panel" @submit.prevent="save">
     <h2>{{editing?'Editar tipo':'Registrar tipo'}}</h2>

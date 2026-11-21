@@ -17,7 +17,7 @@ function save() { const options = { onError: focusError }; props.espacio ? form.
         <h1>{{ espacio ? 'Editar espacio' : 'Registrar espacio' }}</h1>
         <p><template v-if="espacio"><span class="reservation-code">{{ espacio.recurso.codigo }}</span> · </template>Los campos con * son obligatorios.</p>
       </div>
-      <Link href="/espacios" class="btn btn-secondary">Volver al catálogo</Link>
+      <Link :href="can('espacios.ver') ? '/espacios' : '/inicio'" class="btn btn-secondary">{{ can('espacios.ver') ? 'Volver al catálogo' : 'Volver al inicio' }}</Link>
     </div>
     <div v-if="!opciones.pisos.length || !opciones.tipos.length" class="alert alert-warning">
       Para registrar un espacio necesita un piso y un tipo.
@@ -55,7 +55,7 @@ function save() { const options = { onError: focusError }; props.espacio ? form.
         <p v-if="form.errors.caracteristicas" class="field-error">{{ form.errors.caracteristicas }}</p>
       </fieldset>
       <div class="form-actions">
-        <Link href="/espacios" class="btn btn-secondary">Cancelar</Link>
+        <Link :href="can('espacios.ver') ? '/espacios' : '/inicio'" class="btn btn-secondary">Cancelar</Link>
         <button class="btn btn-primary" :disabled="form.processing || !opciones.pisos.length || !opciones.tipos.length">{{ form.processing ? 'Guardando…' : 'Guardar espacio' }}</button>
       </div>
     </form>

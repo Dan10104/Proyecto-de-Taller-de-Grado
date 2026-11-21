@@ -4,6 +4,7 @@ import { Link } from '@inertiajs/vue3';
 import AppLayout from '../Layouts/AppLayout.vue';
 import Icon from '../Components/Icon.vue';
 import { useAccess } from '../security';
+import { authorizedModules } from '../navigation';
 
 const { auth, can } = useAccess();
 
@@ -25,19 +26,10 @@ const follow = computed(() => [
   { show: can('notificaciones.ver_propias'), href: '/notificaciones', icon: 'bell', label: 'Notificaciones', note: unread.value ? `${unread.value} sin leer` : 'Sin avisos pendientes', count: unread.value },
 ].filter(item => item.show));
 
-// Sin tareas sugeridas, se ofrecen los módulos que la cuenta sí puede abrir.
-const modules = computed(() => [
-  { show: can('dashboard.ver'), href: '/dashboard', icon: 'chart', label: 'Dashboard', note: 'Indicadores de su cuenta' },
-  { show: can('espacios.ver'), href: '/espacios', icon: 'building', label: 'Espacios académicos', note: 'Ubicación, capacidad y estado' },
-  { show: can('equipamientos.ver'), href: '/equipamientos', icon: 'monitor', label: 'Equipamiento', note: 'Inventario y estado' },
-  { show: can('iot.monitoreo.ver'), href: '/iot/monitoreo', icon: 'signal', label: 'Monitoreo de ocupación', note: 'Sensores y lecturas' },
-  { show: can('trazabilidad.evidencias.ver'), href: '/trazabilidad', icon: 'network', label: 'Evidencias de trazabilidad', note: 'Registro verificable de operaciones' },
-  { show: can('reportes.ver'), href: '/reportes', icon: 'report', label: 'Reportes', note: 'Consultas y exportación' },
-  { show: can('usuarios.ver'), href: '/usuarios', icon: 'users', label: 'Usuarios', note: 'Cuentas y acceso' },
-  { show: can('roles.ver'), href: '/roles', icon: 'shield', label: 'Roles y permisos', note: 'Roles y sus permisos' },
-  { show: can('chatbot.consultar'), href: '/asistente', icon: 'chat', label: 'Asistente', note: 'Orientación sobre procedimientos' },
-].filter(item => item.show));
-const fallback = computed(() => (primary.value.length ? [] : modules.value));
+// Sin tareas sugeridas, se ofrecen los módulos que la cuenta sí puede abrir: los mismos del menú lateral.
+const modules = computed(() => authorizedModules(can, unread.value));
+const shown = computed(() => new Set(follow.value.map(item => item.href.split('?')[0])));
+const fallback = computed(() => (primary.value.length ? [] : modules.value.filter(item => !shown.value.has(item.href))));
 
 const empty = computed(() => !primary.value.length && !follow.value.length && !modules.value.length);
 const roles = computed(() => auth.value?.roles.join(', ') || 'Sin rol asignado');

@@ -14,7 +14,7 @@ function save(){const opts={onError:focusError};props.equipamiento ? form.put('/
 </script>
 <template>
  <AppLayout :title="equipamiento ? 'Editar equipamiento' : 'Registrar equipamiento'" section="Equipamiento">
-  <div class="page-heading"><div><h1>{{ equipamiento ? 'Editar equipamiento' : 'Registrar equipamiento' }}</h1><p><template v-if="equipamiento"><span class="reservation-code">{{equipamiento.recurso.codigo}}</span> · </template>Los campos con * son obligatorios.</p></div><Link href="/equipamientos" class="btn btn-secondary">Volver al inventario</Link></div>
+  <div class="page-heading"><div><h1>{{ equipamiento ? 'Editar equipamiento' : 'Registrar equipamiento' }}</h1><p><template v-if="equipamiento"><span class="reservation-code">{{equipamiento.recurso.codigo}}</span> · </template>Los campos con * son obligatorios.</p></div><Link :href="can('equipamientos.ver') ? '/equipamientos' : '/inicio'" class="btn btn-secondary">{{ can('equipamientos.ver') ? 'Volver al inventario' : 'Volver al inicio' }}</Link></div>
   <p v-if="!opciones.tipos.length" class="alert alert-warning">Primero registre un tipo de equipo. <Link class="text-link" href="/equipamientos/tipos">Administrar tipos</Link></p>
   <form class="panel form-panel" @submit.prevent="save"><FormErrors :errors="form.errors"/>
    <header class="form-section-heading"><h2>Identificación</h2></header>
@@ -36,7 +36,7 @@ function save(){const opts={onError:focusError};props.equipamiento ? form.put('/
     <InputField id="modelo" label="Modelo" v-model="form.modelo" maxlength="120" :error="form.errors.modelo"/>
     <InputField id="serie" label="Número de serie" v-model="form.numero_serie" maxlength="160" :error="form.errors.numero_serie"/>
    </div>
-   <div class="form-actions"><Link href="/equipamientos" class="btn btn-secondary">Cancelar</Link><button class="btn btn-primary" :disabled="form.processing || !opciones.tipos.length">{{form.processing ? 'Guardando…' : 'Guardar equipamiento'}}</button></div>
+   <div class="form-actions"><Link :href="can('equipamientos.ver') ? '/equipamientos' : '/inicio'" class="btn btn-secondary">Cancelar</Link><button class="btn btn-primary" :disabled="form.processing || !opciones.tipos.length">{{form.processing ? 'Guardando…' : 'Guardar equipamiento'}}</button></div>
   </form>
  </AppLayout>
 </template>

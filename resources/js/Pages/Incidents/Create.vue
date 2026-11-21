@@ -7,6 +7,8 @@ import FormErrors from '../../Components/FormErrors.vue';
 import OperationForm from '../../Components/OperationForm.vue';
 import {options} from '../../equipment';
 import {focusError} from '../../spaces';
+import {useAccess} from '../../security';
+const {can}=useAccess();
 const props=defineProps({recursos:Array,seleccion:Object,ahora:String});
 const form=useForm({recurso_id:props.seleccion.recurso_id||'',tipo:'INCIDENCIA',descripcion:'',inicio:props.ahora,fin_previsto:'',estado_espacio:'EN_MANTENIMIENTO'});
 const selected=computed(()=>props.recursos.find(r=>String(r.id)===String(form.recurso_id)));
@@ -14,7 +16,7 @@ function save(){form.transform(d=>selected.value?.equipamiento_exists?Object.fro
 </script>
 <template>
  <AppLayout title="Registrar incidencia o mantenimiento" section="Incidencias">
-  <div class="page-heading"><div><h1>Registrar incidencia o mantenimiento</h1><p>Recurso afectado y condición observada.</p></div><Link href="/incidencias" class="btn btn-secondary">Volver al listado</Link></div>
+  <div class="page-heading"><div><h1>Registrar incidencia o mantenimiento</h1><p>Recurso afectado y condición observada.</p></div><Link :href="can('incidencias.ver') ? '/incidencias' : '/inicio'" class="btn btn-secondary">{{ can('incidencias.ver') ? 'Volver al listado' : 'Volver al inicio' }}</Link></div>
   <section class="panel form-panel equipment-flow">
    <OperationForm label="Registrar restricción" message="El registro abierto restringirá inmediatamente el recurso. Los préstamos y reservas existentes conservarán su estado y deberán revisarse." :disabled="form.processing" @confirm="save"><FormErrors :errors="form.errors"/>
     <header class="form-section-heading"><h2>Recurso</h2></header>
