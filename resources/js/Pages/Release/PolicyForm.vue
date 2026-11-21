@@ -29,7 +29,7 @@ watch(() => form.usa_iot, value => { form.max_antiguedad_lectura_min = value ? 5
         <label class="check-option"><input type="checkbox" v-model="form.requiere_qr"><span>Requiere validación QR<small class="hint">La persona debe escanear el código del espacio para confirmar el uso.</small></span></label>
         <label class="check-option"><input type="checkbox" v-model="form.usa_iot"><span>Utiliza evidencia IoT<small class="hint">Se consideran las lecturas de los sensores del espacio.</small></span></label>
       </fieldset>
-      <div v-if="form.usa_iot" class="release-rule release-rule-narrow"><InputField id="max_antiguedad_lectura_min" label="Antigüedad máxima de lectura IoT (minutos)" v-model="form.max_antiguedad_lectura_min" type="number" min="0" max="2147483647" required :error="form.errors.max_antiguedad_lectura_min"/><p class="hint">Solo cuentan las lecturas recibidas dentro de este margen.</p></div>
+      <div v-if="form.usa_iot" class="release-rule release-rule-narrow"><InputField id="max_antiguedad_lectura_min" label="Antigüedad máxima de lectura IoT (minutos)" v-model="form.max_antiguedad_lectura_min" type="number" min="0" max="2147483647" required :error="form.errors.max_antiguedad_lectura_min"/><p class="hint">Solo cuentan las lecturas medidas dentro de este margen.</p></div>
       <details class="disclosure"><summary>Cómo se decide</summary><p>Una evidencia fiable de uso impide liberar. La evidencia contradictoria o insuficiente para una fuente obligatoria conserva la reserva.</p></details>
 
       <label class="check-option"><input type="checkbox" v-model="form.activa"><span>Crear versión activa</span></label>

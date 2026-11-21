@@ -15,7 +15,7 @@ const {can}=useAccess();
 const form=useForm({q:props.filtros.q||'',tipo:props.filtros.tipo||'',estado:props.filtros.estado||'',recurso_id:props.filtros.recurso_id||''});
 function search(){form.transform(clean).get('/incidencias',{preserveState:true,preserveScroll:true,onError:focusError});}
 // Solo presentación: distingue «sin registros» de «sin resultados para los filtros».
-const filtered=['q','tipo','estado','recurso_id'].some(k=>!!props.filtros[k]);
+const filtered=computed(()=>['q','tipo','estado','recurso_id'].some(k=>!!props.filtros[k]));
 </script>
 <template>
  <AppLayout title="Incidencias y mantenimiento">

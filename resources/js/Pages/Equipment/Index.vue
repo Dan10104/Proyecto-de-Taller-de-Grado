@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { Link, router, useForm } from '@inertiajs/vue3';
 import AppLayout from '../../Layouts/AppLayout.vue';
 import InputField from '../../Components/InputField.vue';
@@ -20,7 +20,7 @@ function requestUrl(e){return '/prestamos/crear?'+new URLSearchParams({equipamie
 // Solo presentación: filtros secundarios plegados (se abren si ya tienen valor) y pictograma por tipo.
 const secondary=props.disponibilidad ? ['piso_id','espacio_base_id','marca','modelo'] : ['espacio_base_id','marca','modelo','inicio_previsto','fin_previsto'];
 const moreOpen=ref(secondary.some(k=>!!props.filtros[k]));
-const filtered=Object.values(props.filtros||{}).some(v=>v!=='' && v!==null && v!==undefined);
+const filtered=computed(()=>Object.values(props.filtros||{}).some(v=>v!=='' && v!==null && v!==undefined));
 function pictogram(e){const text=`${e.tipo||''} ${e.nombre||''}`.toLowerCase();if(/proyector|projector|datashow/.test(text))return 'projector';if(/laptop|port[aá]til|notebook/.test(text))return 'laptop';if(/rob[oó]tic|kit|sensor|arduino|microcontrol/.test(text))return 'cpu';return 'monitor';}
 </script>
 <template>

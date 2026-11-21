@@ -57,9 +57,11 @@ function disable(user) {
           <option v-for="role in roles" :key="role.id" :value="role.id">{{ role.nombre }}</option>
         </select>
       </div>
-      <div class="button-group">
-        <button v-if="filters.q||filters.estado||filters.rol" class="text-button" type="button" @click="Object.assign(filters,{q:'',estado:'',rol:''});search()">Limpiar filtros</button>
-        <button class="btn btn-secondary" type="submit">Aplicar filtros</button>
+      <div class="filter-actions">
+        <div class="button-group">
+          <button v-if="filters.q||filters.estado||filters.rol" class="text-button" type="button" @click="Object.assign(filters,{q:'',estado:'',rol:''});search()">Limpiar filtros</button>
+          <button class="btn btn-secondary" type="submit">Aplicar filtros</button>
+        </div>
       </div>
     </form>
     <section class="panel">

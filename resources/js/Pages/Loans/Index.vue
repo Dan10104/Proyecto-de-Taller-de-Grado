@@ -1,5 +1,5 @@
 <script setup>
-import {ref} from 'vue';
+import {computed,ref} from 'vue';
 import {Link,router,useForm} from '@inertiajs/vue3';
 import AppLayout from '../../Layouts/AppLayout.vue';
 import InputField from '../../Components/InputField.vue';
@@ -18,8 +18,8 @@ function search(){filters.transform(d=>clean({...d,alcance:props.alcance,vencido
 
 // Solo presentación: filtros secundarios plegados (abiertos si ya tienen valor).
 const moreOpen=ref(!!(props.filtros.equipamiento_id||props.filtros.solicitante_id));
-const pendingTab=props.alcance==='administrativos' && props.filtros.estado==='PENDIENTE';
-const filtered=['q','estado','fecha','equipamiento_id','solicitante_id','vencidos','revision'].some(k=>!!props.filtros[k] && props.filtros[k]!=='0');
+const pendingTab=computed(()=>props.alcance==='administrativos' && props.filtros.estado==='PENDIENTE');
+const filtered=computed(()=>['q','estado','fecha','equipamiento_id','solicitante_id','vencidos','revision'].some(k=>!!props.filtros[k] && props.filtros[k]!=='0'));
 </script>
 <template>
  <AppLayout title="Préstamos de equipamiento">
