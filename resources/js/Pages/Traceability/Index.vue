@@ -7,7 +7,7 @@ import InputField from '../../Components/InputField.vue';
 import Pagination from '../../Components/Pagination.vue';
 import StatusBadge from '../../Components/StatusBadge.vue';
 import Icon from '../../Components/Icon.vue';
-import { operations, verificationResults } from '../../traceability';
+import { operations, verificationResults, externalRegistration } from '../../traceability';
 import { traceabilityDate } from '../../traceability';
 const props = defineProps({ evidencias: Object, filtros: Object });
 const form = useForm({ estado: props.filtros.estado || '', operacion: props.filtros.operacion || '', resultado: props.filtros.resultado || '', desde: props.filtros.desde || '', hasta: props.filtros.hasta || '' });
@@ -61,7 +61,7 @@ const hasFilters = computed(() => Object.values(props.filtros || {}).some(Boolea
               </td>
               <td>{{ operations[e.actividad.accion] }}</td>
               <td class="date-cell">{{ traceabilityDate(e.actividad.fecha_hora) }}</td>
-              <td><StatusBadge :value="e.estado" domain="evidencia"/></td>
+              <td><StatusBadge :value="externalRegistration(e) === 'registered' ? 'REGISTRADA' : 'PENDIENTE'" domain="evidencia" :label="externalRegistration(e) === 'unbacked' ? 'Sin respaldo' : null"/></td>
               <td>
                 <StatusBadge v-if="e.ultima_verificacion" :value="e.resultado_verificacion" domain="verificacion"/>
                 <StatusBadge v-else value="" label="Sin verificar"/>

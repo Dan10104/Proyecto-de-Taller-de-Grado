@@ -2,18 +2,17 @@
 import { computed } from 'vue';
 import { Link } from '@inertiajs/vue3';
 import Icon from './Icon.vue';
-import { operations, verificationResults, explanations, traceabilityDate } from '../traceability';
+import { operations, verificationResults, explanations, traceabilityDate, externalRegistration } from '../traceability';
 
 const props = defineProps({ evidence: Object, entries: { type: Array, default: () => [] } });
 const current = computed(() => props.evidence || props.entries[0]);
 
 // Hechos de la evidencia, tal como llegan del servidor. Nada se infiere más allá de ellos.
-// El estado «REGISTRADA» por sí solo no basta: hace falta la fecha de confirmación externa y, cuando
-// el servidor la entrega, también la referencia. Sin ese respaldo no se afirma el registro.
-const stateRegistered = computed(() => current.value?.estado === 'REGISTRADA');
-const backed = computed(() => Boolean(current.value?.registrada_externamente_en) && (current.value?.referencia_externa === undefined || Boolean(current.value?.referencia_externa)));
-const registered = computed(() => stateRegistered.value && backed.value);
-const unbacked = computed(() => stateRegistered.value && !backed.value);
+// El estado «REGISTRADA» por sí solo no basta: hacen falta la fecha de confirmación externa y la
+// referencia. El criterio es el mismo que usan el listado y el detalle técnico (traceability.js).
+const registration = computed(() => externalRegistration(current.value));
+const registered = computed(() => registration.value === 'registered');
+const unbacked = computed(() => registration.value === 'unbacked');
 const verified = computed(() => Boolean(current.value?.ultima_verificacion));
 const result = computed(() => (verified.value ? current.value.resultado_verificacion : null));
 const confirmedValid = computed(() => registered.value && result.value === 'VALIDO');

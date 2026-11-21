@@ -6,6 +6,13 @@ export function traceabilityDate(value) {
   const date = new Date(value);
   return Number.isNaN(date.getTime()) ? '—' : dateFormatter.format(date).replace(', ', ' · ');
 }
+// Registro externo: solo se afirma cuando coinciden el estado, la fecha de confirmación y la referencia.
+// «unbacked» es un estado REGISTRADA al que le falta alguno de esos dos respaldos.
+export function externalRegistration(evidence) {
+  if (evidence?.estado !== 'REGISTRADA') return 'pending';
+  return evidence.registrada_externamente_en && evidence.referencia_externa ? 'registered' : 'unbacked';
+}
+export const registrationLabels = { registered: 'Registrado', unbacked: 'Sin respaldo', pending: 'Pendiente' };
 export const explanations = {
   VALIDO: 'El hash reconstruido coincide con la evidencia local y el registro externo confirmado.',
   INCONSISTENTE: 'Se encontró una diferencia comprobable. La evidencia histórica se conserva para su revisión.',
