@@ -171,6 +171,13 @@ test('the IoT plan needs an unambiguous room identifier: a bare number in a name
   assert.equal(at('Aula 11', 'AULA-13'), null);
   assert.deepEqual(at('Aula 11', 'AULA-11'), { floor: 1, room: 11, kind: 'aula' });
   assert.deepEqual(at('Sala norte', 'AULA_11'), { floor: 1, room: 11, kind: 'aula' });
+  // A range or a list under one identifier names several rooms.
+  assert.equal(at('Sala norte', 'AULA_11-13'), null);
+  assert.equal(at('Aula 11 / 13', 'ESP-1'), null);
+  assert.equal(at('Aula 11 y 13', 'ESP-1'), null);
+  // Text after the identifier that is not another room number keeps it unambiguous.
+  assert.deepEqual(at('Aula 11 (30 personas)', 'ESP-001'), { floor: 1, room: 11, kind: 'aula' });
+  assert.deepEqual(at('Aula 11 - Bloque B', 'ESP-001'), { floor: 1, room: 11, kind: 'aula' });
 });
 test('a REGISTRADA state without confirmation date or reference is not presented as an external registration', async () => {
   const html = await render('TraceabilityChain', { evidence: { ...evidence, estado: 'REGISTRADA', referencia_externa: null, registrada_externamente_en: null, ultima_verificacion: null } });
@@ -230,4 +237,10 @@ test('mobile row cards label every data cell, the first one included', async () 
   assert.equal(row.cells[2].dataset.label, undefined);
   assert.equal(row.cells[2].dataset.actions, '');
   assert.equal(table.attrs.role, 'table');
+});
+test('the IoT inspector keeps the recorded location reference of a space in its technical details', async () => {
+  const spaceWithReference = { recurso_id: 51, piso_id: 3, capacidad: 20, estado: 'DISPONIBLE', referencia_ubicacion: 'Pasillo sur, puerta azul', recurso: { codigo: 'ESP-051', nombre: 'Sala norte' } };
+  const html = await render('IotTwin', { sensors: [{ ...sensor, id: 12, identificador: 'SNS-REF', espacio_actual_id: 51, espacio_actual: spaceWithReference }] });
+  assert.match(html, /Referencia de ubicación registrada/);
+  assert.match(html, /Pasillo sur, puerta azul/);
 });
