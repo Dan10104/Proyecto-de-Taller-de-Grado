@@ -124,7 +124,7 @@ onUnmounted(() => {
           <label for="assistant-question" class="sr-only">Su consulta sobre ESPACIO-U</label>
           <textarea id="assistant-question" ref="input" v-model="question" rows="3" placeholder="Escriba su consulta…" autocomplete="off" autocorrect="off" spellcheck="false" aria-describedby="assistant-privacy assistant-count assistant-keyboard" :aria-invalid="length > maxInputChars" @keydown="enter"></textarea>
           <div class="assistant-compose-actions">
-            <small id="assistant-privacy" class="assistant-privacy"><Icon name="lock"/>No incluya contraseñas, claves, códigos ni información sensible.</small>
+            <small id="assistant-privacy" class="assistant-privacy"><Icon name="lock"/>Su pregunta se envía a OpenAI, proveedor externo de IA; no se adjuntan sus registros. No incluya contraseñas, claves, códigos ni información sensible.</small>
             <small id="assistant-keyboard" class="assistant-keyboard">Enter para enviar · Shift+Enter para una nueva línea</small>
             <span id="assistant-count" class="assistant-count" :class="{ 'assistant-over': length > maxInputChars }">{{ length }} / {{ maxInputChars }}</span>
             <button class="btn btn-primary" type="submit" :disabled="pending || !length || length > maxInputChars">{{ pending ? 'Consultando…' : 'Enviar consulta' }}</button>
