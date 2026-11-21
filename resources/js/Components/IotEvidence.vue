@@ -2,13 +2,16 @@
 import { computed, ref, watch, onMounted, onBeforeUnmount } from 'vue';
 import StatusBadge from './StatusBadge.vue';
 // «embedded» solo cambia la presentación: omite el veredicto y la nota cuando el contenedor ya los muestra una vez.
-const props = defineProps({ readings: { type: Array, default: () => [] }, compact: Boolean, embedded: Boolean });
+// «elapsed»: segundos desde que el contenedor recibió los datos. Si llega, sustituye al reloj propio para
+// que cambiar de espacio no devuelva la vigencia a una lectura que ya venció.
+const props = defineProps({ readings: { type: Array, default: () => [] }, compact: Boolean, embedded: Boolean, elapsed: { type: Number, default: null } });
 const elapsed = ref(0);
 let received = performance.now(), timer;
 watch(() => props.readings, () => { received = performance.now(); elapsed.value = 0; });
 onMounted(() => { timer = setInterval(() => { elapsed.value = Math.floor((performance.now() - received) / 1000); }, 1000); });
 onBeforeUnmount(() => clearInterval(timer));
-const current = computed(() => props.readings.filter(r => elapsed.value <= r.vigente_por_segundos));
+const age = computed(() => props.elapsed ?? elapsed.value);
+const current = computed(() => props.readings.filter(r => age.value <= r.vigente_por_segundos));
 </script>
 <template>
   <section class="iot-evidence" aria-label="Información complementaria IoT">

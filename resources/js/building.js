@@ -49,32 +49,36 @@ function floorHintOf(piso) {
 }
 const floorOfRoom = (number) => BUILDING_FLOORS.find((floor) => floor.left.includes(number) || floor.right.includes(number));
 
-// Ubica un espacio real en la maqueta. Devuelve { floor, room, kind } o null cuando no hay una
-// correspondencia única y coherente; en ese caso el espacio se lista aparte, nunca se descarta.
-// El ambiente se toma del número presente en el nombre («Aula 11», «Laboratorio 48») o, si el nombre
-// no trae número pero sí indica el tipo, del código («LAB-41»). Si el registro indica su piso con un
-// número o un ordinal, debe coincidir con el de la maqueta; si lo contradice, el espacio no se dibuja.
-// Un ambiente numerado puede dibujarse sin piso registrado porque su número ya figura en el registro;
-// el auditorio no tiene número, así que solo se dibuja cuando el piso registrado lo confirma.
+// Identificador de ambiente: el número va unido a la palabra que nombra el tipo («Aula 11», «Lab. 41»,
+// «Aula N° 11» en el nombre; «LAB-41», «AULA_11» en el código). Un número suelto no identifica un
+// ambiente: «Sala para 20 personas» o un correlativo como «ESP-020» no se interpretan.
+const ROOM_ID = /\b(aula|laboratorio|lab)\b\.?[\s_-]*(?:n(?:ro|o)?\b\.?\s*)?(\d{1,3})\b/;
+function roomIdOf(value) {
+  const found = ROOM_ID.exec(plain(value).replace(/[°º]/g, 'o'));
+  return found ? { kind: found[1] === 'aula' ? 'aula' : 'laboratorio', number: Number(found[2]) } : null;
+}
+
+// Ubica un espacio real en la maqueta. Devuelve { floor, room, kind } o null cuando el registro no
+// respalda la posición; en ese caso el espacio se lista aparte, nunca se descarta.
+// · Aula o laboratorio: exige un identificador inequívoco en el nombre o, si el nombre no lo trae,
+//   en el código; el tipo del identificador debe coincidir con el del ambiente de la maqueta.
+// · Auditorio: no tiene número, así que solo se dibuja cuando el piso registrado lo confirma.
+// · Si el registro indica su piso con un número o un ordinal, debe coincidir con el de la maqueta.
 // La posición resultante es solo de dibujo: el piso que se muestra al usuario es siempre el del registro.
 export function locateSpace(space) {
   const name = space?.recurso?.nombre;
   const code = space?.recurso?.codigo;
-  const text = plain(`${name ?? ''} ${code ?? ''} ${space?.tipo?.nombre ?? ''}`);
-  const kind = /\baudit/.test(text) ? 'auditorio' : /\blab/.test(text) ? 'laboratorio' : /\baula/.test(text) ? 'aula' : null;
   const floorHint = floorHintOf(space?.piso);
-  const fits = (floor) => floorHint === null || floorHint === floor.number;
 
-  if (kind === 'auditorio') {
+  if (/\baudit/.test(plain(`${name ?? ''} ${space?.tipo?.nombre ?? ''}`))) {
     const floor = floorOfRoom('auditorium');
-    return floor && floorHint === floor.number ? { floor: floor.number, room: 'auditorium', kind } : null;
+    return floor && floorHint === floor.number ? { floor: floor.number, room: 'auditorium', kind: 'auditorio' } : null;
   }
 
-  const named = numbersIn(name);
-  const candidates = named.length ? named : kind ? numbersIn(code) : [];
-  const matches = [...new Set(candidates)]
-    .map((number) => ({ number, floor: floorOfRoom(number) }))
-    .filter(({ floor }) => floor && (!kind || kind === floor.kind) && fits(floor));
-
-  return matches.length === 1 ? { floor: matches[0].floor.number, room: matches[0].number, kind: matches[0].floor.kind } : null;
+  const id = roomIdOf(name) || roomIdOf(code);
+  if (!id) return null;
+  const floor = floorOfRoom(id.number);
+  if (!floor || floor.kind !== id.kind) return null;
+  if (floorHint !== null && floorHint !== floor.number) return null;
+  return { floor: floor.number, room: id.number, kind: floor.kind };
 }

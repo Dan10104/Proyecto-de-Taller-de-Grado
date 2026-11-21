@@ -70,7 +70,7 @@ const filtersOpen = ref(Object.values(props.filtros || {}).some(value => value !
             <tr v-for="sensor in sensores.data" :key="sensor.id">
               <td><strong>{{ sensor.identificador }}</strong><small class="cell-subline">Sensor #{{ sensor.id }}</small></td>
               <td>{{ sensor.espacio_actual.recurso.nombre }}<small class="cell-subline">{{ sensor.espacio_actual.recurso.codigo }} · espacio #{{ sensor.espacio_actual_id }}</small></td>
-              <td><StatusBadge :value="sensor.estado"/><small class="cell-subline">{{ sensor.ultima_comunicacion ? 'Última comunicación: ' + dateLabel(sensor.ultima_comunicacion) : 'Sin comunicación registrada' }}</small></td>
+              <td><StatusBadge :value="sensor.estado"/><small class="cell-subline">{{ sensor.ultima_comunicacion ? 'Última comunicación: ' + dateLabel(sensor.ultima_comunicacion) + (sensor.comunicacion === 'RECIENTE' ? ' · dentro de la ventana de comunicación' : ' · fuera de la ventana de comunicación') : 'Sin comunicación registrada' }}</small></td>
               <td><IotEvidence :readings="sensor.lecturas" embedded/></td>
             </tr>
           </tbody>

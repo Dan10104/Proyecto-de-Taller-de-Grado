@@ -20,7 +20,8 @@ const hasRecent = sensor => (sensor.lecturas || []).some(reading => elapsed.valu
 const sensorState = sensor => (sensor.estado !== 'HABILITADO' ? 'off' : hasRecent(sensor) ? 'recent' : 'idle');
 const stateText = { recent: 'Lectura reciente', idle: 'Sin lectura reciente', off: 'Sensor deshabilitado' };
 const moment = new Intl.DateTimeFormat('es-BO', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'America/La_Paz' });
-const communication = sensor => (sensor.ultima_comunicacion ? `Última comunicación: ${moment.format(new Date(sensor.ultima_comunicacion))}` : 'Sin comunicación registrada');
+const windowText = sensor => (sensor.comunicacion === 'RECIENTE' ? 'dentro de la ventana de comunicación' : 'fuera de la ventana de comunicación');
+const communication = sensor => (sensor.ultima_comunicacion ? `Última comunicación: ${moment.format(new Date(sensor.ultima_comunicacion))} · ${windowText(sensor)}` : 'Sin comunicación registrada');
 
 // Espacios con sensores recibidos en esta página. Los que no pueden ubicarse en la maqueta se listan aparte.
 const groups = computed(() => {
@@ -297,7 +298,7 @@ const floors = computed(() => scaffold.map(floor => ({
               <StatusBadge :value="sensor.estado"/>
             </div>
             <p>{{ sensor.tipo ? `${sensor.tipo} · ` : '' }}{{ communication(sensor) }}</p>
-            <IotEvidence :readings="sensor.lecturas || []" compact embedded/>
+            <IotEvidence :readings="sensor.lecturas || []" :elapsed="elapsed" compact embedded/>
           </li>
         </ul>
 
