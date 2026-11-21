@@ -2,6 +2,7 @@
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 import { Link, router } from '@inertiajs/vue3';
 import AppLayout from '../../Layouts/AppLayout.vue';
+import StatusBadge from '../../Components/StatusBadge.vue';
 import { useAccess, dateLabel } from '../../security';
 const props = defineProps({ sensor: Object, comunicacion: String });
 const { can } = useAccess();
@@ -28,19 +29,59 @@ onBeforeUnmount(() => { clear(); window.removeEventListener('pagehide', clear); 
 </script>
 <template>
   <AppLayout title="Detalle del sensor" section="IoT">
-    <div class="page-heading"><div><h1>{{ sensor.identificador }}</h1><p>{{ sensor.tipo }}</p></div><Link href="/iot/sensores" class="btn btn-secondary">Volver a sensores</Link></div>
-    <section class="panel detail-panel"><h2>Estado y asociación</h2><p><strong>{{ sensor.estado === 'HABILITADO' ? 'Habilitado' : 'Deshabilitado' }}</strong> · {{ comunicacion === 'RECIENTE' ? 'Comunicación reciente' : 'Sin comunicación reciente' }}</p><p>Espacio: <strong>{{ sensor.espacio_actual.recurso.codigo }} · {{ sensor.espacio_actual.recurso.nombre }}</strong></p><p>Última comunicación: {{ sensor.ultima_comunicacion ? dateLabel(sensor.ultima_comunicacion) : 'Sin eventos recibidos' }}</p><p class="hint">La ausencia de comunicación no determina que el espacio esté libre.</p>
-      <div class="button-group"><Link v-if="can('iot.sensores.gestionar')" :href="`/iot/sensores/${sensor.id}/editar`" class="btn btn-secondary">Editar o reasociar</Link><button v-if="can('iot.sensores.gestionar')" class="btn btn-secondary" @click="state">{{ sensor.estado === 'HABILITADO' ? 'Deshabilitar sensor' : 'Habilitar sensor' }}</button><Link v-if="can('iot.monitoreo.ver')" :href="`/iot/monitoreo?sensor_id=${sensor.id}`" class="text-link">Ver monitoreo e historial</Link></div>
+    <div class="page-heading">
+      <div>
+        <h1>{{ sensor.identificador }}</h1>
+        <p>{{ sensor.tipo }}</p>
+      </div>
+      <Link href="/iot/sensores" class="btn btn-secondary">Volver a sensores</Link>
+    </div>
+
+    <section class="panel detail-panel">
+      <div class="panel-heading">
+        <h2>Estado y asociación</h2>
+        <Link v-if="can('iot.monitoreo.ver')" :href="`/iot/monitoreo?sensor_id=${sensor.id}`" class="text-link">Ver monitoreo e historial</Link>
+      </div>
+      <dl class="detail-grid">
+        <div><dt>Estado</dt><dd><StatusBadge :value="sensor.estado"/></dd></div>
+        <div><dt>Comunicación</dt><dd>{{ comunicacion === 'RECIENTE' ? 'Comunicación reciente' : 'Sin comunicación reciente' }}</dd></div>
+        <div><dt>Espacio</dt><dd>{{ sensor.espacio_actual.recurso.codigo }} · {{ sensor.espacio_actual.recurso.nombre }}</dd></div>
+        <div><dt>Última comunicación</dt><dd>{{ sensor.ultima_comunicacion ? dateLabel(sensor.ultima_comunicacion) : 'Sin eventos recibidos' }}</dd></div>
+      </dl>
+      <p class="hint">La ausencia de comunicación no determina que el espacio esté libre.</p>
+      <div v-if="can('iot.sensores.gestionar')" class="button-group">
+        <Link :href="`/iot/sensores/${sensor.id}/editar`" class="btn btn-secondary">Editar o reasociar</Link>
+        <button class="btn btn-secondary" @click="state">{{ sensor.estado === 'HABILITADO' ? 'Deshabilitar sensor' : 'Habilitar sensor' }}</button>
+      </div>
+      <details class="disclosure">
+        <summary>Ver detalles técnicos</summary>
+        <dl class="detail-grid">
+          <div><dt>Referencia del sensor</dt><dd>#{{ sensor.id }}</dd></div>
+          <div><dt>Referencia del espacio</dt><dd>#{{ sensor.espacio_actual_id }}</dd></div>
+          <div><dt>Registro de la última comunicación</dt><dd>{{ sensor.ultima_comunicacion || 'Sin eventos recibidos' }}</dd></div>
+        </dl>
+        <p>Las referencias sirven para filtrar el historial en el monitoreo.</p>
+      </details>
     </section>
-    <section v-if="can('iot.sensores.gestionar')" class="panel form-panel"><h2>Configurar credencial del dispositivo</h2><p>Solicite la credencial únicamente cuando vaya a configurar este sensor. Volver a solicitarla entrega la misma credencial; no la rota.</p><p class="alert">Guarde esta credencial de forma segura para configurar el dispositivo.</p>
-      <button class="btn btn-primary" :disabled="busy || sensor.estado !== 'HABILITADO'" @click="provision">{{ busy ? 'Preparando…' : 'Provisionar credencial' }}</button><p v-if="sensor.estado !== 'HABILITADO'" class="hint">El sensor debe estar habilitado.</p>
-      <p v-if="message" role="alert">{{ message }}</p>
-      <div v-if="credential" class="iot-credential no-print"><label for="iot-credential">Credencial privada de este sensor</label><input id="iot-credential" :type="visible ? 'text' : 'password'" :value="credential" readonly autocomplete="off" spellcheck="false"><div class="button-group"><button class="btn btn-secondary" :aria-pressed="visible" @click="visible = !visible">{{ visible ? 'Ocultar' : 'Mostrar credencial' }}</button><button class="btn btn-secondary" @click="clear">Cerrar credencial</button></div><p class="hint">Se retira de la pantalla al salir o cambiar de pestaña. No se guarda en el historial de navegación.</p></div>
+
+    <section v-if="can('iot.sensores.gestionar')" class="panel form-panel">
+      <div class="panel-heading"><h2>Credencial del dispositivo</h2></div>
+      <p class="muted">Solicite la credencial únicamente cuando vaya a configurar este sensor. Volver a solicitarla entrega la misma credencial; no la rota.</p>
+      <p class="alert">Guarde esta credencial de forma segura para configurar el dispositivo.</p>
+      <div class="button-group">
+        <button class="btn btn-primary" :disabled="busy || sensor.estado !== 'HABILITADO'" @click="provision">{{ busy ? 'Preparando…' : 'Provisionar credencial' }}</button>
+        <p v-if="sensor.estado !== 'HABILITADO'" class="hint">El sensor debe estar habilitado.</p>
+      </div>
+      <p v-if="message" class="alert alert-error" role="alert">{{ message }}</p>
+      <div v-if="credential" class="iot-credential no-print">
+        <label for="iot-credential">Credencial privada de este sensor</label>
+        <input id="iot-credential" :type="visible ? 'text' : 'password'" :value="credential" readonly autocomplete="off" spellcheck="false">
+        <div class="button-group">
+          <button class="btn btn-secondary" :aria-pressed="visible" @click="visible = !visible">{{ visible ? 'Ocultar' : 'Mostrar credencial' }}</button>
+          <button class="btn btn-secondary" @click="clear">Cerrar credencial</button>
+        </div>
+        <p class="hint">Se retira de la pantalla al salir o cambiar de pestaña. No se guarda en el historial de navegación.</p>
+      </div>
     </section>
   </AppLayout>
 </template>
-<style scoped>
-.iot-credential { margin-top: 1.5rem; display: grid; gap: .8rem; }
-.iot-credential input { width: 100%; font-family: monospace; }
-@media print { .iot-credential { display: none !important; } }
-</style>
