@@ -29,7 +29,7 @@ const run = action => form.post(`/trazabilidad/${props.evidencia.id}/${action}`,
       <template #technical>
         <div><dt>Contexto</dt><dd>{{ evidencia.actividad.reserva_id ? `Reserva ${evidencia.actividad.reserva_id}` : evidencia.actividad.prestamo_id ? `Préstamo ${evidencia.actividad.prestamo_id}` : 'Origen no disponible' }}<template v-if="evidencia.actividad.recurso_id"> · Recurso {{ evidencia.actividad.recurso_id }}</template></dd></div>
         <div><dt>Preparada localmente</dt><dd>{{ traceabilityDate(evidencia.registrada_localmente_en) }}</dd></div>
-        <div><dt>Registrada externamente</dt><dd>{{ evidencia.registrada_externamente_en ? traceabilityDate(evidencia.registrada_externamente_en) : 'Pendiente de confirmación' }}</dd></div>
+        <div><dt>{{ externalRegistration(evidencia) === 'registered' ? 'Registrada externamente' : 'Fecha externa informada' }}</dt><dd>{{ evidencia.registrada_externamente_en ? traceabilityDate(evidencia.registrada_externamente_en) : externalRegistration(evidencia) === 'unbacked' ? 'No informada' : 'Pendiente de confirmación' }}</dd></div>
         <div><dt>Registro externo</dt><dd>{{ registrationLabels[externalRegistration(evidencia)] }}</dd></div>
         <div class="span-2"><dt>Referencia externa</dt><dd class="chain-hash">{{ evidencia.referencia_externa || 'Aún no disponible' }}</dd></div>
         <div v-if="evidencia.ultima_verificacion" class="span-2"><dt>Última comprobación</dt><dd>{{ traceabilityDate(evidencia.ultima_verificacion) }} · {{ verificationResults[evidencia.resultado_verificacion] }}. {{ explanations[evidencia.resultado_verificacion] }}</dd></div>
