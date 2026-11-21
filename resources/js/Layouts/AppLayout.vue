@@ -1,16 +1,68 @@
 <script setup>
-import { computed, ref, onMounted, onUnmounted } from 'vue';
+import { computed, ref, watch, onMounted, onUnmounted } from 'vue';
 import { Link, Head, usePage } from '@inertiajs/vue3';
 import Brand from '../Components/Brand.vue';
 import Icon from '../Components/Icon.vue';
 import FormErrors from '../Components/FormErrors.vue';
 import { useAccess, finishLogout } from '../security';
+import { watchTables } from '../tableLabels';
 
-defineProps({ title: String, section: { type: String, default: '' } });
+const props = defineProps({ title: String, section: { type: String, default: '' } });
 const page = usePage();
 const { can, auth } = useAccess();
 const drawer = ref(false), pending = ref(false), retrying = ref(false), logoutError = ref('');
-const initials = computed(() => `${auth.value?.usuario.nombres?.[0] || ''}${auth.value?.usuario.apellidos?.[0] || ''}`);
+const menuButton = ref(null);
+const mainContent = ref(null);
+let stopTables = () => {};
+
+const any = (...codes) => codes.some(code => can(code));
+const starts = (...prefixes) => prefixes.some(prefix => page.url.startsWith(prefix));
+
+// La navegación se agrupa por ámbito de trabajo; cada enlace aparece solo si el rol lo permite.
+const groups = computed(() => [
+  { label: 'Mi espacio', items: [
+    { href: '/inicio', label: 'Inicio', icon: 'home', show: true, active: page.url === '/inicio' },
+    { href: '/dashboard', label: 'Dashboard', icon: 'chart', show: can('dashboard.ver'), active: starts('/dashboard') },
+    { href: '/notificaciones', label: 'Notificaciones', icon: 'bell', show: can('notificaciones.ver_propias'), active: starts('/notificaciones'), count: auth.value?.no_leidas },
+    { href: '/asistente', label: 'Asistente', icon: 'chat', show: can('chatbot.consultar'), active: starts('/asistente') },
+  ] },
+  { label: 'Espacios y reservas', items: [
+    { href: '/disponibilidad', label: 'Disponibilidad', icon: 'search', show: can('espacios.ver'), active: starts('/disponibilidad') },
+    { href: '/espacios', label: 'Espacios académicos', icon: 'building', show: can('espacios.ver'), active: starts('/espacios') },
+    { href: '/reservas', label: 'Reservas', icon: 'calendar', show: any('reservas.ver_propias', 'reservas.ver_administrativas'), active: starts('/reservas') },
+  ] },
+  { label: 'Equipamiento y préstamos', items: [
+    { href: '/equipamientos', label: 'Equipamiento', icon: 'monitor', show: can('equipamientos.ver'), active: starts('/equipamientos') },
+    { href: '/prestamos', label: 'Préstamos', icon: 'exchange', show: any('prestamos.ver_propios', 'prestamos.ver_administrativos'), active: starts('/prestamos') },
+    { href: '/incidencias', label: 'Incidencias', icon: 'tool', show: can('incidencias.ver'), active: starts('/incidencias') },
+  ] },
+  { label: 'Monitoreo y evidencia', items: [
+    { href: '/iot/monitoreo', label: 'Monitoreo', icon: 'signal', show: can('iot.monitoreo.ver'), active: starts('/iot/monitoreo') },
+    { href: '/iot/sensores', label: 'Sensores IoT', icon: 'sensor', show: can('iot.sensores.ver'), active: starts('/iot/sensores') },
+    { href: '/qr', label: 'Códigos QR', icon: 'qr', show: can('qr.gestionar'), active: starts('/qr') },
+    { href: can('liberacion.politicas.ver') ? '/liberacion/politicas' : '/liberacion/asignaciones', label: 'Políticas de liberación', icon: 'clock', show: any('liberacion.politicas.ver', 'liberacion.politicas.gestionar'), active: starts('/liberacion/politicas', '/liberacion/asignaciones') },
+    { href: '/liberacion/evaluaciones', label: 'Evaluaciones', icon: 'checklist', show: any('liberacion.evaluaciones.ver_administrativas', 'liberacion.evaluaciones.ver_propias'), active: starts('/liberacion/evaluaciones') },
+    { href: '/trazabilidad', label: 'Trazabilidad', icon: 'network', show: can('trazabilidad.evidencias.ver'), active: starts('/trazabilidad') },
+  ] },
+  { label: 'Administración', items: [
+    { href: '/reportes', label: 'Reportes', icon: 'report', show: can('reportes.ver'), active: starts('/reportes') },
+    { href: '/actividad', label: 'Bitácora', icon: 'activity', show: can('actividad.ver'), active: starts('/actividad') },
+    { href: '/usuarios', label: 'Usuarios', icon: 'users', show: can('usuarios.ver'), active: starts('/usuarios') },
+    { href: '/roles', label: 'Roles y permisos', icon: 'shield', show: can('roles.ver'), active: starts('/roles', '/permisos') },
+  ] },
+].map(group => ({ ...group, items: group.items.filter(item => item.show) })).filter(group => group.items.length));
+
+const current = computed(() => {
+  for (const group of groups.value) {
+    const item = group.items.find(entry => entry.active);
+    if (item) return { group: group.label, item };
+  }
+  return null;
+});
+
+const initials = computed(() => `${auth.value?.usuario.nombres?.[0] || ''}${auth.value?.usuario.apellidos?.[0] || ''}`.toUpperCase());
+const unread = computed(() => auth.value?.no_leidas || 0);
+const today = new Intl.DateTimeFormat('es-BO', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric', timeZone: 'America/La_Paz' }).format(new Date());
 
 async function logout() {
   window.dispatchEvent(new Event('espacio-u:logout'));
@@ -26,12 +78,19 @@ async function logout() {
   }
 }
 
-function keydown(e) {
-  if (e.key === 'Escape') drawer.value = false;
+function closeDrawer() {
+  if (!drawer.value) return;
+  drawer.value = false;
+  menuButton.value?.focus();
 }
 
-onMounted(() => document.addEventListener('keydown', keydown));
-onUnmounted(() => document.removeEventListener('keydown', keydown));
+function keydown(e) {
+  if (e.key === 'Escape') closeDrawer();
+}
+
+watch(() => page.url, () => { drawer.value = false; });
+onMounted(() => { document.addEventListener('keydown', keydown); stopTables = watchTables(mainContent.value); });
+onUnmounted(() => { document.removeEventListener('keydown', keydown); stopTables(); });
 </script>
 
 <template>
@@ -44,112 +103,67 @@ onUnmounted(() => document.removeEventListener('keydown', keydown));
   </div>
   <div v-else class="app-shell">
     <a class="skip-link" href="#main">Ir al contenido</a>
-    <button v-if="drawer" class="drawer-backdrop" aria-label="Cerrar menú" @click="drawer=false"></button>
+    <button v-if="drawer" class="drawer-backdrop" aria-label="Cerrar menú" @click="closeDrawer"></button>
     <aside id="main-navigation" class="sidebar" :class="{'sidebar-open':drawer}">
-      <Brand/>
-      <nav aria-label="Navegación principal">
-        <div class="nav-group">
-          <p class="nav-label">Mi espacio</p>
-          <Link href="/inicio" :class="{active:page.url==='/inicio'}" @click="drawer=false">
-          <Icon name="home"/>
-          Inicio
-        </Link>
-          <Link v-if="can('dashboard.ver')" href="/dashboard" :class="{active:page.url.startsWith('/dashboard')}" @click="drawer=false"><Icon name="chart"/>Dashboard</Link>
-          <Link v-if="can('notificaciones.ver_propias')" href="/notificaciones" :class="{active:page.url.startsWith('/notificaciones')}" @click="drawer=false"><Icon name="bell"/>Notificaciones</Link>
-          <Link v-if="can('chatbot.consultar')" href="/asistente" :class="{active:page.url.startsWith('/asistente')}" @click="drawer=false"><Icon name="chat"/>Asistente</Link>
-        </div>
-        <div class="nav-group">
-          <p class="nav-label">Gestión académica</p>
-          <Link v-if="can('espacios.ver')" href="/disponibilidad" :class="{active:page.url.startsWith('/disponibilidad')}" @click="drawer=false">
-          <Icon name="search"/>
-          Disponibilidad
-        </Link>
-          <Link v-if="can('espacios.ver')" href="/espacios" :class="{active:page.url.startsWith('/espacios')}" @click="drawer=false">
-          <Icon name="building"/>
-          Espacios académicos
-        </Link>
-          <Link v-if="can('reservas.ver_propias') || can('reservas.ver_administrativas')" href="/reservas" :class="{active:page.url.startsWith('/reservas')}" @click="drawer=false">
-          <Icon name="calendar"/>Reservas
-        </Link>
-          <Link v-if="can('equipamientos.ver')" href="/equipamientos" :class="{active:page.url.startsWith('/equipamientos')}" @click="drawer=false"><Icon name="monitor"/>Equipamiento</Link>
-          <Link v-if="can('prestamos.ver_propios') || can('prestamos.ver_administrativos')" href="/prestamos" :class="{active:page.url.startsWith('/prestamos')}" @click="drawer=false"><Icon name="exchange"/>Préstamos</Link>
-          <Link v-if="can('incidencias.ver')" href="/incidencias" :class="{active:page.url.startsWith('/incidencias')}" @click="drawer=false"><Icon name="tool"/>Incidencias</Link>
-        </div>
-        <div class="nav-group">
-          <p class="nav-label">Monitoreo y evidencia</p>
-          <Link v-if="can('iot.monitoreo.ver')" href="/iot/monitoreo" :class="{active:page.url.startsWith('/iot/monitoreo')}" @click="drawer=false"><Icon name="signal"/>Monitoreo de ocupación</Link>
-          <Link v-if="can('iot.sensores.ver')" href="/iot/sensores" :class="{active:page.url.startsWith('/iot/sensores')}" @click="drawer=false"><Icon name="sensor"/>Sensores IoT</Link>
-          <Link v-if="can('trazabilidad.evidencias.ver')" href="/trazabilidad" :class="{active:page.url.startsWith('/trazabilidad')}" @click="drawer=false">
-          <Icon name="network"/>
-          Evidencias de trazabilidad
-        </Link>
-          <Link v-if="can('qr.gestionar')" href="/qr" :class="{active:page.url.startsWith('/qr')}" @click="drawer=false"><Icon name="qr"/>Códigos QR</Link>
-          <Link v-if="can('liberacion.politicas.ver') || can('liberacion.politicas.gestionar')" :href="can('liberacion.politicas.ver') ? '/liberacion/politicas' : '/liberacion/asignaciones'" :class="{active:page.url.startsWith('/liberacion/politicas') || page.url.startsWith('/liberacion/asignaciones')}" @click="drawer=false"><Icon name="clock"/>Políticas de liberación</Link>
-          <Link v-if="can('liberacion.evaluaciones.ver_administrativas') || can('liberacion.evaluaciones.ver_propias')" href="/liberacion/evaluaciones" :class="{active:page.url.startsWith('/liberacion/evaluaciones')}" @click="drawer=false"><Icon name="checklist"/>Evaluaciones de reservas</Link>
-        </div>
-        <div class="nav-group">
-          <p class="nav-label">Administración</p>
-          <Link v-if="can('reportes.ver')" href="/reportes" :class="{active:page.url.startsWith('/reportes')}" @click="drawer=false"><Icon name="report"/>Reportes</Link>
-          <Link v-if="can('actividad.ver')" href="/actividad" :class="{active:page.url.startsWith('/actividad')}" @click="drawer=false"><Icon name="activity"/>Bitácora</Link>
-          <Link v-if="can('usuarios.ver')" href="/usuarios" :class="{active:page.url.startsWith('/usuarios')}" @click="drawer=false">
-          <Icon name="users"/>
-          Usuarios
-        </Link>
-          <Link v-if="can('roles.ver')" href="/roles" :class="{active:page.url.startsWith('/roles')||page.url.startsWith('/permisos')}" @click="drawer=false">
-          <Icon name="shield"/>
-          Roles y permisos
-        </Link>
+      <Link href="/inicio" class="sidebar-brand" aria-label="ESPACIO-U, ir al inicio">
+        <Brand light/>
+      </Link>
+      <nav class="sidebar-nav" aria-label="Navegación principal">
+        <div v-for="group in groups" :key="group.label" class="nav-group">
+          <p class="nav-label">{{ group.label }}</p>
+          <Link v-for="item in group.items" :key="item.href" :href="item.href" :class="{active:item.active}" :aria-current="item.active ? 'page' : undefined">
+            <Icon :name="item.icon"/>
+            <span class="nav-text">{{ item.label }}</span>
+            <span v-if="item.count" class="nav-count" aria-hidden="true">{{ item.count > 99 ? '99+' : item.count }}</span>
+          </Link>
         </div>
       </nav>
-      <div class="sidebar-bottom">
-        <span class="institution-tag">FICCT</span>
-        <p>
-          Facultad de Ingeniería en Ciencias
-          <br>
-          de la Computación y Telecomunicaciones
-        </p>
-        <div class="sidebar-rule"></div>
-        <span>Acceso institucional</span>
+      <div class="sidebar-account">
+        <span class="avatar" aria-hidden="true">{{ initials }}</span>
+        <div class="account-text">
+          <strong>{{ auth?.usuario.nombres }} {{ auth?.usuario.apellidos }}</strong>
+          <small>{{ auth?.roles.join(', ')||'Sin rol asignado' }}</small>
+        </div>
+        <button class="logout-button" type="button" aria-label="Cerrar sesión" title="Cerrar sesión" @click="logout">
+          <Icon name="logout"/>
+        </button>
       </div>
     </aside>
     <div class="app-body">
       <header class="app-header">
         <div class="header-location">
-          <button class="menu-button" aria-label="Abrir menú" aria-controls="main-navigation" :aria-expanded="drawer" @click="drawer=!drawer">
+          <button ref="menuButton" class="menu-button" aria-label="Abrir menú" aria-controls="main-navigation" :aria-expanded="drawer" @click="drawer=!drawer">
             <Icon name="menu"/>
           </button>
-          <span class="header-title">{{ title }}</span>
+          <nav class="breadcrumb" aria-label="Ruta de navegación">
+            <template v-if="current">
+              <span class="breadcrumb-group">{{ current.group }}</span>
+              <span class="breadcrumb-sep" aria-hidden="true">/</span>
+              <Link v-if="title !== current.item.label && page.url !== current.item.href" :href="current.item.href">{{ current.item.label }}</Link>
+              <span v-else aria-current="page">{{ current.item.label }}</span>
+              <template v-if="title !== current.item.label && page.url !== current.item.href">
+                <span class="breadcrumb-sep" aria-hidden="true">/</span>
+                <span aria-current="page">{{ title }}</span>
+              </template>
+            </template>
+            <span v-else aria-current="page">{{ title }}</span>
+          </nav>
         </div>
-        <div class="account">
-          <Link v-if="can('notificaciones.ver_propias')" href="/notificaciones" class="notification-header" :aria-label="`Notificaciones: ${auth.no_leidas} no leídas`"><Icon name="bell"/><span class="notification-badge">{{ auth.no_leidas > 99 ? '99+' : auth.no_leidas }}</span></Link>
-          <span class="avatar">{{ initials }}</span>
-          <div class="account-text">
-            <strong>{{ auth?.usuario.nombres }} {{ auth?.usuario.apellidos }}</strong>
-            <small>{{ auth?.roles.join(' · ')||'Usuario registrado' }}</small>
-          </div>
-          <button class="logout-button" @click="logout" aria-label="Cerrar sesión">
-            <Icon name="logout"/>
-            <span>Salir</span>
-          </button>
+        <div class="header-actions">
+          <span class="header-date">{{ today }}</span>
+          <Link v-if="can('notificaciones.ver_propias')" href="/notificaciones" class="notification-header" :aria-label="unread ? `Notificaciones: ${unread} sin leer` : 'Notificaciones: ninguna sin leer'">
+            <Icon name="bell"/>
+            <span v-if="unread" class="notification-badge">{{ unread > 99 ? '99+' : unread }}</span>
+          </Link>
         </div>
       </header>
-      <main id="main" tabindex="-1" class="page-container">
-        <nav class="breadcrumb" aria-label="Ruta de navegación">
-          <Link href="/inicio">Inicio</Link>
-          <span v-if="section||title!=='Inicio'">/</span>
-          <span v-if="section">{{ section }} /</span>
-          <span v-if="title!=='Inicio'" aria-current="page">{{ title }}</span>
-        </nav>
+      <main id="main" ref="mainContent" tabindex="-1" class="page-container">
         <div v-if="page.props.flash?.success" class="alert alert-success" role="status">{{ page.props.flash.success }}</div>
         <div v-if="page.props.flash?.notice" class="alert" role="status">{{ page.props.flash.notice }}</div>
         <FormErrors v-if="page.props.errors?.administracion" :errors="{administracion:page.props.errors.administracion}"/>
         <FormErrors v-if="page.props.errors?.operacion && page.url.startsWith('/espacios')" :errors="{operacion:page.props.errors.operacion}"/>
         <slot/>
       </main>
-      <footer class="app-footer">
-        ESPACIO-U
-        <span>FICCT · Gestión institucional</span>
-      </footer>
     </div>
   </div>
 </template>

@@ -1,5 +1,5 @@
 import '../css/app.css';
-import '../css/presentation.css';
+import '../css/modules.css';
 import { createInertiaApp } from '@inertiajs/vue3';
 import { finishLogout } from './security';
 

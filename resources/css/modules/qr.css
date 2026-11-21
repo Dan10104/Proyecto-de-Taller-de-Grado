@@ -1,0 +1,118 @@
+/* ESPACIO-U · estilos del módulo qr. Usa únicamente los tokens de app.css. */
+
+/* Escáner (también se usa en préstamos) */
+.qr-scanner { display: grid; gap: var(--space-3); min-width: 0; }
+.qr-scanner > * { margin: 0; }
+.qr-viewport, .qr-standby {
+  position: relative;
+  width: 100%;
+  max-width: 30rem;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: var(--radius-l);
+}
+.qr-viewport { background: var(--color-tech); }
+.qr-viewport video { display: block; width: 100%; height: 100%; object-fit: cover; }
+.qr-guide {
+  position: absolute;
+  inset: 15% 22%;
+  border: 2px solid var(--color-accent);
+  border-radius: var(--radius-l);
+  box-shadow: 0 0 0 999px color-mix(in srgb, var(--color-tech) 40%, transparent);
+  pointer-events: none;
+}
+.qr-standby {
+  display: grid;
+  place-items: center;
+  border: 1px dashed var(--color-line-strong);
+  background: var(--color-surface-sunken);
+  color: var(--color-ink-3);
+}
+.qr-standby svg { width: 4rem; height: 4rem; }
+.qr-standby.is-starting { color: var(--color-accent-ink); }
+.qr-status { color: var(--color-ink); font-size: var(--text-sm); font-weight: 500; max-width: 60ch; }
+.qr-tips { max-width: 30rem; }
+
+/* Validación del uso de un espacio */
+.qr-validate { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: var(--space-6); align-items: start; }
+.panel.qr-validate > * + * { margin-top: 0; }
+.qr-validate-scan { display: grid; gap: var(--space-3); min-width: 0; }
+.qr-validate-scan > * { margin: 0; }
+.qr-validate-result { min-width: 0; }
+.qr-verdict {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-2);
+  padding: var(--space-5);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-l);
+  background: var(--color-surface-sunken);
+}
+.qr-verdict-title { font-size: var(--text-2xl); font-weight: 700; line-height: 1.15; letter-spacing: -0.02em; color: var(--color-ink); }
+.qr-verdict p { color: var(--color-ink-2); font-size: var(--text-sm); max-width: 48ch; }
+.qr-verdict.is-valid { border-color: var(--color-success-line); background: var(--color-success-bg); }
+.qr-verdict.is-valid .qr-verdict-title { color: var(--color-success); }
+.qr-verdict.is-invalid { border-color: var(--color-danger-line); background: var(--color-danger-bg); }
+.qr-verdict.is-invalid .qr-verdict-title { color: var(--color-danger); }
+.qr-verdict.is-error { border-color: var(--color-warning-line); background: var(--color-warning-bg); }
+.qr-verdict.is-error .qr-verdict-title { font-size: var(--text-lg); }
+.qr-verdict.is-idle .qr-verdict-title { font-size: var(--text-lg); color: var(--color-ink-2); }
+
+/* Historial de validaciones (también en préstamos) */
+.qr-history-list { display: grid; }
+.qr-history-list li {
+  display: grid;
+  grid-template-columns: 6.5rem minmax(0, 1fr) auto;
+  align-items: start;
+  gap: var(--space-1) var(--space-3);
+  padding-block: var(--space-3);
+  border-top: 1px solid var(--color-line);
+}
+.qr-history-list li:first-child { border-top: 0; padding-top: 0; }
+.qr-history-list .badge { justify-self: start; }
+.qr-history-body { display: grid; gap: 0.125rem; min-width: 0; }
+.qr-history-body strong { font-weight: 600; }
+.qr-history-body p { color: var(--color-ink-2); font-size: var(--text-sm); }
+.qr-history-list time { color: var(--color-ink-3); font-size: var(--text-xs); white-space: nowrap; }
+.qr-history-tech summary { font-size: var(--text-xs); }
+.qr-history-tech span { display: block; color: var(--color-ink-3); font-size: var(--text-xs); }
+
+/* Gestión de códigos */
+.qr-current { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--space-6); align-items: start; }
+.panel.qr-current > * + * { margin-top: 0; }
+.qr-current-state, .qr-issue { display: grid; gap: var(--space-3); min-width: 0; }
+.qr-current-state > *, .qr-issue > * { margin: 0; }
+.qr-issue { padding-left: var(--space-6); border-left: 1px solid var(--color-line); }
+.qr-issue form { display: grid; gap: var(--space-3); }
+.qr-codes .row-actions form > .form-actions { padding-top: 0; }
+
+.qr-print { display: grid; justify-items: center; text-align: center; }
+.qr-print > p { color: var(--color-ink-2); font-size: var(--text-sm); }
+.qr-image {
+  display: block;
+  width: min(100%, 20rem);
+  height: auto;
+  padding: var(--space-4);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-m);
+  background: var(--color-surface);
+}
+.qr-print .button-group { justify-content: center; }
+
+@media (max-width: 56rem) {
+  .qr-validate, .qr-current { grid-template-columns: minmax(0, 1fr); }
+  .qr-issue { padding-left: 0; padding-top: var(--space-5); border-left: 0; border-top: 1px solid var(--color-line); }
+}
+@media (max-width: 36rem) {
+  .qr-history-list li { grid-template-columns: auto minmax(0, 1fr); }
+  .qr-history-list time { grid-column: 2; }
+  .qr-verdict-title { font-size: var(--text-xl); }
+}
+
+/* Impresión: solo la etiqueta recién generada */
+@media print {
+  body:has(.qr-print) * { visibility: hidden; }
+  body:has(.qr-print) .qr-print, body:has(.qr-print) .qr-print * { visibility: visible; }
+  body:has(.qr-print) .qr-print { position: absolute; inset: 0 0 auto 0; width: 100%; border: 0; box-shadow: none; }
+  body:has(.qr-print) .no-print { display: none; }
+}

@@ -1,0 +1,15 @@
+/* Estilos propios de cada módulo. La base, los tokens y los componentes compartidos están en app.css. */
+@import './modules/auth.css';
+@import './modules/dashboard.css';
+@import './modules/reports.css';
+@import './modules/spaces.css';
+@import './modules/reservations.css';
+@import './modules/equipment.css';
+@import './modules/qr.css';
+@import './modules/iot.css';
+@import './modules/release.css';
+@import './modules/traceability.css';
+@import './modules/notifications.css';
+@import './modules/activity.css';
+@import './modules/assistant.css';
+@import './modules/security.css';

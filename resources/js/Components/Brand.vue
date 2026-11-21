@@ -1,17 +1,13 @@
 <script setup>
-import Icon from './Icon.vue';
-
 defineProps({ light: Boolean });
 </script>
 
 <template>
-  <div class="brand" :class="{'brand-light':light}">
-    <span class="brand-mark">
-      <Icon name="building" />
-    </span>
-    <span>
+  <span class="brand" :class="{'brand-light':light}">
+    <span class="brand-mark" aria-hidden="true">U</span>
+    <span class="brand-text">
       <strong>ESPACIO-U</strong>
-      <small>FICCT · Gestión académica</small>
+      <small>FICCT</small>
     </span>
-  </div>
+  </span>
 </template>

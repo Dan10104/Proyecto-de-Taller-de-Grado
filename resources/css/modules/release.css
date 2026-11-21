@@ -1,0 +1,60 @@
+/* ESPACIO-U · estilos del módulo release. Usa únicamente los tokens de app.css. */
+
+/* Formulario de política */
+.release-rule { display: grid; gap: var(--space-1); align-content: start; min-width: 0; }
+.release-rule-narrow { max-width: 26rem; }
+.release-sources { display: grid; gap: var(--space-1); }
+.release-form .check-option > span { display: grid; gap: 0.0625rem; }
+.release-form .check-option small { font-weight: 400; }
+
+/* Detalle de política */
+.release-heading-state { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-2); }
+.release-rules dd small { display: block; margin-top: 0.125rem; color: var(--color-ink-3); font-size: var(--text-xs); font-weight: 400; }
+.release-spaces > ul, .release-spaces > .pagination, .release-spaces > div { margin-top: 0; }
+.release-space-list { display: grid; }
+.release-space-list li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-4);
+  padding-block: var(--space-2);
+  border-top: 1px solid var(--color-line);
+}
+.release-space-list li:first-child { border-top: 0; }
+.release-space-list strong { color: var(--color-ink); font-weight: 600; }
+.release-space-list .reservation-code { color: var(--color-ink-3); font-size: var(--text-xs); }
+
+/* Asignación a espacios: una fila compacta por espacio */
+.release-assignment-list { display: grid; }
+.panel > .release-assignment-list { margin-inline: calc(var(--space-5) * -1); border-top: 1px solid var(--color-line); }
+.release-assignment {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(12rem, 18rem) auto;
+  align-items: end;
+  gap: var(--space-2) var(--space-4);
+  padding: var(--space-3) var(--space-5);
+  border-bottom: 1px solid var(--color-line);
+}
+.release-assignment:last-child { border-bottom: 0; }
+.release-assignment-space { align-self: center; min-width: 0; }
+.release-assignment-space h3 { font-weight: 600; }
+.release-assignment-space p { color: var(--color-ink-3); font-size: var(--text-xs); overflow-wrap: anywhere; }
+.release-assignment-space .reservation-code { color: var(--color-ink-2); }
+.release-assignment > :last-child:not(.btn) { grid-column: 1 / -1; }
+
+/* Detalle de evaluación: el veredicto primero */
+.release-verdict > .badge { margin-bottom: calc(var(--space-2) * -1); }
+.release-verdict-title { font-size: var(--text-2xl); font-weight: 700; line-height: 1.15; letter-spacing: -0.02em; text-wrap: balance; }
+.release-verdict-reason { color: var(--color-ink-2); max-width: 70ch; }
+.release-sensor { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-ink-2); }
+
+@media (max-width: 48rem) {
+  .release-assignment { grid-template-columns: minmax(0, 1fr) auto; }
+  .release-assignment-space { grid-column: 1 / -1; }
+}
+@media (max-width: 36rem) {
+  .panel > .release-assignment-list { margin-inline: calc(var(--space-4) * -1); }
+  .release-assignment { padding-inline: var(--space-4); }
+  .release-verdict-title { font-size: var(--text-xl); }
+}

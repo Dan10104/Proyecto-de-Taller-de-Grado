@@ -1,0 +1,61 @@
+/* ESPACIO-U · estilos del módulo notifications. Usa únicamente los tokens de app.css. */
+
+/* Título con el número de avisos sin leer */
+.notification-title { display: flex; align-items: baseline; flex-wrap: wrap; gap: var(--space-1) var(--space-3); }
+.notification-unread { color: var(--color-ink-3); font-size: var(--text-sm); }
+.notification-unread strong { margin-right: var(--space-1); color: var(--color-primary); font-size: var(--text-xl); font-weight: 700; letter-spacing: -0.02em; }
+.notification-unread.is-zero strong { color: var(--color-ink-3); }
+
+/* Filtros compactos */
+.notification-filters { grid-template-columns: repeat(auto-fill, minmax(11.5rem, 14rem)) 1fr; }
+.notification-filter-actions { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-2) var(--space-4); min-height: var(--control-height); }
+
+/* Bandeja */
+.notification-panel { padding: 0; overflow: hidden; }
+.panel.notification-panel > * + * { margin-top: 0; }
+.notification-panel > .pagination { padding: var(--space-3) var(--space-5); border-top: 1px solid var(--color-line); }
+.notification-list { display: grid; }
+.notification-list li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-3) var(--space-4);
+  padding: var(--space-3) var(--space-5);
+  border-top: 1px solid var(--color-line);
+}
+.notification-list li:first-child { border-top: 0; }
+.notification-list li:hover { background: color-mix(in srgb, var(--color-primary-tint) 40%, transparent); }
+.notification-symbol {
+  display: inline-grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: var(--radius-m);
+  background: var(--color-surface-sunken);
+  color: var(--color-ink-3);
+}
+.notification-symbol svg { width: 1.125rem; height: 1.125rem; }
+.notification-content { display: grid; gap: 0.125rem; min-width: 0; }
+.notification-content h2 { font-size: var(--text-base); font-weight: 500; line-height: 1.35; overflow-wrap: anywhere; }
+.notification-content h2 a { color: var(--color-ink); text-decoration: underline transparent; text-underline-offset: 3px; }
+.notification-content h2 a:hover { color: var(--color-link); text-decoration-color: currentColor; }
+.notification-content time { color: var(--color-ink-3); font-size: var(--text-xs); }
+.notification-meta { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: var(--space-2); }
+
+/* No leídas: peso, icono en azul y la insignia «No leída» */
+.notification-list li.unread .notification-content h2 { font-weight: 650; }
+.notification-list li.unread .notification-symbol { background: var(--color-primary-tint); color: var(--color-primary); }
+
+/* Detalle */
+.notification-detail { max-width: 48rem; }
+.notification-message { color: var(--color-ink); font-size: var(--text-md); line-height: 1.6; white-space: pre-line; overflow-wrap: anywhere; max-width: 65ch; }
+.notification-context { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-3); }
+.notification-retry { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-2) var(--space-4); }
+.notification-facts { padding-top: var(--space-4); border-top: 1px solid var(--color-line); }
+.notification-facts .cell-subline { margin-top: var(--space-1); }
+
+@media (max-width: 640px) {
+  .notification-list li { grid-template-columns: auto minmax(0, 1fr); padding-inline: var(--space-4); }
+  .notification-meta { grid-column: 2; justify-content: flex-start; }
+  .notification-panel > .pagination { padding-inline: var(--space-4); }
+}
