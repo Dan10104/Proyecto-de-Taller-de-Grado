@@ -24,6 +24,7 @@
 /* Reparto por estado */
 .dashboard-status { display: grid; grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); gap: var(--space-4); align-items: stretch; }
 .state-breakdown > * + * { margin-top: var(--space-3); }
+.state-breakdown > .state-context { margin-top: 0.125rem; color: var(--color-ink-3); font-size: var(--text-xs); }
 .state-total { color: var(--color-ink-3); font-size: var(--text-sm); }
 .state-total strong { margin-right: var(--space-1); color: var(--color-ink); font-size: var(--text-2xl); font-weight: 700; letter-spacing: -0.02em; }
 .state-bar { display: flex; gap: 2px; height: 0.625rem; overflow: hidden; border-radius: var(--radius-s); }

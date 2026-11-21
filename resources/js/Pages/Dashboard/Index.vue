@@ -25,14 +25,15 @@ const present = {
   A5: { icon: 'exchange', href: '/prestamos?alcance=administrativos&estado=PENDIENTE', lead: true },
   A7: { icon: 'clock', href: '/prestamos?alcance=administrativos&vencidos=1', lead: true, alert: 'danger' },
   A9: { icon: 'tool', href: '/incidencias?estado=ABIERTA', lead: true, alert: 'warning' },
-  A2: { icon: 'calendar', href: '/reservas?alcance=administrativas&estado=APROBADA', lead: true },
+  // A2 y P2 cuentan un intervalo (en curso / próximas) que el listado no puede filtrar: se muestran sin enlace.
+  A2: { icon: 'calendar', lead: true },
   A6: { icon: 'exchange', href: '/prestamos?alcance=administrativos&estado=ENTREGADO', lead: true },
   A3: { icon: 'clock' },
-  A4: { icon: 'building', breakdown: 'Espacios académicos', href: '/espacios' },
-  A8: { icon: 'monitor', breakdown: 'Equipamiento tecnológico', href: '/equipamientos' },
+  A4: { icon: 'building', breakdown: true, href: '/espacios' },
+  A8: { icon: 'monitor', breakdown: true, href: '/equipamientos' },
   A10: { iot: true },
   P1: { icon: 'calendar', href: '/reservas?alcance=propias&estado=PENDIENTE', lead: true },
-  P2: { icon: 'calendar', href: '/reservas?alcance=propias&estado=APROBADA', lead: true },
+  P2: { icon: 'calendar', lead: true },
   P4: { icon: 'exchange', href: '/prestamos?alcance=propios&estado=APROBADO', lead: true },
   P5: { icon: 'monitor', href: '/prestamos?alcance=propios&estado=ENTREGADO', lead: true },
   P6: { icon: 'clock', href: '/prestamos?alcance=propios&vencidos=1', lead: true, alert: 'danger' },
@@ -45,8 +46,11 @@ const breakdowns = computed(() => cards.value.filter(card => card.breakdown));
 const more = computed(() => cards.value.filter(card => !card.lead && !card.breakdown && !card.iot));
 const tone = card => (card.alert && card.valor > 0 ? `is-${card.alert}` : '');
 // Desglose que el servidor envía con el indicador (p. ej. vigentes y vencidos): se muestra, no se recalcula.
-const detailLabels = { VIGENTES: 'vigentes', VENCIDOS: 'vencidos', INCIDENCIA: 'incidencias', MANTENIMIENTO: 'mantenimientos' };
-const detail = card => Object.entries(card.desglose || {}).map(([key, value]) => `${value.toLocaleString('es-BO')} ${detailLabels[key] || statusOf(key).label.toLowerCase()}`);
+const detailLabels = { VIGENTES: ['vigente', 'vigentes'], VENCIDOS: ['vencido', 'vencidos'], INCIDENCIA: ['incidencia', 'incidencias'], MANTENIMIENTO: ['mantenimiento', 'mantenimientos'] };
+const detail = card => Object.entries(card.desglose || {}).map(([key, value]) => {
+  const forms = detailLabels[key];
+  return `${value.toLocaleString('es-BO')} ${forms ? forms[value === 1 ? 0 : 1] : statusOf(key).label.toLowerCase()}`;
+});
 const sameDay = r => String(r.inicio).split(' ')[0] === String(r.fin).split(' ')[0];
 
 const groups = computed(() => {
@@ -93,7 +97,7 @@ const activeGroup = computed(() => groups.value.find(group => group.id === tab.v
     </div>
 
     <div v-if="breakdowns.length || iot" class="dashboard-status">
-      <StateBreakdown v-for="card in breakdowns" :key="card.id" :title="card.breakdown" :total="card.valor" :values="card.desglose" :href="card.href" :data-metric="card.id"/>
+      <StateBreakdown v-for="card in breakdowns" :key="card.id" :title="card.titulo" :context="card.contexto" :total="card.valor" :values="card.desglose" :href="card.href" :data-metric="card.id"/>
       <section v-if="iot" class="tech-surface dashboard-iot" aria-labelledby="dashboard-iot-title" data-metric="A10">
         <div class="dashboard-iot-head">
           <h2 id="dashboard-iot-title">Monitoreo de ocupación</h2>
