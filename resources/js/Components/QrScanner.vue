@@ -48,9 +48,13 @@ onBeforeUnmount(() => { release(); window.removeEventListener('pagehide', releas
 </script>
 <template>
  <div class="qr-scanner" :aria-describedby="statusId">
-  <p :id="statusId" role="status" aria-live="polite">{{ message }}</p>
   <div v-if="active" class="qr-viewport"><video ref="video" muted playsinline aria-label="Vista previa local de la cámara"/><span aria-hidden="true" class="qr-guide"></span></div>
+  <div v-else class="qr-standby" :class="{ 'is-starting': starting }" aria-hidden="true">
+   <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15V9a3 3 0 0 1 3-3h6M33 6h6a3 3 0 0 1 3 3v6M42 33v6a3 3 0 0 1-3 3h-6M15 42H9a3 3 0 0 1-3-3v-6"/><path d="M15 15h6v6h-6zM27 15h6v6h-6zM15 27h6v6h-6zM27 27h2M33 27v2M27 33h6"/></svg>
+  </div>
+  <p :id="statusId" class="qr-status" role="status" aria-live="polite">{{ message }}</p>
   <div class="button-group"><button ref="startButton" v-if="!active && !starting" type="button" class="btn btn-primary" :disabled="disabled" @click="start">{{ label }}</button><button v-if="active || starting" type="button" class="btn btn-secondary" @click="stop">Detener cámara</button></div>
-  <p class="hint">Las imágenes se procesan en este dispositivo y no se guardan ni se envían. Si el código no se lee, mejore la iluminación y ajuste lentamente la distancia o el ángulo. Puede detener la cámara en cualquier momento.</p>
+  <p class="hint">Las imágenes se procesan en este dispositivo; no se guardan ni se envían.</p>
+  <details class="disclosure qr-tips"><summary>Si el código no se lee</summary><p>Mejore la iluminación y ajuste lentamente la distancia o el ángulo. Puede detener la cámara en cualquier momento.</p></details>
  </div>
 </template>
