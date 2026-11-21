@@ -31,7 +31,7 @@ const current = computed(() => props.readings.filter(r => age.value <= r.vigente
           <div><dt>Tipo de lectura</dt><dd>{{ reading.tipo === 'PRESENCIA' ? 'Presencia' : 'Ocupación' }}</dd></div>
           <div><dt>Valor informado</dt><dd class="iot-evidence-value">{{ reading.contradiccion ? 'Lecturas contradictorias' : reading.valor ?? 'Valor no informado' }}</dd></div>
           <div><dt>Medición</dt><dd>{{ reading.fecha_evento }} · Bolivia</dd></div>
-          <div v-if="!compact"><dt>Recepción</dt><dd>{{ reading.fecha_recepcion }} · Bolivia</dd></div>
+          <div><dt>Recepción</dt><dd>{{ reading.fecha_recepcion }} · Bolivia</dd></div>
           <div><dt>Vigencia al consultar</dt><dd>{{ reading.vigente_por_segundos }} s</dd></div>
         </dl>
       </details>

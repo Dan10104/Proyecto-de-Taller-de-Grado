@@ -52,16 +52,18 @@ const floorOfRoom = (number) => BUILDING_FLOORS.find((floor) => floor.left.inclu
 // Identificador de ambiente: el número va unido a la palabra que nombra el tipo («Aula 11», «Lab. 41»,
 // «Aula N° 11» en el nombre; «LAB-41», «AULA_11» en el código). Un número suelto no identifica un
 // ambiente: «Sala para 20 personas» o un correlativo como «ESP-020» no se interpretan.
-const ROOM_ID = /\b(aula|laboratorio|lab)\b\.?[\s_-]*(?:n(?:ro|o)?\b\.?\s*)?(\d{1,3})\b/;
-function roomIdOf(value) {
-  const found = ROOM_ID.exec(plain(value).replace(/[°º]/g, 'o'));
-  return found ? { kind: found[1] === 'aula' ? 'aula' : 'laboratorio', number: Number(found[2]) } : null;
+const ROOM_ID = /\b(aula|laboratorio|lab)\b\.?\s*(?:n(?:ro|o)?\b\.?\s*)?(\d{1,3})\b/g;
+// Todos los identificadores presentes en un texto, como pares «tipo-número» sin repetir.
+function roomIdsOf(value) {
+  const text = plain(value).replace(/[°º]/g, 'o').replace(/[_-]+/g, ' ');
+  return [...new Set([...text.matchAll(ROOM_ID)].map((found) => `${found[1] === 'aula' ? 'aula' : 'laboratorio'}-${Number(found[2])}`))];
 }
 
 // Ubica un espacio real en la maqueta. Devuelve { floor, room, kind } o null cuando el registro no
 // respalda la posición; en ese caso el espacio se lista aparte, nunca se descarta.
-// · Aula o laboratorio: exige un identificador inequívoco en el nombre o, si el nombre no lo trae,
-//   en el código; el tipo del identificador debe coincidir con el del ambiente de la maqueta.
+// · Aula o laboratorio: exige que nombre y código, juntos, identifiquen un único ambiente; si nombran
+//   dos distintos («Aula 11 / Aula 13», o nombre y código que no coinciden) el espacio no se dibuja.
+//   El tipo del identificador debe coincidir con el del ambiente de la maqueta.
 // · Auditorio: no tiene número, así que solo se dibuja cuando el piso registrado lo confirma.
 // · Si el registro indica su piso con un número o un ordinal, debe coincidir con el de la maqueta.
 // La posición resultante es solo de dibujo: el piso que se muestra al usuario es siempre el del registro.
@@ -75,10 +77,12 @@ export function locateSpace(space) {
     return floor && floorHint === floor.number ? { floor: floor.number, room: 'auditorium', kind: 'auditorio' } : null;
   }
 
-  const id = roomIdOf(name) || roomIdOf(code);
-  if (!id) return null;
-  const floor = floorOfRoom(id.number);
-  if (!floor || floor.kind !== id.kind) return null;
+  const ids = [...new Set([...roomIdsOf(name), ...roomIdsOf(code)])];
+  if (ids.length !== 1) return null;
+  const [kind, digits] = ids[0].split('-');
+  const number = Number(digits);
+  const floor = floorOfRoom(number);
+  if (!floor || floor.kind !== kind) return null;
   if (floorHint !== null && floorHint !== floor.number) return null;
-  return { floor: floor.number, room: id.number, kind: floor.kind };
+  return { floor: floor.number, room: number, kind: floor.kind };
 }
