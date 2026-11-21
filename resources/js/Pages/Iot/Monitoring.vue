@@ -33,7 +33,7 @@ const filtersOpen = ref(Object.values(props.filtros || {}).some(value => value !
 
     <details class="disclosure">
       <summary>Cómo interpretar las lecturas</summary>
-      <p>Una lectura reciente requiere medición y recepción dentro de {{ ventana }} segundos. Que el dispositivo esté en línea no demuestra ocupación. La interpretación depende del dispositivo.</p>
+      <p>Una lectura reciente requiere medición y recepción dentro de {{ ventana }} segundos. La comunicación reciente por sí sola no demuestra ocupación. La interpretación depende del dispositivo.</p>
     </details>
 
     <details class="disclosure iot-filter-disclosure" :open="filtersOpen" @toggle="filtersOpen = $event.target.open">
@@ -70,7 +70,7 @@ const filtersOpen = ref(Object.values(props.filtros || {}).some(value => value !
             <tr v-for="sensor in sensores.data" :key="sensor.id">
               <td><strong>{{ sensor.identificador }}</strong><small class="cell-subline">Sensor #{{ sensor.id }}</small></td>
               <td>{{ sensor.espacio_actual.recurso.nombre }}<small class="cell-subline">{{ sensor.espacio_actual.recurso.codigo }} · espacio #{{ sensor.espacio_actual_id }}</small></td>
-              <td><StatusBadge :value="sensor.estado"/><small class="cell-subline">{{ sensor.comunicacion === 'RECIENTE' ? 'Dispositivo en línea' : 'Dispositivo sin señal reciente' }}</small></td>
+              <td><StatusBadge :value="sensor.estado"/><small class="cell-subline">{{ sensor.ultima_comunicacion ? 'Última comunicación: ' + dateLabel(sensor.ultima_comunicacion) : 'Sin comunicación registrada' }}</small></td>
               <td><IotEvidence :readings="sensor.lecturas" embedded/></td>
             </tr>
           </tbody>

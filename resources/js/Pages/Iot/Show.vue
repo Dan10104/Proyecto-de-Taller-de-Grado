@@ -44,7 +44,7 @@ onBeforeUnmount(() => { clear(); window.removeEventListener('pagehide', clear); 
       </div>
       <dl class="detail-grid">
         <div><dt>Estado</dt><dd><StatusBadge :value="sensor.estado"/></dd></div>
-        <div><dt>Comunicación</dt><dd>{{ comunicacion === 'RECIENTE' ? 'En línea' : 'Sin señal reciente' }}</dd></div>
+        <div><dt>Comunicación</dt><dd>{{ comunicacion === 'RECIENTE' ? 'Comunicación reciente' : 'Sin comunicación reciente' }}</dd></div>
         <div><dt>Espacio</dt><dd>{{ sensor.espacio_actual.recurso.codigo }} · {{ sensor.espacio_actual.recurso.nombre }}</dd></div>
         <div><dt>Última comunicación</dt><dd>{{ sensor.ultima_comunicacion ? dateLabel(sensor.ultima_comunicacion) : 'Sin eventos recibidos' }}</dd></div>
       </dl>

@@ -54,6 +54,8 @@ const floorOfRoom = (number) => BUILDING_FLOORS.find((floor) => floor.left.inclu
 // El ambiente se toma del número presente en el nombre («Aula 11», «Laboratorio 48») o, si el nombre
 // no trae número pero sí indica el tipo, del código («LAB-41»). Si el registro indica su piso con un
 // número o un ordinal, debe coincidir con el de la maqueta; si lo contradice, el espacio no se dibuja.
+// Un ambiente numerado puede dibujarse sin piso registrado porque su número ya figura en el registro;
+// el auditorio no tiene número, así que solo se dibuja cuando el piso registrado lo confirma.
 // La posición resultante es solo de dibujo: el piso que se muestra al usuario es siempre el del registro.
 export function locateSpace(space) {
   const name = space?.recurso?.nombre;
@@ -65,7 +67,7 @@ export function locateSpace(space) {
 
   if (kind === 'auditorio') {
     const floor = floorOfRoom('auditorium');
-    return floor && fits(floor) ? { floor: floor.number, room: 'auditorium', kind } : null;
+    return floor && floorHint === floor.number ? { floor: floor.number, room: 'auditorium', kind } : null;
   }
 
   const named = numbersIn(name);

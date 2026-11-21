@@ -19,24 +19,32 @@ onBeforeUnmount(() => clearInterval(timer));
 const hasRecent = sensor => (sensor.lecturas || []).some(reading => elapsed.value <= reading.vigente_por_segundos);
 const sensorState = sensor => (sensor.estado !== 'HABILITADO' ? 'off' : hasRecent(sensor) ? 'recent' : 'idle');
 const stateText = { recent: 'Lectura reciente', idle: 'Sin lectura reciente', off: 'Sensor deshabilitado' };
-const communication = sensor => (sensor.comunicacion === 'RECIENTE' ? 'Dispositivo en línea' : 'Dispositivo sin señal reciente');
+const moment = new Intl.DateTimeFormat('es-BO', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'America/La_Paz' });
+const communication = sensor => (sensor.ultima_comunicacion ? `Última comunicación: ${moment.format(new Date(sensor.ultima_comunicacion))}` : 'Sin comunicación registrada');
 
 // Espacios con sensores recibidos en esta página. Los que no pueden ubicarse en la maqueta se listan aparte.
 const groups = computed(() => {
-  const map = new Map(), taken = new Set();
+  const map = new Map();
   for (const sensor of props.sensors) {
     const id = sensor.espacio_actual_id ?? 'sin-espacio';
     if (!map.has(id)) {
       const space = sensor.espacio_actual || null;
-      let place = space ? locateSpace(space) : null;
-      const cell = place ? `${place.floor}-${place.room}` : null;
-      if (cell && taken.has(cell)) place = null;
-      else if (cell) taken.add(cell);
-      map.set(id, { id, space, place, cell: place ? cell : null, sensors: [] });
+      map.set(id, { id, space, place: space ? locateSpace(space) : null, cell: null, sensors: [] });
     }
     map.get(id).sensors.push(sensor);
   }
-  return [...map.values()];
+  const list = [...map.values()];
+  // Si dos espacios distintos caen en el mismo ambiente del dibujo, ninguno se dibuja:
+  // la interfaz no elige uno por el orden en que llegan los sensores.
+  const cellOf = group => `${group.place.floor}-${group.place.room}`;
+  const uses = new Map();
+  for (const group of list) if (group.place) uses.set(cellOf(group), (uses.get(cellOf(group)) || 0) + 1);
+  for (const group of list) {
+    if (!group.place) continue;
+    if (uses.get(cellOf(group)) > 1) group.place = null;
+    else group.cell = cellOf(group);
+  }
+  return list;
 });
 const placed = computed(() => groups.value.filter(group => group.place));
 const others = computed(() => groups.value.filter(group => !group.place));
@@ -258,6 +266,7 @@ const floors = computed(() => scaffold.map(floor => ({
         <div class="twin-inspector-head">
           <h3 id="twin-space-name"><span class="sr-only">Espacio seleccionado: </span>{{ view.name }}</h3>
           <p>{{ view.where }}</p>
+          <p v-if="view.features.length" class="twin-features-note">Habitual en este tipo de ambiente; no es el inventario del espacio:</p>
           <ul v-if="view.features.length" class="twin-features" aria-label="Equipamiento habitual de este tipo de ambiente">
             <li v-for="feature in view.features" :key="feature">
               <Icon v-if="feature === 'projector'" name="projector"/>
