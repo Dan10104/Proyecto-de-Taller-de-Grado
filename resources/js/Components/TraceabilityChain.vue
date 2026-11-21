@@ -8,7 +8,12 @@ const props = defineProps({ evidence: Object, entries: { type: Array, default: (
 const current = computed(() => props.evidence || props.entries[0]);
 
 // Hechos de la evidencia, tal como llegan del servidor. Nada se infiere más allá de ellos.
-const registered = computed(() => current.value?.estado === 'REGISTRADA');
+// El estado «REGISTRADA» por sí solo no basta: hace falta la fecha de confirmación externa y, cuando
+// el servidor la entrega, también la referencia. Sin ese respaldo no se afirma el registro.
+const stateRegistered = computed(() => current.value?.estado === 'REGISTRADA');
+const backed = computed(() => Boolean(current.value?.registrada_externamente_en) && (current.value?.referencia_externa === undefined || Boolean(current.value?.referencia_externa)));
+const registered = computed(() => stateRegistered.value && backed.value);
+const unbacked = computed(() => stateRegistered.value && !backed.value);
 const verified = computed(() => Boolean(current.value?.ultima_verificacion));
 const result = computed(() => (verified.value ? current.value.resultado_verificacion : null));
 const confirmedValid = computed(() => registered.value && result.value === 'VALIDO');
@@ -17,6 +22,9 @@ const confirmedValid = computed(() => registered.value && result.value === 'VALI
 const verdict = computed(() => {
   if (!current.value) return null;
   const hint = props.evidence ? ' Seleccione «Verificar evidencia» para comprobar la información disponible.' : '';
+  if (!verified.value && unbacked.value) {
+    return { tone: 'pending', icon: 'alert', title: 'Registro externo sin respaldo', text: `El estado indica un registro externo, pero falta su confirmación o su referencia.${hint}` };
+  }
   if (!verified.value) {
     return registered.value
       ? { tone: 'registered', icon: 'cube', title: 'Evidencia registrada, sin verificar', text: `La operación cuenta con un registro externo confirmado, pero aún no se ha verificado.${hint}` }
@@ -54,9 +62,9 @@ const stages = computed(() => {
     { key: 'huella', stage: 'Huella digital', tone: 'indigo', lit: true, icon: 'hash', value: 'Generada', note: e.algoritmo_hash },
     {
       key: 'registro', stage: 'Registro externo', tag: true,
-      tone: registered.value ? 'violet' : 'amber', lit: registered.value, icon: registered.value ? 'check' : 'clock',
-      value: registered.value ? 'Registrada' : 'Pendiente',
-      note: e.registrada_externamente_en ? traceabilityDate(e.registrada_externamente_en) : 'Sin confirmación externa',
+      tone: registered.value ? 'violet' : 'amber', lit: registered.value, icon: registered.value ? 'check' : unbacked.value ? 'alert' : 'clock',
+      value: registered.value ? 'Registrada' : unbacked.value ? 'Sin respaldo' : 'Pendiente',
+      note: registered.value ? traceabilityDate(e.registrada_externamente_en) : 'Sin confirmación externa',
     },
     {
       key: 'verificacion', stage: 'Verificación', tag: true, ...verification.value,
@@ -108,6 +116,7 @@ const stages = computed(() => {
           <div><dt>Algoritmo</dt><dd>{{ current.algoritmo_hash }}</dd></div>
           <div><dt>Versión del formato</dt><dd>{{ current.version_canonica }}</dd></div>
           <div><dt>Actividad</dt><dd>{{ current.registro_actividad_id }}</dd></div>
+          <div><dt>Estado recibido</dt><dd>{{ current.estado }}</dd></div>
           <slot name="technical"/>
         </dl>
       </details>
