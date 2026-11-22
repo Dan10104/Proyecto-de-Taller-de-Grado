@@ -55,7 +55,7 @@ Cada operación deja evidencia: el estado de una reserva o de un préstamo, la l
 
 ## Evidence on Hand
 
-- Datos reales: los que existan en la base de datos activa. La base de presentación arranca solo con roles, permisos y el administrador inicial (ver `docs/PRESENTATION_DATABASE.md`).
+- Datos: los que existan en la base de datos activa. La base de presentación (`espacio_u_presentacion`) contiene un conjunto controlado de datos para la defensa: solo el catálogo de roles y permisos es real y verificado; la distribución del edificio es provisional y cada espacio lo declara; los datos operativos son de presentación y no representan registros oficiales de la FICCT (ver `docs/PRESENTATION_DATABASE.md`).
 - No hay fotografías reales de la FICCT ni logotipos autorizados en el repositorio. Las imágenes generadas que simulaban el campus se retiran; no deben sustituirse por otras imágenes ficticias.
 - No se inventan indicadores, porcentajes, tendencias ni testimonios.
 
