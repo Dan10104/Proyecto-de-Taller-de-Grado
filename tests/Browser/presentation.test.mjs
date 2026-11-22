@@ -326,3 +326,133 @@ test('a room is drawn only when its name or its code is exactly a room identifie
   }
   assert.ok(checked > 70);
 });
+
+test('the IoT plan places a space by its stable records: space code, type code and floor number', async () => {
+  const { locateSpace, BUILDING_FLOORS } = await load('resources/js/building.js');
+  // The shape the monitoring page receives: the space with its resource, its catalog type and its floor.
+  const record = (codigo, nombre, tipo, piso) => locateSpace({ recurso: { codigo, nombre }, ...(tipo ? { tipo: { codigo: tipo, nombre: tipo } } : {}), ...(piso ? { piso: { numero: piso, nombre: `Piso ${piso}` } } : {}) });
+  const auditorium = { floor: 4, room: 'auditorium', kind: 'auditorio' };
+
+  // The auditorium is found by its catalog type or by its code; its name is only presentation text.
+  assert.deepEqual(record('AUD-01', 'Auditorio', 'AUDITORIO', 4), auditorium);
+  assert.deepEqual(record('AUD-01', 'Salón de actos', 'AUDITORIO', 4), auditorium);
+  assert.deepEqual(record('ESP-006', 'Salón de actos', 'AUDITORIO', 4), auditorium);
+  assert.deepEqual(record('AUDITORIO', 'Salón de actos', null, 4), auditorium);
+  assert.deepEqual(record('AUD-01', 'Auditorio', null, 4), auditorium);
+  // It has no room number: the recorded floor must confirm it, and nothing in the record may contradict it.
+  assert.equal(record('AUD-01', 'Auditorio', 'AUDITORIO', null), null);
+  assert.equal(record('AUD-01', 'Auditorio', 'AUDITORIO', 3), null);
+  assert.equal(record('AUD-01', 'Auditorio', 'AULA', 4), null);
+  assert.equal(record('AULA-11', 'Auditorio', 'AUDITORIO', 4), null);
+  assert.equal(record('LAB-41', 'Auditorio 41', 'AUDITORIO', 4), null);
+  // A name that only mentions an auditorium does not override a recognised catalog type.
+  assert.equal(record('ESP-030', 'Sala junto al auditorio', 'AULA', 4), null);
+
+  // Every room of the provisional distribution, with the project's code convention.
+  let rooms = 0;
+  for (const floor of BUILDING_FLOORS) {
+    for (const item of [...floor.left, ...floor.right].filter((entry) => typeof entry === 'number')) {
+      const lab = floor.kind === 'laboratorio';
+      const code = `${lab ? 'LAB' : 'AULA'}-${item}`, name = `${lab ? 'Laboratorio' : 'Aula'} ${item}`, type = lab ? 'LABORATORIO' : 'AULA';
+      assert.deepEqual(record(code, name, type, floor.number), { floor: floor.number, room: item, kind: floor.kind }, code);
+      // The code alone decides when the name is descriptive; the catalog type must agree with it.
+      assert.deepEqual(record(code, 'Ambiente de prácticas', type, floor.number), { floor: floor.number, room: item, kind: floor.kind }, code);
+      assert.equal(record(code, name, lab ? 'AULA' : 'LABORATORIO', floor.number), null, code);
+      assert.equal(record(code, name, type, floor.number === 4 ? 1 : floor.number + 1), null, code);
+      rooms++;
+    }
+  }
+  assert.equal(rooms, 30);
+  assert.deepEqual(record('LAB-48', 'Laboratorio de robótica', 'LABORATORIO', 4), { floor: 4, room: 48, kind: 'laboratorio' });
+  // An unknown catalog type says nothing: the code and the name decide as before.
+  assert.deepEqual(record('AULA-11', 'Aula 11', 'T-01', 1), { floor: 1, room: 11, kind: 'aula' });
+});
+
+test('the auditorium is as strict as any room: nothing in the record may point elsewhere', async () => {
+  const { locateSpace } = await load('resources/js/building.js');
+  const record = (codigo, nombre, tipo, piso = 4) => locateSpace({ recurso: { codigo, nombre }, ...(tipo ? { tipo: { codigo: tipo, nombre: tipo } } : {}), ...(piso ? { piso: { numero: piso } } : {}) });
+  const auditorium = { floor: 4, room: 'auditorium', kind: 'auditorio' };
+  // A code or a name that names a room, or several, is ambiguous whatever the catalog type says.
+  assert.equal(record('LAB-41B', 'Sala norte', 'AUDITORIO'), null);
+  assert.equal(record('AUD-01', 'Laboratorios 41 y 42', 'AUDITORIO'), null);
+  assert.equal(record('AUD-01', 'Auditorio y aula 11', 'AUDITORIO'), null);
+  assert.equal(record('AUD-01', 'Auditorio 2', 'AUDITORIO'), null);
+  assert.equal(record('AUD-01', 'Auditorio II', 'AUDITORIO'), null);
+  // The drawing has one auditorium: the code of another one is not it.
+  assert.equal(record('AUD-02', 'Salón de actos', 'T-9'), null);
+  assert.equal(record('AUD-02', 'Salón de actos', 'AUDITORIO'), null);
+  assert.equal(record('AUDITORIO-3', 'Auditorio', null), null);
+  for (const code of ['AUD', 'AUD-01', 'AUD-1', 'AUD_01', 'AUDITORIO', 'AUDITORIO-01']) assert.deepEqual(record(code, 'Salón de actos', 'T-9'), auditorium, code);
+  // Without a recognised type, the name must say that the space itself is an auditorium.
+  assert.equal(record('ESP-005', 'Sala de auditoría', 'T-9'), null);
+  assert.equal(record('ESP-005', 'Sala junto al auditorio', 'T-9'), null);
+  assert.equal(record('ESP-005', 'Sala junto al auditorio', null), null);
+  assert.deepEqual(record('ESP-005', 'Auditorio principal', 'T-9'), auditorium);
+  assert.deepEqual(record('ESP-005', 'Auditorio de la facultad', null), auditorium);
+  assert.deepEqual(locateSpace({ recurso: { codigo: 'ESP-005', nombre: 'Salón de actos' }, tipo: { codigo: 'T-9', nombre: 'Auditorio' }, piso: { numero: 4 } }), auditorium);
+  // A catalog code is looked up as data: a code that happens to be an object member means nothing.
+  for (const type of ['CONSTRUCTOR', 'TOSTRING', '__PROTO__', 'HASOWNPROPERTY']) {
+    assert.deepEqual(record('AULA-11', 'Aula 11', type, 1), { floor: 1, room: 11, kind: 'aula' }, type);
+  }
+  assert.deepEqual(locateSpace({ recurso: { codigo: 'AULA-11', nombre: 'Aula 11' }, piso: { nombre: 'Piso constructor' } }), { floor: 1, room: 11, kind: 'aula' });
+});
+
+test('code and name are read separately and must not disagree, whichever of them is checked first', async () => {
+  const { locateSpace } = await load('resources/js/building.js');
+  const record = (codigo, nombre, tipo, piso = 4) => locateSpace({ recurso: { codigo, nombre }, ...(tipo ? { tipo: { codigo: tipo, nombre: tipo } } : {}), ...(piso ? { piso: { numero: piso } } : {}) });
+  const auditorium = { floor: 4, room: 'auditorium', kind: 'auditorio' };
+  // A room word glued to a number is still a room word: these codes are not neutral serials.
+  assert.equal(record('LAB41', 'Salón de actos', 'AUDITORIO'), null);
+  assert.equal(record('LAB41B', 'Salón de actos', 'AUDITORIO'), null);
+  assert.equal(record('AUD02', 'Salón de actos', 'AUDITORIO'), null);
+  assert.equal(record('AULA11B', 'Aula 11', 'AULA', 1), null);
+  assert.deepEqual(record('AUD01', 'Salón de actos', 'AUDITORIO'), auditorium);
+  assert.deepEqual(record('LAB41', 'Laboratorio 41', 'LABORATORIO'), { floor: 4, room: 41, kind: 'laboratorio' });
+  // The stable code of another auditorium, or a name that says «auditorio», is never overridden by a room.
+  assert.equal(record('AUD-02', 'Laboratorio 41', 'LABORATORIO'), null);
+  assert.equal(record('AULA-11', 'Auditorio', 'AULA', 1), null);
+  assert.equal(record('AULA-11', 'Auditorio', 'AULA', 4), null);
+  assert.equal(record('AUD-01', 'Laboratorio 41', 'AUDITORIO'), null);
+  assert.equal(record('ESP-007', 'Aula 11', 'AUDITORIO', 1), null);
+  assert.equal(record('LAB-41', 'Laboratorio 41', 'AUDITORIO'), null);
+  // A name that refers to several auditoriums, or to an auditorium and a room, identifies none.
+  assert.equal(record('ESP-005', 'Auditorios norte y sur', 'T-9'), null);
+  assert.equal(record('ESP-005', 'Auditorios norte y sur', 'AUDITORIO'), null);
+  assert.equal(record('ESP-005', 'Auditorio y laboratorio', 'T-9'), null);
+  // A descriptive name says nothing: the code decides, and a mention of the auditorium is not an identity.
+  assert.deepEqual(record('AULA-11', 'Sala junto al auditorio', 'AULA', 1), { floor: 1, room: 11, kind: 'aula' });
+  assert.deepEqual(record('AUD-01', 'Gran auditorio', 'AUDITORIO'), auditorium);
+  assert.deepEqual(record('AUD-01', 'Salón de actos', null), auditorium);
+  // Only the auditorium can be found by its catalog type alone; a room always needs its identifier.
+  assert.deepEqual(record('ESP-006', 'Salón de actos', 'AUDITORIO'), auditorium);
+  assert.equal(record('ESP-006', 'Salón de clases', 'AULA', 1), null);
+  assert.equal(record('ESP-006', 'Sala de prácticas', 'LABORATORIO'), null);
+});
+
+test('a name that names two kinds of room, in either order, identifies none; a repeated identifier agrees', async () => {
+  const { locateSpace } = await load('resources/js/building.js');
+  const record = (codigo, nombre, tipo, piso = 4) => locateSpace({ recurso: { codigo, nombre }, ...(tipo ? { tipo: { codigo: tipo, nombre: tipo } } : {}), ...(piso ? { piso: { numero: piso } } : {}) });
+  const auditorium = { floor: 4, room: 'auditorium', kind: 'auditorio' };
+  // Word order does not change the answer.
+  for (const name of ['Aula y auditorio', 'Auditorio y aula', 'Aula junto al auditorio', 'Aulas y laboratorios', 'Laboratorio y aula de apoyo']) {
+    assert.equal(record('AULA-11', name, 'AULA', 1), null, name);
+    assert.equal(record('AUD-01', name, 'AUDITORIO'), null, name);
+  }
+  assert.deepEqual(record('AULA-11', 'Sala junto al auditorio', 'AULA', 1), { floor: 1, room: 11, kind: 'aula' });
+  assert.deepEqual(record('LAB-48', 'Laboratorio de robótica', 'LABORATORIO'), { floor: 4, room: 48, kind: 'laboratorio' });
+  // A display name may repeat the identifier of the auditorium; another number is another auditorium.
+  for (const name of ['Auditorio 01', 'Auditorio 1', 'Auditorio N° 1', 'Auditorio Nro. 01', 'Aud. 01', 'Auditorio']) {
+    assert.deepEqual(record('AUD-01', name, 'AUDITORIO'), auditorium, name);
+  }
+  for (const name of ['Auditorio 02', 'Auditorio 10', 'Auditorio 1B', 'Auditorio 1 y 2']) assert.equal(record('AUD-01', name, 'AUDITORIO'), null, name);
+  assert.deepEqual(record('ESP-006', 'Auditorio 01', 'T-9'), auditorium);
+  // A malformed room code is unclear with any spelling the complete identifier accepts.
+  for (const code of ['LABNRO.41B', 'LAB NRO 41B', 'LAB. N° 41-B', 'AULA N 11B', 'AULANRO11B', 'AUD NRO 2', 'AUDITORIO N° 3', 'LABS-41']) {
+    assert.equal(record(code, 'Sala principal', 'AUDITORIO'), null, code);
+    assert.equal(record(code, 'Sala principal', 'T-9'), null, code);
+  }
+  assert.deepEqual(record('LABNRO.41', 'Sala principal', 'LABORATORIO'), { floor: 4, room: 41, kind: 'laboratorio' });
+  assert.deepEqual(record('AUD NRO 1', 'Sala principal', 'AUDITORIO'), auditorium);
+  // Words that only resemble a room word stay neutral serials.
+  for (const code of ['AUDIO-5', 'LABORAL-12', 'AULARIO-2', 'ESP-041']) assert.deepEqual(record(code, 'Salón de actos', 'AUDITORIO'), auditorium, code);
+});

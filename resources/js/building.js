@@ -44,7 +44,7 @@ function floorHintOf(piso) {
   if (Number.isInteger(piso?.numero)) return piso.numero;
   const number = numbersIn(piso?.nombre)[0];
   if (number !== undefined) return number;
-  const word = plain(piso?.nombre).split(/[^a-z]+/).find((item) => item in ORDINALS);
+  const word = plain(piso?.nombre).split(/[^a-z]+/).find((item) => Object.hasOwn(ORDINALS, item));
   return word ? ORDINALS[word] : null;
 }
 const floorOfRoom = (number) => BUILDING_FLOORS.find((floor) => floor.left.includes(number) || floor.right.includes(number));
@@ -70,39 +70,89 @@ function roomIdOf(text) {
 // ¿Menciona el texto algún número? Cuenta las cifras de cualquier escritura y los numerales romanos.
 const mentionsNumber = (text) => /\p{N}/u.test(text) || ROMAN.test(text);
 
+// Tipo de ambiente según el catálogo del sistema: el código del tipo de espacio del registro («AULA»,
+// «LABORATORIO», «AUDITORIO»). Es un dato estable; cuando no llega o no es uno de estos, no se interpreta.
+const TYPE_CODES = new Map([['aula', 'aula'], ['aulas', 'aula'], ['laboratorio', 'laboratorio'], ['laboratorios', 'laboratorio'], ['lab', 'laboratorio'], ['auditorio', 'auditorio'], ['aud', 'auditorio']]);
+const kindOfType = (tipo) => TYPE_CODES.get(comparable(tipo?.codigo)) ?? null;
+// Identificador del auditorio de la maqueta, que es uno solo: «AUD», «AUD-01», «AUD01», «AUDITORIO»,
+// «Auditorio N° 1». Con otro número («AUD-02», «Auditorio 02») nombra otro auditorio y no se ubica.
+const AUDITORIUM_ID = /^aud(?:itorio)?\.?(?:\s*(?:n(?:ro|o)?\.?\s*)?0?1)?$/;
+// Palabra de ambiente dentro de un código que no es exactamente un identificador: suelta o con un sufijo
+// («AULA-11B», «LAB-41 B»), pegada a un número («LAB41B», «AUD02») o con su marca de número
+// («LABNRO.41B»). Usa la misma gramática que el identificador completo.
+const SPACE_WORD = /(?:^|[^a-z])(?:aulas?|laboratorios?|labs?|aud|auditorios?)(?![a-z])/;
+const NUMBERED_SPACE = /(?:^|[^a-z])(?:aula|laboratorio|lab|aud|auditorio)s?\.?\s*(?:n(?:ro|o)?\.?\s*)?\d/;
+// Nombre que identifica al propio espacio como EL auditorio: empieza por «Auditorio», en singular
+// («Auditorio principal»). Mencionarlo no basta («Sala junto al auditorio»), ni una palabra parecida
+// («Sala de auditoría»); el plural («Auditorios norte y sur») nombra varios espacios.
+const AUDITORIUM_NAME = /^auditorio\b/;
+const AUDITORIUMS_NAME = /^auditorios\b/;
+// Clases de ambiente que puede nombrar un texto. Un nombre que nombra dos («Aula y auditorio»,
+// «Auditorio y laboratorio») no identifica un solo espacio, en el orden que sea.
+const KIND_WORDS = [/\baulas?\b/, /\b(?:laboratorios?|labs?)\b/, /\bauditorios?\b/];
+const kindsNamed = (text) => KIND_WORDS.filter((word) => word.test(text)).length;
+
+const ROOM = (id) => ({ is: 'room', ...id });
+const AUDITORIUM = { is: 'auditorium' };
+const UNCLEAR = { is: 'unclear' };
+
+// Lo que dice el código del espacio: un ambiente, el auditorio, nada (un correlativo como «ESP-013»)
+// o algo que no se puede leer con certeza (nombra un ambiente sin ser exactamente su identificador).
+function codeSays(code) {
+  const room = roomIdOf(code);
+  if (room) return ROOM(room);
+  if (AUDITORIUM_ID.test(code)) return AUDITORIUM;
+  return SPACE_WORD.test(code) || NUMBERED_SPACE.test(code) ? UNCLEAR : null;
+}
+// Lo que dice el nombre: un ambiente o el auditorio si es exactamente su identificador («Aula 11»,
+// «Auditorio 01»); el auditorio si empieza por «Auditorio» sin números; nada si es descriptivo
+// («Laboratorio de robótica», «Sala junto al auditorio»); y no se puede leer con certeza si lleva
+// otros números, nombra varios auditorios o nombra más de una clase de ambiente.
+function nameSays(name) {
+  const room = roomIdOf(name);
+  if (room) return ROOM(room);
+  if (AUDITORIUM_ID.test(name)) return AUDITORIUM;
+  if (mentionsNumber(name) || AUDITORIUMS_NAME.test(name) || kindsNamed(name) > 1) return UNCLEAR;
+  return AUDITORIUM_NAME.test(name) ? AUDITORIUM : null;
+}
+
 // Ubica un espacio real en la maqueta. Devuelve { floor, room, kind } o null cuando el registro no
 // respalda la posición; en ese caso el espacio se lista aparte, nunca se descarta.
+// La posición se decide con los datos estables del registro: el código del espacio, el código de su tipo
+// y el número de su piso. El nombre es texto de presentación: solo decide cuando el código no dice nada,
+// y siempre se comprueba que no lo contradiga.
 // Regla conservadora: ante cualquier ambigüedad el espacio NO se dibuja.
-// · Aula o laboratorio: se dibuja solo si el nombre o el código es, completo, un identificador de ambiente.
-//     - El nombre debe ser exactamente un identificador, o no mencionar ningún número (un nombre
-//       descriptivo como «Laboratorio de redes» o «Sala norte», que entonces depende del código).
-//     - El código debe ser exactamente un identificador, o no nombrar ningún tipo de ambiente (un
-//       correlativo como «ESP-013», que no se interpreta).
-//     - Si nombre y código son ambos identificadores, deben coincidir.
-//   El tipo del identificador debe coincidir con el del ambiente de la maqueta.
-// · Auditorio: no tiene número, así que solo se dibuja cuando el piso registrado lo confirma.
+// · Se lee por separado lo que dicen el código y el nombre. Si alguno no se puede leer con certeza, o si
+//   los dos dicen cosas distintas (dos ambientes, o un ambiente y el auditorio), no se dibuja.
+// · Si ninguno dice nada, solo el tipo del catálogo puede identificar al auditorio, que es único; un aula
+//   o un laboratorio necesitan su identificador («AULA-11», «Lab. 41», «Aula N° 11»).
+// · El tipo del catálogo, cuando el registro lo trae y es reconocible, debe coincidir con lo identificado.
+// · Aula o laboratorio: el tipo del identificador debe coincidir con el del ambiente de la maqueta.
+// · Auditorio: como no tiene número de ambiente, se dibuja únicamente cuando el piso registrado lo confirma.
 // · Si el registro indica su piso con un número o un ordinal, debe coincidir con el de la maqueta.
 // La posición resultante es solo de dibujo: el piso que se muestra al usuario es siempre el del registro.
 export function locateSpace(space) {
-  const name = comparable(space?.recurso?.nombre);
-  const code = comparable(space?.recurso?.codigo);
+  const fromCode = codeSays(comparable(space?.recurso?.codigo));
+  const fromName = nameSays(comparable(space?.recurso?.nombre));
+  if (fromCode === UNCLEAR || fromName === UNCLEAR) return null;
+  if (fromCode && fromName && (fromCode.is !== fromName.is || fromCode.kind !== fromName.kind || fromCode.number !== fromName.number)) return null;
+
+  const typed = kindOfType(space?.tipo);
+  // Sin un código de tipo reconocible, el nombre del tipo también puede decir que es el auditorio.
+  const typedAuditorium = typed === 'auditorio' || (typed === null && comparable(space?.tipo?.nombre) === 'auditorio');
+  const found = fromCode || fromName || (typedAuditorium ? AUDITORIUM : null);
+  if (!found) return null;
   const floorHint = floorHintOf(space?.piso);
 
-  if (/\baudit/.test(`${name} ${comparable(space?.tipo?.nombre)}`)) {
+  if (found.is === 'auditorium') {
+    if (typed !== null && typed !== 'auditorio') return null;
     const floor = floorOfRoom('auditorium');
     return floor && floorHint === floor.number ? { floor: floor.number, room: 'auditorium', kind: 'auditorio' } : null;
   }
 
-  const inName = roomIdOf(name);
-  const inCode = roomIdOf(code);
-  if (!inName && mentionsNumber(name)) return null;
-  if (!inCode && ROOM_TYPE.test(code)) return null;
-  const id = inName || inCode;
-  if (!id) return null;
-  if (inName && inCode && (inName.kind !== inCode.kind || inName.number !== inCode.number)) return null;
-
-  const floor = floorOfRoom(id.number);
-  if (!floor || floor.kind !== id.kind) return null;
+  if (typedAuditorium || (typed !== null && typed !== found.kind)) return null;
+  const floor = floorOfRoom(found.number);
+  if (!floor || floor.kind !== found.kind) return null;
   if (floorHint !== null && floorHint !== floor.number) return null;
-  return { floor: floor.number, room: id.number, kind: floor.kind };
+  return { floor: floor.number, room: found.number, kind: floor.kind };
 }

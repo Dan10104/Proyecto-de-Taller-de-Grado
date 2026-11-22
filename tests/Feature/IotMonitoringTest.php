@@ -91,6 +91,33 @@ class IotMonitoringTest extends SecurityTestCase
         $this->put('/iot/eventos/1', ['valor' => 1])->assertNotFound();
     }
 
+    public function test_monitoring_sends_each_space_with_its_floor_and_type_so_the_building_view_can_place_it(): void
+    {
+        $this->login($this->user('Encargado de Laboratorio'));
+        $s = SensorIot::factory()->create();
+        $space = EspacioAcademico::with(['recurso', 'piso', 'tipo'])->findOrFail($s->espacio_actual_id);
+        // The building view places a space by these stable records, never by the wording of its name.
+        $this->get('/iot/monitoreo')->assertInertia(fn (Assert $v) => $v->component('Iot/Monitoring')
+            ->where('sensores.data.0.espacio_actual.recurso.codigo', $space->recurso->codigo)
+            ->where('sensores.data.0.espacio_actual.piso.numero', $space->piso->numero)
+            ->where('sensores.data.0.espacio_actual.piso.nombre', $space->piso->nombre)
+            ->where('sensores.data.0.espacio_actual.tipo.codigo', $space->tipo->codigo));
+    }
+
+    public function test_sensor_form_offers_every_academic_space_in_the_natural_order_of_its_code(): void
+    {
+        $this->login($this->user('Administrador'));
+        $codes = ['AULA-11', 'AULA-9', 'LAB-41', 'AUD-01', 'AULA-18'];
+        foreach ($codes as $code) {
+            $space = EspacioAcademico::factory()->create();
+            $space->recurso->forceFill(['codigo' => $code])->save();
+        }
+        // Spaces without sensors are offered too; none is repeated.
+        $offered = fn (Assert $v) => $v->component('Iot/Form')->where('espacios', fn ($list) => collect($list)->pluck('recurso.codigo')->all() === ['AUD-01', 'AULA-9', 'AULA-11', 'AULA-18', 'LAB-41']);
+        $this->get('/iot/sensores/crear')->assertInertia($offered);
+        $this->assertSame(0, SensorIot::count());
+    }
+
     public function test_cu06_is_minimal_and_base_availability_reservations_and_policy_are_unchanged(): void
     {
         $s = SensorIot::factory()->create();

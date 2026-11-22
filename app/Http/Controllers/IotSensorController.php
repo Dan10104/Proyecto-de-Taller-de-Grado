@@ -15,7 +15,8 @@ class IotSensorController extends Controller
 {
     private function spaces()
     {
-        return EspacioAcademico::with('recurso:id,codigo,nombre')->orderBy('recurso_id')->get(['recurso_id']);
+        // Every academic space, in the natural order of its code (AULA-9 before AULA-11), whether or not it has sensors.
+        return EspacioAcademico::with('recurso:id,codigo,nombre')->get(['recurso_id'])->sortBy(fn ($space) => $space->recurso->codigo, SORT_NATURAL | SORT_FLAG_CASE)->values();
     }
 
     public function index(Request $request, IotMonitoringService $monitor)

@@ -31,7 +31,9 @@ class IotMonitoringController extends Controller
         if (isset($dates['desde'], $dates['hasta']) && $dates['hasta']->lte($dates['desde'])) {
             throw ValidationException::withMessages(['hasta' => 'El fin debe ser posterior al inicio.']);
         }
-        $sensors = SensorIot::with('espacioActual.recurso')->when($filters['sensor_id'] ?? null, fn ($q, $id) => $q->whereKey($id))
+        // The space travels with its floor and its type: the building view places a space by those stable records
+        // (floor number, type code, space code), not by how its name happens to be written.
+        $sensors = SensorIot::with(['espacioActual.recurso', 'espacioActual.piso:id,numero,nombre', 'espacioActual.tipo:id,codigo,nombre'])->when($filters['sensor_id'] ?? null, fn ($q, $id) => $q->whereKey($id))
             ->when($filters['espacio_id'] ?? null, fn ($q, $id) => $q->where('espacio_actual_id', $id))->orderBy('id')->paginate(15, ['*'], 'sensores_page')->withQueryString();
         $current = $service->current($sensors->pluck('espacio_actual_id')->unique()->all(), $sensors->pluck('id')->all());
         $sensors->through(fn ($s) => [...$s->toArray(), 'comunicacion' => $service->communication($s), 'lecturas' => array_values(array_filter($current[$s->espacio_actual_id] ?? [], fn ($r) => $r['sensor_id'] === $s->id))]);
