@@ -14,8 +14,14 @@
     "test": "hardhat test",
     "test:runtime": "node --test test-runtime/*.test.mjs",
     "test:integration": "node scripts/integration-local.mjs",
+    "test:local": "node scripts/integration-sepolia-local.mjs",
+    "local:start": "node scripts/sepolia-local.mjs serve",
+    "local:status": "node scripts/sepolia-local.mjs status",
+    "local:stop": "node scripts/sepolia-local.mjs stop",
+    "local:configure": "node scripts/sepolia-local.mjs configure",
+    "local:deploy": "node scripts/deploy.mjs local-simulation",
     "export:abi": "node scripts/export-abi.mjs",
-    "deploy:sepolia": "node scripts/deploy.mjs",
+    "deploy:sepolia": "node scripts/deploy.mjs public",
     "smoke:sepolia": "node scripts/smoke-sepolia.mjs"
   },
   "dependencies": {

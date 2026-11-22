@@ -63,7 +63,7 @@ composer audit
 npm audit
 ```
 
-La suite usa exclusivamente `espacio_u_testing` en MySQL real, con cuenta separada y guarda previa a migraciones/limpieza. La suite final conserva las 570 pruebas previas y añade 86 casos: 656 pruebas / 8721 aserciones en 788,96 s. El informe de notificaciones registra evidencia final, incluidas carreras con procesos/conexiones MySQL independientes. Los 63 casos QR de Fase 6 se conservan. La aceptación física confirmada por el usuario se distingue de las lecturas sintéticas del navegador en QR_IMPLEMENTATION.md. No certifica CU30, módulos posteriores, carga ni despliegue.
+La suite usa exclusivamente MySQL real en una base propia (desde el 2026-11-21, la desechable `espacio_u_testing_efimera`; antes, `espacio_u_testing`), con cuenta separada y guarda previa a migraciones/limpieza. La suite final conserva las 570 pruebas previas y añade 86 casos: 656 pruebas / 8721 aserciones en 788,96 s. El informe de notificaciones registra evidencia final, incluidas carreras con procesos/conexiones MySQL independientes. Los 63 casos QR de Fase 6 se conservan. La aceptación física confirmada por el usuario se distingue de las lecturas sintéticas del navegador en QR_IMPLEMENTATION.md. No certifica CU30, módulos posteriores, carga ni despliegue.
 
 ## Documentación
 
@@ -172,7 +172,7 @@ npm run test:integration --prefix blockchain
 php artisan trazabilidad:reconciliar
 ```
 
-Ejecutar la integración local y `php artisan test` secuencialmente: ambas usan exclusivamente MySQL `espacio_u_testing`. Las migraciones de desarrollo son incrementales (`php artisan migrate` y `php artisan db:seed --class=SecuritySeeder`); nunca recrear `espacio_u`. El scheduler Laravel existente ejecuta también reconciliación cada minuto. Administrador autorizado accede a «Trazabilidad» para consultar, verificar y reintentar evidencia pendiente.
+Ejecutar la integración local y `php artisan test` secuencialmente: ambas usan exclusivamente la base desechable `espacio_u_testing_efimera` y la vacían. Las migraciones de desarrollo son incrementales (`php artisan migrate` y `php artisan db:seed --class=SecuritySeeder`); nunca recrear `espacio_u`. El scheduler Laravel existente ejecuta también reconciliación cada minuto. Administrador autorizado accede a «Trazabilidad» para consultar, verificar y reintentar evidencia pendiente.
 
 Configurar únicamente en `.env` local: `BLOCKCHAIN_ENABLED`, `BLOCKCHAIN_NETWORK`, `BLOCKCHAIN_CHAIN_ID`, `BLOCKCHAIN_RPC_URL`, `BLOCKCHAIN_PRIVATE_KEY`, `BLOCKCHAIN_CONTRACT_ADDRESS`, `BLOCKCHAIN_CONFIRMATIONS`, `BLOCKCHAIN_DEPLOYMENT_BLOCK`, `BLOCKCHAIN_NODE_BINARY`. `.env.example` incluye solo defaults seguros/placeholders. Con integración deshabilitada, las operaciones y evidencias locales funcionan sin red. Sepolia exige wallet dedicada y testETH: [procedimiento, scripts, privacidad y estado real](docs/BLOCKCHAIN_IMPLEMENTATION.md#configuración-y-operación-reproducible). Nunca usar fondos o wallet personal.
 
@@ -232,7 +232,7 @@ Pruebas específicas: `php artisan test --filter=Activity`; regresión completa:
 
 ## Repetir QA integral
 
-Desde el entorno del workspace: `php artisan test`, `php vendor/bin/pint --test`, `npm run build` y `node --test tests/Browser/dialog-focus.test.mjs`. La suite carga .env.testing y exige espacio_u_testing mediante TestingDatabaseGuard. Nunca ejecutar migrate:fresh en desarrollo. La integración Blockchain offline `npm --prefix blockchain run test:integration` también reinicia testing: no debe coincidir con PHPUnit ni QA de navegador. Auditorías de blockchain/ desarrollo y runtime siempre separadas. [Informe Fase 13](docs/PHASE_13_SYSTEM_VALIDATION.md).
+Desde el entorno del workspace: `php artisan test`, `php vendor/bin/pint --test`, `npm run build` y `node --test tests/Browser/dialog-focus.test.mjs`. La suite carga .env.testing, pero PHPUnit fuerza la base desechable `espacio_u_testing_efimera` y TestingDatabaseGuard no acepta ninguna otra; `espacio_u_testing` conserva sus datos entre ejecuciones. Prepararla una vez con `php scripts/mysql-testing-suite.php`. Nunca ejecutar migrate:fresh en desarrollo. La integración Blockchain offline `npm --prefix blockchain run test:integration` también vacía esa base desechable: no debe coincidir con PHPUnit. Auditorías de blockchain/ desarrollo y runtime siempre separadas. [Informe Fase 13](docs/PHASE_13_SYSTEM_VALIDATION.md).
 
 ## Pulido visual de presentación
 

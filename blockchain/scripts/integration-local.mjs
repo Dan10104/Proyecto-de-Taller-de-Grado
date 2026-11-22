@@ -12,8 +12,10 @@ const connection = await network.create('hardhatMainnet');
 const wallet = new Wallet('0x' + randomBytes(32).toString('hex'));
 await connection.provider.request({method:'hardhat_setBalance',params:[wallet.address,'0x8ac7230489e80000']});
 const secretPath = '/' + randomBytes(32).toString('hex');
-const allowed = new Set(['eth_chainId','eth_blockNumber','eth_getCode','eth_call','eth_getBlockByNumber','eth_getLogs','eth_getTransactionByHash','eth_getTransactionReceipt','eth_getBalance','eth_estimateGas','eth_getTransactionCount','eth_sendRawTransaction','eth_gasPrice','eth_maxPriorityFeePerGas']);
+const allowed = new Set(['eth_chainId','eth_blockNumber','eth_getCode','eth_call','eth_getBlockByNumber','eth_getLogs','eth_getTransactionByHash','eth_getTransactionReceipt','eth_getBalance','eth_estimateGas','eth_getTransactionCount','eth_sendRawTransaction','eth_gasPrice','eth_maxPriorityFeePerGas','web3_clientVersion']);
 let wrongChain = false;
+// The fixture stands for the local network, so it answers with the local network's name unless a case says otherwise.
+let clientVersion = 'EspacioU-SepoliaLocal/fixture';
 let dropBroadcastResponse = false;
 let receiptFault = null;
 let businessBroadcasts = 0;
@@ -28,7 +30,7 @@ const gateway = createServer(async (req,res) => {
       const tx = Transaction.from(input.params[0]);
       if (tx.to) { assert.equal(tx.data.length,74); assert.equal(tx.value,0n); assert.equal(tx.chainId,11155111n); businessBroadcasts++; }
     }
-    let result = wrongChain && input.method === 'eth_chainId' ? '0x1' : await connection.provider.request({method:input.method,params:input.params});
+    let result = wrongChain && input.method === 'eth_chainId' ? '0x1' : input.method === 'web3_clientVersion' ? clientVersion : await connection.provider.request({method:input.method,params:input.params});
     // Protocol fault injection only; never presented as a real reverted transaction/reorg.
     if (input.method === 'eth_getTransactionReceipt' && result && receiptFault === 'revert') result={...result,status:'0x0',logs:[]};
     if (input.method === 'eth_getTransactionReceipt' && result && receiptFault === 'reorg') result={...result,blockHash:'0x'+'d'.repeat(64)};
@@ -44,7 +46,8 @@ try {
   const artifact = JSON.parse(await readFile(new URL('../artifacts/contracts/TraceabilityRegistry.sol/TraceabilityRegistry.json',import.meta.url),'utf8'));
   const registry = await new ContractFactory(artifact.abi,artifact.bytecode,wallet.connect(provider)).deploy(wallet.address);
   const receipt = await registry.deploymentTransaction().wait();
-  const env = {...process.env,APP_ENV:'testing',APP_CONFIG_CACHE:'.local/testing/config.php',BLOCKCHAIN_ENABLED:'true',BLOCKCHAIN_NETWORK:'sepolia',BLOCKCHAIN_CHAIN_ID:'11155111',BLOCKCHAIN_PRIVATE_KEY:wallet.privateKey,BLOCKCHAIN_RPC_URL:rpc,BLOCKCHAIN_CONTRACT_ADDRESS:(await registry.getAddress()).toLowerCase(),BLOCKCHAIN_CONFIRMATIONS:'1',BLOCKCHAIN_DEPLOYMENT_BLOCK:String(receipt.blockNumber)};
+  // The PHP side empties its database: it uses the disposable schema of the suite, never a persistent one.
+  const env = {...process.env,APP_ENV:'testing',APP_CONFIG_CACHE:'.local/testing/config.php',DB_DATABASE:'espacio_u_testing_efimera',BLOCKCHAIN_ENABLED:'true',BLOCKCHAIN_ENVIRONMENT:'local-simulation',BLOCKCHAIN_NETWORK:'sepolia',BLOCKCHAIN_CHAIN_ID:'11155111',BLOCKCHAIN_PRIVATE_KEY:wallet.privateKey,BLOCKCHAIN_RPC_URL:rpc,BLOCKCHAIN_CONTRACT_ADDRESS:(await registry.getAddress()).toLowerCase(),BLOCKCHAIN_CONFIRMATIONS:'1',BLOCKCHAIN_DEPLOYMENT_BLOCK:String(receipt.blockNumber)};
   const php = new URL('../../.tools/php/php.exe',import.meta.url);
   const {fileURLToPath} = await import('node:url');
   const output = await new Promise((resolve,reject) => {
@@ -94,11 +97,21 @@ try {
   assert.equal(recovered.status,'CONFIRMED');
   assert.equal(recovered.reference,candidate.reference);
   assert.equal(businessBroadcasts,6); // Four PHP actions plus two explicit JS cases, no duplicate sends.
+  // Environment guard: the same loopback network is refused as «public»; a node that does not identify itself as
+  // the local network is refused as «local-simulation»; an unknown environment is refused outright. None broadcasts.
+  await assert.rejects(execute({action:'chain'},{...env,BLOCKCHAIN_ENVIRONMENT:'public'}));
+  await assert.rejects(execute({action:'find',hash},{...env,BLOCKCHAIN_ENVIRONMENT:'sepolia'}));
+  clientVersion='Geth/v1.15.0-stable/linux-amd64/go1.24';
+  await assert.rejects(execute({action:'chain'},env));
+  await assert.rejects(execute({action:'register',hash:'e'.repeat(64)},env));
+  clientVersion='EspacioU-SepoliaLocal/fixture';
+  assert.deepEqual(await execute({action:'chain'},env),{chainId:11155111,environment:'local-simulation'});
+  assert.equal(businessBroadcasts,6);
   wrongChain=true;
   await assert.rejects(execute({action:'chain'},env));
   await assert.rejects(execute({action:'register',hash},env));
   await assert.rejects(execute({action:'find',hash},env));
-  console.log('PASS recuperación sin referencia/respuesta, duplicado, confirmaciones, faults receipt/reorg, privacidad calldata, hash/contrato incorrectos, configuración, writer y chain guard.');
+  console.log('PASS recuperación sin referencia/respuesta, duplicado, confirmaciones, faults receipt/reorg, privacidad calldata, hash/contrato incorrectos, configuración, writer, entorno y chain guard.');
 } catch (error) {
   console.error(['PHP_INTEGRATION_FAILED','PHP_START_FAILED'].includes(error.message)?error.message:'LOCAL_INTEGRATION_FAILED');
   process.exitCode=1;

@@ -5,15 +5,56 @@ export const SEPOLIA = 11155111;
 const referencePattern = /^eip155:11155111\/(0x[0-9a-f]{40})\/(0x[0-9a-f]{64})$/;
 const fail = () => { throw new Error('UNAVAILABLE'); };
 
+// Both environments use Sepolia's chain id; they are never interchangeable. «public» is the real testnet,
+// reached over https. «local-simulation» is the project's local network (scripts/sepolia-local.mjs), reached
+// only on loopback, and it must identify itself as such.
+export const ENVIRONMENTS = ['public', 'local-simulation'];
+const LOCAL_CLIENT = /^EspacioU-SepoliaLocal\//;
+// Hash of the genesis block of the public Sepolia testnet: the positive identity of the public network.
+const SEPOLIA_GENESIS = '0x25a5cc106eea7138acab33231d7160d69cb777ee0c2c553fcddf5138993e6dd9';
+// Address of Hardhat's first development account, the writer of the local simulation. Its key is public
+// knowledge, so it never signs on the public testnet. As a consequence, a contract address of the simulation
+// can never be the address of a public deployment of this project.
+export const DEVELOPMENT_SIGNER = '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266';
+export function environmentOf(environment = process.env) {
+  const value = environment.BLOCKCHAIN_ENVIRONMENT ?? 'public';
+  if (!ENVIRONMENTS.includes(value)) fail();
+  return value;
+}
+export function signer(environment, provider) {
+  const wallet = new Wallet(environment.BLOCKCHAIN_PRIVATE_KEY, provider);
+  if (environmentOf(environment) === 'public' && wallet.address.toLowerCase() === DEVELOPMENT_SIGNER) fail();
+  return wallet;
+}
+
 export async function connect(environment = process.env) {
   if (Number(environment.BLOCKCHAIN_CHAIN_ID) !== SEPOLIA) fail();
+  const simulated = environmentOf(environment) === 'local-simulation';
   const url = new URL(environment.BLOCKCHAIN_RPC_URL);
-  if (url.protocol !== 'https:' && !(url.protocol === 'http:' && ['127.0.0.1', 'localhost', '[::1]'].includes(url.hostname))) fail();
+  const loopback = url.protocol === 'http:' && ['127.0.0.1', 'localhost', '[::1]'].includes(url.hostname);
+  if (simulated ? !loopback : url.protocol !== 'https:') fail();
   const request = new FetchRequest(url.href);
   request.timeout = 8000;
+  // The endpoint that was validated is the only one that is ever contacted: a redirect is a failure.
+  const fetchUrl = FetchRequest.createGetUrlFunc();
+  request.getUrlFunc = async (req, signal) => {
+    const response = await fetchUrl(req, signal);
+    if (response.statusCode >= 300 && response.statusCode < 400) throw new Error('REDIRECT');
+    return response;
+  };
   const provider = new JsonRpcProvider(request, SEPOLIA, { staticNetwork: true, batchMaxCount: 1 });
   try {
     if (Number(await provider.send('eth_chainId', [])) !== SEPOLIA) fail();
+    // Both networks share the chain id, so each one must prove which it is. Public Sepolia is recognised by
+    // its genesis block; the local network by its own name, and it never carries the public genesis.
+    // Anything that cannot be identified is refused.
+    const genesis = await provider.send('eth_getBlockByNumber', ['0x0', false]);
+    if (typeof genesis?.hash !== 'string' || !/^0x[0-9a-f]{64}$/i.test(genesis.hash)) fail();
+    const publicChain = genesis.hash.toLowerCase() === SEPOLIA_GENESIS;
+    let client = '';
+    try { client = String(await provider.send('web3_clientVersion', [])); } catch { /* not implemented upstream */ }
+    const localNode = LOCAL_CLIENT.test(client);
+    if (simulated ? (!localNode || publicChain) : (localNode || !publicChain)) fail();
     return provider;
   } catch { provider.destroy(); fail(); }
 }
@@ -22,7 +63,7 @@ export async function execute(input, environment = process.env, candidate = () =
   if (!['chain', 'exists', 'timestamp', 'register', 'find'].includes(input.action)) fail();
   const provider = await connect(environment);
   try {
-    if (input.action === 'chain') return { chainId: SEPOLIA };
+    if (input.action === 'chain') return { chainId: SEPOLIA, environment: environmentOf(environment) };
     if (!/^[0-9a-f]{64}$/.test(input.hash ?? '') || /^0+$/.test(input.hash)) fail();
     const hash = '0x' + input.hash;
     const address = (environment.BLOCKCHAIN_CONTRACT_ADDRESS ?? '').toLowerCase();
@@ -57,7 +98,8 @@ export async function execute(input, environment = process.env, candidate = () =
         return { status: 'INCONSISTENT', reference: reference(txHash) };
       }
       if (Number(await contract.registeredAt(hash, {blockTag:receipt.blockNumber})) !== block.timestamp) return {status:'INCONSISTENT',reference:reference(txHash)};
-      return { status: 'CONFIRMED', reference: reference(txHash), timestamp: block.timestamp };
+      // Public facts of the confirmation, for display only: nothing here is trusted as proof by the caller.
+      return { status: 'CONFIRMED', reference: reference(txHash), timestamp: block.timestamp, block: receipt.blockNumber, confirmations: latest - receipt.blockNumber + 1 };
     }
 
     async function recover() {
@@ -90,7 +132,7 @@ export async function execute(input, environment = process.env, candidate = () =
       return await prove(parsed[2]);
     }
     if (input.action === 'find' || timestamp) return await recover();
-    const wallet = new Wallet(environment.BLOCKCHAIN_PRIVATE_KEY, provider);
+    const wallet = signer(environment, provider);
     if ((await contract.owner()).toLowerCase() !== wallet.address.toLowerCase()) fail();
     const writer = contract.connect(wallet);
     // The caller holds a cross-process signer mutex across this whole broadcast.

@@ -2,7 +2,7 @@
 
 Página de pruebas separada: importa QrScanner.vue real y sustituye getUserMedia solo en su documento por MediaStream de canvas. Imágenes sintéticas en memoria, decoder real y endpoints normales con sesión/CSRF. Sin rutas especiales, bypass, input manual de token ni controles de prueba en el producto.
 
-Usar exclusivamente un servidor QA de loopback con APP_ENV=testing, TestingDatabaseGuard y espacio_u_testing; nunca la base de desarrollo. Todas las operaciones deben ser sintéticas. Emitir rota el objetivo seleccionado; entrega/devolución sí modifican esos datos. No usar recursos operativos reales. Los IDs iniciales son ejemplos de la revisión, no datos de instalación.
+Usar exclusivamente un servidor QA de loopback con APP_ENV=testing y espacio_u_testing (base persistente de verificación; la suite automatizada usa otra, desechable, y ya no la vacía); nunca la base de desarrollo. Todas las operaciones deben ser sintéticas. Emitir rota el objetivo seleccionado; entrega/devolución sí modifican esos datos. No usar recursos operativos reales. Los IDs iniciales son ejemplos de la revisión, no datos de instalación.
 
 ```powershell
 . .\scripts\dev-environment.ps1

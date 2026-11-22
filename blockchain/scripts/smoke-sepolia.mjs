@@ -1,9 +1,10 @@
 import { createHash } from 'node:crypto';
-import { execute } from '../runtime/driver.mjs';
+import { execute, environmentOf } from '../runtime/driver.mjs';
 import { environment } from './local-environment.mjs';
 try {
   const env = await environment();
-  if (env.BLOCKCHAIN_NETWORK !== 'sepolia') throw new Error('NETWORK');
+  // Smoke test of the public testnet only: it never reports the local simulation as «sepolia».
+  if (env.BLOCKCHAIN_NETWORK !== 'sepolia' || environmentOf(env) !== 'public') throw new Error('NETWORK');
   const hash = createHash('sha256').update('ESPACIO-U synthetic public Sepolia smoke v1').digest('hex');
   const prior = await execute({action:'find',hash}, env);
   const result = prior.status === 'ABSENT' ? await execute({action:'register',hash},env) : prior;

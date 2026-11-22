@@ -77,18 +77,35 @@ try {
     } elseif ($mode === 'verify') {
         echo json_encode(['notifications' => DB::table('notificaciones')->where('registro_actividad_id', (int) $key)->count(), 'evaluations' => DB::table('evaluaciones_liberacion')->where('reserva_id', (int) $argv[3])->count()]);
     } elseif ($mode === 'bridge') {
-        $server = new Process([config('blockchain.node'), '-e', 'require("http").createServer((q,s)=>{let b="";q.on("data",x=>b+=x);q.on("end",()=>{let j=JSON.parse(b);s.setHeader("Content-Type","application/json");s.end(JSON.stringify({jsonrpc:"2.0",id:j.id,result:"0xaa36a7"}));});}).listen(18545,"127.0.0.1",()=>console.log("READY"));'], base_path(), ProcessEnvironment::isolated());
+        // A loopback fixture can only stand for the local simulation: it answers with that identity and with a
+        // genesis block that is not the public one. Plain http is never accepted as the public testnet.
+        $server = new Process([config('blockchain.node'), '-e', 'const a={eth_chainId:"0xaa36a7",web3_clientVersion:"EspacioU-SepoliaLocal/fixture",eth_getBlockByNumber:{hash:"0x"+"1".repeat(64)}};require("http").createServer((q,s)=>{let b="";q.on("data",x=>b+=x);q.on("end",()=>{let j=JSON.parse(b);s.setHeader("Content-Type","application/json");s.end(JSON.stringify({jsonrpc:"2.0",id:j.id,result:a[j.method]??null}));});}).listen(18545,"127.0.0.1",()=>console.log("READY"));'], base_path(), ProcessEnvironment::isolated());
+        $environment = $app['env'];
         try {
             $server->start();
             if (! $server->waitUntil(fn ($type, $output) => str_contains($output, 'READY'))) {
                 throw new RuntimeException;
             }
-            config(['blockchain.enabled' => true, 'blockchain.rpc_url' => 'http://127.0.0.1:18545']);
+            config(['blockchain.enabled' => true, 'blockchain.rpc_url' => 'http://127.0.0.1:18545', 'blockchain.environment' => 'local-simulation']);
+            if ($environment === 'production') {
+                // The container runs as production, where the simulation is refused before any process starts.
+                try {
+                    app(EthereumSepoliaDriver::class)->chainId();
+                    throw new RuntimeException;
+                } catch (TraceabilityUnavailable $refused) {
+                    if ($refused->reason !== 'WRONG_ENVIRONMENT') {
+                        throw new RuntimeException;
+                    }
+                }
+                // The PHP → Node bridge itself is then exercised as a non-production process.
+                $app['env'] = 'testing';
+            }
             if (app(EthereumSepoliaDriver::class)->chainId() !== 11155111) {
                 throw new RuntimeException;
             }
             echo "LOCAL_BRIDGE_OK\n";
         } finally {
+            $app['env'] = $environment;
             $server->stop(1);
         }
     } else {

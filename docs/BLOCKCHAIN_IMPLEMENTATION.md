@@ -135,7 +135,7 @@ npm run test:integration --prefix blockchain
 php artisan test
 ```
 
-La integración local y Laravel escriben únicamente `espacio_u_testing`, protegida por TestingDatabaseGuard, nunca SQLite/desarrollo. Ejecutarlas secuencialmente: ambas pueden recrear la base de testing. La integración monta EVM en memoria y gateway autenticado efímero loopback con allowlist ETH; wallet aleatoria solo en memoria, sin output de cuentas/llaves. Desmonta recursos al finalizar. La suite normal no requiere Internet ni testETH.
+La integración local y Laravel escriben únicamente la base desechable de la suite (`espacio_u_testing_efimera` desde el 2026-11-21; antes, `espacio_u_testing`), protegida por TestingDatabaseGuard, nunca SQLite/desarrollo. Ejecutarlas secuencialmente: ambas recrean esa base. La integración monta EVM en memoria y gateway autenticado efímero loopback con allowlist ETH; wallet aleatoria solo en memoria, sin output de cuentas/llaves. Desmonta recursos al finalizar. La suite normal no requiere Internet ni testETH.
 
 Para aplicar en desarrollo, conservar `.env` y ejecutar migraciones incrementales y `SecuritySeeder`, nunca migrate:fresh. El helper existente `scripts/release-scheduler.ps1 -Action start/status` sirve a CU23 y al reconciliador. Reiniciarlo después de apagar el equipo. Se puede ejecutar reconciliación manual aun con Blockchain deshabilitada; crea/repara evidencia local sin red.
 
@@ -353,3 +353,93 @@ Auditoría final: frontend 0, Composer 0/abandonados 0, blockchain --omit=dev 0;
 ## Validación de infraestructura — Fase 14
 
 PHP → Node canonicalize/ethers funciona en Linux: golden numérico/orden y RPC local sintético chainId. GET_LOCK wallet excluye entre réplicas. Queue database post-commit solo en deployment, evidencia local conservada cuando provider disabled. Hardhat/Zod dev fuera de filesystem runtime. Auditorías productivas 0; cinco altas dev siguen vigentes, no se atribuye su eliminación. Reconsulta Hardhat 3.21.1 mantiene Zod ^3.23.8, sin actualización compatible que retire la excepción; lock original sin cambios. Sepolia real sigue pendiente. [Evidencia y límites](PHASE_14_DEPLOYMENT_PREPARATION.md).
+
+## Entorno Ethereum local compatible con Sepolia — validación y demostración (2026-11-21)
+
+**Ethereum Sepolia es la red Blockchain objetivo del proyecto.** La arquitectura, el contrato `TraceabilityRegistry`, el formato de la referencia externa y los flujos de CU24/CU25 no cambian. Para la validación y la defensa se utiliza un **entorno Ethereum local compatible con Sepolia**: una red Ethereum real que se ejecuta en el propio equipo, sin testETH, faucets ni conexión a la testnet pública.
+
+**Las transacciones de este entorno no están registradas en la testnet pública de Sepolia** y la aplicación no las presenta como tales. El estado de la integración con Sepolia pública sigue siendo el indicado en «Estado de Sepolia real».
+
+### Qué es
+
+- Hardhat Network (EDR) ejecutando el mismo contrato compilado (`TraceabilityRegistry.sol`, mismo ABI y mismo `runtimeCodeHash`). Produce bloques, hashes de transacción, recibos, eventos y confirmaciones reales.
+- Usa el identificador de cadena de Sepolia (`11155111`), de modo que el adaptador (`EthereumSepoliaDriver`, `blockchain/runtime/driver.mjs`), `EvidenceProcessor`, el trabajo `RegisterTraceabilityEvidence` y la reconciliación funcionan sin cambios de lógica.
+- Solo escucha en `127.0.0.1`, en una ruta privada. Sirve métodos de lectura y `eth_sendRawTransaction`; no expone cuentas de desarrollo, `eth_sendTransaction` ni métodos `hardhat_*`/`evm_*`.
+- La cuenta que firma es la primera cuenta de desarrollo de Hardhat: de prueba, sin valor en ninguna red real. Su clave se obtiene de Hardhat al configurar y se escribe únicamente en los archivos `.env` privados.
+- Hardhat Network mantiene su estado en memoria. Para conservar la cadena entre reinicios, la red local anota cada transacción firmada aceptada, con la marca de tiempo de su bloque, en un diario local y lo reproduce en orden al iniciar. Reproducir las mismas transacciones firmadas sobre las mismas marcas de tiempo devuelve los mismos hashes de transacción, bloques y estado del contrato. El diario guarda exactamente lo que contiene la cadena: una transacción reenviada es una sola transacción, una transacción cuya ejecución revierte queda minada como en una red pública, y un registro interrumpido por un corte de energía se descarta sin afectar a los anteriores. Cada bloque se anota con su hash: si al reconstruir la cadena un bloque no es exactamente el anotado, la red no arranca.
+- El puerto de la red es el bloqueo de sus datos: la red lo toma antes de leer el diario y vaciar la cadena también lo toma, de modo que la cadena no se puede vaciar mientras la red está en marcha o arrancando, ni puede haber dos redes sobre los mismos datos.
+- No envía telemetría de Hardhat ni sigue redirecciones: el único destino de las peticiones es la dirección local validada.
+- Sus datos (diario, rutas privadas, registro de despliegue) viven en `blockchain/runtime-data/`, ignorado por Git, en un directorio restringido al usuario actual igual que los `.env` privados.
+
+### Distinción explícita entre los dos entornos
+
+`BLOCKCHAIN_ENVIRONMENT` (`config('blockchain.environment')`) admite exactamente dos valores:
+
+| Valor | Red | Transporte admitido | Identidad exigida |
+| --- | --- | --- | --- |
+| `public` (por defecto) | Testnet pública de Sepolia | Solo `https` | El bloque génesis debe ser el de Sepolia pública y el nodo **no** debe identificarse como la red local |
+| `local-simulation` | Red local compatible con Sepolia | Solo `http` en loopback | `web3_clientVersion` debe comenzar por `EspacioU-SepoliaLocal/` y el bloque génesis **no** puede ser el de Sepolia pública |
+
+Ambos usan el mismo identificador de cadena y **nunca son intercambiables**: el adaptador rechaza la red local configurada como pública, una red pública configurada como local, una red que no pueda identificarse y cualquier otro valor. La simulación local se rechaza además en el entorno de producción. La cuenta de desarrollo que firma en la simulación nunca firma en el entorno público, de modo que un contrato de la simulación no puede coincidir con un despliegue público del proyecto.
+
+Las órdenes también están ligadas a su entorno: `deploy.mjs` recibe el entorno en el que se quiere desplegar (`local-simulation` desde `local:deploy` y `-Action Deploy`, `public` desde `deploy:sepolia`) y no firma nada si la configuración efectiva o el propio archivo `.env` donde se guardará el resultado apuntan al otro. El despliegue local solo lo firma la cuenta de desarrollo y solo se anota en un entorno de presentación. `check-sepolia`, `smoke:sepolia` y `prepare-wallet` solo operan en el entorno público.
+
+Las referencias conservan el formato `eip155:11155111/<contrato>/<transacción>`. La verificación exige que el contrato de la referencia sea el configurado, por lo que una evidencia registrada en la red local no se da por válida contra otro despliegue: al conectar Sepolia pública, esas evidencias se comprueban como inconsistentes en lugar de aceptarse en silencio.
+
+En la interfaz, el detalle técnico de la evidencia indica «Ethereum Sepolia — entorno de simulación local», muestra la transacción, el contrato y, tras una verificación, el bloque y las confirmaciones observadas. En este entorno no se ofrece el enlace al explorador público.
+
+**El origen de una referencia no cambia al cambiar la configuración.** El despliegue local anota la dirección de su contrato en `BLOCKCHAIN_SIMULATION_CONTRACTS` (archivo `.env` privado). Una referencia a uno de esos contratos se presenta siempre como registro de la simulación local y nunca recibe enlace al explorador público, aunque después se configure Sepolia pública. El enlace público solo se ofrece cuando el entorno configurado es el público y la referencia pertenece al contrato configurado; una referencia a cualquier otro contrato se indica como «otro despliegue», sin enlace. Al pasar a Sepolia pública conviene conservar esa línea del `.env`.
+
+### Operación (PowerShell, desde la raíz del proyecto)
+
+```powershell
+.\scripts\sepolia-local.ps1 -Action Start       # inicia la red local y reconstruye su cadena
+.\scripts\sepolia-local.ps1 -Action Status      # en marcha, último bloque y transacciones
+.\scripts\sepolia-local.ps1 -Action Stop        # la detiene
+.\scripts\sepolia-local.ps1 -Action Configure   # apunta el entorno de presentación a la red local
+.\scripts\sepolia-local.ps1 -Action Deploy      # despliega TraceabilityRegistry y guarda su dirección
+.\scripts\sepolia-local.ps1 -Action Reset       # vacía la cadena local (con la red detenida)
+```
+
+- `Configure` solo actúa sobre el entorno cuya base es `espacio_u_presentacion` (según el contenido del propio archivo `.env`: una única línea simple `APP_ENV=local` o `testing`, una única línea simple `DB_DATABASE=espacio_u_presentacion` y ninguna mención de `DB_URL`). Escribe en los `.env` privados el entorno, la URL local, la cuenta de prueba y la activación; la configuración de Sepolia pública que sustituye en cada archivo se conserva en `.env.sepolia-publica` (ignorado por Git y restringido al usuario actual), y una copia anterior distinta se aparta en lugar de sobrescribirse.
+- `Deploy` usa el mismo `blockchain/scripts/deploy.mjs` que desplegará en Sepolia pública, y guarda la dirección del contrato también en el perfil `.env.espacio_u_presentacion`.
+- `Reset` vacía la cadena. Las evidencias que ya figuran como registradas conservan su referencia, pero esa transacción deja de existir y no pueden volver a registrarse: su comprobación dejará de ser válida. Para conservarlas hay que guardar antes una copia de `blockchain/runtime-data/sepolia-local/`; una cadena vacía se demuestra con evidencias nuevas, sobre una base cargada de nuevo.
+- `Configure` deja como contrato el que la cadena local conserva según su registro de despliegue, también al volver del entorno público; si la cadena se vació o ya no existe, deja el contrato vacío y hace falta un despliegue nuevo.
+- Limitación conocida: tras `Reset`, el primer despliegue obtiene la misma dirección de contrato que el anterior. Una base que conserve referencias de la cadena borrada las seguiría mostrando como registros de la simulación local, con el último bloque observado, hasta que se comprueben de nuevo; por eso base y cadena se recargan juntas.
+- Los comandos equivalentes de `npm` están en `blockchain/package.json` (`local:*`).
+
+### Demostración del flujo
+
+1. Iniciar la red local y el servidor de la aplicación.
+2. Realizar una operación crítica (aprobar o cancelar una reserva, entregar o recibir un préstamo). La operación se confirma en MySQL con su `RegistroActividad`.
+3. Tras la confirmación se genera la representación canónica, su SHA-256 y la `EvidenciaTrazabilidad` en `PENDIENTE`; el trabajo de registro envía la transacción a la red local y la evidencia guarda su referencia externa.
+4. La siguiente pasada (el planificador con `trazabilidad:reconciliar`, o «Verificar evidencia» / «Reintentar registro» en el detalle) comprueba el recibo, el evento y las confirmaciones y pasa la evidencia a `REGISTRADA`.
+5. «Verificar evidencia» contrasta la huella con el contrato y deja el resultado `VALIDO`.
+
+### Caída de la red y reconciliación
+
+1. `-Action Stop`.
+2. Realizar una operación crítica: se confirma con normalidad y su evidencia queda `PENDIENTE`, sin referencia externa.
+3. `-Action Start`.
+4. `php artisan trazabilidad:reconciliar`: envía el registro y, en una pasada posterior, lo confirma. Entre intentos de una misma evidencia el sistema aplica una espera creciente (2 minutos tras el primer intento, 5 tras el segundo, 15 tras el tercero). Si hubo un intento fallido con la red detenida, el envío ocurre en la primera pasada pasados 2 minutos y la confirmación por reconciliación 5 minutos después del envío; entonces la evidencia queda `REGISTRADA`. En una demostración, «Verificar evidencia» en el detalle comprueba la transacción ya enviada sin esa espera.
+
+No existe ningún mecanismo nuevo: son el trabajo, la reconciliación y la verificación ya descritos en este documento.
+
+### Paso posterior a Sepolia pública
+
+No requiere cambios de lógica. Basta con la configuración (se puede partir de la copia guardada en `.env.sepolia-publica`): `BLOCKCHAIN_ENVIRONMENT=public`, `BLOCKCHAIN_RPC_URL` de un proveedor `https`, la clave de la wallet de prueba dedicada, `BLOCKCHAIN_CONTRACT_ADDRESS` y `BLOCKCHAIN_DEPLOYMENT_BLOCK` del despliegue en Sepolia y `BLOCKCHAIN_ENABLED=true`.
+
+### Verificación de este entorno
+
+- `npm run test:local` (`blockchain/scripts/integration-sepolia-local.mjs`): red desechable en un directorio temporal; privacidad del RPC, despliegue, registro y confirmación, entornos no intercambiables, reloj, caída, reconstrucción exacta tras reinicio, reconciliación, reenvío de una misma transacción, transacción revertida, diario interrumpido, órdenes de despliegue con la configuración cruzada y ubicación de los datos.
+- `npm run test:runtime`: el entorno es explícito y el transporte queda ligado a él antes de cualquier petición; la red local debe identificarse, no puede tener el génesis público, una redirección es un fallo y la cuenta de desarrollo no firma en el entorno público.
+- `npm run test:integration`: la integración existente PHP → puente → contrato, ahora también con los rechazos por entorno.
+- `tests/Feature/TraceabilityHttpTest.php`: etiqueta de simulación, ausencia de enlace al explorador público, referencia de otro despliegue, conservación del origen de una referencia al cambiar la configuración en ambos sentidos y rechazo de un entorno desconocido o de la simulación en producción.
+
+### Revisión independiente y alcance de la validación (2026-11-21)
+
+- Hubo tres ciclos de revisión independiente, en solo lectura, con OpenAI Codex. **Los tres devolvieron el veredicto `needs-attention`; ninguna revisión aprobó la implementación.** Los hallazgos confirmados de cada ciclo se corrigieron.
+- Los hallazgos confirmados del tercer ciclo se corrigieron después de esa revisión y **no hubo una cuarta revisión**. Esas correcciones se verificaron con las pruebas de regresión añadidas, las pruebas de integración, las pruebas de Laravel relacionadas, la compilación, Pint sobre los archivos del cambio, la comprobación de secretos y un reinicio real de la cadena local.
+- Recomendaciones no aplicadas: mover los controles de la red local a un canal autenticado bajo otra identidad del sistema operativo (la propia revisión lo consideró innecesario para una herramienta local de demostración); exigir la cuenta de desarrollo también al registrar evidencias (se exige al desplegar; hacerlo en el registro obligaría a que la integración existente use una cuenta de desarrollo, cosa que evita a propósito); y distinguir generaciones de la cadena tras `Reset` (queda como limitación conocida, descrita arriba).
+- **Suite Docker completa: no ejecutada en esta validación.** La comprobación del puente PHP → Node de `scripts/docker/concurrency.php` se adaptó al nuevo control de entorno y se reprodujo fuera del contenedor; no equivale a ejecutar la suite Docker.
+- La suite de Laravel y la integración PHP → puente → contrato se ejecutan sobre la base desechable `espacio_u_testing_efimera` (ver [DEVELOPMENT_SETUP.md](DEVELOPMENT_SETUP.md)); no modifican `espacio_u`, `espacio_u_presentacion` ni `espacio_u_testing`.

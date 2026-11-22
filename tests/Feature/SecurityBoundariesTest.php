@@ -52,7 +52,21 @@ class SecurityBoundariesTest extends SecurityTestCase
         } catch (\RuntimeException $e) {
             $this->assertStringContainsString('rechazada', $e->getMessage());
         }
-        $this->assertSame('espacio_u_testing', $before);
+        $this->assertSame(TestingDatabaseGuard::DATABASE, $before);
+    }
+
+    public function test_testing_guard_never_accepts_the_persistent_testing_schema(): void
+    {
+        // The suite runs on its own disposable schema; the persistent one must survive every test run.
+        $this->assertSame('espacio_u_testing_efimera', TestingDatabaseGuard::DATABASE);
+        $this->assertSame(TestingDatabaseGuard::DATABASE, config('database.connections.mysql.database'));
+        config(['database.connections.persistent' => [...config('database.connections.mysql'), 'database' => 'espacio_u_testing']]);
+        try {
+            TestingDatabaseGuard::check('persistent');
+            $this->fail('La guarda debió rechazar la base persistente');
+        } catch (\RuntimeException $e) {
+            $this->assertStringContainsString('rechazada', $e->getMessage());
+        }
     }
 
     public function test_testing_account_cannot_access_normal_development_database(): void

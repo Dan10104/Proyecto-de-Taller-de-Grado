@@ -34,7 +34,7 @@ Las personas de las cuentas de presentación son ficticias. Ningún registro usa
 | IoT | Sensores habilitados y deshabilitados, espacios monitoreados, historial de lecturas y lecturas del momento. |
 | Códigos QR | Códigos de espacios, equipos y préstamos; rotación; validaciones válidas e inválidas de uso de espacio, entrega y devolución. |
 | Liberación | Políticas activas e inactivas asignadas a espacios; evaluaciones con los cuatro resultados posibles. |
-| Trazabilidad | Evidencia local con su huella digital por cada operación crítica, estado pendiente, verificación y reintento. |
+| Trazabilidad | Evidencia local con su huella digital por cada operación crítica; evidencias registradas en la red Ethereum local, verificadas y pendientes; reconciliación tras una caída de la red. |
 | Notificaciones y bitácora | Avisos leídos y sin leer; bitácora con las operaciones de todos los módulos. |
 | Dashboard y reportes | Indicadores y gráficos con contenido en los periodos de hoy, 7 y 30 días; vista previa y exportación de reportes. |
 
@@ -53,7 +53,7 @@ La cuenta creada por `security:bootstrap-admin` se conserva como cuenta de recup
 ## Límites que la demostración respeta
 
 - **Reservas «Finalizada»:** ninguna operación del sistema asigna ese estado. Una reserva aprobada cuyo horario ya terminó permanece como «Aprobada»; no se alteró su estado para aparentar otra cosa.
-- **Registro externo de evidencias:** en este entorno el registro en Sepolia está desactivado y sin contrato configurado. Cada operación crítica genera su evidencia local y su huella digital, y la evidencia queda «Pendiente». No se simula ninguna confirmación externa: el registro real depende de la configuración de la red.
+- **Registro externo de evidencias:** la base de presentación trabaja con el entorno Ethereum local compatible con Sepolia descrito en [BLOCKCHAIN_IMPLEMENTATION.md](BLOCKCHAIN_IMPLEMENTATION.md#entorno-ethereum-local-compatible-con-sepolia--validación-y-demostración-2026-11-21). Las evidencias pasan a «Registrada» únicamente cuando esa red local confirma su transacción; ninguna se marca a mano. Son registros de la red local, no de la testnet pública de Sepolia, y la interfaz lo indica en el detalle técnico. Algunas evidencias quedan «Pendiente» a propósito, para demostrar la reconciliación.
 - **Lecturas IoT recientes:** el sistema solo considera reciente una lectura durante la ventana de frescura configurada (5 minutos por defecto). Para mostrarlas hay que enviar lecturas nuevas poco antes.
 
 ## Aislamiento
@@ -84,7 +84,7 @@ Copy-Item .env.qa .env -Force
 php artisan config:clear
 ```
 
-`php artisan db:show` indica la base activa. Las pruebas automatizadas no dependen de este cambio: usan `.env.testing` y `espacio_u_testing`.
+`php artisan db:show` indica la base activa. Las pruebas automatizadas no dependen de este cambio: usan la cuenta de `.env.testing` y su propia base desechable, `espacio_u_testing_efimera`. No tocan `espacio_u`, `espacio_u_presentacion` ni `espacio_u_testing`.
 
 ## Crear otra base vacía
 

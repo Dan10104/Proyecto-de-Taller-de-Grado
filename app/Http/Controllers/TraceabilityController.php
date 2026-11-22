@@ -6,6 +6,7 @@ use App\Enums\AccionCritica;
 use App\Jobs\RegisterTraceabilityEvidence;
 use App\Models\EvidenciaTrazabilidad;
 use App\Models\Rol;
+use App\Services\Traceability\EthereumSepoliaDriver;
 use App\Services\Traceability\EvidenceProcessor;
 use App\Services\Traceability\ExternalReference;
 use App\Services\Traceability\TraceabilityUnavailable;
@@ -37,7 +38,13 @@ final class TraceabilityController extends Controller
     {
         $evidencia->load('actividad:id,accion,fecha_hora,reserva_id,prestamo_id,recurso_id');
 
-        return Inertia::render('Traceability/Show', ['evidencia' => $evidencia, 'explorador' => ExternalReference::explorer($evidencia->referencia_externa)]);
+        $red = ExternalReference::network($evidencia->referencia_externa);
+
+        return Inertia::render('Traceability/Show', ['evidencia' => $evidencia, 'explorador' => ExternalReference::explorer($evidencia->referencia_externa),
+            'red' => $red,
+            // Block and confirmations as last seen on the network: only for a registered evidence whose reference
+            // belongs to the deployment configured now.
+            'confirmacion' => $evidencia->estado->value === 'REGISTRADA' && ! $red['otro_despliegue'] ? EthereumSepoliaDriver::lastSeen($evidencia->referencia_externa) : null]);
     }
 
     public function verify(Request $request, EvidenciaTrazabilidad $evidencia, EvidenceProcessor $processor)

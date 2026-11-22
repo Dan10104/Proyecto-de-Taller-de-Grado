@@ -3,6 +3,14 @@
 return [
     'enabled' => (bool) env('BLOCKCHAIN_ENABLED', false),
     'network' => env('BLOCKCHAIN_NETWORK', 'sepolia'),
+    // «public»: the real Sepolia testnet (https). «local-simulation»: the project's local network compatible
+    // with Sepolia (loopback only). Same chain id, never interchangeable; see docs/BLOCKCHAIN_IMPLEMENTATION.md.
+    'environment' => env('BLOCKCHAIN_ENVIRONMENT', 'public'),
+    // Contract addresses deployed on the local simulation (written by the local deployment). A reference to one
+    // of them is a local record whatever the environment configured later, and is never shown as public.
+    'simulation_contracts' => array_values(array_filter(array_map(
+        fn ($address) => strtolower(trim($address)), explode(',', (string) env('BLOCKCHAIN_SIMULATION_CONTRACTS', ''))
+    ))),
     'driver' => env('BLOCKCHAIN_DRIVER', 'ethereum'),
     'rpc_url' => env('BLOCKCHAIN_RPC_URL', ''),
     'chain_id' => (int) env('BLOCKCHAIN_CHAIN_ID', 11155111),

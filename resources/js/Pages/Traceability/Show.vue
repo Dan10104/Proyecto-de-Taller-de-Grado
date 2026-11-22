@@ -5,7 +5,7 @@ import TraceabilityChain from '../../Components/TraceabilityChain.vue';
 import { operations, verificationResults, explanations, externalRegistration, registrationLabels } from '../../traceability';
 import { traceabilityDate } from '../../traceability';
 import { useAccess } from '../../security';
-const props = defineProps({ evidencia: Object, explorador: String });
+const props = defineProps({ evidencia: Object, explorador: String, red: { type: Object, default: () => ({}) }, confirmacion: { type: Object, default: null } });
 const { can } = useAccess();
 const form = useForm({});
 const run = action => form.post(`/trazabilidad/${props.evidencia.id}/${action}`, { preserveScroll: true });
@@ -31,7 +31,14 @@ const run = action => form.post(`/trazabilidad/${props.evidencia.id}/${action}`,
         <div><dt>Preparada localmente</dt><dd>{{ traceabilityDate(evidencia.registrada_localmente_en) }}</dd></div>
         <div><dt>{{ externalRegistration(evidencia) === 'registered' ? 'Registrada externamente' : 'Fecha externa informada' }}</dt><dd>{{ evidencia.registrada_externamente_en ? traceabilityDate(evidencia.registrada_externamente_en) : externalRegistration(evidencia) === 'unbacked' ? 'No informada' : 'Pendiente de confirmación' }}</dd></div>
         <div><dt>Registro externo</dt><dd>{{ registrationLabels[externalRegistration(evidencia)] }}</dd></div>
+        <div class="span-2"><dt>Red</dt><dd>{{ red.simulada ? 'Ethereum Sepolia — entorno de simulación local' : red.otro_despliegue ? 'La referencia corresponde a otro despliegue del contrato' : 'Ethereum Sepolia' }}<template v-if="red.simulada && red.otro_despliegue">. La referencia corresponde a un despliegue distinto del configurado</template></dd></div>
         <div class="span-2"><dt>Referencia externa</dt><dd class="chain-hash">{{ evidencia.referencia_externa || 'Aún no disponible' }}</dd></div>
+        <div v-if="red.transaccion" class="span-2"><dt>Transacción</dt><dd class="chain-hash">{{ red.transaccion }}</dd></div>
+        <div v-if="red.contrato" class="span-2"><dt>Contrato</dt><dd class="chain-hash">{{ red.contrato }}</dd></div>
+        <template v-if="confirmacion">
+          <div><dt>Bloque</dt><dd>{{ confirmacion.bloque }}</dd></div>
+          <div><dt>Confirmaciones</dt><dd>{{ confirmacion.confirmaciones }}<template v-if="confirmacion.consultada_en"> · consultadas el {{ traceabilityDate(confirmacion.consultada_en) }}</template></dd></div>
+        </template>
         <div v-if="evidencia.ultima_verificacion" class="span-2"><dt>Última comprobación</dt><dd>{{ traceabilityDate(evidencia.ultima_verificacion) }} · {{ verificationResults[evidencia.resultado_verificacion] }}. {{ explanations[evidencia.resultado_verificacion] }}</dd></div>
         <div v-if="explorador" class="span-2"><dt>Transacción externa</dt><dd><a :href="explorador" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">Consultar transacción en Sepolia<span class="sr-only"> (se abre en una pestaña nueva)</span></a></dd></div>
       </template>

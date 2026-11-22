@@ -92,6 +92,7 @@ Con los campos de credenciales todavía vacíos y sin directorio de datos previo
 php artisan migrate --force
 php artisan db:seed --force
 php scripts/mysql-testing.php
+php scripts/mysql-testing-suite.php
 php artisan migrate --env=testing --force
 npm run build
 php artisan test
@@ -182,6 +183,8 @@ El script verifica el puerto/directorio de datos del servidor y rechaza sobrescr
 
 PHPUnit fuerza APP_ENV=testing, driver MySQL y una ubicación de caché de configuración exclusiva. `TestingDatabaseGuard` comprueba primero configuración estricta (sin URL/socket alternativos) y después base efectiva, puerto y directorio de datos antes de cualquier `RefreshDatabase` o limpieza. `migrate:fresh`, `migrate:refresh`, `migrate:reset`, `migrate:rollback` y `db:wipe` también exigen ese destino incluso con `--force`; en desarrollo se utiliza únicamente migración incremental. Una configuración incoherente aborta, no cambia a otra BD automáticamente.
 
+**Base desechable de la suite (2026-11-21).** `php artisan test` y la integración Blockchain local vacían su base en cada ejecución. Para que eso no borre los datos que `espacio_u_testing` conserva entre ejecuciones (el conjunto sintético del servidor técnico de verificación visual), la suite usa una base aparte, `espacio_u_testing_efimera`: `phpunit.xml` fuerza `DB_DATABASE`, la integración Blockchain se lo indica a su proceso PHP y `TestingDatabaseGuard` solo acepta ese nombre. Así, ni la suite ni `migrate:fresh`, `migrate:refresh`, `migrate:reset`, `migrate:rollback` o `db:wipe` pueden ejecutarse sobre `espacio_u_testing`. `scripts/mysql-testing-suite.php` crea la base y concede a la cuenta de pruebas privilegios únicamente sobre ella, por su nombre exacto; es idempotente, no modifica otras bases ni `.env.testing` y comprueba que la cuenta sigue sin acceso a desarrollo y a presentación. La cuenta de pruebas conserva su acceso a `espacio_u_testing`, que es la que usa el servidor técnico iniciado con `--env=testing`.
+
 Caché y sesión de tests usan `array`; rutas de archivos, locks y configuración, cuando hacen falta, van bajo `.local/testing`. Cola sync y correo array; datos ficticios. La suite se ejecuta en serie. Las pruebas de concurrencia lanzan dos procesos dentro del mismo esquema autorizado, con limpieza protegida antes y después. No usar `artisan test --parallel`, que intentaría crear esquemas no autorizados.
 
 ## Administrador inicial y acceso local
@@ -222,7 +225,7 @@ Resultado integrado: 127 pruebas / 1395 aserciones (62 nuevas), sin fallos ni om
 
 Desde el workspace oficial con `dev-environment.ps1` activado y la instancia aislada disponible, ejecutar `php artisan migrate`, `php artisan db:seed` y `npm run build`. Esta fase añade una sola tabla: reservas; el seeder incorpora seis permisos y conserva revocaciones. No crea inventario ni reservas permanentes. Nunca usar fresh/reset/wipe en desarrollo ni modificar MySQL80/MySQL97.
 
-Validar con `php artisan test`, `php vendor/bin/pint --test`, `composer audit` y `npm audit`. La suite usa exclusivamente espacio_u_testing, en serie; las pruebas de concurrencia abren procesos independientes dentro de ese esquema con guardas. No usar `--parallel`. [Resultado final y procedimiento de concurrencia](RESERVATIONS_IMPLEMENTATION.md).
+Validar con `php artisan test`, `php vendor/bin/pint --test`, `composer audit` y `npm audit`. La suite usa exclusivamente su base de pruebas (desde el 2026-11-21, la desechable `espacio_u_testing_efimera`), en serie; las pruebas de concurrencia abren procesos independientes dentro de ese esquema con guardas. No usar `--parallel`. [Resultado final y procedimiento de concurrencia](RESERVATIONS_IMPLEMENTATION.md).
 
 Las tres cuentas temporales de revisión quedaron INACTIVAS y sus sesiones revocadas; las credenciales temporales se retiraron de .env. El historial sintético se conserva (cuatro reservas canceladas, una rechazada). No hay credenciales en la documentación, plantilla ni repositorio. La aplicación y los procesos locales permanecen activos, sin duplicar el servidor que atiende 127.0.0.1:8000.
 
