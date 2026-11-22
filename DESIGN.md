@@ -234,7 +234,7 @@ Dentro del mismo sistema existen dos tratamientos oscuros, y solo dos contenidos
 - Estados del dominio con un único mapa: etiqueta + tono + figura; nunca solo color.
 - Divulgación progresiva en lugar de recortar información.
 - Superficie oscura reservada al contenido de IoT y de Blockchain.
-- Sin imágenes ráster: la ilustración es SVG dibujado con los tokens del sistema.
+- Sin imágenes ráster: la ilustración es SVG propio. Los ambientes se dibujan con los tokens del sistema; el edificio del inicio de sesión añade una paleta acotada (coral de fachada y verdes de vegetación).
 - Movimiento solo para transiciones de estado (120–180 ms); sin secuencias de entrada.
 
 ## Colors
@@ -349,6 +349,8 @@ Los bordes son filetes de 1 px. Los pictogramas son SVG de trazo, sin relleno, d
 La geometría isométrica 2:1 es la forma propia de los dos módulos oscuros: placas de piso apiladas con sus ambientes en IoT y cubos numerados en Blockchain. El mismo motivo, reducido a tres rombos apilados, identifica la tarjeta de monitoreo del tablero.
 
 La ilustración de ambientes (`SpaceIllustration.vue`) es un SVG dibujado con los tokens: aula, laboratorio o auditorio vacíos, decorativo y oculto a lectores de pantalla. No se publican imágenes ráster.
+
+El inicio de sesión muestra una ilustración del edificio de la facultad (`resources/images/faculty-building.svg`): dibujo propio en SVG, en perspectiva, apoyado directamente sobre el azul del panel institucional, sin marco ni fondo. Es una representación reconocible, no un plano ni una fotografía: fachada blanca con marco coral, ventanas azuladas, corredor abierto del primer nivel sobre columnas y vegetación alrededor. Es la única pieza que usa color fuera de la paleta del sistema: coral solo en la fachada y verdes solo en árboles, arbustos y césped; sus valores viajan dentro del propio archivo. Se sirve como imagen independiente, fuera del JavaScript del formulario, con texto alternativo vacío por ser decorativa. En pantallas estrechas se reduce y, cuando la altura es poca en el diseño de una columna, se retira junto con las capacidades para que el formulario quede a la vista.
 
 ## Components
 

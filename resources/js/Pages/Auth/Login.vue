@@ -3,7 +3,7 @@ import { ref } from 'vue';
 import { Head, useForm, usePage } from '@inertiajs/vue3';
 import Brand from '../../Components/Brand.vue';
 import Icon from '../../Components/Icon.vue';
-import SpaceIllustration from '../../Components/SpaceIllustration.vue';
+import building from '../../../images/faculty-building.svg';
 
 const page = usePage();
 const visible = ref(false);
@@ -22,15 +22,14 @@ function submit() {
         <Brand light/>
         <div class="login-story-main">
           <h2>Reservas de espacios y préstamos de equipamiento</h2>
-          <div class="login-visual">
-            <SpaceIllustration class="login-illustration"/>
-            <ul class="login-points">
-              <li><Icon name="calendar"/>Espacios académicos</li>
-              <li><Icon name="monitor"/>Equipamiento tecnológico</li>
-              <li><Icon name="signal"/>Monitoreo de ocupación</li>
-              <li><Icon name="network"/>Trazabilidad verificable</li>
-            </ul>
-          </div>
+          <!-- Carga diferida: donde la hoja de estilos la retira (una columna con poca altura), el navegador no la descarga. -->
+          <img class="login-illustration" :src="building" alt="" width="1078" height="538" loading="lazy" decoding="async">
+          <ul class="login-points">
+            <li><Icon name="calendar"/>Espacios académicos</li>
+            <li><Icon name="monitor"/>Equipamiento tecnológico</li>
+            <li><Icon name="signal"/>Monitoreo de ocupación</li>
+            <li><Icon name="network"/>Trazabilidad verificable</li>
+          </ul>
         </div>
         <p class="login-faculty">Facultad de Ingeniería en Ciencias de la Computación y Telecomunicaciones</p>
       </div>

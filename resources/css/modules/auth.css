@@ -17,51 +17,43 @@
 .ill-chair { fill: var(--color-electric); }
 .ill-monitor { fill: var(--color-ink); }
 
-/* Inicio de sesión: panel institucional con la ilustración enmarcada y, a su lado, la hoja del formulario. */
-.login-page { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); min-height: 100dvh; background: var(--color-ground); }
+/* Inicio de sesión: panel institucional con el edificio de la facultad como protagonista y, a su lado, la hoja del formulario. */
+.login-page { display: grid; grid-template-columns: minmax(0, 11fr) minmax(0, 9fr); min-height: 100dvh; background: var(--color-ground); }
 
 .login-story {
   --color-focus: var(--color-accent);
   display: grid;
-  padding: var(--space-8) clamp(1.5rem, 4vw, 2.5rem);
+  overflow: hidden;
+  padding: var(--space-8) clamp(1.5rem, 4vw, 3rem);
   background: var(--color-rail);
   color: #fff;
 }
-/* Una sola columna centrada: marca arriba, mensaje e ilustración al centro, facultad al pie.
-   Su ancho cede en ventanas bajas para que la ilustración nunca empuje el contenido fuera de la pantalla. */
+/* La marca del panel es un 40 % mayor que en el resto de la aplicación, con todas sus partes en la misma proporción. */
+.login-story .brand { gap: calc(0.625rem * 1.4); }
+.login-story .brand-mark { width: calc(1.75rem * 1.4); height: calc(1.75rem * 1.4); border-radius: calc(var(--radius-m) * 1.4); font-size: calc(var(--text-md) * 1.4); }
+.login-story .brand-text strong { font-size: calc(0.9375rem * 1.4); }
+.login-story .brand-text small { font-size: calc(0.6875rem * 1.4); }
+/* Una sola columna centrada: marca arriba; mensaje, edificio y capacidades al centro; facultad al pie.
+   Su ancho cede en ventanas bajas para que el edificio nunca empuje el contenido fuera de la pantalla. */
 .login-story-inner {
   display: flex;
   flex-direction: column;
   gap: var(--space-6);
   width: 100%;
-  max-width: min(34rem, max(20rem, (100dvh - 22rem) * 1.6));
+  max-width: min(50rem, max(21rem, (100dvh - 24rem) * 1.9));
   margin-inline: auto;
 }
-.login-story-main { display: grid; gap: var(--space-6); margin-block: auto; }
-.login-story h2 { max-width: 20ch; font-size: clamp(1.75rem, 1.1rem + 1.4vw, 2.25rem); line-height: 1.12; font-weight: 650; letter-spacing: -0.02em; text-wrap: balance; }
-/* La ilustración y su leyenda forman una única pieza enmarcada. */
-.login-visual { container-type: inline-size; overflow: hidden; border: 1px solid var(--color-rail-line); border-radius: var(--radius-l); background: var(--color-primary-press); }
-.login-points { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid var(--color-rail-line); background: var(--color-rail); }
-.login-points li { display: grid; align-content: start; gap: var(--space-2); padding: var(--space-3) var(--space-4); color: var(--color-rail-ink); font-size: var(--text-sm); font-weight: 500; line-height: 1.3; }
+.login-story-main { display: grid; gap: var(--space-5); margin-block: auto; }
+.login-story h2 { max-width: 24ch; font-size: clamp(1.75rem, 1rem + 1.7vw, 2.5rem); line-height: 1.1; font-weight: 650; letter-spacing: -0.02em; text-wrap: balance; }
+/* Acento del sistema sobre el mensaje. */
+.login-story h2::before { content: ""; display: block; width: 3.25rem; height: 0.25rem; margin-bottom: var(--space-4); border-radius: 2px; background: var(--color-accent); }
+/* El edificio se apoya directamente sobre el azul del panel, sin marco ni fondo propio, y sobresale un poco de la columna de texto. */
+.login-illustration { display: block; width: calc(100% + var(--space-8)); max-width: none; height: auto; margin-inline: calc(var(--space-4) * -1); }
+.login-points { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.login-points li { display: grid; align-content: start; gap: var(--space-2); padding-inline: var(--space-4); color: var(--color-rail-ink); font-size: var(--text-sm); font-weight: 500; line-height: 1.3; }
+.login-points li:first-child { padding-left: 0; }
 .login-points li + li { border-left: 1px solid var(--color-rail-line); }
-.login-points svg { flex: none; width: 1.25rem; height: 1.25rem; color: var(--color-accent); }
-@container (max-width: 30rem) {
-  .login-points { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .login-points li { display: flex; align-items: center; gap: 0.625rem; padding: var(--space-3); }
-  .login-points li:nth-child(odd) { border-left: 0; }
-  .login-points li:nth-child(n + 3) { border-top: 1px solid var(--color-rail-line); }
-}
-.login-story .ill-wall { fill: var(--color-rail-hover); stroke: var(--color-rail-line); }
-.login-story .ill-floor { fill: var(--color-primary-press); }
-.login-story .ill-line { stroke: var(--color-rail-line); }
-.login-story .ill-light { fill: var(--color-rail-ink); stroke: none; opacity: 0.9; }
-.login-story .ill-curtain { fill: var(--color-electric); }
-.login-story .ill-fold { stroke: var(--color-rail); opacity: 0.45; }
-.login-story .ill-device { fill: var(--color-rail-active); stroke: var(--color-rail-ink-2); }
-.login-story .ill-screen { fill: var(--color-rail-ink); stroke: none; }
-.login-story .ill-slide { stroke: var(--color-rail-ink-2); }
-.login-story .ill-desk { fill: #fff; stroke: none; }
-.login-story .ill-chair { fill: var(--color-accent); }
+.login-points svg { flex: none; width: 1.5rem; height: 1.5rem; color: var(--color-accent); }
 .login-faculty { color: var(--color-rail-ink-2); font-size: var(--text-xs); }
 
 /* El formulario es la hoja de la página: la única superficie blanca sobre el lienzo. */
@@ -136,26 +128,64 @@
   .home-row { padding-inline: var(--space-4); }
 }
 
-/* Ventanas bajas: la leyenda cede su sitio a la ilustración. */
-@media (max-height: 42rem) and (min-width: 56.0625rem) {
+/* Ventanas bajas: las capacidades ceden su sitio al edificio. */
+@media (max-height: 44rem) and (min-width: 56.0625rem) {
   .login-points { display: none; }
 }
-/* Una columna: el panel institucional pasa a ser una banda superior, sin ilustración, y la hoja del formulario sube sobre ella. */
+/* Una columna: el panel institucional pasa a ser una banda superior compacta, con el mensaje y el edificio lado a lado
+   y las capacidades debajo; la hoja del formulario sube sobre ella. */
 @media (max-width: 56rem) {
   .login-page { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto 1fr; }
   .login-story { padding: var(--space-6) var(--space-6) calc(var(--space-10) * 2); }
-  .login-story-inner { max-width: 29rem; gap: var(--space-5); }
-  .login-story-main { gap: var(--space-5); margin-block: 0; }
-  .login-illustration, .login-faculty { display: none; }
-  .login-points { border-top: 0; }
+  .login-story-inner { max-width: 40rem; gap: var(--space-5); }
+  .login-story-main { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); align-items: center; gap: var(--space-5) var(--space-6); margin-block: 0; }
+  .login-story h2 { font-size: clamp(1.375rem, 0.9rem + 1.9vw, 1.75rem); }
+  .login-illustration { width: 100%; margin-inline: 0; }
+  .login-points { grid-column: 1 / -1; }
+  .login-faculty { display: none; }
   .login-form-side { place-items: start center; margin-top: calc(var(--space-10) * -1); padding: 0 var(--space-4) var(--space-8); }
 }
-/* Teléfono: marca y mensaje arriba; el formulario ocupa el ancho completo como una hoja que sube sobre la banda. */
+/* Pantallas estrechas: el edificio pasa debajo del mensaje y las capacidades se ordenan de dos en dos. */
+@media (max-width: 38rem) {
+  .login-story-main { grid-template-columns: minmax(0, 1fr); gap: var(--space-4); }
+  .login-story h2 { max-width: none; }
+  .login-illustration { width: min(100%, 22rem); margin-inline: auto; }
+  .login-points { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: var(--space-3); }
+  .login-points li { display: flex; align-items: center; gap: 0.625rem; padding-inline: 0 var(--space-3); }
+  .login-points li + li { border-left: 0; }
+  .login-points svg { width: 1.25rem; height: 1.25rem; }
+}
+/* Una columna con altura justa: el edificio se reduce y las capacidades se retiran, para que los campos queden a la vista. */
+@media (max-width: 38rem) and (max-height: 44rem) {
+  .login-illustration { width: min(100%, 15rem); }
+  .login-points { display: none; }
+}
+/* Teléfono: marca, mensaje y un edificio reducido; el formulario ocupa el ancho completo como una hoja que sube sobre la banda. */
 @media (max-width: 30rem) {
   .login-story { padding: var(--space-5) var(--space-5) var(--space-8); }
   .login-story-inner { gap: var(--space-4); }
-  .login-story h2 { font-size: 1.375rem; line-height: 1.2; }
-  .login-visual { display: none; }
+  .login-story h2 { font-size: 1.3125rem; line-height: 1.2; }
+  .login-story h2::before { width: 2.5rem; margin-bottom: var(--space-3); }
+  .login-illustration { width: min(100%, 15rem); }
+  .login-points { display: none; }
   .login-form-side { place-items: stretch; margin-top: calc(var(--space-3) * -1); padding: 0; }
   .login-form-wrap { width: 100%; padding: var(--space-6) var(--space-5) var(--space-8); border: 0; border-radius: var(--radius-l) var(--radius-l) 0 0; box-shadow: none; }
+}
+/* Teléfono pequeño: el edificio se reduce más para que el formulario quede a la vista. */
+@media (max-width: 22.5rem) {
+  .login-story { padding-bottom: var(--space-6); }
+  .login-story-main { gap: var(--space-3); }
+  .login-illustration { width: min(100%, 9.5rem); }
+}
+/* Teléfono pequeño y bajo: se ajusta el aire sobre la marca y bajo ella para que el botón del formulario quede a la vista. */
+@media (max-width: 22.5rem) and (max-height: 36rem) {
+  .login-story { padding-top: var(--space-3); }
+  .login-story-inner { gap: var(--space-3); }
+}
+/* Poca altura en una columna (teléfono en horizontal o muy bajo): primero el formulario; edificio y capacidades se retiran.
+   La imagen se carga de forma diferida, así que aquí el navegador ni siquiera la descarga. */
+@media (max-width: 56rem) and (max-height: 33rem) {
+  .login-story-main { grid-template-columns: minmax(0, 1fr); }
+  .login-story h2 { max-width: none; }
+  .login-illustration, .login-points { display: none; }
 }
